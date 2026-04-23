@@ -936,38 +936,38 @@
             </div>
             
             <div class="nav-section">
-                <div class="nav-section-title">Executive Dashboard</div>
-                <button class="nav-btn active" onclick="switchTab('dashboard')">Risk Overview</button>
-                <button class="nav-btn" onclick="switchTab('kpis')">Key Metrics</button>
+                <div class="nav-section-title">Executive Summary</div>
+                <button class="nav-btn active" onclick="switchTab('dashboard')">Risk Dashboard</button>
+                <button class="nav-btn" onclick="switchTab('kpis')">Performance Metrics</button>
             </div>
-            
+
+            <div class="nav-section">
+                <div class="nav-section-title">CCR Analytics</div>
+                <button class="nav-btn" onclick="switchTab('cva')">CVA / XVA</button>
+                <button class="nav-btn" onclick="switchTab('pfe')">Exposure &amp; PFE</button>
+                <button class="nav-btn" onclick="switchTab('wwr')">Wrong Way Risk</button>
+                <button class="nav-btn" onclick="switchTab('var')">Tail Risk — VaR &amp; CVaR</button>
+            </div>
+
             <div class="nav-section">
                 <div class="nav-section-title">Portfolio Analytics</div>
-                <button class="nav-btn" onclick="switchTab('composition')">Composition View</button>
+                <button class="nav-btn" onclick="switchTab('composition')">Composition</button>
                 <button class="nav-btn" onclick="switchTab('correlations')">Correlations</button>
-                <button class="nav-btn" onclick="switchTab('pca')">Factor Analysis</button>
-                <button class="nav-btn" onclick="switchTab('optimal')">Optimal Allocation</button>
-                <button class="nav-btn" onclick="switchTab('raroc')">RAROC Analysis</button>
+                <button class="nav-btn" onclick="switchTab('raroc')">RAROC</button>
+                <button class="nav-btn" onclick="switchTab('attribution')">P&amp;L Attribution</button>
             </div>
-            
+
             <div class="nav-section">
                 <div class="nav-section-title">Risk Management</div>
                 <button class="nav-btn" onclick="switchTab('limits')">Limit Monitoring</button>
                 <button class="nav-btn" onclick="switchTab('stress')">Stress Testing</button>
-                <button class="nav-btn" onclick="switchTab('attribution')">P&L Attribution</button>
             </div>
-            
-            <div class="nav-section">
-                <div class="nav-section-title">Advanced Analytics</div>
-                <button class="nav-btn" onclick="switchTab('cva')">CVA Analytics</button>
-                <button class="nav-btn" onclick="switchTab('pfe')">Exposure Modeling</button>
-                <button class="nav-btn" onclick="switchTab('wwr')">Wrong Way Risk</button>
-            </div>
-            
+
             <div class="nav-section">
                 <div class="nav-section-title">Governance</div>
                 <button class="nav-btn" onclick="switchTab('models')">Model Validation</button>
                 <button class="nav-btn" onclick="switchTab('regulatory')">Regulatory</button>
+                <button class="nav-btn" onclick="switchTab('methodology')">Methodology</button>
             </div>
         </div>
 
@@ -3181,37 +3181,37 @@
                 <!-- KPIs TAB -->
                 <div id="tab-kpis" class="tab-content">
                     <div class="section">
-                        <div class="section-title">Comprehensive Key Performance Indicators</div>
+                        <div class="section-title">Performance &amp; Risk Metrics — Formula, Interpretation &amp; Limitation</div>
                         <div class="grid-3">
                             <div class="metric-card">
                                 <div class="metric-label">Sharpe Ratio (1Y)</div>
                                 <div class="metric-value">2.34</div>
-                                <div class="metric-delta">Risk-adjusted return metric</div>
+                                <div class="metric-delta" style="font-size:9px;line-height:1.4;">S = (R_p − R_f) / σ_p &nbsp;|&nbsp; R_p=22.4%, R_f=5.0%, σ=9.6%<br><span style="color:#f59e0b;">Limitation: assumes normally distributed returns. High Sharpe on a credit portfolio may be inflated by infrequent but large tail losses not yet realised.</span></div>
                             </div>
                             <div class="metric-card">
                                 <div class="metric-label">Sortino Ratio (1Y)</div>
                                 <div class="metric-value">2.38</div>
-                                <div class="metric-delta">Downside risk focus</div>
+                                <div class="metric-delta" style="font-size:9px;line-height:1.4;">S = (R_p − R_f) / σ_downside &nbsp;|&nbsp; σ_down=7.3%<br><span style="color:#16a34a;">Sortino &gt; Sharpe: downside vol lower than total vol — return distribution is positively skewed (more upside than downside moves). Consistent with a credit portfolio in a tightening spread environment.</span></div>
                             </div>
                             <div class="metric-card">
                                 <div class="metric-label">Calmar Ratio</div>
                                 <div class="metric-value">3.11</div>
-                                <div class="metric-delta">Return vs max drawdown</div>
+                                <div class="metric-delta" style="font-size:9px;line-height:1.4;">C = Ann. Return / |Max Drawdown| = 22.4% / 7.2%<br><span style="color:#16a34a;">Calmar &gt; 2.0 is excellent. The max drawdown of 7.2% is modest — portfolio recovered from the Sep 2023 stress (Bund sell-off) within 3 weeks, confirming underlying resilience.</span></div>
                             </div>
                             <div class="metric-card">
                                 <div class="metric-label">Max Drawdown</div>
                                 <div class="metric-value negative">-7.2%</div>
-                                <div class="metric-delta">Worst 1-year decline</div>
+                                <div class="metric-delta" style="font-size:9px;line-height:1.4;">DD = (Trough − Peak) / Peak &nbsp;|&nbsp; Sep 2023 event<br><span style="color:#f59e0b;">Decision implication: drawdown of 7.2% on a $2.45B portfolio = -$176M mark-to-market. This triggers a limit review under most bank VaR escalation frameworks, even if within limit.</span></div>
                             </div>
                             <div class="metric-card">
-                                <div class="metric-label">Volatility (1Y)</div>
+                                <div class="metric-label">Volatility (1Y Annualised)</div>
                                 <div class="metric-value">9.6%</div>
-                                <div class="metric-delta">Annual annualized volatility</div>
+                                <div class="metric-delta" style="font-size:9px;line-height:1.4;">σ = std(daily_ret) × √252 &nbsp;|&nbsp; daily σ = 0.60%<br><span style="color:#f59e0b;">Limitation: volatility is symmetric and backward-looking. It does not distinguish the direction of risk or capture credit event jump risk. Use CVaR alongside for tail-complete picture.</span></div>
                             </div>
                             <div class="metric-card">
                                 <div class="metric-label">Diversification Ratio</div>
                                 <div class="metric-value">1.50</div>
-                                <div class="metric-delta">Portfolio vs individual std devs</div>
+                                <div class="metric-delta" style="font-size:9px;line-height:1.4;">DR = Σ(wᵢ·σᵢ) / σ_portfolio = 14.4% / 9.6%<br><span style="color:#dc2626;">Warning: PCA analysis shows 3 PCs explain 100% of variance — DR of 1.50 overstates true diversification. In stress, factor correlation collapses and DR approaches 1.0 (no diversification benefit).</span></div>
                             </div>
                         </div>
                     </div>
@@ -3268,6 +3268,347 @@
                         </table>
                     </div>
                 </div>
+
+                <!-- ═══════════════════════════════════════════════════════ -->
+                <!-- VAR / TAIL RISK TAB                                     -->
+                <!-- ═══════════════════════════════════════════════════════ -->
+                <div id="tab-var" class="tab-content">
+                    <div class="section">
+                        <div class="section-title">Value at Risk (VaR) — Parametric &amp; Historical</div>
+                        <div style="background:#fffbeb;border-left:4px solid #f59e0b;padding:10px 14px;margin-bottom:14px;border-radius:0 6px 6px 0;font-size:11px;color:#78350f;">
+                            <strong>What VaR answers:</strong> "What is the maximum loss we expect to not exceed with X% confidence over a given horizon?" VaR is a quantile of the loss distribution — not the worst-case loss. The loss <em>beyond</em> VaR (the tail) is captured by CVaR / Expected Shortfall.
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Counterparty</th>
+                                    <th>Exposure ($B)</th>
+                                    <th>σ Daily (bps)</th>
+                                    <th>VaR 95% 1D ($M)</th>
+                                    <th>VaR 99% 1D ($M)</th>
+                                    <th>VaR 99% 10D ($M)</th>
+                                    <th>CVaR 99% ($M)</th>
+                                    <th>CVaR / VaR Ratio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Deutsche Bank</strong></td>
+                                    <td>$0.73B</td>
+                                    <td>18.4</td>
+                                    <td>$22.1M</td>
+                                    <td>$31.3M</td>
+                                    <td>$98.9M</td>
+                                    <td style="color:#dc2626;font-weight:600;">$44.8M</td>
+                                    <td style="color:#dc2626;font-weight:600;">1.43×</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Credit Suisse</strong></td>
+                                    <td>$0.48B</td>
+                                    <td>24.7</td>
+                                    <td>$19.5M</td>
+                                    <td>$27.6M</td>
+                                    <td>$87.3M</td>
+                                    <td style="color:#dc2626;font-weight:600;">$42.1M</td>
+                                    <td style="color:#dc2626;font-weight:600;">1.53×</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Barclays</strong></td>
+                                    <td>$0.51B</td>
+                                    <td>15.2</td>
+                                    <td>$12.8M</td>
+                                    <td>$18.1M</td>
+                                    <td>$57.2M</td>
+                                    <td>$24.6M</td>
+                                    <td>1.36×</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>BNP Paribas</strong></td>
+                                    <td>$0.32B</td>
+                                    <td>12.8</td>
+                                    <td>$6.7M</td>
+                                    <td>$9.5M</td>
+                                    <td>$30.0M</td>
+                                    <td>$12.9M</td>
+                                    <td>1.36×</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>JP Morgan</strong></td>
+                                    <td>$0.41B</td>
+                                    <td>10.3</td>
+                                    <td>$6.9M</td>
+                                    <td>$9.8M</td>
+                                    <td>$31.0M</td>
+                                    <td>$13.3M</td>
+                                    <td>1.36×</td>
+                                </tr>
+                                <tr style="background:rgba(0,82,204,0.06);font-weight:600;">
+                                    <td>PORTFOLIO (with netting)</td>
+                                    <td>$2.45B</td>
+                                    <td>—</td>
+                                    <td>$51.4M</td>
+                                    <td>$72.8M</td>
+                                    <td>$230.2M</td>
+                                    <td style="color:#dc2626;font-weight:700;">$109.7M</td>
+                                    <td>1.51×</td>
+                                </tr>
+                                <tr style="background:rgba(99,102,241,0.06);font-style:italic;font-size:10px;">
+                                    <td colspan="3">Sum of individual VaR (no netting)</td>
+                                    <td>$68.0M</td>
+                                    <td>$96.3M</td>
+                                    <td>$304.4M</td>
+                                    <td colspan="2">Diversification benefit: $23.5M (24.4%)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:10px 14px;margin-top:10px;font-size:11px;color:#1e3a5f;">
+                            <strong>Key Insight:</strong> Portfolio VaR99% 1D = $72.8M means on 99% of trading days, daily losses will not exceed $72.8M. But VaR says nothing about <em>how bad</em> the remaining 1% of days are. CVaR99% = $109.7M answers that — it is the <em>average</em> loss on those worst 1% of days. The CVaR/VaR ratio of 1.51× is elevated, driven by CS (1.53×) and DB (1.43×) fat-tailed credit spread distributions. This ratio above 1.4× is a reliable indicator of non-normality — parametric VaR will understate true tail risk for these names.
+                        </div>
+                    </div>
+
+                    <div class="section" style="margin-top:14px;">
+                        <div class="section-title">Historical VaR — Realised Loss Distribution (12 Month Rolling)</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Method</th>
+                                    <th>VaR 95% 1D</th>
+                                    <th>VaR 99% 1D</th>
+                                    <th>VaR 99% 10D</th>
+                                    <th>CVaR 99%</th>
+                                    <th>Max Single-Day Loss</th>
+                                    <th>Exceedances (250d)</th>
+                                    <th>Traffic Light</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Parametric (Normal)</strong></td>
+                                    <td>$51.4M</td>
+                                    <td>$72.8M</td>
+                                    <td>$230.2M</td>
+                                    <td>$109.7M</td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                </tr>
+                                <tr style="background:rgba(16,185,129,0.06);">
+                                    <td><strong>Historical Simulation</strong></td>
+                                    <td>$58.3M</td>
+                                    <td>$89.1M</td>
+                                    <td>$281.8M</td>
+                                    <td>$134.2M</td>
+                                    <td>$147.3M (Sep 2023)</td>
+                                    <td><strong>3 / 250</strong></td>
+                                    <td><span class="badge badge-green">GREEN (≤4)</span></td>
+                                </tr>
+                                <tr style="background:rgba(99,102,241,0.06);">
+                                    <td><strong>Filtered Historical (EWMA vol)</strong></td>
+                                    <td>$54.7M</td>
+                                    <td>$81.4M</td>
+                                    <td>$257.4M</td>
+                                    <td>$119.8M</td>
+                                    <td>$147.3M (Sep 2023)</td>
+                                    <td><strong>2 / 250</strong></td>
+                                    <td><span class="badge badge-green">GREEN (≤4)</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Model Differential</strong></td>
+                                    <td style="color:#dc2626;">+$6.9M (+13%)</td>
+                                    <td style="color:#dc2626;">+$16.3M (+22%)</td>
+                                    <td style="color:#dc2626;">+$51.6M (+22%)</td>
+                                    <td style="color:#dc2626;">+$24.5M (+22%)</td>
+                                    <td colspan="3" style="font-size:10px;color:#64748b;">Parametric underestimates tail — credit spread fat tails not captured by normality assumption</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:6px;padding:10px 14px;margin-top:10px;font-size:11px;color:#7f1d1d;">
+                            <strong>Critical finding:</strong> Historical VaR exceeds Parametric VaR by 22% at the 99% level. This is expected for credit spread exposures — credit returns exhibit negative skew and excess kurtosis (fat tails), which the normal distribution assumption in parametric VaR fails to capture. The Filtered Historical approach (EWMA vol-scaling) gives the most robust estimate by combining empirical tail shape with current volatility regime. For regulatory reporting (FRTB IMA), historical simulation over a 250-day window is the required method, with a stressed-period addition.
+                        </div>
+                    </div>
+
+                    <div class="analysis-panel" style="margin-top:14px;">
+                        <div class="lod1-box">
+                            <div class="panel-title lod1-title">&#9654; VaR Methodology — Formulas &amp; Assumptions</div>
+                            <ul class="panel-list">
+                                <li><strong>Parametric VaR:</strong> VaR(α, T) = −(μ·T − z<sub>α</sub>·σ·√T·W) where z<sub>α</sub> is the inverse normal CDF at confidence level α, σ is daily portfolio vol, W is portfolio value, T is horizon in days. At 99% confidence: z = 2.326.</li>
+                                <li><strong>10-Day scaling:</strong> VaR<sub>10D</sub> = VaR<sub>1D</sub> × √10 — the square-root-of-time rule. Valid only under i.i.d. normally distributed returns. For autocorrelated or fat-tailed returns, this understates risk. Basel III mandates this scaling for regulatory capital purposes.</li>
+                                <li><strong>CVaR (Expected Shortfall):</strong> CVaR(α) = −E[L | L &gt; VaR(α)] = (1/(1−α)) × ∫<sub>VaR(α)</sub><sup>∞</sup> l·f(l) dl. Under normality: CVaR(α) = μ + σ·φ(z<sub>α</sub>)/(1−α) where φ is the standard normal PDF. CVaR is a coherent risk measure (satisfies sub-additivity) — VaR is not.</li>
+                                <li><strong>Diversification:</strong> Portfolio VaR = √(w'Σw) × z<sub>α</sub> × √T where Σ is the covariance matrix of daily P&amp;L. Sum-of-individual-VaR assumes perfect correlation — the difference is the diversification benefit ($23.5M at 99% 1D).</li>
+                                <li><strong>Key limitation — normality:</strong> Credit spread returns are negatively skewed with excess kurtosis ≈ 4–6 (normal = 0). This makes parametric VaR systematically understate tail losses. Historical simulation is more robust but sensitive to the lookback window (250d excludes pre-2023 stress).</li>
+                            </ul>
+                        </div>
+                        <div class="suggestion-box">
+                            <div class="panel-title suggestion-title">&#9654; VaR vs PFE — The CCR Distinction</div>
+                            <ul class="panel-list">
+                                <li><strong>VaR is a market risk metric.</strong> It measures short-horizon (1D, 10D) loss on a current portfolio assuming positions are static. It answers: "what can go wrong tomorrow?"</li>
+                                <li><strong>PFE is a credit risk metric.</strong> It measures long-horizon (months to years) potential exposure to a counterparty default, accounting for trade evolution under Monte Carlo simulation. It answers: "if the counterparty defaults in year 3, what do we lose?"</li>
+                                <li><strong>Why both are needed:</strong> VaR captures the P&amp;L volatility of the CVA desk hedging portfolio (CDS positions, rate swaps). PFE captures the structural credit exposure that determines CVA capital. They are complementary — a bank managing a CVA desk runs VaR on the hedge book and PFE on the underlying derivative portfolio.</li>
+                                <li><strong>FRTB alignment:</strong> Under FRTB (2026), CVA capital is measured via the CVA IMA which uses an Expected Shortfall (CVaR) measure with a 97.5% confidence level over a 1-year horizon — bridging VaR methodology into CCR capital. This is the regulatory point where market risk and credit risk measurement formally converge.</li>
+                                <li><strong>WWR amplification of tail:</strong> Under wrong-way risk, exposure and default probability co-move. This creates a joint tail event that VaR cannot capture (VaR is unconditional) but that CVaR begins to approximate through the tail conditioning. Full WWR requires a copula-based joint simulation.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════════════ -->
+                <!-- METHODOLOGY TAB                                         -->
+                <!-- ═══════════════════════════════════════════════════════ -->
+                <div id="tab-methodology" class="tab-content">
+                    <div class="section">
+                        <div class="section-title">Quantitative Methodology — Formulas, Assumptions &amp; Limitations</div>
+                        <div style="background:#eff6ff;border-left:4px solid #0052cc;padding:10px 14px;margin-bottom:16px;border-radius:0 6px 6px 0;font-size:11px;color:#1e3a5f;">
+                            This page documents every quantitative method used in this analytics platform. The formulas, assumptions, and limitations listed here form the basis of model governance documentation and are the expected level of precision in a quantitative CCR interview.
+                        </div>
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+                            <!-- SA-CCR -->
+                            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;">
+                                <div style="font-size:12px;font-weight:700;color:#0052cc;border-bottom:2px solid #0052cc;padding-bottom:6px;margin-bottom:10px;">1. SA-CCR — Standardised Approach to CCR</div>
+                                <div style="font-family:'Courier New',monospace;background:#1e293b;color:#e2e8f0;padding:10px;border-radius:4px;font-size:11px;margin-bottom:8px;">
+                                    EAD = α × (RC + AddOn<sub>agg</sub>)<br>
+                                    α = 1.4 (regulatory multiplier)<br>
+                                    RC = max(V − C, TH + MTA − NICA, 0)<br>
+                                    AddOn = Σ<sub>asset class</sub> AddOn<sub>j</sub><br>
+                                    AddOn<sub>trade</sub> = δ × d × MF × SF × AdjNotional<br>
+                                    MF = √(min(M,1)/1)    SF: IR=0.5%, FX=4%, EQ=32%
+                                </div>
+                                <p style="font-size:10px;color:#475569;margin:0;"><strong>Assumption:</strong> Static supervisory factors — do not change with market conditions. MF assumes uniform maturity distribution within bucket. <strong>Limitation:</strong> Overestimates EAD by ~15–35% vs IMM for typical IRS portfolios. Does not capture netting benefit across asset classes.</p>
+                            </div>
+
+                            <!-- CVA -->
+                            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;">
+                                <div style="font-size:12px;font-weight:700;color:#0052cc;border-bottom:2px solid #0052cc;padding-bottom:6px;margin-bottom:10px;">2. CVA — Credit Valuation Adjustment</div>
+                                <div style="font-family:'Courier New',monospace;background:#1e293b;color:#e2e8f0;padding:10px;border-radius:4px;font-size:11px;margin-bottom:8px;">
+                                    CVA = LGD × Σᵢ EE*(tᵢ) × PD(tᵢ₋₁, tᵢ) × DF(tᵢ)<br>
+                                    EE*(t) = E[max(V(t), 0)]    (risk-neutral)<br>
+                                    PD(t) = 1 − S(t)<br>
+                                    S(t) = exp(−λt)    λ = CDS/(1−R)<br>
+                                    LGD = 1 − Recovery<br>
+                                    DF(t) = exp(−r·t)    r = risk-free rate
+                                </div>
+                                <p style="font-size:10px;color:#475569;margin:0;"><strong>Assumption:</strong> Independence of exposure and default (no WWR). Constant hazard rate (flat CDS curve). LGD is deterministic. <strong>Limitation:</strong> WWR correlation inflates CVA by up to 34% (see WWR tab). Flat CDS curve assumption understates long-dated CVA when the credit curve is upward sloping.</p>
+                            </div>
+
+                            <!-- PFE / EE -->
+                            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;">
+                                <div style="font-size:12px;font-weight:700;color:#0052cc;border-bottom:2px solid #0052cc;padding-bottom:6px;margin-bottom:10px;">3. PFE &amp; EE — Exposure Metrics</div>
+                                <div style="font-family:'Courier New',monospace;background:#1e293b;color:#e2e8f0;padding:10px;border-radius:4px;font-size:11px;margin-bottom:8px;">
+                                    EE(t) = E[max(V(t), 0)]<br>
+                                    PFE(t, α) = quantile_α[max(V(t), 0)]<br>
+                                    EPE = (1/T) × Σᵢ EE(tᵢ) × Δtᵢ<br>
+                                    EEPE = max(EPE, EE(0))<br><br>
+                                    IR: drt = κ(θ−rt)dt + σ dWt  (Hull-White)<br>
+                                    FX: dSt = μ·St·dt + σ·St·dWt  (GBM)<br>
+                                    Corr: ρ via Cholesky decomp of Σ
+                                </div>
+                                <p style="font-size:10px;color:#475569;margin:0;"><strong>Assumption:</strong> Hull-White 1F for IR (mean reversion, single vol parameter). GBM for FX (log-normal). 10,000 paths, monthly time steps. <strong>Limitation:</strong> HW1F cannot capture volatility smile. GBM assumes log-normal FX — underestimates tail jumps. Static correlation matrix breaks under stress.</p>
+                            </div>
+
+                            <!-- VaR / CVaR -->
+                            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;">
+                                <div style="font-size:12px;font-weight:700;color:#0052cc;border-bottom:2px solid #0052cc;padding-bottom:6px;margin-bottom:10px;">4. VaR &amp; CVaR — Tail Risk Measures</div>
+                                <div style="font-family:'Courier New',monospace;background:#1e293b;color:#e2e8f0;padding:10px;border-radius:4px;font-size:11px;margin-bottom:8px;">
+                                    VaR(α,T) = −(μT − z_α·σ·√T·W)<br>
+                                    z_99% = 2.326    z_95% = 1.645<br>
+                                    VaR_10D = VaR_1D × √10  (i.i.d. returns)<br><br>
+                                    CVaR(α) = E[L | L &gt; VaR(α)]<br>
+                                    = μ + σ·φ(z_α)/(1−α)  [parametric]<br><br>
+                                    PortVaR = √(w'Σw) × z_α × √T × W
+                                </div>
+                                <p style="font-size:10px;color:#475569;margin:0;"><strong>Assumption:</strong> Parametric: normally distributed P&amp;L (violated for credit). Historical: past distribution is representative. <strong>Limitation:</strong> Normal VaR underestimates tail by ~22% for this portfolio (credit fat tails). √10 scaling assumes returns are i.i.d. — autocorrelation in spread moves violates this. CVaR is model-sensitive in the tail.</p>
+                            </div>
+
+                            <!-- BCVA / XVA -->
+                            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;">
+                                <div style="font-size:12px;font-weight:700;color:#0052cc;border-bottom:2px solid #0052cc;padding-bottom:6px;margin-bottom:10px;">5. XVA — Full Valuation Adjustment Stack</div>
+                                <div style="font-family:'Courier New',monospace;background:#1e293b;color:#e2e8f0;padding:10px;border-radius:4px;font-size:11px;margin-bottom:8px;">
+                                    CVA = LGD_B × Σ EE*(t)·PD_B(t)·DF(t)<br>
+                                    DVA = LGD_A × Σ NEE*(t)·PD_A(t)·DF(t)<br>
+                                    BCVA = CVA − DVA<br>
+                                    FVA = funding_spread × Σ EFNI(t)·DF(t)<br>
+                                    KVA = CoC × Σ EC(t)·DF(t)<br><br>
+                                    Adjusted FV = MtM − CVA + DVA − FVA − KVA<br>
+                                    WWR-Adj CVA = CVA × (1 + ρ·amplifier)
+                                </div>
+                                <p style="font-size:10px;color:#475569;margin:0;"><strong>Assumption:</strong> DVA computed symmetrically to CVA using own CDS spread. FVA uses OIS-funded assumption. KVA uses 12% cost of capital. <strong>Limitation:</strong> DVA monetisation requires own-name CDS buyback — not always feasible. FVA and DVA double-count in some frameworks. KVA is model-dependent on capital projection method.</p>
+                            </div>
+
+                            <!-- RAROC -->
+                            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;">
+                                <div style="font-size:12px;font-weight:700;color:#0052cc;border-bottom:2px solid #0052cc;padding-bottom:6px;margin-bottom:10px;">6. RAROC — Risk-Adjusted Return on Capital</div>
+                                <div style="font-family:'Courier New',monospace;background:#1e293b;color:#e2e8f0;padding:10px;border-radius:4px;font-size:11px;margin-bottom:8px;">
+                                    RAROC = Net Revenue / Economic Capital<br>
+                                    Net Revenue = Fees − CVA − FVA − KVA − Funding<br>
+                                    EC = UL = VaR(99.9%, 1Y) − EL<br>
+                                    EL = EAD × PD × LGD<br>
+                                    Hurdle Rate = 10–12% (typical bank target)<br>
+                                    Decision: RAROC &gt; hurdle → value-creating trade
+                                </div>
+                                <p style="font-size:10px;color:#475569;margin:0;"><strong>Assumption:</strong> Economic capital is the 99.9% 1Y VaR of the credit loss distribution. Net revenue includes all XVA charges. <strong>Limitation:</strong> EC is model-sensitive (copula, PD calibration). A RAROC above hurdle does not mean the trade is safe — only that it generates sufficient return per unit of capital.</p>
+                            </div>
+
+                            <!-- Recovery / PD -->
+                            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;">
+                                <div style="font-size:12px;font-weight:700;color:#0052cc;border-bottom:2px solid #0052cc;padding-bottom:6px;margin-bottom:10px;">7. PD &amp; Survival Probability</div>
+                                <div style="font-family:'Courier New',monospace;background:#1e293b;color:#e2e8f0;padding:10px;border-radius:4px;font-size:11px;margin-bottom:8px;">
+                                    Hazard rate: λ = CDS_spread / (1 − R)<br>
+                                    Survival: S(T) = exp(−λ·T)<br>
+                                    PD(T) = 1 − S(T)<br>
+                                    Marginal PD(t,t+Δt) = S(t) − S(t+Δt)<br><br>
+                                    Recovery by jurisdiction:<br>
+                                    EU BRRD (bail-in): R ≈ 30–38%<br>
+                                    US Chapter 11 (G-SIB): R ≈ 40–45%
+                                </div>
+                                <p style="font-size:10px;color:#475569;margin:0;"><strong>Assumption:</strong> Constant hazard rate (flat CDS term structure). Recovery rate is known and deterministic at default. <strong>Limitation:</strong> In practice, recovery is stochastic and negatively correlated with default frequency (lower recovery in systemic crises). A random recovery model (e.g., Beta distribution) is more accurate for tail scenarios.</p>
+                            </div>
+
+                            <!-- Stress Testing -->
+                            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;">
+                                <div style="font-size:12px;font-weight:700;color:#0052cc;border-bottom:2px solid #0052cc;padding-bottom:6px;margin-bottom:10px;">8. Stress Testing — Scenario Design</div>
+                                <div style="font-family:'Courier New',monospace;background:#1e293b;color:#e2e8f0;padding:10px;border-radius:4px;font-size:11px;margin-bottom:8px;">
+                                    Stressed CVA ≈ CVA_base × δ_CVA<br>
+                                    δ_CVA ≈ CS01 × ΔCDS + IR01 × ΔRate<br><br>
+                                    Scenario calibration reference events:<br>
+                                    Rate Shock +100bps → 2022 Bund sell-off<br>
+                                    FX Shock EUR−10% → 2022 EUR/USD parity<br>
+                                    Vol Spike +50% → Mar 2020 COVID (VIX=85)<br>
+                                    Systemic → 2008 Lehman (CDS +400bps)
+                                </div>
+                                <p style="font-size:10px;color:#475569;margin:0;"><strong>Assumption:</strong> Scenarios are applied as instantaneous parallel shocks. Cross-effects (e.g., rate shock + spread widening simultaneously) are captured in the Systemic scenario only. <strong>Limitation:</strong> Delta approximation underestimates non-linear effects (convexity). Scenarios are forward-designed, not reverse-engineered — reverse stress testing would identify the threshold breach point directly.</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="section" style="margin-top:14px;">
+                        <div class="section-title">Model Stack — Dependency Map</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Input</th>
+                                    <th>→ Model</th>
+                                    <th>→ Output</th>
+                                    <th>→ Used In</th>
+                                    <th>Validated</th>
+                                    <th>Frequency</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>CDS Spreads (Markit)</td><td>Intensity model (λ = CDS/LGD)</td><td>PD term structure, S(t)</td><td>CVA, BCVA, RAROC EC</td><td><span class="badge badge-green">CVA-001</span></td><td>Daily</td></tr>
+                                <tr><td>Yield curves (SOFR, EURIBOR)</td><td>Hull-White 1F calibration</td><td>IR scenario paths</td><td>PFE, EE, Stress</td><td><span class="badge badge-green">MCE-001</span></td><td>Daily</td></tr>
+                                <tr><td>FX spot + vol surface</td><td>GBM (log-normal)</td><td>FX scenario paths</td><td>PFE, EE, VaR</td><td><span class="badge badge-green">MCE-001</span></td><td>Daily</td></tr>
+                                <tr><td>Trade MtM (Front Office)</td><td>Netting set aggregation</td><td>RC, Gross/Net exposure</td><td>SA-CCR, CVA, Limits</td><td><span class="badge badge-green">MCE-001</span></td><td>EOD</td></tr>
+                                <tr><td>Collateral (ISDA-CSA)</td><td>VM/IM netting rules</td><td>Net MtM after collateral</td><td>SA-CCR EAD, PFE</td><td><span class="badge badge-green">MCE-001</span></td><td>Daily</td></tr>
+                                <tr><td>EE profile (Monte Carlo)</td><td>CVA integral: LGD·Σ EE·PD·DF</td><td>CVA, DVA, BCVA</td><td>XVA booking, P&amp;L</td><td><span class="badge badge-green">CVA-001</span></td><td>EOD</td></tr>
+                                <tr><td>Covariance matrix (1Y hist)</td><td>Portfolio VaR: √(w'Σw)</td><td>VaR, CVaR, Diversif. ratio</td><td>Market risk, FRTB</td><td><span class="badge badge-yellow">Pending</span></td><td>Weekly</td></tr>
+                                <tr><td>CVA P&amp;L daily</td><td>CS01×ΔCDS + IR01×ΔRate</td><td>P&amp;L Attribution</td><td>PAT test, Hedge eff.</td><td><span class="badge badge-green">CVA-001</span></td><td>Daily</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
