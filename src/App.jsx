@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
-import TradePage      from './pages/TradePage';
-import ExposurePage   from './pages/ExposurePage';
-import CreditRiskPage from './pages/CreditRiskPage';
-import CollateralPage from './pages/CollateralPage';
-import MarketRiskPage from './pages/MarketRiskPage';
-import PLPage         from './pages/PLPage';
-import PricingPage    from './pages/PricingPage';
-import CVAPage        from './pages/CVAPage';
+import TradePage        from './pages/TradePage';
+import ExposurePage     from './pages/ExposurePage';
+import PortfolioPage    from './pages/PortfolioPage';
+import CreditRiskPage   from './pages/CreditRiskPage';
+import CollateralPage   from './pages/CollateralPage';
+import MarketRiskPage   from './pages/MarketRiskPage';
+import PLPage           from './pages/PLPage';
+import PricingPage      from './pages/PricingPage';
+import CVAPage          from './pages/CVAPage';
 
 const PAGES = [
   { id:'trade',      label:'Trade Decision',        group:'Decision Support'  },
-  { id:'exposure',   label:'Exposure Analytics',     group:'Risk Analytics'    },
-  { id:'credit',     label:'Credit Risk',            group:'Risk Analytics'    },
-  { id:'collateral', label:'Collateral & Haircut',   group:'Risk Analytics'    },
-  { id:'market',     label:'Market Risk',            group:'Risk Analytics'    },
-  { id:'pl',         label:'P&L Attribution',        group:'Risk Analytics'    },
-  { id:'pricing',    label:'Derivative Pricing',     group:'Pricing'           },
-  { id:'cva',        label:'CVA Pricing',            group:'Pricing'           },
+  { id:'exposure',   label:'Exposure Analytics',    group:'Risk Analytics'    },
+  { id:'portfolio',  label:'Portfolio Analytics',   group:'Risk Analytics'    },
+  { id:'credit',     label:'Credit Risk',           group:'Risk Analytics'    },
+  { id:'collateral', label:'Collateral & Haircut',  group:'Risk Analytics'    },
+  { id:'market',     label:'Market Risk',           group:'Risk Analytics'    },
+  { id:'pl',         label:'P&L Attribution',       group:'Risk Analytics'    },
+  { id:'pricing',    label:'Derivative Pricing',    group:'Pricing'           },
+  { id:'cva',        label:'CVA Pricing',           group:'Pricing'           },
 ];
 
 const NOW = new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
@@ -32,6 +34,7 @@ export default function App() {
     switch(page){
       case 'trade':      return <TradePage      {...props} />;
       case 'exposure':   return <ExposurePage   {...props} />;
+      case 'portfolio':  return <PortfolioPage/>;
       case 'credit':     return <CreditRiskPage {...props} />;
       case 'collateral': return <CollateralPage {...props} />;
       case 'market':     return <MarketRiskPage {...props} />;

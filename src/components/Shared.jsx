@@ -126,3 +126,126 @@ export function CpSelector({ value, onChange, counterparties }) {
     </div>
   );
 }
+
+// ─── Wide institutional line chart (900×280 viewBox) ─────────────────────────
+export function WideLineChart({ series=[], xLabels=[], height=400, yLabel='$M', yPrefix='$' }) {
+  const W=900, H=280, PL=58, PR=24, PT=32, PB=44;
+  const dW=W-PL-PR, dH=H-PT-PB;
+  const allV = series.flatMap(s=>s.data).filter(v=>v!=null);
+  const maxV = allV.length ? Math.max(...allV)*1.18 : 1;
+  const n = xLabels.length;
+
+  const toX = i => PL + (n>1 ? (i/(n-1))*dW : dW/2);
+  const toY = v => PT + dH - (v/maxV)*dH;
+  const yTicks = [0, maxV*0.25, maxV*0.5, maxV*0.75, maxV];
+
+  return (
+    <div style={{width:'100%',maxWidth:1200,margin:'0 auto'}}>
+      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet"
+           style={{width:'100%',height:`${height}px`,display:'block'}}>
+        <rect x={PL} y={PT} width={dW} height={dH} fill="#fafafa" rx="1"/>
+        {yTicks.map((v,i)=>(
+          <g key={`y${i}`}>
+            <line x1={PL} y1={toY(v)} x2={W-PR} y2={toY(v)}
+              stroke={i===0?'#d1d5db':'#e9ecef'}
+              strokeWidth={i===0?'0.9':'0.5'}
+              strokeDasharray={i>0?'4,4':''}/>
+            <text x={PL-6} y={toY(v)+3} textAnchor="end" fontSize="9.5" fill="#6b7280">
+              {yPrefix}{v.toFixed(0)}{yLabel==='%'?'%':'M'}
+            </text>
+          </g>
+        ))}
+        {xLabels.map((l,i)=>(
+          <g key={`x${i}`}>
+            <line x1={toX(i)} y1={PT} x2={toX(i)} y2={PT+dH} stroke="#f0f0f0" strokeWidth="0.6"/>
+            <text x={toX(i)} y={PT+dH+18} textAnchor="middle"
+              fontSize="10.5" fill="#374151" fontWeight="600">{l}</text>
+          </g>
+        ))}
+        <text transform={`translate(12,${PT+dH/2}) rotate(-90)`}
+          textAnchor="middle" fontSize="9" fill="#9ca3af">{yLabel}</text>
+        {series.map(s=>{
+          if(!s.data||!s.data.length) return null;
+          const pts = s.data.map((v,i)=>`${toX(i)},${toY(v)}`).join(' ');
+          return (
+            <g key={s.name}>
+              {s.fill && (
+                <polygon
+                  points={`${toX(0)},${toY(0)} ${pts} ${toX(s.data.length-1)},${toY(0)}`}
+                  fill={s.color} opacity="0.10"/>
+              )}
+              <polyline points={pts} fill="none" stroke={s.color}
+                strokeWidth={s.width||2.5} strokeLinejoin="round" strokeLinecap="round"/>
+              {s.data.map((v,i)=>(
+                <circle key={i} cx={toX(i)} cy={toY(v)} r="4.5"
+                  fill={s.color} stroke="#fff" strokeWidth="1.8"/>
+              ))}
+            </g>
+          );
+        })}
+        <rect x={PL} y={PT} width={dW} height={dH} fill="none" stroke="#d1d5db" strokeWidth="0.8"/>
+        {series.map((s,i)=>(
+          <g key={`lg${i}`} transform={`translate(${PL+i*190},${PT-17})`}>
+            <line x1={0} y1={0} x2={26} y2={0} stroke={s.color} strokeWidth="2.5"/>
+            <circle cx={13} cy={0} r="4.5" fill={s.color} stroke="#fff" strokeWidth="1.5"/>
+            <text x={34} y={4} fontSize="10.5" fill="#111827" fontWeight="600">{s.name}</text>
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+// ─── Wide concentration bar chart ────────────────────────────────────────────
+export function WideBarChart({ bars=[], height=360, yLabel='Effective PFE ($M)' }) {
+  const W=900, H=260, PL=58, PR=24, PT=24, PB=52;
+  const dW=W-PL-PR, dH=H-PT-PB;
+  const maxV = bars.length ? Math.max(...bars.map(b=>b.value))*1.22 : 1;
+  const n = bars.length||1;
+  const gap = dW/n;
+  const bw  = gap * 0.58;
+  const yTicks = [0, maxV*0.25, maxV*0.5, maxV*0.75, maxV];
+
+  const toX = i => PL + gap*i + gap/2;
+  const toY = v => PT + dH - (v/maxV)*dH;
+  const bH  = v => Math.max((v/maxV)*dH, 0);
+
+  return (
+    <div style={{width:'100%',maxWidth:1200,margin:'0 auto'}}>
+      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet"
+           style={{width:'100%',height:`${height}px`,display:'block'}}>
+        <rect x={PL} y={PT} width={dW} height={dH} fill="#fafafa" rx="1"/>
+        {yTicks.map((v,i)=>(
+          <g key={`y${i}`}>
+            <line x1={PL} y1={toY(v)} x2={W-PR} y2={toY(v)}
+              stroke={i===0?'#d1d5db':'#e9ecef'}
+              strokeWidth={i===0?'0.9':'0.5'}
+              strokeDasharray={i>0?'3,3':''}/>
+            <text x={PL-6} y={toY(v)+3} textAnchor="end" fontSize="9.5" fill="#6b7280">
+              ${v.toFixed(0)}M
+            </text>
+          </g>
+        ))}
+        {bars.map((b,i)=>(
+          <g key={`b${i}`}>
+            <rect x={toX(i)-bw/2} y={toY(b.value)} width={bw} height={bH(b.value)}
+              fill={b.fill||'#2563eb'} opacity="0.82" rx="2"/>
+            <text x={toX(i)} y={toY(b.value)-6} textAnchor="middle"
+              fontSize="9.5" fill="#111827" fontWeight="700">
+              ${b.value.toFixed(1)}M
+            </text>
+            <text x={toX(i)} y={PT+dH+16} textAnchor="middle"
+              fontSize="10.5" fill="#374151" fontWeight="600">{b.label}</text>
+            {b.pct!=null && (
+              <text x={toX(i)} y={PT+dH+30} textAnchor="middle"
+                fontSize="8.5" fill="#9ca3af">{b.pct.toFixed(1)}%</text>
+            )}
+          </g>
+        ))}
+        <rect x={PL} y={PT} width={dW} height={dH} fill="none" stroke="#d1d5db" strokeWidth="0.8"/>
+        <text transform={`translate(12,${PT+dH/2}) rotate(-90)`}
+          textAnchor="middle" fontSize="9" fill="#9ca3af">{yLabel}</text>
+      </svg>
+    </div>
+  );
+}
