@@ -1,0 +1,3087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Portfolio Monitoring System | Enterprise CCR Analytics</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: #f0f4f8;
+            color: #1e293b;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .container { display: flex; height: 100vh; }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 280px;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.06);
+        }
+
+        .sidebar-header {
+            padding: 20px 20px 18px;
+            background: linear-gradient(135deg, #003087 0%, #0052cc 100%);
+            border-bottom: 2px solid #002370;
+        }
+
+        .citi-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .citi-logo svg { display: block; }
+
+        .logo {
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .tagline {
+            font-size: 11px;
+            opacity: 0.8;
+            margin-top: 2px;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .nav-section {
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .nav-section-title {
+            padding: 8px 16px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-btn {
+            width: 100%;
+            padding: 10px 16px;
+            background: none;
+            border: none;
+            color: #475569;
+            text-align: left;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 82, 204, 0.06);
+            color: #0052cc;
+        }
+
+        .nav-btn.active {
+            background: rgba(0, 82, 204, 0.1);
+            color: #0052cc;
+            border-left-color: #0052cc;
+            font-weight: 600;
+        }
+
+        /* HEADER */
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .header-left {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .header-left strong { color: #1e293b; }
+
+        .header-right {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            background: rgba(22, 163, 74, 0.1);
+            color: #16a34a;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 10px;
+            border: 1px solid #16a34a;
+        }
+
+        .time {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #0052cc;
+            font-weight: 600;
+        }
+
+        /* MAIN */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: #f0f4f8;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        /* SECTIONS */
+        .section {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #0052cc;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: linear-gradient(180deg, #0052cc 0%, #003087 100%);
+            border-radius: 2px;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+        .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+        .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+        .grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+
+        .metric-card {
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #0052cc 0%, transparent 100%);
+        }
+
+        .metric-label {
+            font-size: 10px;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0052cc;
+            font-family: 'Courier New', monospace;
+        }
+
+        .metric-delta {
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: 6px;
+        }
+
+        .positive { color: #16a34a; }
+        .negative { color: #dc2626; }
+        .warning { color: #d97706; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 14px;
+            font-size: 11px;
+        }
+
+        th {
+            background: rgba(0,82,204,0.06);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 10px;
+            color: #0052cc;
+            border-bottom: 2px solid #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+        }
+
+        tr:hover {
+            background: rgba(0,82,204,0.03);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-green { background: rgba(22,163,74,0.1); color: #16a34a; border: 1px solid #16a34a; }
+        .badge-red { background: rgba(220,38,38,0.1); color: #dc2626; border: 1px solid #dc2626; }
+        .badge-yellow { background: rgba(217,119,6,0.1); color: #d97706; border: 1px solid #d97706; }
+        .badge-blue { background: rgba(0,82,204,0.1); color: #0052cc; border: 1px solid #0052cc; }
+
+        .chart-container {
+            width: 100%;
+            height: 240px;
+            margin-top: 14px;
+            position: relative;
+        }
+
+        .heatmap-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2px;
+            margin-top: 14px;
+        }
+
+        .heatmap-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .kpi-box {
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #0052cc 0%, transparent 100%);
+        }
+
+        .kpi-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0052cc;
+            font-family: 'Courier New', monospace;
+        }
+
+        .kpi-label {
+            font-size: 9px;
+            color: #64748b;
+            font-weight: 600;
+            margin-top: 6px;
+            text-transform: uppercase;
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* LOD1 ANALYSIS PANELS */
+        .analysis-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 16px;
+        }
+        .lod1-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-left: 4px solid #0052cc;
+            border-radius: 6px;
+            padding: 14px 16px;
+        }
+        .suggestion-box {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-left: 4px solid #d97706;
+            border-radius: 6px;
+            padding: 14px 16px;
+        }
+        .panel-title {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .lod1-title { color: #0052cc; }
+        .suggestion-title { color: #d97706; }
+        .panel-list { list-style: none; padding: 0; }
+        .panel-list li {
+            padding: 4px 0 4px 14px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            font-size: 11px;
+            color: #334155;
+            line-height: 1.55;
+            position: relative;
+        }
+        .panel-list li:last-child { border-bottom: none; }
+        .panel-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #0052cc;
+            font-size: 9px;
+            top: 5px;
+        }
+        .suggestion-box .panel-list li::before { color: #d97706; }
+        .alert-critical { color: #dc2626; font-weight: 600; }
+        .alert-warn { color: #d97706; font-weight: 600; }
+        .alert-ok { color: #16a34a; font-weight: 600; }
+
+        /* ACTION PLAN TABLE */
+        .action-plan-box {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-left: 4px solid #0f172a;
+            border-radius: 6px;
+            padding: 16px 18px;
+            margin-top: 14px;
+        }
+        .action-plan-title {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #0f172a;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .action-plan-title span.ap-badge {
+            background: #0f172a;
+            color: #fff;
+            font-size: 9px;
+            padding: 2px 7px;
+            border-radius: 3px;
+            letter-spacing: 0.5px;
+        }
+        .action-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10.5px;
+        }
+        .action-table thead tr {
+            background: #0f172a;
+            color: #fff;
+        }
+        .action-table thead th {
+            padding: 7px 10px;
+            text-align: left;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        .action-table tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .action-table tbody tr:hover { background: #f1f5f9; }
+        .action-table tbody td {
+            padding: 8px 10px;
+            color: #1e293b;
+            vertical-align: top;
+            line-height: 1.5;
+        }
+        .action-table .stream-tag {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1d4ed8;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+        .action-table .stream-tag.cvaxva { background: #ede9fe; color: #6d28d9; }
+        .action-table .stream-tag.tech { background: #dcfce7; color: #166534; }
+        .action-table .stream-tag.model { background: #fef3c7; color: #92400e; }
+        .action-table .stream-tag.collateral { background: #fee2e2; color: #991b1b; }
+        .action-table .stream-tag.risk { background: #e0f2fe; color: #0369a1; }
+        .ap-prio {
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+        .ap-prio.p-critical { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .ap-prio.p-high    { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+        .ap-prio.p-medium  { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+        .ap-section-row td {
+            background: #e2e8f0;
+            font-size: 9.5px;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            padding: 5px 10px;
+        }
+
+        /* EXPOSURE DECOMPOSITION TABLE */
+        .exp-decomp-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .exp-decomp-table thead tr:first-child th {
+            padding: 7px 12px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+        }
+        .exp-decomp-table thead tr:first-child th.grp-exp {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-bottom: 2px solid #3b82f6;
+            text-align: center;
+        }
+        .exp-decomp-table thead tr:first-child th.grp-jtd {
+            background: #fffbeb;
+            color: #b45309;
+            border-bottom: 2px solid #f59e0b;
+            text-align: center;
+        }
+        .exp-decomp-table thead tr:first-child th.grp-plain {
+            background: #f8fafc;
+            color: #475569;
+            border-bottom: 2px solid #e2e8f0;
+            vertical-align: bottom;
+            padding-bottom: 10px;
+        }
+        .exp-decomp-table thead tr:first-child th.grp-col {
+            background: #f0fdf4;
+            color: #15803d;
+            border-bottom: 2px solid #4ade80;
+            text-align: center;
+        }
+        .csa-cell { font-size: 10px; color: #334155; line-height: 1.7; }
+        .csa-tag {
+            display: inline-block;
+            font-size: 9px;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 1px 6px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+        .csa-tag.bilateral { background: #dbeafe; color: #1d4ed8; }
+        .csa-tag.oneway    { background: #fef3c7; color: #92400e; }
+        .csa-tag.warn      { background: #fee2e2; color: #991b1b; }
+        .csa-tag.law       { background: #f1f5f9; color: #64748b; }
+        .haircut-val { font-size: 11px; font-weight: 700; }
+        .exp-decomp-table thead tr:last-child th {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 9.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 6px 10px;
+            border-bottom: 2px solid #e2e8f0;
+            white-space: nowrap;
+        }
+        .exp-decomp-table tbody td {
+            padding: 9px 10px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #1e293b;
+            vertical-align: middle;
+        }
+        .exp-decomp-table tbody tr:last-child td { border-bottom: none; }
+        .exp-decomp-table tbody tr:hover td { background: #f8faff !important; }
+        .exp-decomp-table tfoot td {
+            background: #f1f5f9;
+            color: #334155;
+            font-weight: 700;
+            font-size: 10.5px;
+            padding: 8px 10px;
+            border-top: 2px solid #cbd5e1;
+        }
+        .util-bar-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .util-bar-track {
+            width: 52px;
+            height: 5px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .util-bar-fill { height: 100%; border-radius: 3px; }
+
+        /* FORMULA REFERENCE PANEL */
+        .formula-panel {
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+        .formula-block-title {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .formula-block-title.t-purple { color: #a78bfa; }
+        .formula-block-title.t-amber  { color: #fbbf24; }
+        .formula-block-title.t-cyan   { color: #22d3ee; }
+        .formula-line {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            line-height: 1.9;
+            color: #e2e8f0;
+            white-space: pre;
+        }
+        .f-key    { color: #93c5fd; font-weight: 700; }   /* blue  — result var   */
+        .f-op     { color: #f9a8d4; }                      /* pink  — operators    */
+        .f-num    { color: #86efac; }                      /* green — numbers      */
+        .f-label  { color: #fde68a; }                      /* amber — component    */
+        .f-dim    { color: #64748b; }                      /* gray  — comments     */
+        .f-hl     { color: #f87171; font-weight: 700; }    /* red   — critical val */
+        .formula-example {
+            margin-top: 10px;
+            background: rgba(255,255,255,0.04);
+            border-left: 2px solid rgba(255,255,255,0.15);
+            padding: 6px 10px;
+            border-radius: 0 4px 4px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            color: #94a3b8;
+            line-height: 1.8;
+        }
+        .formula-example .ex-hl { color: #a78bfa; font-weight: 700; }
+
+        /* CVA DRIVERS TABLE */
+        .cva-drivers-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+        .cva-drivers-table thead tr.grp-row th {
+            background: #ede9fe;
+            color: #5b21b6;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            padding: 6px 10px;
+            text-align: center;
+            border-bottom: 2px solid #c4b5fd;
+        }
+        .cva-drivers-table thead tr.grp-row th.plain-grp {
+            background: #f8fafc;
+            color: #64748b;
+            border-bottom: 2px solid #e2e8f0;
+            text-align: left;
+        }
+        .cva-drivers-table thead tr.sub-row th {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 9.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            padding: 5px 10px;
+            border-bottom: 2px solid #e2e8f0;
+            white-space: nowrap;
+        }
+        .cva-drivers-table tbody td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #1e293b;
+            vertical-align: middle;
+            font-size: 11px;
+        }
+        .cva-drivers-table tbody tr:last-child td { border-bottom: none; }
+        .cva-drivers-table tbody tr:hover td { background: #faf5ff !important; }
+        .cva-drivers-table tfoot td {
+            background: #f1f5f9;
+            color: #334155;
+            font-weight: 700;
+            font-size: 10.5px;
+            padding: 7px 10px;
+            border-top: 2px solid #cbd5e1;
+        }
+        .cva-formula {
+            font-size: 9.5px;
+            color: #6d28d9;
+            font-family: 'Courier New', monospace;
+            background: #f5f3ff;
+            padding: 1px 5px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        /* PRODUCT BREAKDOWN TABLE */
+        .prod-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+        .prod-table thead th {
+            background: #f0fdf4;
+            color: #15803d;
+            font-size: 9.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 7px 10px;
+            border-bottom: 2px solid #86efac;
+            text-align: right;
+            white-space: nowrap;
+        }
+        .prod-table thead th:first-child,
+        .prod-table thead th:nth-child(2) { text-align: left; }
+        .prod-table tbody td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #1e293b;
+            text-align: right;
+            vertical-align: middle;
+        }
+        .prod-table tbody td:first-child,
+        .prod-table tbody td:nth-child(2) { text-align: left; }
+        .prod-table tbody tr:hover td { background: #f0fdf4 !important; }
+        .prod-table tfoot td {
+            background: #f1f5f9;
+            color: #334155;
+            font-weight: 700;
+            font-size: 10.5px;
+            padding: 7px 10px;
+            border-top: 2px solid #cbd5e1;
+            text-align: right;
+        }
+        .prod-table tfoot td:first-child,
+        .prod-table tfoot td:nth-child(2) { text-align: left; }
+        .prod-dot {
+            display: inline-block;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+        .prod-pct-bar {
+            display: inline-block;
+            height: 4px;
+            border-radius: 2px;
+            vertical-align: middle;
+            margin-left: 4px;
+            opacity: 0.6;
+        }
+
+        /* HEATMAP */
+        .heatmap-grid { display: grid; gap: 2px; margin-top: 10px; }
+        .hm-cell {
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 600; border-radius: 3px;
+            height: 40px; color: white;
+        }
+        .hm-label-row { display: grid; gap: 2px; }
+        .hm-label { font-size: 10px; font-weight: 600; color: #64748b;
+            display: flex; align-items: center; justify-content: center; height: 40px; }
+
+        /* CHART GRID */
+        .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+        .chart-grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; margin-top: 14px; }
+        .mini-chart { height: 180px; position: relative; }
+        .chart-sub-title {
+            font-size: 10px; font-weight: 600; color: #64748b;
+            text-align: center; margin-bottom: 6px; text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="citi-logo">
+                    <svg width="56" height="30" viewBox="0 0 56 30" xmlns="http://www.w3.org/2000/svg">
+                        <text x="0" y="24" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white" letter-spacing="-0.5">citi</text>
+                        <path d="M 33 7 Q 41 1 50 7" stroke="#e8002d" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="logo">Portfolio Analytics Pro</div>
+                <div class="tagline">Enterprise Risk Management</div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Executive Dashboard</div>
+                <button class="nav-btn active" onclick="switchTab('dashboard')">Risk Overview</button>
+                <button class="nav-btn" onclick="switchTab('kpis')">Key Metrics</button>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Portfolio Analytics</div>
+                <button class="nav-btn" onclick="switchTab('composition')">Composition View</button>
+                <button class="nav-btn" onclick="switchTab('correlations')">Correlations</button>
+                <button class="nav-btn" onclick="switchTab('pca')">Factor Analysis</button>
+                <button class="nav-btn" onclick="switchTab('optimal')">Optimal Allocation</button>
+                <button class="nav-btn" onclick="switchTab('raroc')">RAROC Analysis</button>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Risk Management</div>
+                <button class="nav-btn" onclick="switchTab('limits')">Limit Monitoring</button>
+                <button class="nav-btn" onclick="switchTab('stress')">Stress Testing</button>
+                <button class="nav-btn" onclick="switchTab('attribution')">P&L Attribution</button>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Advanced Analytics</div>
+                <button class="nav-btn" onclick="switchTab('cva')">CVA Analytics</button>
+                <button class="nav-btn" onclick="switchTab('pfe')">Exposure Modeling</button>
+                <button class="nav-btn" onclick="switchTab('wwr')">Wrong Way Risk</button>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Governance</div>
+                <button class="nav-btn" onclick="switchTab('models')">Model Validation</button>
+                <button class="nav-btn" onclick="switchTab('regulatory')">Regulatory</button>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main">
+            <div class="header">
+                <div class="header-left">
+                    <strong>PROFESSIONAL PORTFOLIO MONITORING SYSTEM | Enterprise CCR Analytics</strong>
+                    <span>Data as of:</span>
+                    <span id="dataDate">2024-04-22</span>
+                </div>
+                <div class="header-right">
+                    <span class="status-badge">● LIVE</span>
+                    <span class="time" id="timeDisplay">14:32:45</span>
+                </div>
+            </div>
+
+            <div class="content">
+                <!-- DASHBOARD TAB -->
+                <div id="tab-dashboard" class="tab-content active">
+                    <div class="section">
+                        <div class="section-title">Portfolio Health Snapshot</div>
+                        <div class="kpi-grid">
+                            <div class="kpi-box">
+                                <div class="kpi-value">$0.13B</div>
+                                <div class="kpi-label">Gross CVA</div>
+                            </div>
+                            <div class="kpi-box">
+                                <div class="kpi-value">$3.89B</div>
+                                <div class="kpi-label">PFE@95%</div>
+                            </div>
+                            <div class="kpi-box">
+                                <div class="kpi-value">$1.67B</div>
+                                <div class="kpi-label">Expected Exp</div>
+                            </div>
+                            <div class="kpi-box">
+                                <div class="kpi-value">$0.85B</div>
+                                <div class="kpi-label">RWA (CVA)</div>
+                            </div>
+                            <div class="kpi-box">
+                                <div class="kpi-value">64.8%</div>
+                                <div class="kpi-label">Limit Util</div>
+                            </div>
+                            <div class="kpi-box">
+                                <div class="kpi-value">2.34</div>
+                                <div class="kpi-label">Sharpe Ratio</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">Counterparty Exposure Decomposition — Limit, Recovery &amp; JTD</div>
+                        <table class="exp-decomp-table">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" class="grp-plain">Counterparty</th>
+                                    <th rowspan="2" class="grp-plain">Rating</th>
+                                    <th colspan="6" class="grp-exp">&#9472; Exposure Components &#9472;</th>
+                                    <th colspan="3" class="grp-jtd">&#9472; JTD Metrics &#9472;</th>
+                                    <th colspan="2" class="grp-col">&#9472; Collateral &amp; Legal &#9472;</th>
+                                    <th rowspan="2" class="grp-plain">CVA</th>
+                                    <th rowspan="2" class="grp-plain">Status</th>
+                                </tr>
+                                <tr>
+                                    <th>Notional ($M)</th>
+                                    <th>Limit ($M)</th>
+                                    <th>Utilization</th>
+                                    <th>Headroom ($M)</th>
+                                    <th>Recovery Rate</th>
+                                    <th>LGD — Net Loss</th>
+                                    <th>JTD %</th>
+                                    <th>JTD Limit</th>
+                                    <th>Headroom (bps)</th>
+                                    <th>Haircut</th>
+                                    <th>ISDA / CSA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background:#fff8f8;">
+                                    <td><strong>Deutsche Bank</strong></td>
+                                    <td><span class="badge badge-yellow">BBB+</span></td>
+                                    <td><strong>$0.49B</strong></td>
+                                    <td style="color:#64748b;">$0.60B</td>
+                                    <td>
+                                        <div class="util-bar-wrap">
+                                            <div class="util-bar-track"><div class="util-bar-fill" style="width:81.2%;background:#dc2626;"></div></div>
+                                            <strong class="negative">81.2%</strong>
+                                        </div>
+                                    </td>
+                                    <td class="negative">$0.11B</td>
+                                    <td style="color:#64748b;">35% <small style="color:#dc2626;display:block;font-size:9px;">BRRD bail-in · BBB+</small></td>
+                                    <td class="negative"><strong>$0.32B</strong></td>
+                                    <td class="negative"><strong>1.24%</strong></td>
+                                    <td style="color:#64748b;">1.50%</td>
+                                    <td class="negative"><strong>26 bps</strong></td>
+                                    <td><span class="haircut-val negative">8%</span></td>
+                                    <td class="csa-cell">
+                                        <strong>ISDA 2002</strong><br>
+                                        <span class="csa-tag bilateral">Bilateral CSA</span><br>
+                                        Threshold: $10M · MTA: $500K<br>
+                                        <span class="csa-tag law">NY Law</span>
+                                    </td>
+                                    <td>$34M</td>
+                                    <td><span class="badge badge-red">ESCALATE</span></td>
+                                </tr>
+                                <tr style="background:#fffef5;">
+                                    <td><strong>Credit Suisse</strong></td>
+                                    <td><span class="badge badge-blue">A</span></td>
+                                    <td><strong>$0.23B</strong></td>
+                                    <td style="color:#64748b;">$0.40B</td>
+                                    <td>
+                                        <div class="util-bar-wrap">
+                                            <div class="util-bar-track"><div class="util-bar-fill" style="width:58.7%;background:#f59e0b;"></div></div>
+                                            <span class="warning">58.7%</span>
+                                        </div>
+                                    </td>
+                                    <td>$0.17B</td>
+                                    <td style="color:#64748b;">30% <small style="color:#dc2626;display:block;font-size:9px;">AT1 wipeout precedent · stressed</small></td>
+                                    <td class="warning">$0.16B</td>
+                                    <td class="warning"><strong>0.95%</strong></td>
+                                    <td style="color:#64748b;">1.50%</td>
+                                    <td class="warning">55 bps</td>
+                                    <td><span class="haircut-val warning">10%</span></td>
+                                    <td class="csa-cell">
+                                        <strong>ISDA 2002</strong><br>
+                                        <span class="csa-tag oneway">One-Way CSA</span> <span class="csa-tag warn">⚠ Under Review</span><br>
+                                        Threshold: $15M · MTA: $1M<br>
+                                        <span class="csa-tag law">English Law</span>
+                                    </td>
+                                    <td>$22M <small style="color:#dc2626;">(+$7M WWR)</small></td>
+                                    <td><span class="badge badge-yellow">MONITOR</span></td>
+                                </tr>
+                                <tr style="background:#fffef5;">
+                                    <td><strong>Barclays</strong></td>
+                                    <td><span class="badge badge-blue">A-</span></td>
+                                    <td><strong>$0.31B</strong></td>
+                                    <td style="color:#64748b;">$0.45B</td>
+                                    <td>
+                                        <div class="util-bar-wrap">
+                                            <div class="util-bar-track"><div class="util-bar-fill" style="width:69.4%;background:#f59e0b;"></div></div>
+                                            <span class="warning">69.4%</span>
+                                        </div>
+                                    </td>
+                                    <td>$0.14B</td>
+                                    <td style="color:#64748b;">38% <small style="color:#94a3b8;display:block;font-size:9px;">BRRD · English Law · A-</small></td>
+                                    <td>$0.19B</td>
+                                    <td class="warning">0.87%</td>
+                                    <td style="color:#64748b;">1.50%</td>
+                                    <td>63 bps</td>
+                                    <td><span class="haircut-val warning">6%</span></td>
+                                    <td class="csa-cell">
+                                        <strong>ISDA 2002</strong><br>
+                                        <span class="csa-tag bilateral">Bilateral CSA</span><br>
+                                        Threshold: $5M · MTA: $250K<br>
+                                        <span class="csa-tag law">English Law</span>
+                                    </td>
+                                    <td>$28M</td>
+                                    <td><span class="badge badge-yellow">MONITOR</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>JP Morgan</strong></td>
+                                    <td><span class="badge badge-blue">A+</span></td>
+                                    <td><strong>$0.57B</strong></td>
+                                    <td style="color:#64748b;">$0.75B</td>
+                                    <td>
+                                        <div class="util-bar-wrap">
+                                            <div class="util-bar-track"><div class="util-bar-fill" style="width:75.7%;background:#16a34a;"></div></div>
+                                            <span class="positive">75.7%</span>
+                                        </div>
+                                    </td>
+                                    <td class="positive">$0.18B</td>
+                                    <td style="color:#64748b;">45% <small style="color:#16a34a;display:block;font-size:9px;">US Ch.11 · A+ · highest floor</small></td>
+                                    <td>$0.31B</td>
+                                    <td class="positive">0.32%</td>
+                                    <td style="color:#64748b;">1.50%</td>
+                                    <td class="positive">118 bps</td>
+                                    <td><span class="haircut-val positive">3%</span></td>
+                                    <td class="csa-cell">
+                                        <strong>ISDA 2002</strong><br>
+                                        <span class="csa-tag bilateral">Bilateral CSA</span><br>
+                                        Threshold: $0 · MTA: $100K<br>
+                                        <span class="csa-tag law">NY Law</span>
+                                    </td>
+                                    <td>$19M</td>
+                                    <td><span class="badge badge-green">OK</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>BNP Paribas</strong></td>
+                                    <td><span class="badge badge-blue">Aa3</span></td>
+                                    <td><strong>$0.25B</strong></td>
+                                    <td style="color:#64748b;">$0.40B</td>
+                                    <td>
+                                        <div class="util-bar-wrap">
+                                            <div class="util-bar-track"><div class="util-bar-fill" style="width:61.3%;background:#16a34a;"></div></div>
+                                            <span class="positive">61.3%</span>
+                                        </div>
+                                    </td>
+                                    <td class="positive">$0.15B</td>
+                                    <td style="color:#64748b;">40% <small style="color:#94a3b8;display:block;font-size:9px;">BRRD · French Law · Aa3</small></td>
+                                    <td>$0.15B</td>
+                                    <td class="positive">0.45%</td>
+                                    <td style="color:#64748b;">1.50%</td>
+                                    <td class="positive">105 bps</td>
+                                    <td><span class="haircut-val positive">4%</span></td>
+                                    <td class="csa-cell">
+                                        <strong>ISDA 2002</strong><br>
+                                        <span class="csa-tag bilateral">Bilateral CSA</span><br>
+                                        Threshold: $8M · MTA: $500K<br>
+                                        <span class="csa-tag law">French Law</span>
+                                    </td>
+                                    <td>$24M</td>
+                                    <td><span class="badge badge-green">OK</span></td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2" style="color:#0f172a;">Portfolio Total</td>
+                                    <td>$1.85B</td>
+                                    <td style="color:#64748b;">$2.60B</td>
+                                    <td>
+                                        <div class="util-bar-wrap">
+                                            <div class="util-bar-track"><div class="util-bar-fill" style="width:71.1%;background:#475569;"></div></div>
+                                            <span>71.1%</span>
+                                        </div>
+                                    </td>
+                                    <td>$0.75B</td>
+                                    <td style="color:#64748b;">30%–45%</td>
+                                    <td><strong>$1.13B</strong></td>
+                                    <td colspan="3" style="font-size:10px;color:#94a3b8;font-weight:400;">Dual-trigger: JTD &gt;1.50% AND Util &gt;80%</td>
+                                    <td style="color:#64748b;font-size:10px;">3%–10% range</td>
+                                    <td class="csa-cell" style="color:#94a3b8;font-size:10px;">All counterparties under ISDA 2002.<br>1 one-way CSA (CS) — remediation required.</td>
+                                    <td>$0.13B</td>
+                                    <td style="color:#64748b;">—</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <p style="font-size:10px;color:#64748b;margin-top:8px;">
+                            <strong>Reading guide:</strong> Notional = swap exposure at risk of default. Limit = approved single-name credit line. LGD (Net Loss) = Notional × (1 − Recovery Rate) — the amount unrecoverable in default. JTD Headroom = basis points remaining before JTD limit is breached. ESCALATE = dual-trigger active (Util &gt;80% AND JTD &gt;1.20%).
+                        </p>
+                    </div>
+
+
+                    <!-- CVA DRIVERS TABLE -->
+                    <div class="section">
+                        <div class="section-title">CVA Drivers — EE, EPE, PD &amp; EAD per Counterparty</div>
+                        <p style="font-size:10.5px;color:#64748b;margin-bottom:10px;">
+                            <strong>CVA formula:</strong>
+                            <span class="cva-formula">CVA = Σ LGD × EE*(t) × PD(t-1,t) × DF(t)</span>
+                            &nbsp;—&nbsp; EE (Expected Exposure) drives size; PD (Probability of Default) drives likelihood; LGD = 1 − Recovery. EAD (SA-CCR) is the regulatory capital measure.
+                        </p>
+                        <table class="cva-drivers-table">
+                            <thead>
+                                <tr class="grp-row">
+                                    <th rowspan="2" class="plain-grp">Counterparty</th>
+                                    <th rowspan="2" class="plain-grp">Rating</th>
+                                    <th colspan="3" style="background:#ede9fe;color:#5b21b6;border-bottom:2px solid #c4b5fd;text-align:center;">&#9472; Exposure Metrics &#9472;</th>
+                                    <th colspan="3" style="background:#fdf4ff;color:#a21caf;border-bottom:2px solid #e879f9;text-align:center;">&#9472; Default Probability &#9472;</th>
+                                    <th colspan="2" style="background:#fff7ed;color:#c2410c;border-bottom:2px solid #fb923c;text-align:center;">&#9472; SA-CCR (Regulatory) &#9472;</th>
+                                    <th rowspan="2" class="plain-grp" style="text-align:center;">CVA Booked</th>
+                                </tr>
+                                <tr class="sub-row">
+                                    <th>EE — 1Y ($M)</th>
+                                    <th>EPE — Lifetime ($M)</th>
+                                    <th>EE / Notional</th>
+                                    <th>PD — 1Y (bps)</th>
+                                    <th>PD — 5Y Cum (%)</th>
+                                    <th>CDS Spread (bps)</th>
+                                    <th>EAD ($M)</th>
+                                    <th>EAD / Notional</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background:#fff8f8;">
+                                    <td><strong>Deutsche Bank</strong></td>
+                                    <td><span class="badge badge-yellow">BBB+</span></td>
+                                    <td class="negative"><strong>$0.29B</strong></td>
+                                    <td>$0.31B</td>
+                                    <td class="negative">59.0%</td>
+                                    <td class="negative"><strong>89 bps</strong></td>
+                                    <td class="negative">4.8%</td>
+                                    <td class="negative">142 bps</td>
+                                    <td><strong>$0.52B</strong></td>
+                                    <td class="negative">107.7%</td>
+                                    <td><strong>$34M</strong></td>
+                                </tr>
+                                <tr style="background:#fffef5;">
+                                    <td><strong>Credit Suisse</strong></td>
+                                    <td><span class="badge badge-blue">A</span></td>
+                                    <td class="warning">$0.14B</td>
+                                    <td>$0.16B</td>
+                                    <td>61.1%</td>
+                                    <td class="warning"><strong>72 bps</strong></td>
+                                    <td class="warning">3.9%</td>
+                                    <td class="warning">118 bps</td>
+                                    <td>$0.27B</td>
+                                    <td class="warning">113.9%</td>
+                                    <td>$22M <small style="color:#dc2626;">(WWR: $29M)</small></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Barclays</strong></td>
+                                    <td><span class="badge badge-blue">A-</span></td>
+                                    <td>$0.18B</td>
+                                    <td>$0.20B</td>
+                                    <td>58.8%</td>
+                                    <td class="warning">54 bps</td>
+                                    <td>2.9%</td>
+                                    <td>89 bps</td>
+                                    <td>$0.34B</td>
+                                    <td>109.2%</td>
+                                    <td>$28M</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>JP Morgan</strong></td>
+                                    <td><span class="badge badge-blue">A+</span></td>
+                                    <td class="positive">$0.33B</td>
+                                    <td>$0.36B</td>
+                                    <td class="positive">59.0%</td>
+                                    <td class="positive"><strong>18 bps</strong></td>
+                                    <td class="positive">1.0%</td>
+                                    <td class="positive">31 bps</td>
+                                    <td>$0.61B</td>
+                                    <td>107.9%</td>
+                                    <td>$19M</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>BNP Paribas</strong></td>
+                                    <td><span class="badge badge-blue">Aa3</span></td>
+                                    <td class="positive">$0.15B</td>
+                                    <td>$0.16B</td>
+                                    <td>60.1%</td>
+                                    <td class="positive"><strong>28 bps</strong></td>
+                                    <td class="positive">1.5%</td>
+                                    <td class="positive">44 bps</td>
+                                    <td>$0.28B</td>
+                                    <td>113.8%</td>
+                                    <td>$24M</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2">Portfolio Total</td>
+                                    <td>$1.10B</td>
+                                    <td>$1.19B</td>
+                                    <td>59.4% avg</td>
+                                    <td colspan="3" style="font-size:10px;color:#94a3b8;font-weight:400;">Weighted avg PD (1Y): 51 bps — dominated by DB &amp; CS weight</td>
+                                    <td>$2.02B</td>
+                                    <td>109.6% avg</td>
+                                    <td><strong>$0.13B</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <p style="font-size:10px;color:#64748b;margin-top:8px;">
+                            <strong>EE (1Y):</strong> Average positive exposure in the next 12 months. &nbsp;|&nbsp;
+                            <strong>EPE (Lifetime):</strong> Time-weighted average of EE used in CVA computation. &nbsp;|&nbsp;
+                            <strong>PD (bps):</strong> CDS-implied 1-year probability of default. &nbsp;|&nbsp;
+                            <strong>EAD (SA-CCR):</strong> Regulatory exposure = RC + α × PFE_addon. EAD &gt;100% of notional is normal for derivatives with add-ons.
+                        </p>
+
+                        <!-- RECOVERY RATE REFERENCE — WHITE TABLE -->
+                        <div style="margin-top:16px;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
+                            <div style="background:#f8fafc;border-bottom:2px solid #e2e8f0;padding:10px 14px;display:flex;align-items:center;gap:10px;">
+                                <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#0f172a;">Recovery Rate — Not Always 40%</span>
+                                <span style="font-size:9px;color:#64748b;">What drives it and how we set each counterparty's assumption</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;background:#fff;">
+
+                                <!-- LEFT: by seniority + sector -->
+                                <div style="padding:14px 16px;border-right:1px solid #e2e8f0;">
+                                    <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#0052cc;margin-bottom:10px;">By Seniority &amp; Sector</div>
+                                    <table style="width:100%;border-collapse:collapse;font-size:10.5px;">
+                                        <thead>
+                                            <tr style="background:#f1f5f9;">
+                                                <th style="text-align:left;color:#475569;font-size:9.5px;font-weight:600;padding:6px 8px;border-bottom:1px solid #e2e8f0;">Claim Type</th>
+                                                <th style="text-align:center;color:#475569;font-size:9.5px;font-weight:600;padding:6px 8px;border-bottom:1px solid #e2e8f0;">Banks</th>
+                                                <th style="text-align:center;color:#475569;font-size:9.5px;font-weight:600;padding:6px 8px;border-bottom:1px solid #e2e8f0;">Corp (IG)</th>
+                                                <th style="text-align:center;color:#475569;font-size:9.5px;font-weight:600;padding:6px 8px;border-bottom:1px solid #e2e8f0;">Airlines</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="color:#334155;padding:6px 8px;border-bottom:1px solid #f1f5f9;">Senior Secured</td>
+                                                <td style="text-align:center;color:#16a34a;font-weight:600;padding:6px 8px;border-bottom:1px solid #f1f5f9;">60–75%</td>
+                                                <td style="text-align:center;color:#16a34a;font-weight:600;padding:6px 8px;border-bottom:1px solid #f1f5f9;">60–80%</td>
+                                                <td style="text-align:center;color:#16a34a;font-weight:600;padding:6px 8px;border-bottom:1px solid #f1f5f9;">40–60%</td>
+                                            </tr>
+                                            <tr style="background:#fffbeb;">
+                                                <td style="color:#334155;padding:6px 8px;border-bottom:1px solid #f1f5f9;border-left:3px solid #f59e0b;">
+                                                    Senior Unsecured
+                                                    <span style="display:block;font-size:9px;color:#d97706;font-weight:600;">← our trades</span>
+                                                </td>
+                                                <td style="text-align:center;color:#d97706;font-weight:700;padding:6px 8px;border-bottom:1px solid #f1f5f9;">30–50%</td>
+                                                <td style="text-align:center;color:#d97706;font-weight:600;padding:6px 8px;border-bottom:1px solid #f1f5f9;">35–55%</td>
+                                                <td style="text-align:center;color:#d97706;font-weight:600;padding:6px 8px;border-bottom:1px solid #f1f5f9;">15–35%</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color:#334155;padding:6px 8px;border-bottom:1px solid #f1f5f9;">Subordinated / Tier 2</td>
+                                                <td style="text-align:center;color:#dc2626;padding:6px 8px;border-bottom:1px solid #f1f5f9;">15–30%</td>
+                                                <td style="text-align:center;color:#dc2626;padding:6px 8px;border-bottom:1px solid #f1f5f9;">15–30%</td>
+                                                <td style="text-align:center;color:#dc2626;padding:6px 8px;border-bottom:1px solid #f1f5f9;">5–20%</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color:#334155;padding:6px 8px;border-bottom:1px solid #f1f5f9;">AT1 / CoCo</td>
+                                                <td style="text-align:center;color:#dc2626;padding:6px 8px;border-bottom:1px solid #f1f5f9;">0–15%</td>
+                                                <td style="text-align:center;color:#94a3b8;padding:6px 8px;border-bottom:1px solid #f1f5f9;">n/a</td>
+                                                <td style="text-align:center;color:#94a3b8;padding:6px 8px;border-bottom:1px solid #f1f5f9;">n/a</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color:#334155;padding:6px 8px;">Equity</td>
+                                                <td style="text-align:center;color:#dc2626;padding:6px 8px;">~0%</td>
+                                                <td style="text-align:center;color:#dc2626;padding:6px 8px;">~0%</td>
+                                                <td style="text-align:center;color:#dc2626;padding:6px 8px;">~0%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- RIGHT: our 5 counterparties -->
+                                <div style="padding:14px 16px;">
+                                    <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#0052cc;margin-bottom:10px;">Our Portfolio — Why Each Rate Was Chosen</div>
+                                    <table style="width:100%;border-collapse:collapse;font-size:10.5px;">
+                                        <thead>
+                                            <tr style="background:#f1f5f9;">
+                                                <th style="text-align:left;color:#475569;font-size:9.5px;font-weight:600;padding:6px 8px;border-bottom:1px solid #e2e8f0;">Counterparty</th>
+                                                <th style="text-align:center;color:#475569;font-size:9.5px;font-weight:600;padding:6px 8px;border-bottom:1px solid #e2e8f0;">Recovery</th>
+                                                <th style="text-align:center;color:#475569;font-size:9.5px;font-weight:600;padding:6px 8px;border-bottom:1px solid #e2e8f0;">LGD</th>
+                                                <th style="text-align:center;color:#475569;font-size:9.5px;font-weight:600;padding:6px 8px;border-bottom:1px solid #e2e8f0;">Survival (1Y)<br><span style="font-weight:400;font-size:8.5px;">e^(−λ×1)</span></th>
+                                                <th style="text-align:left;color:#475569;font-size:9.5px;font-weight:600;padding:6px 8px;border-bottom:1px solid #e2e8f0;">Rationale</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr style="background:#fff5f5;">
+                                                <td style="color:#1e293b;font-weight:600;padding:6px 8px;border-bottom:1px solid #f1f5f9;">Deutsche Bank</td>
+                                                <td style="text-align:center;font-weight:700;padding:6px 8px;border-bottom:1px solid #f1f5f9;"><span class="negative">35%</span></td>
+                                                <td style="text-align:center;font-weight:700;padding:6px 8px;border-bottom:1px solid #f1f5f9;"><span class="negative">65%</span></td>
+                                                <td style="text-align:center;padding:6px 8px;border-bottom:1px solid #f1f5f9;"><span class="negative">98.6%</span></td>
+                                                <td style="color:#475569;font-size:10px;padding:6px 8px;border-bottom:1px solid #f1f5f9;">EU BRRD bail-in · BBB+ stress · below ISDA convention</td>
+                                            </tr>
+                                            <tr style="background:#fff5f5;">
+                                                <td style="color:#1e293b;font-weight:600;padding:6px 8px;border-bottom:1px solid #f1f5f9;">Credit Suisse</td>
+                                                <td style="text-align:center;font-weight:700;padding:6px 8px;border-bottom:1px solid #f1f5f9;"><span class="negative">30%</span></td>
+                                                <td style="text-align:center;font-weight:700;padding:6px 8px;border-bottom:1px solid #f1f5f9;"><span class="negative">70%</span></td>
+                                                <td style="text-align:center;padding:6px 8px;border-bottom:1px solid #f1f5f9;"><span class="negative">98.9%</span></td>
+                                                <td style="color:#475569;font-size:10px;padding:6px 8px;border-bottom:1px solid #f1f5f9;">AT1 wipeout precedent (Mar 2023) · one-way CSA · distressed</td>
+                                            </tr>
+                                            <tr style="background:#fffef5;">
+                                                <td style="color:#1e293b;font-weight:600;padding:6px 8px;border-bottom:1px solid #f1f5f9;">Barclays</td>
+                                                <td style="text-align:center;font-weight:700;padding:6px 8px;border-bottom:1px solid #f1f5f9;"><span class="warning">38%</span></td>
+                                                <td style="text-align:center;font-weight:700;padding:6px 8px;border-bottom:1px solid #f1f5f9;"><span class="warning">62%</span></td>
+                                                <td style="text-align:center;padding:6px 8px;border-bottom:1px solid #f1f5f9;"><span class="warning">99.1%</span></td>
+                                                <td style="color:#475569;font-size:10px;padding:6px 8px;border-bottom:1px solid #f1f5f9;">EU BRRD · English Law · A- rating · bilateral CSA</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color:#1e293b;font-weight:600;padding:6px 8px;border-bottom:1px solid #f1f5f9;">JP Morgan</td>
+                                                <td style="text-align:center;font-weight:700;padding:6px 8px;border-bottom:1px solid #f1f5f9;"><span class="positive">45%</span></td>
+                                                <td style="text-align:center;font-weight:700;padding:6px 8px;border-bottom:1px solid #f1f5f9;"><span class="positive">55%</span></td>
+                                                <td style="text-align:center;padding:6px 8px;border-bottom:1px solid #f1f5f9;"><span class="positive">99.7%</span></td>
+                                                <td style="color:#475569;font-size:10px;padding:6px 8px;border-bottom:1px solid #f1f5f9;">US Chapter 11 · A+ rating · zero-threshold CSA · highest floor</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color:#1e293b;font-weight:600;padding:6px 8px;">BNP Paribas</td>
+                                                <td style="text-align:center;font-weight:700;padding:6px 8px;"><span class="positive">40%</span></td>
+                                                <td style="text-align:center;font-weight:700;padding:6px 8px;"><span class="positive">60%</span></td>
+                                                <td style="text-align:center;padding:6px 8px;"><span class="positive">99.5%</span></td>
+                                                <td style="color:#475569;font-size:10px;padding:6px 8px;">BRRD · French Law · Aa3 · ISDA convention floor</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div style="margin-top:10px;padding:8px 10px;background:#f8fafc;border-radius:4px;border-left:3px solid #cbd5e1;">
+                                        <p style="margin:0;font-size:10px;color:#475569;line-height:1.7;">
+                                            <span class="warning">▸</span> <strong>40%</strong> is the ISDA convention for financial entities in CDS contracts — not a universal truth.<br>
+                                            <span class="negative">▸</span> In a <strong>2008-type crisis</strong>, average bank recovery fell to <strong class="negative">~25%</strong>.<br>
+                                            <span class="positive">▸</span> Use <strong>recovery swaps</strong> to lock in a market-implied rate when available.
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PRODUCT BREAKDOWN TABLE -->
+                    <div class="section">
+                        <div class="section-title">Exposure Breakdown by Product — What Makes Up the Notional</div>
+                        <p style="font-size:10.5px;color:#64748b;margin-bottom:10px;">
+                            Each counterparty's total notional decomposed by instrument type. IRS = Interest Rate Swap. CDS = Credit Default Swap. FX = FX Forward/Option. EQ = Equity Swap.
+                        </p>
+                        <table class="prod-table">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:left;">Counterparty</th>
+                                    <th style="text-align:left;">Rating</th>
+                                    <th><span class="prod-dot" style="background:#3b82f6;"></span>IRS ($M)</th>
+                                    <th>IRS %</th>
+                                    <th><span class="prod-dot" style="background:#f59e0b;"></span>CDS ($M)</th>
+                                    <th>CDS %</th>
+                                    <th><span class="prod-dot" style="background:#10b981;"></span>FX Fwd ($M)</th>
+                                    <th>FX %</th>
+                                    <th><span class="prod-dot" style="background:#8b5cf6;"></span>EQ Swap ($M)</th>
+                                    <th>EQ %</th>
+                                    <th>Total ($M)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background:#fff8f8;">
+                                    <td><strong>Deutsche Bank</strong></td>
+                                    <td><span class="badge badge-yellow">BBB+</span></td>
+                                    <td><strong>$0.25B</strong></td>
+                                    <td style="color:#64748b;">50.4%<span class="prod-pct-bar" style="width:38px;background:#3b82f6;"></span></td>
+                                    <td class="negative"><strong>$0.15B</strong></td>
+                                    <td style="color:#64748b;">30.4%<span class="prod-pct-bar" style="width:23px;background:#f59e0b;"></span></td>
+                                    <td>$0.09B</td>
+                                    <td style="color:#64748b;">19.2%<span class="prod-pct-bar" style="width:14px;background:#10b981;"></span></td>
+                                    <td style="color:#94a3b8;">—</td>
+                                    <td style="color:#94a3b8;">—</td>
+                                    <td><strong>$0.49B</strong></td>
+                                </tr>
+                                <tr style="background:#fffef5;">
+                                    <td><strong>Credit Suisse</strong></td>
+                                    <td><span class="badge badge-blue">A</span></td>
+                                    <td><strong>$0.13B</strong></td>
+                                    <td style="color:#64748b;">57.2%<span class="prod-pct-bar" style="width:43px;background:#3b82f6;"></span></td>
+                                    <td class="warning">$0.07B</td>
+                                    <td style="color:#64748b;">29.4%<span class="prod-pct-bar" style="width:22px;background:#f59e0b;"></span></td>
+                                    <td>$32M</td>
+                                    <td style="color:#64748b;">13.4%<span class="prod-pct-bar" style="width:10px;background:#10b981;"></span></td>
+                                    <td style="color:#94a3b8;">—</td>
+                                    <td style="color:#94a3b8;">—</td>
+                                    <td><strong>$0.23B</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Barclays</strong></td>
+                                    <td><span class="badge badge-blue">A-</span></td>
+                                    <td><strong>$0.18B</strong></td>
+                                    <td style="color:#64748b;">57.0%<span class="prod-pct-bar" style="width:43px;background:#3b82f6;"></span></td>
+                                    <td>$45M</td>
+                                    <td style="color:#64748b;">14.3%<span class="prod-pct-bar" style="width:11px;background:#f59e0b;"></span></td>
+                                    <td>$0.09B</td>
+                                    <td style="color:#64748b;">28.6%<span class="prod-pct-bar" style="width:22px;background:#10b981;"></span></td>
+                                    <td style="color:#94a3b8;">—</td>
+                                    <td style="color:#94a3b8;">—</td>
+                                    <td><strong>$0.31B</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>JP Morgan</strong></td>
+                                    <td><span class="badge badge-blue">A+</span></td>
+                                    <td class="positive"><strong>$0.31B</strong></td>
+                                    <td style="color:#64748b;">55.0%<span class="prod-pct-bar" style="width:41px;background:#3b82f6;"></span></td>
+                                    <td style="color:#94a3b8;">—</td>
+                                    <td style="color:#94a3b8;">—</td>
+                                    <td class="positive">$0.14B</td>
+                                    <td style="color:#64748b;">25.1%<span class="prod-pct-bar" style="width:19px;background:#10b981;"></span></td>
+                                    <td class="positive">$0.11B</td>
+                                    <td style="color:#64748b;">19.9%<span class="prod-pct-bar" style="width:15px;background:#8b5cf6;"></span></td>
+                                    <td><strong>$0.57B</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>BNP Paribas</strong></td>
+                                    <td><span class="badge badge-blue">Aa3</span></td>
+                                    <td class="positive"><strong>$0.16B</strong></td>
+                                    <td style="color:#64748b;">63.9%<span class="prod-pct-bar" style="width:48px;background:#3b82f6;"></span></td>
+                                    <td style="color:#94a3b8;">—</td>
+                                    <td style="color:#94a3b8;">—</td>
+                                    <td class="positive">$0.09B</td>
+                                    <td style="color:#64748b;">36.1%<span class="prod-pct-bar" style="width:27px;background:#10b981;"></span></td>
+                                    <td style="color:#94a3b8;">—</td>
+                                    <td style="color:#94a3b8;">—</td>
+                                    <td><strong>$0.25B</strong></td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2">Portfolio Total</td>
+                                    <td>$1.03B</td>
+                                    <td style="color:#64748b;">55.6%</td>
+                                    <td>$0.26B</td>
+                                    <td style="color:#64748b;">14.2%</td>
+                                    <td>$0.45B</td>
+                                    <td style="color:#64748b;">24.1%</td>
+                                    <td>$0.11B</td>
+                                    <td style="color:#64748b;">6.1%</td>
+                                    <td><strong>$1.85B</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <p style="font-size:10px;color:#64748b;margin-top:8px;">
+                            <strong>Risk note:</strong> DB and CS hold the largest CDS positions ($0.15B and $0.07B) — CDS creates Wrong Way Risk (WWR) because the protection seller (DB/CS) is most likely to default precisely when credit spreads widen and CDS value increases. This is why CS CVA is understated by ~34%.
+                        </p>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">Portfolio Performance (1Y)</div>
+                        <div class="chart-container">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="analysis-panel">
+                        <div class="lod1-box">
+                            <div class="panel-title lod1-title">&#9654; Senior LOD1 Analysis — Dashboard</div>
+                            <ul class="panel-list">
+                                <li><span class="alert-critical">ESCALATE:</span> Deutsche Bank single-name limit at <strong>81.2%</strong> with JTD 1.24% and BBB+ rating — exceeds dual-trigger threshold requiring Senior Credit approval within 24h.</li>
+                                <li><span class="alert-critical">CRITICAL:</span> Unsecured Ratio at <strong>99.2% of limit</strong> ($24M headroom). Any new unfunded trade with existing counterparties will trigger a breach. Collateral call or bilateral netting agreement required immediately.</li>
+                                <li><span class="alert-warn">MONITOR:</span> Credit Suisse CVA understated by ~34% due to WWR (true CVA $29M vs $22M booked). P&L reserve gap of <strong>$7M</strong> not currently provisioned.</li>
+                                <li>Sharpe 2.34 and Calmar 3.11 indicate strong risk-adjusted returns — portfolio composition is efficient at current utilization levels.</li>
+                                <li>PFE@95% at 64.8% provides adequate stress headroom, but systemic crisis scenario breaches limit 3× — contingency trade reduction plan should be pre-approved.</li>
+                            </ul>
+                        </div>
+                        <div class="suggestion-box">
+                            <div class="panel-title suggestion-title">&#9654; Model Enhancement Recommendations</div>
+                            <ul class="panel-list">
+                                <li><strong>Real-time CVA Engine:</strong> Current CVA is EOD batch-calculated. Implement intraday CVA using live CDS spread feeds (Markit) — material for fast-moving credits like DB and CS.</li>
+                                <li><strong>Jump-to-Default (JTD) Integration:</strong> JTD metric is currently reported as % only. Integrate with SA-CCR EAD to produce a JTD dollar impact in CVA P&L terms.</li>
+                                <li><strong>Automated Escalation Workflow:</strong> Limit breaches trigger manual email. Build rule-based escalation engine with tiered approvals (LOD1 → LOD2 → CRO) with SLA timers.</li>
+                                <li><strong>ISDA SIMM IM Calculation:</strong> Initial margin calculation missing from dashboard. Add SIMM sensitivity-based IM monitoring alongside VM to reflect full collateral picture.</li>
+                                <li><strong>WWR-Adjusted CVA Booking:</strong> True WWR-adjusted CVA should be the booked figure, not base CVA. Current gap creates P&L reserve understatement risk at regulatory review.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- DETAILED ACTION PLAN -->
+                    <div class="action-plan-box">
+                        <div class="action-plan-title">
+                            &#9654; Detailed Action Plan — Stream Model Developers &amp; Business
+                            <span class="ap-badge">LOD1 DIRECTIVE</span>
+                        </div>
+                        <table class="action-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:7%">Priority</th>
+                                    <th style="width:13%">Finding</th>
+                                    <th style="width:11%">Stream</th>
+                                    <th style="width:28%">Business Action (LOD1)</th>
+                                    <th style="width:28%">Model Developer Action</th>
+                                    <th style="width:13%">Timeline / KPI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- SECTION A -->
+                                <tr class="ap-section-row"><td colspan="6">A — LOD1 Risk Findings: Immediate Actions</td></tr>
+
+                                <tr>
+                                    <td><span class="ap-prio p-critical">CRITICAL</span></td>
+                                    <td><strong>Deutsche Bank Limit Breach</strong><br><small>81.2% single-name, JTD 1.24%, BBB+</small></td>
+                                    <td><span class="stream-tag risk">CCR Risk</span></td>
+                                    <td>Initiate Senior Credit Approval request within 24h. Freeze any new DB-facing trades pending sign-off. Prepare dual-trigger breach memo for CRO distribution.</td>
+                                    <td>Implement hard soft-limit guardrail in the booking system: flag trades that would push any single-name above 75% utilisation before execution. Wire JTD% → dollar JTD impact display using current SA-CCR EAD as denominator.</td>
+                                    <td><strong>T+24h:</strong> Approval filed.<br><strong>T+5d:</strong> Guardrail live in UAT.</td>
+                                </tr>
+
+                                <tr>
+                                    <td><span class="ap-prio p-critical">CRITICAL</span></td>
+                                    <td><strong>Unsecured Ratio 99.2%</strong><br><small>$24M headroom only</small></td>
+                                    <td><span class="stream-tag collateral">Collateral</span></td>
+                                    <td>Issue immediate collateral call to top-3 unsecured counterparties. Engage legal to expedite ISDA CSA / bilateral netting agreements with DB and CS. Suspend new unfunded trades until headroom exceeds $0.10B.</td>
+                                    <td>Add a real-time unsecured-ratio widget to the dashboard with intraday refresh (not EOD). Trigger automated collateral-call workflow when ratio exceeds 95%: generate call notice draft, route to Collateral Ops queue with SLA timer (T+4h response).</td>
+                                    <td><strong>T+48h:</strong> CSA negotiation started.<br><strong>T+10d:</strong> Intraday ratio feed live.</td>
+                                </tr>
+
+                                <tr>
+                                    <td><span class="ap-prio p-high">HIGH</span></td>
+                                    <td><strong>CS CVA Understatement</strong><br><small>$7M reserve gap (WWR)</small></td>
+                                    <td><span class="stream-tag cvaxva">CVA / XVA</span></td>
+                                    <td>Raise $7M P&amp;L reserve provisioning request with Finance immediately. Notify LOD2 of reserve gap. Begin regulatory disclosure assessment under IFRS 13 fair value hierarchy requirements.</td>
+                                    <td>Replace booked base-CVA with WWR-adjusted CVA as the primary P&amp;L figure. Implement ρ-factor WWR model (default correlation to asset value): dV = f(ρ, PD, LGD, EAD). Validate against historical CS spread moves. Output: daily WWR-CVA vs. base-CVA reconciliation report.</td>
+                                    <td><strong>T+3d:</strong> Reserve provisioned.<br><strong>T+30d:</strong> WWR-CVA booked as primary.</td>
+                                </tr>
+
+                                <tr>
+                                    <td><span class="ap-prio p-high">HIGH</span></td>
+                                    <td><strong>Systemic Crisis PFE Breach</strong><br><small>Limit breached 3× under stress</small></td>
+                                    <td><span class="stream-tag risk">CCR Risk</span></td>
+                                    <td>Convene LOD1 + Trading to pre-approve a contingency trade-reduction playbook: identify top-5 DB and CS trades for unwind sequencing. Get LOD2 pre-authorisation to execute within 4h of a systemic stress trigger.</td>
+                                    <td>Build a stress-scenario PFE simulation layer: stress PFE must run automatically on each EOD batch across 3 defined macroscenarios (2008-type, COVID-type, rate-shock). Flag when any scenario produces limit breach; output: pre-ranked unwind ladder by EAD reduction per trade.</td>
+                                    <td><strong>T+7d:</strong> Playbook approved.<br><strong>T+21d:</strong> Stress PFE layer in prod.</td>
+                                </tr>
+
+                                <tr>
+                                    <td><span class="ap-prio p-medium">MONITOR</span></td>
+                                    <td><strong>Sharpe 2.34 / Calmar 3.11</strong><br><small>Strong risk-adjusted returns</small></td>
+                                    <td><span class="stream-tag risk">CCR Risk</span></td>
+                                    <td>Document current portfolio composition as a reference benchmark. Use Sharpe/Calmar as a baseline to evaluate any proposed rebalancing — any trade that degrades Sharpe below 2.0 requires LOD1 sign-off.</td>
+                                    <td>Automate Sharpe and Calmar calculation in the daily risk report with a rolling 252-day window. Add sensitivity output: show how adding/removing each counterparty affects portfolio-level Sharpe. Persist historical series for trend analysis.</td>
+                                    <td><strong>T+14d:</strong> Automated series live.<br><strong>Ongoing:</strong> Sharpe &gt; 2.0 threshold enforced.</td>
+                                </tr>
+
+                                <!-- SECTION B -->
+                                <tr class="ap-section-row"><td colspan="6">B — Model Enhancement Recommendations: Development Roadmap</td></tr>
+
+                                <tr>
+                                    <td><span class="ap-prio p-high">HIGH</span></td>
+                                    <td><strong>Real-Time CVA Engine</strong><br><small>Currently EOD batch only</small></td>
+                                    <td><span class="stream-tag cvaxva">CVA / XVA</span></td>
+                                    <td>Raise a business requirements document (BRD) for intraday CVA with Finance and Front Office. Define acceptable latency SLA (target: 15-min refresh). Identify which desks require live CVA P&amp;L for intraday hedging decisions.</td>
+                                    <td>Integrate Markit/IHS CDS spread feed via API. Rebuild CVA engine to support incremental re-pricing on spread change events (event-driven, not full-batch). Priority counterparties for phase-1: DB, CS. Deliver: intraday CVA dashboard widget + P&amp;L attribution broken into spread-delta vs. exposure-delta.</td>
+                                    <td><strong>Phase 1 (DB+CS):</strong> T+45d.<br><strong>Full portfolio:</strong> T+90d.</td>
+                                </tr>
+
+                                <tr>
+                                    <td><span class="ap-prio p-high">HIGH</span></td>
+                                    <td><strong>JTD Dollar Integration</strong><br><small>Currently % metric only</small></td>
+                                    <td><span class="stream-tag cvaxva">CVA / XVA</span></td>
+                                    <td>Define JTD dollar threshold for escalation (proposed: JTD$ &gt; $0.05B triggers LOD2 notification). Align with Credit Risk on LGD assumption to use in JTD calculation.</td>
+                                    <td>Extend JTD calculation: JTD$ = JTD% × SA-CCR EAD. Add column to the exposure table and to the limit-monitoring report. Include JTD$ in the dual-trigger breach logic (JTD% AND JTD$ must both exceed thresholds to trigger escalation).</td>
+                                    <td><strong>T+14d:</strong> JTD$ column in dashboard.<br><strong>T+21d:</strong> Dual-trigger logic live.</td>
+                                </tr>
+
+                                <tr>
+                                    <td><span class="ap-prio p-high">HIGH</span></td>
+                                    <td><strong>Automated Escalation Workflow</strong><br><small>Currently manual email</small></td>
+                                    <td><span class="stream-tag tech">Technology</span></td>
+                                    <td>Define escalation matrix with LOD2 and CRO office: which breaches go to which approver, at which severity level, with what SLA. Sign off the workflow design before development starts.</td>
+                                    <td>Build rules engine: breach event → classify severity (LOD1/LOD2/CRO) → auto-generate escalation notice with context snapshot (metric, limit, headroom, counterparty) → post to workflow queue with SLA countdown timer. Implement acknowledgement tracking: unacknowledged within SLA triggers auto-escalation one tier up.</td>
+                                    <td><strong>T+30d:</strong> Rules engine in UAT.<br><strong>T+45d:</strong> Production go-live.</td>
+                                </tr>
+
+                                <tr>
+                                    <td><span class="ap-prio p-medium">MEDIUM</span></td>
+                                    <td><strong>ISDA SIMM IM Calculation</strong><br><small>IM currently absent from dashboard</small></td>
+                                    <td><span class="stream-tag collateral">Collateral</span></td>
+                                    <td>Confirm which counterparties are in-scope for UMR Phase 6 bilateral IM. Engage Collateral Ops to collect current SIMM sensitivity inputs (delta, vega, curvature by risk class). Define IM reporting frequency with LOD2.</td>
+                                    <td>Implement ISDA SIMM v2.6 calculation module: sensitivity-based IM by risk class (IR, CR, EQ, FX, CO). Feed from existing Greeks calculation engine. Deliver: IM monitoring widget alongside VM in the collateral panel; flag when net IM posted vs. SIMM-required diverges by &gt;5%.</td>
+                                    <td><strong>T+45d:</strong> SIMM module in UAT.<br><strong>T+60d:</strong> Dashboard widget live.</td>
+                                </tr>
+
+                                <tr>
+                                    <td><span class="ap-prio p-high">HIGH</span></td>
+                                    <td><strong>WWR-Adjusted CVA Booking</strong><br><small>Base CVA booked; gap = $7M</small></td>
+                                    <td><span class="stream-tag model">Model Validation</span></td>
+                                    <td>Engage Model Validation team to formally review the WWR-CVA methodology before booking. Submit model change request (MCR) to MRM. Communicate P&amp;L impact timeline to Finance and LOD2 to avoid earnings surprise.</td>
+                                    <td>Develop bilateral WWR-CVA model: co-simulate counterparty default intensity with portfolio MtM using a copula or regression-based ρ approach. Back-test against 2021–2023 CS spread events. Obtain MRM sign-off. Cutover: WWR-CVA replaces base-CVA in the booking system; base-CVA retained as a reference field only.</td>
+                                    <td><strong>T+21d:</strong> MCR submitted.<br><strong>T+60d:</strong> MRM approval &amp; cutover.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+                <!-- COMPOSITION TAB -->
+                <div id="tab-composition" class="tab-content">
+                    <div class="section">
+                        <div class="section-title">Exposure Breakdown — Pie View</div>
+                        <div class="grid-2" style="align-items:center;">
+                            <div><canvas id="pieChart" height="220"></canvas></div>
+                            <div>
+                                <table style="margin-top:0;">
+                                    <thead><tr><th>Counterparty</th><th>Exposure</th><th>% Port</th><th>Rating</th></tr></thead>
+                                    <tbody>
+                                        <tr><td><strong>JP Morgan</strong></td><td>$0.57B</td><td class="positive">30.7%</td><td>A+</td></tr>
+                                        <tr><td><strong>Deutsche Bank</strong></td><td>$0.49B</td><td class="warning">26.4%</td><td>BBB+</td></tr>
+                                        <tr><td><strong>Barclays</strong></td><td>$0.31B</td><td>16.9%</td><td>A-</td></tr>
+                                        <tr><td><strong>BNP Paribas</strong></td><td>$0.25B</td><td>13.3%</td><td>Aa3</td></tr>
+                                        <tr><td><strong>Credit Suisse</strong></td><td>$0.23B</td><td class="negative">12.7%</td><td>A</td></tr>
+                                    </tbody>
+                                </table>
+                                <p style="margin-top:10px;font-size:10px;color:#64748b;">
+                                    <strong style="color:#dc2626;">Concentration Alert:</strong> JPM + DB = 57.1% — above internal 50% dual-name limit. Herfindahl Index: 1,847 (moderate concentration).
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">Portfolio Composition by Counterparty</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Counterparty</th>
+                                    <th>Exposure ($M)</th>
+                                    <th>% Port</th>
+                                    <th>PFE ($M)</th>
+                                    <th>CVA ($M)</th>
+                                    <th>RAROC</th>
+                                    <th>Rating</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>JP Morgan</strong></td>
+                                    <td>$0.57B</td>
+                                    <td class="positive">30.7%</td>
+                                    <td>$0.82B</td>
+                                    <td>$19M</td>
+                                    <td class="positive">3.2%</td>
+                                    <td>A+</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Deutsche Bank</strong></td>
+                                    <td>$0.49B</td>
+                                    <td>26.4%</td>
+                                    <td>$0.72B</td>
+                                    <td>$34M</td>
+                                    <td>2.1%</td>
+                                    <td>BBB+</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Barclays</strong></td>
+                                    <td>$0.31B</td>
+                                    <td>16.9%</td>
+                                    <td>$0.46B</td>
+                                    <td>$28M</td>
+                                    <td>1.8%</td>
+                                    <td>A-</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>BNP Paribas</strong></td>
+                                    <td>$0.25B</td>
+                                    <td>13.3%</td>
+                                    <td>$0.41B</td>
+                                    <td>$16M</td>
+                                    <td class="positive">2.4%</td>
+                                    <td>Aa3</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Credit Suisse</strong></td>
+                                    <td>$0.23B</td>
+                                    <td>12.7%</td>
+                                    <td>$0.39B</td>
+                                    <td>$22M</td>
+                                    <td class="negative">1.5%</td>
+                                    <td>A</td>
+                                </tr>
+                                <tr style="background: rgba(0,82,204,0.06); font-weight: 600;">
+                                    <td>TOTAL</td>
+                                    <td>$1.85B</td>
+                                    <td>100%</td>
+                                    <td>$2.80B</td>
+                                    <td>$0.12B</td>
+                                    <td>2.2%</td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">Portfolio Composition by Product Type</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Count</th>
+                                    <th>Notional ($M)</th>
+                                    <th>MtM ($M)</th>
+                                    <th>PFE ($M)</th>
+                                    <th>CVA ($M)</th>
+                                    <th>% CVA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Interest Rate Swaps</strong></td>
+                                    <td>23</td>
+                                    <td>$1.23B</td>
+                                    <td>$0.46B</td>
+                                    <td>$1.68B</td>
+                                    <td>$0.06B</td>
+                                    <td>46.0%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>FX Forwards</strong></td>
+                                    <td>18</td>
+                                    <td>$0.68B</td>
+                                    <td>-$34M</td>
+                                    <td>$0.42B</td>
+                                    <td>$22M</td>
+                                    <td>17.4%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>CDS Positions</strong></td>
+                                    <td>12</td>
+                                    <td>$0.41B</td>
+                                    <td>$0.06B</td>
+                                    <td>$0.34B</td>
+                                    <td>$29M</td>
+                                    <td>22.6%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Equity Options</strong></td>
+                                    <td>8</td>
+                                    <td>$0.23B</td>
+                                    <td>$0.08B</td>
+                                    <td>$0.51B</td>
+                                    <td>$18M</td>
+                                    <td>14.3%</td>
+                                </tr>
+                                <tr style="background: rgba(0,82,204,0.06); font-weight: 600;">
+                                    <td>TOTAL</td>
+                                    <td>76</td>
+                                    <td>$2.56B</td>
+                                    <td>$0.56B</td>
+                                    <td>$2.96B</td>
+                                    <td>$0.13B</td>
+                                    <td>100%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="analysis-panel">
+                        <div class="lod1-box">
+                            <div class="panel-title lod1-title">&#9654; Senior LOD1 Analysis — Composition</div>
+                            <ul class="panel-list">
+                                <li><span class="alert-critical">CONCENTRATION:</span> JP Morgan + Deutsche Bank = <strong>57.1%</strong> of gross exposure — exceeds internal 50% dual-name guideline. Reduction plan required within 5 business days.</li>
+                                <li><span class="alert-warn">IRS DOMINANCE:</span> Interest Rate Swaps represent 46% of total CVA ($0.06B). Tenor compression via multilateral netting through LCH could reduce this by ~$15–20M. Recommend LCH analysis.</li>
+                                <li>CDS positions (22.6% of CVA, $29M) carry asymmetric wrong-way risk not reflected in base CVA. True CVA on CDS book likely 20–30% higher under stress.</li>
+                                <li>FX Forwards book is net negative MtM (-$34M) — we are the out-of-the-money counterparty. Confirm that CSA threshold and MTA are correctly triggered and that VM calls have been issued.</li>
+                                <li>Equity Options represent 14.3% of CVA but only 8 trades — high CVA per trade ratio ($2M/trade). Validate vol surface inputs and check if clearing via CCP is feasible to reduce RWA.</li>
+                            </ul>
+                        </div>
+                        <div class="suggestion-box">
+                            <div class="panel-title suggestion-title">&#9654; Model Enhancement Recommendations</div>
+                            <ul class="panel-list">
+                                <li><strong>Netting Set Analytics:</strong> Current exposure is trade-level aggregated. Implement netting set-level analysis with netting benefit ratio — expected 30–40% exposure reduction for IRS book.</li>
+                                <li><strong>CCP Optimization Tool:</strong> Build a clearing benefit calculator — for each bilateral trade, compute the capital saving from clearing via LCH/CME vs bilateral CSA. Prioritize IRS and CDS.</li>
+                                <li><strong>FRTB SA-CVA Sensitivities:</strong> Add CS01, IR01, and FX01 sensitivity reporting per product type aligned with FRTB CVA rules — required for 2025 Basel IV compliance.</li>
+                                <li><strong>Real-time VM Monitoring:</strong> Integrate with collateral management system to display live VM calls outstanding and aging per counterparty — currently a manual T+1 process.</li>
+                                <li><strong>Product Lifecycle Tracking:</strong> Add maturity ladder view showing exposure cliff risk (e.g., $0.46B notional rolls off in 0–1Y bucket — replace risk needs advance planning).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CORRELATIONS TAB -->
+                <div id="tab-correlations" class="tab-content">
+                    <div class="section">
+                        <div class="section-title">Correlation Heatmap — Counterparty CDS Spreads</div>
+                        <div style="display:grid;grid-template-columns:60px repeat(4,1fr);gap:2px;margin-top:10px;max-width:500px;">
+                            <div></div>
+                            <div class="hm-label">JPM</div><div class="hm-label">DB</div><div class="hm-label">BAR</div><div class="hm-label">CS</div>
+                            <div class="hm-label">JPM</div>
+                            <div class="hm-cell" style="background:#1d4ed8;">1.00</div>
+                            <div class="hm-cell" style="background:#93c5fd;color:#1e293b;">0.12</div>
+                            <div class="hm-cell" style="background:#bfdbfe;color:#1e293b;">0.08</div>
+                            <div class="hm-cell" style="background:#bfdbfe;color:#1e293b;">0.15</div>
+                            <div class="hm-label">DB</div>
+                            <div class="hm-cell" style="background:#93c5fd;color:#1e293b;">0.12</div>
+                            <div class="hm-cell" style="background:#1d4ed8;">1.00</div>
+                            <div class="hm-cell" style="background:#ef4444;">0.82</div>
+                            <div class="hm-cell" style="background:#f87171;color:#1e293b;">0.61</div>
+                            <div class="hm-label">BAR</div>
+                            <div class="hm-cell" style="background:#bfdbfe;color:#1e293b;">0.08</div>
+                            <div class="hm-cell" style="background:#ef4444;">0.82</div>
+                            <div class="hm-cell" style="background:#1d4ed8;">1.00</div>
+                            <div class="hm-cell" style="background:#fca5a5;color:#1e293b;">0.51</div>
+                            <div class="hm-label">CS</div>
+                            <div class="hm-cell" style="background:#bfdbfe;color:#1e293b;">0.15</div>
+                            <div class="hm-cell" style="background:#f87171;color:#1e293b;">0.61</div>
+                            <div class="hm-cell" style="background:#fca5a5;color:#1e293b;">0.51</div>
+                            <div class="hm-cell" style="background:#1d4ed8;">1.00</div>
+                        </div>
+                        <p style="margin-top:8px;font-size:10px;color:#64748b;">Color scale: <span style="color:#ef4444;font-weight:600;">Red = High correlation (systemic risk)</span> · <span style="color:#1d4ed8;font-weight:600;">Blue = Low/diagonal</span>. Based on 1Y daily CDS spread returns.</p>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">Counterparty Correlation Matrix (1 Year)</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Pair</th>
+                                    <th>Correlation</th>
+                                    <th>Type</th>
+                                    <th>Implication</th>
+                                    <th>Diversification</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Deutsche - Credit Suisse</strong></td>
+                                    <td class="warning">0.82</td>
+                                    <td>High</td>
+                                    <td>Systemic correlation, move together</td>
+                                    <td><span class="badge badge-red">POOR</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Barclays - BNP</strong></td>
+                                    <td>0.51</td>
+                                    <td>Moderate</td>
+                                    <td>Standard bank correlation</td>
+                                    <td><span class="badge badge-yellow">FAIR</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>JP Morgan - Deutsche</strong></td>
+                                    <td class="positive">0.12</td>
+                                    <td>Low</td>
+                                    <td>JPM pricing power insulates from others</td>
+                                    <td><span class="badge badge-green">GOOD</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>JPM - Credit Suisse</strong></td>
+                                    <td class="positive">0.15</td>
+                                    <td>Low</td>
+                                    <td>JPM diversification benefit</td>
+                                    <td><span class="badge badge-green">GOOD</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="section" style="margin-top: 16px;">
+                            <div class="section-title">Wrong Way Risk (WWR) Correlation</div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Counterparty</th>
+                                        <th>WWR Corr</th>
+                                        <th>Primary Driver</th>
+                                        <th>CVA Amplification</th>
+                                        <th>Mitigation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Deutsche Bank</strong></td>
+                                        <td class="warning">0.78</td>
+                                        <td>EUR weakness ↔ Spread widening</td>
+                                        <td class="negative">+27%</td>
+                                        <td>Reduce EUR-pay notional</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Credit Suisse</strong></td>
+                                        <td class="warning">0.82</td>
+                                        <td>Market stress ↔ Credit deterioration</td>
+                                        <td class="negative">+34%</td>
+                                        <td>Buy equity puts, reduce position</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Barclays</strong></td>
+                                        <td>0.45</td>
+                                        <td>Rate cycle ↔ Funding costs</td>
+                                        <td>+8%</td>
+                                        <td>Monitor funding conditions</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>JP Morgan</strong></td>
+                                        <td class="positive">0.12</td>
+                                        <td>Implicit govt backing</td>
+                                        <td class="positive">-2%</td>
+                                        <td>None required</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="analysis-panel">
+                        <div class="lod1-box">
+                            <div class="panel-title lod1-title">&#9654; Senior LOD1 Analysis — Correlations</div>
+                            <ul class="panel-list">
+                                <li><span class="alert-critical">SYSTEMIC RISK:</span> Deutsche Bank / CS correlation at <strong>0.82</strong> (very high). A simultaneous default scenario is plausible in a European banking stress event. Current portfolio does not hold protection against joint default — gap in stress coverage.</li>
+                                <li><span class="alert-critical">WWR AMPLIFICATION:</span> CS true CVA is <strong>$29M vs $22M booked</strong> (34% uplift). DB true CVA is $43M vs $34M booked (27% uplift). Total unbooked CVA gap: <strong>$16M</strong> — material P&L reserve risk.</li>
+                                <li>JP Morgan's low correlations (0.12–0.15) provide the only meaningful diversification benefit. Over-concentration in DB and CS eliminates most of this benefit at portfolio level.</li>
+                                <li>1-year lookback for correlation estimation is insufficient — the 2020 and 2022 stress periods are excluded. Correlations were near 0.90+ during COVID for European banks.</li>
+                                <li>Barclays WWR correlation (0.45) tied to rate cycle and funding costs — rising rate environment in 2024–2025 warrants elevated monitoring of Barclays funding spreads.</li>
+                            </ul>
+                        </div>
+                        <div class="suggestion-box">
+                            <div class="panel-title suggestion-title">&#9654; Model Enhancement Recommendations</div>
+                            <ul class="panel-list">
+                                <li><strong>DCC-GARCH Dynamic Correlations:</strong> Replace static Pearson correlations with Dynamic Conditional Correlation (DCC-GARCH) model. Captures time-varying correlations — critical during spread widening episodes.</li>
+                                <li><strong>Copula-Based Tail Dependency:</strong> Pearson correlation understates joint tail risk. Implement t-copula or Clayton copula to model probability of simultaneous large spread moves (DB + CS joint stress).</li>
+                                <li><strong>Extended Lookback Window:</strong> Extend estimation window to 3Y minimum, with exponential weighting (λ=0.94) to balance recency and stress coverage. Include 2020 COVID and 2022 rate shock periods.</li>
+                                <li><strong>Contagion Risk Module:</strong> Build network-based contagion model using CDS spread linkages across the 5 counterparties — quantifies cascade default probability beyond pairwise correlations.</li>
+                                <li><strong>WWR CVA Booking:</strong> Implement regulatory WWR CVA (per Basel III Annex IV §58) as the official booked CVA — eliminates the current $16M reserve gap and aligns with 2LOD expectations.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PCA TAB -->
+                <div id="tab-pca" class="tab-content">
+                    <div class="section">
+                        <div class="section-title">Principal Component Analysis (PCA) - Risk Factor Decomposition</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Factor</th>
+                                    <th>Variance %</th>
+                                    <th>Cumulative %</th>
+                                    <th>Interpretation</th>
+                                    <th>Loading Strength</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>PC1: Credit Cycle Risk</strong></td>
+                                    <td>37.3%</td>
+                                    <td>37.3%</td>
+                                    <td>Systemic credit deterioration affects all banks equally</td>
+                                    <td>JPM:0.56, DB:0.63, BAR:0.63</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>PC2: Correlation Breakdown</strong></td>
+                                    <td>31.9%</td>
+                                    <td>69.2%</td>
+                                    <td>In stress, safe vs risk-on assets decouple</td>
+                                    <td>GLD:0.74, CS:0.37, DB:-0.68</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>PC3: Idiosyncratic Risk</strong></td>
+                                    <td>30.7%</td>
+                                    <td>100.0%</td>
+                                    <td>Company-specific factors (rating changes, incidents)</td>
+                                    <td>CS:0.78, BAR:0.69, DB:-0.40</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="chart-container" style="margin-top: 16px;">
+                            <canvas id="pcaChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">PCA Loadings Heatmap (Eigenvectors per Asset)</div>
+                        <div style="display:grid;grid-template-columns:80px repeat(3,1fr);gap:3px;max-width:480px;margin-top:10px;">
+                            <div></div>
+                            <div class="hm-label">PC1 (37.3%)</div><div class="hm-label">PC2 (31.9%)</div><div class="hm-label">PC3 (30.7%)</div>
+                            <div class="hm-label">JPM</div>
+                            <div class="hm-cell" style="background:#f87171;color:#fff;">+0.56</div>
+                            <div class="hm-cell" style="background:#3b82f6;color:#fff;">-0.67</div>
+                            <div class="hm-cell" style="background:#60a5fa;color:#fff;">-0.49</div>
+                            <div class="hm-label">DB</div>
+                            <div class="hm-cell" style="background:#ef4444;color:#fff;">+0.63</div>
+                            <div class="hm-cell" style="background:#bfdbfe;color:#1e293b;">-0.04</div>
+                            <div class="hm-cell" style="background:#4ade80;color:#1e293b;">+0.78</div>
+                            <div class="hm-label">BAR</div>
+                            <div class="hm-cell" style="background:#ef4444;color:#fff;">+0.63</div>
+                            <div class="hm-cell" style="background:#fca5a5;color:#1e293b;">-0.68</div>
+                            <div class="hm-cell" style="background:#fca5a5;color:#1e293b;">-0.40</div>
+                        </div>
+                        <p style="margin-top:8px;font-size:10px;color:#64748b;"><span style="color:#ef4444;font-weight:600;">Red = strong positive loading</span> · <span style="color:#3b82f6;font-weight:600;">Blue = strong negative loading</span> · <span style="color:#64748b;">Near-zero = factor independence</span></p>
+                    </div>
+
+                    <div class="analysis-panel">
+                        <div class="lod1-box">
+                            <div class="panel-title lod1-title">&#9654; Senior LOD1 Analysis — Factor Analysis</div>
+                            <ul class="panel-list">
+                                <li><span class="alert-critical">ANOMALY:</span> Near-equal variance split (37.3% / 31.9% / 30.7%) across 3 PCs is highly atypical for a credit portfolio. In well-diversified portfolios, PC1 typically explains 60–70%+. This indicates <strong>near-zero true diversification</strong> — all counterparties move together under stress.</li>
+                                <li>PC1 (Credit Cycle Risk) loads equally on JPM (0.56), DB (0.63), BAR (0.63) — confirms every counterparty carries significant systemic beta. No counterparty is truly defensive.</li>
+                                <li>PC2 shows DB loading at -0.68 (negative) alongside JPM at -0.67, while GLD would be +0.74 — in a correlation breakdown stress, European banks and US banks both deteriorate. No natural hedge in the portfolio.</li>
+                                <li>PC3 (Idiosyncratic) shows DB at +0.78 — Deutsche Bank carries the highest idiosyncratic risk. Any bank-specific event (regulatory action, earnings miss) would create outsized standalone CVA impact.</li>
+                                <li>Only 3 factors needed for 100% variance — the portfolio effectively has no degrees of freedom. Under stress, it is a single-factor portfolio with different scaling coefficients.</li>
+                            </ul>
+                        </div>
+                        <div class="suggestion-box">
+                            <div class="panel-title suggestion-title">&#9654; Model Enhancement Recommendations</div>
+                            <ul class="panel-list">
+                                <li><strong>Extended Factor Model:</strong> Expand to 5-factor PCA separating: systemic credit, EUR rate, USD rate, FX (EUR/USD), and idiosyncratic. Current 3-factor model collapses distinct risk drivers into a single "credit cycle" factor.</li>
+                                <li><strong>Rolling 90-Day PCA:</strong> Implement rolling window PCA to detect regime changes. A sudden shift in PC1 variance share above 60% signals a systemic stress event — use as an early warning indicator.</li>
+                                <li><strong>Stress-State PCA:</strong> Calibrate a separate PCA using 2008 GFC and 2020 COVID stress data as training windows. Compare stress loadings vs current loadings to quantify how factor structure changes in crisis.</li>
+                                <li><strong>Market-Implied Factor Calibration:</strong> Align PCA factors to observable market instruments: PC1 → iTraxx Europe index, PC2 → MOVE index (rate vol), PC3 → SX5E implied vol. Enables forward-looking factor monitoring.</li>
+                                <li><strong>Factor-Based CVA Decomposition:</strong> Decompose total CVA of $0.13B into factor contributions (systemic / idiosyncratic split). Required for FRTB CVA Internal Model Method (IMA-CVA) eligibility.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OPTIMAL ALLOCATION TAB -->
+                <div id="tab-optimal" class="tab-content">
+                    <div class="section">
+                        <div class="section-title">Current vs Optimal Allocation (CVA Minimization)</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Counterparty</th>
+                                    <th>Current</th>
+                                    <th>Optimal</th>
+                                    <th>Change</th>
+                                    <th>CVA Impact</th>
+                                    <th>Rationale</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>JP Morgan</strong></td>
+                                    <td>30.7% ($0.57B)</td>
+                                    <td>45.0% ($0.83B)</td>
+                                    <td class="positive">+$0.27B</td>
+                                    <td class="positive">-$9M</td>
+                                    <td>Lowest CVA/exposure, safest bank</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Barclays</strong></td>
+                                    <td>16.9% ($0.31B)</td>
+                                    <td>20.0% ($0.37B)</td>
+                                    <td>+$0.06B</td>
+                                    <td class="negative">+$2M</td>
+                                    <td>Good RAROC, stable rating</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>BNP Paribas</strong></td>
+                                    <td>13.3% ($0.24B)</td>
+                                    <td>15.0% ($0.28B)</td>
+                                    <td>+$32M</td>
+                                    <td class="positive">-$1M</td>
+                                    <td>Solid Aa3 rating, good diversification</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Deutsche Bank</strong></td>
+                                    <td>26.4% ($0.49B)</td>
+                                    <td>15.0% ($0.28B)</td>
+                                    <td class="negative">-$0.21B</td>
+                                    <td class="positive">-$10M</td>
+                                    <td>High JTD (1.24%), approaching limit</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Credit Suisse</strong></td>
+                                    <td>12.7% ($0.23B)</td>
+                                    <td>5.0% ($0.09B)</td>
+                                    <td class="negative">-$0.14B</td>
+                                    <td class="positive">-$10M</td>
+                                    <td>Highest WWR (0.82), lowest RAROC</td>
+                                </tr>
+                                <tr style="background: rgba(0,82,204,0.06); font-weight: 600;">
+                                    <td>PORTFOLIO IMPACT</td>
+                                    <td>$1.85B CVA: $0.13B</td>
+                                    <td>$1.85B CVA: $0.10B</td>
+                                    <td>-</td>
+                                    <td class="positive">-$30M CVA</td>
+                                    <td>Capital freed: $3M</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- RAROC TAB -->
+                <div id="tab-raroc" class="tab-content">
+                    <div class="section">
+                        <div class="section-title">Risk-Adjusted Return on Capital (RAROC) Analysis</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Counterparty</th>
+                                    <th>RAROC</th>
+                                    <th>Rank</th>
+                                    <th>Net Revenue</th>
+                                    <th>Capital Alloc</th>
+                                    <th>Recommendation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background: rgba(76,175,80,0.1);">
+                                    <td><strong>JP Morgan</strong></td>
+                                    <td class="positive"><strong>3.2%</strong></td>
+                                    <td class="positive">1st</td>
+                                    <td>$23M</td>
+                                    <td>$0.73B</td>
+                                    <td><span class="badge badge-green">INCREASE</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>BNP Paribas</strong></td>
+                                    <td class="positive">2.4%</td>
+                                    <td>2nd</td>
+                                    <td>$8M</td>
+                                    <td>$0.34B</td>
+                                    <td><span class="badge badge-green">HOLD</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Deutsche Bank</strong></td>
+                                    <td>2.1%</td>
+                                    <td>3rd</td>
+                                    <td>$16M</td>
+                                    <td>$0.75B</td>
+                                    <td><span class="badge badge-yellow">REDUCE</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Barclays</strong></td>
+                                    <td>1.8%</td>
+                                    <td>4th</td>
+                                    <td>$12M</td>
+                                    <td>$0.67B</td>
+                                    <td><span class="badge badge-yellow">HOLD</span></td>
+                                </tr>
+                                <tr style="background: rgba(255,82,82,0.1);">
+                                    <td><strong>Credit Suisse</strong></td>
+                                    <td class="negative"><strong>1.5%</strong></td>
+                                    <td>5th</td>
+                                    <td>$9M</td>
+                                    <td>$0.63B</td>
+                                    <td><span class="badge badge-red">REDUCE</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="margin-top: 16px; color: #64748b; font-size: 11px;">
+                            <strong>RAROC Formula:</strong> RAROC = Net Revenue / (Economic Capital × Risk Weight)<br>
+                            JPM's 3.2% RAROC means for every $100 in capital, we earn $3.20 net. Credit Suisse's 1.5% is below target (2.5% minimum).
+                        </p>
+                    </div>
+
+                    <div class="analysis-panel">
+                        <div class="lod1-box">
+                            <div class="panel-title lod1-title">&#9654; Senior LOD1 Analysis — RAROC</div>
+                            <ul class="panel-list">
+                                <li><span class="alert-critical">BELOW HURDLE — Credit Suisse 1.5%:</span> Below the 2.5% minimum RAROC hurdle rate. At $0.63B capital allocation, CS is consuming $0.63B of balance sheet to generate $9M net revenue. Reduce CS notional to $0.09B (optimal) to free ~$0.50B capital for redeployment.</li>
+                                <li><span class="alert-warn">SUB-HURDLE — Barclays 1.8%:</span> Below minimum but manageable. Barclays is a stable relationship counterparty — before reducing, check if there are cross-product revenues (FX, lending) that are not captured in this CCR P&L view.</li>
+                                <li>JP Morgan at 3.2% RAROC with 45% optimal allocation target is the clearest capital efficiency opportunity. Increasing JPM exposure by $0.27B would generate an estimated additional $9M CVA reduction and $9M+ revenue at 3.2% RAROC.</li>
+                                <li>Portfolio-level RAROC is implied at ~2.2% — marginally below hurdle. Reallocating from CS/DB to JPM/BNP would push portfolio RAROC to ~2.8–3.0% without increasing total notional.</li>
+                                <li>Capital allocation ($0.73B to JPM, $0.75B to DB) is roughly equal despite JPM being far superior on RAROC — DB's higher CVA and PFE inflate its capital charge significantly. WWR-adjusted capital allocation would widen this gap further.</li>
+                            </ul>
+                        </div>
+                        <div class="suggestion-box">
+                            <div class="panel-title suggestion-title">&#9654; Model Enhancement Recommendations</div>
+                            <ul class="panel-list">
+                                <li><strong>Hurdle Rate Tiering:</strong> Implement rating-based hurdle rates (A+/Aa: 2.0%, A/A-: 2.5%, BBB+: 3.5%) rather than a flat 2.5%. This reflects the higher capital cost of lower-rated counterparties and prevents BBB+ relationships from appearing economic.</li>
+                                <li><strong>Cross-Product RAROC:</strong> Integrate with other business lines (lending, FX, treasury) to compute a total relationship RAROC rather than CCR-only. Prevents incorrect decision to reduce a counterparty that is profitable in aggregate.</li>
+                                <li><strong>Incremental RAROC:</strong> For each new trade, show the incremental RAROC — the marginal capital consumed by the trade vs marginal revenue. Critical for pre-trade approval and pricing desk input.</li>
+                                <li><strong>RAROC Sensitivity to CVA:</strong> Show how RAROC changes with ±10bps credit spread for each counterparty — enables proactive RAROC management as credit conditions change.</li>
+                                <li><strong>Economic Capital Model Validation:</strong> Current economic capital uses risk weight approximation. Implement full Monte Carlo economic capital (99.9% VaR over 1Y holding period) per regulatory best practice for CCR capital allocation.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LIMITS TAB -->
+                <div id="tab-limits" class="tab-content">
+                    <div class="section">
+                        <div class="section-title">Portfolio Limit Monitoring</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Limit Type</th>
+                                    <th>Current</th>
+                                    <th>Limit</th>
+                                    <th>Util %</th>
+                                    <th>Headroom</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Gross CVA</strong></td>
+                                    <td>$0.13B</td>
+                                    <td>$0.20B</td>
+                                    <td>63.7%</td>
+                                    <td>$0.07B</td>
+                                    <td><span class="badge badge-green">OK</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>PFE@95% (1Y)</strong></td>
+                                    <td>$3.89B</td>
+                                    <td>$6.00B</td>
+                                    <td>64.8%</td>
+                                    <td>$2.11B</td>
+                                    <td><span class="badge badge-green">OK</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>RWA (CVA)</strong></td>
+                                    <td>$0.85B</td>
+                                    <td>$1.20B</td>
+                                    <td>70.6%</td>
+                                    <td>$0.35B</td>
+                                    <td><span class="badge badge-yellow">ELEVATED</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Deutsche Single Name</strong></td>
+                                    <td>$0.49B</td>
+                                    <td>$0.60B</td>
+                                    <td>81.2%</td>
+                                    <td>$0.11B</td>
+                                    <td><span class="badge badge-yellow">ALERT</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Unsecured Ratio</strong></td>
+                                    <td>85.3%</td>
+                                    <td>86%</td>
+                                    <td>99.2%</td>
+                                    <td>$24M</td>
+                                    <td><span class="badge badge-red">CRITICAL</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="analysis-panel">
+                        <div class="lod1-box">
+                            <div class="panel-title lod1-title">&#9654; Senior LOD1 Analysis — Limit Monitoring</div>
+                            <ul class="panel-list">
+                                <li><span class="alert-critical">ACTION REQUIRED — Unsecured Ratio 99.2%:</span> One new bilateral unfunded trade will breach. Issue stop-trade directive to front office for any new unsecured exposure with current counterparties pending collateral review.</li>
+                                <li><span class="alert-warn">WATCH — Deutsche Single Name 81.2%:</span> $0.49B vs $0.60B limit. Two-trigger breach (utilization >80% + rating BBB+) requires Senior Credit Officer sign-off on any new DB trades. Recommend reducing to $0.40B target.</li>
+                                <li><span class="alert-warn">ELEVATED — RWA (CVA) 70.6%:</span> At current growth rate, RWA limit breach in ~6 months. Capital planning team should be notified to pre-allocate buffer or identify trades for RWA compression (clearing, hedging).</li>
+                                <li>Gross CVA (63.7%) and PFE@95% (64.8%) are within acceptable ranges. However, both are correlated — a single market stress event (e.g., spread widening +100bps) would push both toward 80%+ simultaneously.</li>
+                                <li>Limit framework does not currently include a WWR-adjusted CVA limit. True CVA ($0.15B) exceeds the $0.13B booked — the $0.20B limit would be effectively ~73% utilized on a true risk basis.</li>
+                            </ul>
+                        </div>
+                        <div class="suggestion-box">
+                            <div class="panel-title suggestion-title">&#9654; Model Enhancement Recommendations</div>
+                            <ul class="panel-list">
+                                <li><strong>WWR-Adjusted Limit Framework:</strong> Add a parallel limit set using WWR-adjusted CVA and stress PFE as the numerator — prevents limit understatement from base model conservatism.</li>
+                                <li><strong>Dynamic Limit Calculation:</strong> Current limits are static (annual review). Implement rating-contingent limits that automatically tighten when a counterparty is downgraded (e.g., DB limit drops to $0.45B on BBB trigger).</li>
+                                <li><strong>Utilization Velocity Monitoring:</strong> Add a 30-day utilization trend line per limit. A limit moving from 60% to 80% in 2 weeks is more alarming than a static 80% — velocity is an early warning signal.</li>
+                                <li><strong>Aggregate vs Bilateral Limit Linking:</strong> Unsecured Ratio is a portfolio limit but not linked to individual trade approval workflow. Integrate with front-office pre-trade system so trades failing unsecured ratio are blocked at input.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STRESS TAB -->
+                <div id="tab-stress" class="tab-content">
+                    <div class="section">
+                        <div class="section-title">Stress Test Scenarios</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Scenario</th>
+                                    <th>Market Moves</th>
+                                    <th>CVA ($M)</th>
+                                    <th>PFE ($M)</th>
+                                    <th>Limit Breach</th>
+                                    <th>Remediation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Base Case</strong></td>
+                                    <td>Current market</td>
+                                    <td>$0.13B</td>
+                                    <td>$3.89B</td>
+                                    <td><span class="badge badge-green">NO</span></td>
+                                    <td>None</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Rate Shock (+100bps)</strong></td>
+                                    <td>Rates ↑ 1.0%</td>
+                                    <td>$0.15B</td>
+                                    <td>$4.23B</td>
+                                    <td><span class="badge badge-yellow">WARN</span></td>
+                                    <td>Reduce fixed rate notional</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>FX Shock (EUR -10%)</strong></td>
+                                    <td>EUR ↓, Spreads +25bps</td>
+                                    <td>$0.16B</td>
+                                    <td>$4.67B</td>
+                                    <td><span class="badge badge-red">YES</span></td>
+                                    <td>Reduce EUR notional by €150M</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Vol Spike (+50%)</strong></td>
+                                    <td>All vol ↑ 50%</td>
+                                    <td>$0.16B</td>
+                                    <td>$4.91B</td>
+                                    <td><span class="badge badge-red">YES</span></td>
+                                    <td>Reduce option notional, buy puts</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Systemic Crisis</strong></td>
+                                    <td>Rates ↑, FX ↓, Vol ↑↑</td>
+                                    <td>$0.29B</td>
+                                    <td>$7.34B</td>
+                                    <td><span class="badge badge-red">BREACH 3x</span></td>
+                                    <td>Reduce portfolio 30%, unwind $0.60B</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="analysis-panel">
+                        <div class="lod1-box">
+                            <div class="panel-title lod1-title">&#9654; Senior LOD1 Analysis — Stress Testing</div>
+                            <ul class="panel-list">
+                                <li><span class="alert-critical">SYSTEMIC CRISIS:</span> CVA breach at <strong>3× limit ($0.29B vs $0.20B)</strong> and PFE breach at 22% over limit ($7.34B vs $6B). This is not a tail scenario — European rate shock combined with EUR depreciation is a realistic 2025–2026 risk given ECB policy path.</li>
+                                <li><span class="alert-critical">FX SHOCK (EUR -10%):</span> Already breaches CVA limit ($0.16B). Given 26.4% DB exposure with EUR-denominated trades, EUR/USD movement is the most proximate breach trigger. Current EUR/USD trend warrants weekly re-run of this scenario.</li>
+                                <li><span class="alert-warn">VOL SPIKE (+50%):</span> $0.16B CVA — breaches $0.20B limit. Equity options book is the primary driver. With 8 active equity option trades at $0.08B MtM, a VIX spike to 35+ would create meaningful limit pressure.</li>
+                                <li>Rate Shock (+100bps) produces only a WARNING — consistent with IRS book being primarily fixed-rate receivers where rising rates reduce MtM. This is a natural partial hedge.</li>
+                                <li>Remediation actions are currently qualitative. For systemic crisis, "$0.60B unwind" needs to be pre-traded (signed term sheets, identified unwind counterparties) — a live crisis leaves no time for negotiation.</li>
+                            </ul>
+                        </div>
+                        <div class="suggestion-box">
+                            <div class="panel-title suggestion-title">&#9654; Model Enhancement Recommendations</div>
+                            <ul class="panel-list">
+                                <li><strong>Pre-Approved Contingency Trades:</strong> Build a "stress playbook" with pre-negotiated unwind terms for DB and CS top-5 trades. LOD1 should maintain an approved list of offsetting trades executable within 24h of breach.</li>
+                                <li><strong>Scenario Granularity — EUR/USD:</strong> Add granular EUR/USD scenarios at -5%, -7.5%, -10%, -15% to identify the precise breach trigger point. Current -10% is the only FX scenario — insufficient for limits management.</li>
+                                <li><strong>Reverse Stress Testing:</strong> Implement reverse stress testing — given the portfolio, what market move combination causes a 2× CVA breach? This is more informative than forward scenarios and required by PRA SS1/23.</li>
+                                <li><strong>Historical Scenario Library:</strong> Add 2008 Lehman, 2011 European Sovereign Crisis, 2020 COVID, 2022 Rate Shock as named scenarios with actual market parameters — enables regulatory reporting and MRC comparison.</li>
+                                <li><strong>Intraday Stress Run:</strong> Stress tests currently run EOD. Implement hourly intraday stress using delta-approximation for real-time limit monitoring during volatile market sessions.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CVA TAB -->
+                <div id="tab-cva" class="tab-content">
+                    <div class="section">
+                        <div class="section-title">CVA & Fair Value Adjustments</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Adjustment</th>
+                                    <th>Amount ($M)</th>
+                                    <th>% of Gross Value</th>
+                                    <th>Interpretation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Portfolio Gross MtM</strong></td>
+                                    <td>$1.85B</td>
+                                    <td>100.0%</td>
+                                    <td>Unadjusted portfolio value</td>
+                                </tr>
+                                <tr class="negative">
+                                    <td><strong>CVA Charge</strong></td>
+                                    <td>-$0.13B</td>
+                                    <td>-6.9%</td>
+                                    <td>Counterparty default risk</td>
+                                </tr>
+                                <tr class="positive">
+                                    <td><strong>DVA Benefit</strong></td>
+                                    <td>+$0.09B</td>
+                                    <td>+4.8%</td>
+                                    <td>Our own default risk (benefit)</td>
+                                </tr>
+                                <tr class="negative">
+                                    <td><strong>FVA (Funding Cost)</strong></td>
+                                    <td>-$35M</td>
+                                    <td>-1.9%</td>
+                                    <td>Cost to fund positions</td>
+                                </tr>
+                                <tr class="negative">
+                                    <td><strong>KVA (Capital Cost)</strong></td>
+                                    <td>-$22M</td>
+                                    <td>-1.2%</td>
+                                    <td>Cost of regulatory capital</td>
+                                </tr>
+                                <tr style="background: rgba(0,82,204,0.06); font-weight: 600;">
+                                    <td>Adjusted Fair Value</td>
+                                    <td>$1.75B</td>
+                                    <td>94.9%</td>
+                                    <td>True economic value</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="analysis-panel">
+                        <div class="lod1-box">
+                            <div class="panel-title lod1-title">&#9654; Senior LOD1 Analysis — CVA Analytics</div>
+                            <ul class="panel-list">
+                                <li><span class="alert-warn">DVA BENEFIT $0.09B:</span> DVA represents 70% of the CVA charge — this is unusually high and implies the market views Citi's own default risk as significant. Validate DVA against current Citi CDS spread (~80bps) to confirm calculation is not overstating benefit.</li>
+                                <li>Net XVA charge = CVA - DVA + FVA + KVA = -$0.10B, reducing portfolio to $1.75B. FVA ($35M) reflects cost to fund uncollateralised positions — rising funding spreads in 2024–2025 make this metric increasingly material.</li>
+                                <li>KVA at $22M represents the cost of holding regulatory capital against these trades. Under Basel IV SA-CCR, this cost will increase ~20–30% post-2025 implementation — forward KVA should be modelled now.</li>
+                                <li><span class="alert-critical">UNBOOKED CVA GAP:</span> WWR-adjusted true CVA is $0.15B vs booked $0.13B. The $18M difference is an unprovisioned P&L reserve risk that would surface as a loss if any counterparty defaults.</li>
+                                <li>CVA P&L sensitivity to CS01 (credit spread DV01): approximately $420K per basis point across the portfolio. DB spread widening +15bps yesterday implies a -$6M daily CVA P&L — consistent with attribution report.</li>
+                            </ul>
+                        </div>
+                        <div class="suggestion-box">
+                            <div class="panel-title suggestion-title">&#9654; Model Enhancement Recommendations</div>
+                            <ul class="panel-list">
+                                <li><strong>Bilateral CVA (BCVA) Framework:</strong> Implement full bilateral CVA where CVA and DVA are computed simultaneously under a joint default model. Eliminates double-counting issues and aligns with IFRS 13 fair value hierarchy requirements.</li>
+                                <li><strong>Margin VA (MVA):</strong> Add MVA calculation for cleared and SIMM-governed trades — cost of posting initial margin over trade life is a real P&L cost not captured in current XVA framework.</li>
+                                <li><strong>Forward KVA Projection:</strong> Model KVA under Basel IV SA-CCR post-2025 — estimate the increase in KVA charge and build into trade pricing grid. This affects profitability assessment for new trades.</li>
+                                <li><strong>CVA Hedging P&L Attribution:</strong> Add a CVA hedge effectiveness section — shows how much of the CVA P&L was offset by CDS index hedges. Confirms hedge accounting treatment and identifies basis risk in the hedge programme.</li>
+                                <li><strong>CS01 / IR01 Sensitivity Grid:</strong> Display CVA sensitivity to credit spreads (CS01) and interest rates (IR01) per counterparty — required for FRTB SA-CVA regulatory capital calculation from 2026.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PFE TAB -->
+                <div id="tab-pfe" class="tab-content">
+                    <div class="section">
+                        <div class="section-title">Exposure Distribution & Tenor Analysis</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tenor Bucket</th>
+                                    <th>Notional ($M)</th>
+                                    <th>Exposure ($M)</th>
+                                    <th>PFE ($M)</th>
+                                    <th>EE ($M)</th>
+                                    <th>% Portfolio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>0-1Y</td>
+                                    <td>$0.46B</td>
+                                    <td>$0.23B</td>
+                                    <td>$0.29B</td>
+                                    <td>$0.19B</td>
+                                    <td>8.3%</td>
+                                </tr>
+                                <tr>
+                                    <td>1-3Y</td>
+                                    <td>$0.68B</td>
+                                    <td>$0.46B</td>
+                                    <td>$0.71B</td>
+                                    <td>$0.36B</td>
+                                    <td>25.4%</td>
+                                </tr>
+                                <tr style="background: rgba(30,144,255,0.1);">
+                                    <td><strong>3-5Y</strong></td>
+                                    <td>$0.79B</td>
+                                    <td>$0.65B</td>
+                                    <td>$1.02B</td>
+                                    <td>$0.52B</td>
+                                    <td><strong>36.5%</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>5-10Y</td>
+                                    <td>$0.63B</td>
+                                    <td>$0.51B</td>
+                                    <td>$0.99B</td>
+                                    <td>$0.41B</td>
+                                    <td>28.8%</td>
+                                </tr>
+                                <tr>
+                                    <td>10Y+</td>
+                                    <td>$0.23B</td>
+                                    <td>$0.18B</td>
+                                    <td>$0.41B</td>
+                                    <td>$0.20B</td>
+                                    <td>9.0%</td>
+                                </tr>
+                                <tr style="background: rgba(0,82,204,0.06); font-weight: 600;">
+                                    <td>TOTAL</td>
+                                    <td>$2.79B</td>
+                                    <td>$2.03B</td>
+                                    <td>$3.42B</td>
+                                    <td>$1.68B</td>
+                                    <td>100%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="chart-container" style="margin-top: 16px;">
+                            <canvas id="tenorChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WWR TAB -->
+                <div id="tab-wwr" class="tab-content">
+                    <div class="section">
+                        <div class="section-title">Wrong Way Risk (WWR) Detailed Analysis</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Counterparty</th>
+                                    <th>WWR Corr</th>
+                                    <th>Risk Type</th>
+                                    <th>Primary Driver</th>
+                                    <th>CVA Amplify</th>
+                                    <th>True CVA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background: rgba(255,82,82,0.1);">
+                                    <td><strong>Credit Suisse</strong></td>
+                                    <td class="warning">0.82</td>
+                                    <td class="warning">VERY HIGH</td>
+                                    <td>Market stress ↔ Credit deterioration</td>
+                                    <td>+34%</td>
+                                    <td>$29M (vs $22M base)</td>
+                                </tr>
+                                <tr style="background: rgba(255,193,7,0.05);">
+                                    <td><strong>Deutsche Bank</strong></td>
+                                    <td class="warning">0.78</td>
+                                    <td>HIGH</td>
+                                    <td>EUR weakness ↔ Spread widening</td>
+                                    <td>+27%</td>
+                                    <td>$43M (vs $34M base)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Barclays</strong></td>
+                                    <td>0.45</td>
+                                    <td>MODERATE</td>
+                                    <td>Rate cycle ↔ Funding costs</td>
+                                    <td>+8%</td>
+                                    <td>$30M (vs $28M base)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>BNP Paribas</strong></td>
+                                    <td>0.33</td>
+                                    <td>LOW</td>
+                                    <td>Macro sensitivity</td>
+                                    <td>+4%</td>
+                                    <td>$16M (vs $16M base)</td>
+                                </tr>
+                                <tr class="positive">
+                                    <td><strong>JP Morgan</strong></td>
+                                    <td class="positive">0.12</td>
+                                    <td>LOW</td>
+                                    <td>Implicit govt backing</td>
+                                    <td class="positive">-2%</td>
+                                    <td>$19M (vs $19M base)</td>
+                                </tr>
+                                <tr style="background: rgba(0,82,204,0.06); font-weight: 600;">
+                                    <td>PORTFOLIO</td>
+                                    <td>-</td>
+                                    <td>MIXED</td>
+                                    <td>Correlation breakdowns in stress</td>
+                                    <td>+13.9%</td>
+                                    <td>$0.15B (vs $0.13B base)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ATTRIBUTION TAB -->
+                <div id="tab-attribution" class="tab-content">
+                    <div class="section">
+                        <div class="section-title">P&L Attribution Analysis (Daily)</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Risk Driver</th>
+                                    <th>Market Move</th>
+                                    <th>CVA Impact ($M)</th>
+                                    <th>PFE Impact ($M)</th>
+                                    <th>% of Daily P&L</th>
+                                    <th>Commentary</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="negative">
+                                    <td><strong>CDS Spreads</strong></td>
+                                    <td>DB +15bps, CS +8bps</td>
+                                    <td>-$5M</td>
+                                    <td>-$0.12B</td>
+                                    <td>62.6%</td>
+                                    <td>Counterparties' credit deteriorating</td>
+                                </tr>
+                                <tr class="positive">
+                                    <td><strong>Interest Rates</strong></td>
+                                    <td>EUR +2bps</td>
+                                    <td>+$2M</td>
+                                    <td>+$45M</td>
+                                    <td>-21.7%</td>
+                                    <td>Higher rates reduce exposure for payers</td>
+                                </tr>
+                                <tr class="negative">
+                                    <td><strong>FX (EUR/USD)</strong></td>
+                                    <td>+0.35%</td>
+                                    <td>-$2M</td>
+                                    <td>-$0.23B</td>
+                                    <td>28.9%</td>
+                                    <td>EUR strength increases EUR-pay exposure</td>
+                                </tr>
+                                <tr class="positive">
+                                    <td><strong>Volatility</strong></td>
+                                    <td>Equity vol -0.8pp</td>
+                                    <td>+$1M</td>
+                                    <td>+$0.09B</td>
+                                    <td>-14.5%</td>
+                                    <td>Lower vol reduces option PFE</td>
+                                </tr>
+                                <tr style="background: rgba(0,82,204,0.06); font-weight: 600;">
+                                    <td>NET P&L (CVA)</td>
+                                    <td>Combined impact</td>
+                                    <td class="negative">-$5M</td>
+                                    <td>-$0.22B</td>
+                                    <td>100%</td>
+                                    <td>Difficult day, spreads widening</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="analysis-panel">
+                        <div class="lod1-box">
+                            <div class="panel-title lod1-title">&#9654; Senior LOD1 Analysis — P&amp;L Attribution</div>
+                            <ul class="panel-list">
+                                <li><span class="alert-critical">-$5M CVA P&amp;L today:</span> CDS spread widening (DB +15bps, CS +8bps) is the dominant driver at 62.6%. This is a model-predicted loss — validate against actual P&amp;L from finance to confirm attribution accuracy. Any unexplained difference >$500K requires root cause analysis.</li>
+                                <li>The -$5M daily CVA P&amp;L exceeds the typical daily VaR limit of $2–3M for a LOD1 desk. Confirm whether CVA hedges (CDS index shorts) offset any of this — hedge P&amp;L should appear as a separate line item.</li>
+                                <li>Interest rate attribution is positive (+$2M) — EUR rates rising slightly helps the fixed-rate receiver IRS portfolio. This is a natural offset and validates model directionality.</li>
+                                <li>FX contribution (-$2M) from EUR +0.35% — EUR-denominated trades with DB become more expensive in USD terms. This cross-currency exposure is not explicitly hedged per portfolio records.</li>
+                                <li><span class="alert-warn">AGGREGATION RISK:</span> Attribution only covers 4 risk drivers. Cross-gamma terms (e.g., simultaneous spread widening + vol spike) are not captured. In today's environment these second-order effects could add ±$1M to the unexplained P&amp;L bucket.</li>
+                            </ul>
+                        </div>
+                        <div class="suggestion-box">
+                            <div class="panel-title suggestion-title">&#9654; Model Enhancement Recommendations</div>
+                            <ul class="panel-list">
+                                <li><strong>Daily P&amp;L Explain vs Finance:</strong> Add an automated daily P&amp;L reconciliation between model CVA attribution and finance-reported CVA P&amp;L. Flag any difference >$200K for investigation — standard practice for FRTB P&amp;L attribution test (PAT).</li>
+                                <li><strong>Cross-Gamma Attribution:</strong> Add second-order cross-gamma terms (spread × rate, spread × FX) to attribution. These are material in today's correlated macro environment and eliminate the unexplained bucket.</li>
+                                <li><strong>Hedge P&amp;L Integration:</strong> Merge CVA hedge desk P&amp;L (CDS index positions, rate swaps) into the attribution report — shows net economic P&amp;L and hedge effectiveness ratio. Required for CVA hedge accounting designation.</li>
+                                <li><strong>Attribution Backtesting:</strong> Run weekly attribution backtesting — compare predicted attribution from t-1 with actual t-day P&amp;L. A high-quality CVA model should explain >90% of daily P&amp;L with no systematic bias.</li>
+                                <li><strong>Intraday P&amp;L Flash:</strong> Implement a real-time P&amp;L flash estimate using current CDS spread moves. Front office and risk can see estimated CVA P&amp;L impact by 10am rather than waiting for EOD run.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODEL VALIDATION TAB -->
+                <div id="tab-models" class="tab-content">
+                    <div class="section">
+                        <div class="section-title">Model Validation & Governance</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Model</th>
+                                    <th>Purpose</th>
+                                    <th>Status</th>
+                                    <th>Last Validation</th>
+                                    <th>Back-Test Accuracy</th>
+                                    <th>Next Review</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>MCE-001</strong></td>
+                                    <td>PFE/EE (1000 paths)</td>
+                                    <td><span class="badge badge-green">APPROVED</span></td>
+                                    <td>Q1 2024</td>
+                                    <td>94.2%</td>
+                                    <td>Q2 2024</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>CVA-001</strong></td>
+                                    <td>CVA Calculator</td>
+                                    <td><span class="badge badge-green">APPROVED</span></td>
+                                    <td>Q1 2024</td>
+                                    <td>99.1%</td>
+                                    <td>Q2 2024</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>STR-001</strong></td>
+                                    <td>Stress Test Suite</td>
+                                    <td><span class="badge badge-yellow">CONDITIONAL</span></td>
+                                    <td>Q4 2023</td>
+                                    <td>87.3%</td>
+                                    <td>Q2 2024</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>RAROC-001</strong></td>
+                                    <td>Risk-Adjusted Returns</td>
+                                    <td><span class="badge badge-green">APPROVED</span></td>
+                                    <td>Q1 2024</td>
+                                    <td>96.8%</td>
+                                    <td>Q3 2024</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="analysis-panel">
+                        <div class="lod1-box">
+                            <div class="panel-title lod1-title">&#9654; Senior LOD1 Analysis — Model Validation</div>
+                            <ul class="panel-list">
+                                <li><span class="alert-warn">STR-001 CONDITIONAL:</span> Stress Test model at 87.3% accuracy (below 90% internal threshold) with conditional approval from Q4 2023. This model is overdue for re-validation — the conditional approval lapsed Q1 2024. Escalate to Model Risk team for immediate re-validation scheduling.</li>
+                                <li>MCE-001 (Monte Carlo Exposure) at 94.2% accuracy — acceptable but borderline. Validate whether backtesting uses a consistent methodology: realized exposure vs modelled PFE@95% exceedance rate should be ≤5% over the test period.</li>
+                                <li>CVA-001 at 99.1% is excellent — but verify whether this accuracy is measured against market CDS quotes or internal credit curves. If internal curves, accuracy may be overstated vs market-observable benchmarks.</li>
+                                <li>RAROC-001 next review is Q3 2024 — this is upcoming. LOD1 should prepare a pre-review package with any known model limitations observed in daily use (particularly RAROC sensitivity to economic capital assumptions).</li>
+                                <li>All models share a common assumption: Gaussian copula for joint default simulation. Post-GFC evidence shows this underestimates tail risk. A t-copula or regime-switching copula should be considered for next validation cycle.</li>
+                            </ul>
+                        </div>
+                        <div class="suggestion-box">
+                            <div class="panel-title suggestion-title">&#9654; Model Enhancement Recommendations</div>
+                            <ul class="panel-list">
+                                <li><strong>STR-001 Re-validation (URGENT):</strong> Schedule immediate re-validation of STR-001. Until complete, stress test outputs should carry a model uncertainty buffer of ±15% on all scenario results — communicated to 2LOD.</li>
+                                <li><strong>Copula Upgrade:</strong> Replace Gaussian copula in joint default simulation with t-copula (ν=4 degrees of freedom). Validated academic consensus shows this better captures tail co-dependency in bank credit portfolios.</li>
+                                <li><strong>Independent Backtesting Framework:</strong> Implement an automated weekly backtesting pipeline that independently validates all 4 models against realized data — removes human involvement in backtesting and eliminates potential bias.</li>
+                                <li><strong>Model Uncertainty Quantification:</strong> Add a model uncertainty confidence interval to each model output. For CVA-001, display CVA as $0.13B ± $8M (1σ model uncertainty) rather than a false-precision point estimate.</li>
+                                <li><strong>Challenger Model Programme:</strong> Build a simple challenger model (e.g., market-implied CVA from CDS quotes) to run alongside MCE-001 and CVA-001 daily. Persistent divergence between primary and challenger signals model deterioration early.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REGULATORY TAB -->
+                <div id="tab-regulatory" class="tab-content">
+                    <div class="section">
+                        <div class="section-title">Regulatory Compliance & Reporting</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Regulatory Framework</th>
+                                    <th>Key Metric</th>
+                                    <th>Current Value</th>
+                                    <th>Regulatory Limit</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Basel III CVA SA</strong></td>
+                                    <td>CVA RWA</td>
+                                    <td>$0.85B</td>
+                                    <td>No formal limit</td>
+                                    <td><span class="badge badge-green">COMPLIANT</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Dodd-Frank SA-CCR</strong></td>
+                                    <td>EAD</td>
+                                    <td>$4.46B</td>
+                                    <td>Monitored</td>
+                                    <td><span class="badge badge-yellow">ELEVATED</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>FRTB</strong></td>
+                                    <td>Capital Requirement</td>
+                                    <td>$0.10B</td>
+                                    <td>Model-based</td>
+                                    <td><span class="badge badge-green">COMPLIANT</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Concentration Limits</strong></td>
+                                    <td>Herfindahl Index</td>
+                                    <td>1,847</td>
+                                    <td>2,500 (high limit)</td>
+                                    <td><span class="badge badge-green">OK</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="analysis-panel">
+                        <div class="lod1-box">
+                            <div class="panel-title lod1-title">&#9654; Senior LOD1 Analysis — Regulatory</div>
+                            <ul class="panel-list">
+                                <li><span class="alert-warn">SA-CCR EAD ELEVATED ($4.46B):</span> Dodd-Frank SA-CCR EAD is monitored but no formal limit — however, this feeds directly into Basel III RWA calculation. At 12% risk weight (implied), it generates $0.54B in credit RWA beyond the CVA RWA already reported. Confirm no double-count with Basel III CVA RWA.</li>
+                                <li>Basel III CVA SA RWA at $0.85B — COMPLIANT. However, post-2025 Basel IV implementation will replace SA with a more risk-sensitive SA-CVA calculation. Preliminary estimates suggest a 25–40% RWA increase under the new framework for this portfolio profile.</li>
+                                <li>FRTB capital at $0.10B is model-based — confirm this uses an approved IMA or SA framework. If IMA, confirm backtesting exceptions are within the green zone (≤4 exceptions per 250 days). Red zone IMA would trigger 1.5× capital multiplier.</li>
+                                <li>Herfindahl Index at 1,847 is within limit but JP Morgan + Deutsche Bank dual concentration is not captured by HHI alone — a bilateral concentration metric (max pairwise sum) should be added to the regulatory dashboard.</li>
+                                <li><span class="alert-critical">BASEL IV READINESS:</span> No Basel IV impact assessment is visible on the dashboard. With 2025 implementation deadline, LOD1 should be running parallel Basel IV RWA calculations monthly to quantify the transition impact.</li>
+                            </ul>
+                        </div>
+                        <div class="suggestion-box">
+                            <div class="panel-title suggestion-title">&#9654; Model Enhancement Recommendations</div>
+                            <ul class="panel-list">
+                                <li><strong>Basel IV Parallel Run:</strong> Implement a Basel IV SA-CVA parallel calculation alongside current Basel III SA. Display both on the regulatory tab with a delta column showing the RWA increase — critical for capital planning.</li>
+                                <li><strong>Integrated RWA Dashboard:</strong> Merge CVA RWA, CCR credit RWA (SA-CCR EAD × risk weight), and FRTB market risk RWA into a single regulatory capital waterfall. Prevents double-counting and provides total regulatory capital picture.</li>
+                                <li><strong>FRTB P&amp;L Attribution Test (PAT):</strong> Add an automated daily PAT metric for FRTB compliance — compares hypothetical P&amp;L vs risk-theoretical P&amp;L. Required for IMA desk approval and must pass >250 days annually.</li>
+                                <li><strong>Bilateral Concentration Metric:</strong> Replace or augment HHI with a bilateral concentration ratio (top-2 counterparties / total portfolio). More intuitive and directly maps to internal limits governance.</li>
+                                <li><strong>EMIR Reporting Integration:</strong> Add EMIR trade reporting status per trade (confirmed, reported, reconciled) — LOD1 is responsible for ensuring 100% EMIR trade reporting compliance for EU-regulated trades.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPIs TAB -->
+                <div id="tab-kpis" class="tab-content">
+                    <div class="section">
+                        <div class="section-title">Comprehensive Key Performance Indicators</div>
+                        <div class="grid-3">
+                            <div class="metric-card">
+                                <div class="metric-label">Sharpe Ratio (1Y)</div>
+                                <div class="metric-value">2.34</div>
+                                <div class="metric-delta">Risk-adjusted return metric</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Sortino Ratio (1Y)</div>
+                                <div class="metric-value">2.38</div>
+                                <div class="metric-delta">Downside risk focus</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Calmar Ratio</div>
+                                <div class="metric-value">3.11</div>
+                                <div class="metric-delta">Return vs max drawdown</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Max Drawdown</div>
+                                <div class="metric-value negative">-7.2%</div>
+                                <div class="metric-delta">Worst 1-year decline</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Volatility (1Y)</div>
+                                <div class="metric-value">9.6%</div>
+                                <div class="metric-delta">Annual annualized volatility</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Diversification Ratio</div>
+                                <div class="metric-value">1.50</div>
+                                <div class="metric-delta">Portfolio vs individual std devs</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">Performance Time Series (Multiple Horizons)</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>1 Year</th>
+                                    <th>3 Years</th>
+                                    <th>5 Years</th>
+                                    <th>10 Years</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Performance (Annualized)</strong></td>
+                                    <td class="positive">+22.4%</td>
+                                    <td class="positive">+17.3%</td>
+                                    <td class="positive">+10.2%</td>
+                                    <td class="positive">+10.4%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Volatility (Annualized)</strong></td>
+                                    <td>9.6%</td>
+                                    <td>8.2%</td>
+                                    <td>9.0%</td>
+                                    <td>8.7%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Sharpe Ratio</strong></td>
+                                    <td>2.34</td>
+                                    <td>2.11</td>
+                                    <td>1.13</td>
+                                    <td>1.20</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Max Drawdown</strong></td>
+                                    <td>-7.2%</td>
+                                    <td>-7.2%</td>
+                                    <td>-17.6%</td>
+                                    <td>-17.6%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Calmar Ratio</strong></td>
+                                    <td>3.11</td>
+                                    <td>2.39</td>
+                                    <td>0.58</td>
+                                    <td>0.59</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('timeDisplay').textContent = 
+                String(now.getHours()).padStart(2, '0') + ':' +
+                String(now.getMinutes()).padStart(2, '0') + ':' +
+                String(now.getSeconds()).padStart(2, '0');
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        function initPerformanceChart() {
+            const ctx = document.getElementById('performanceChart');
+            if (ctx && ctx.chart) ctx.chart.destroy();
+            if (!ctx) return;
+            
+            const data = [];
+            let base = 100;
+            const mu = 0.224 / 252;          // daily drift (22.4% annualised)
+            const sigma = 0.096 / Math.sqrt(252); // daily vol (9.6% annualised)
+            let seed = 42;
+            function randn() {
+                // Box-Muller — seeded-like but uses Math.random for variety
+                const u1 = Math.random(), u2 = Math.random();
+                return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+            }
+            // Force a realistic drawdown around day 30–50 then recovery
+            for (let i = 0; i < 252; i++) {
+                const z = randn();
+                const shock = (i >= 28 && i <= 48) ? -0.0035 : 0; // mild drawdown phase
+                base *= Math.exp(mu - 0.5 * sigma * sigma + sigma * z + shock);
+                data.push(parseFloat(base.toFixed(2)));
+            }
+
+            ctx.chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: 252}, (_, i) => (i + 1) + 'd'),
+                    datasets: [{
+                        label: 'Portfolio Performance',
+                        data: data,
+                        borderColor: '#0052cc',
+                        backgroundColor: 'rgba(0, 82, 204, 0.08)',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        pointHoverRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            ticks: { color: '#64748b', font: { size: 10 } },
+                            grid: { color: '#e2e8f0', drawBorder: false },
+                            min: 88,
+                            max: 140
+                        },
+                        x: {
+                            ticks: { color: '#64748b', font: { size: 10 }, maxTicksLimit: 10 },
+                            grid: { display: false, drawBorder: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initPCAChart() {
+            const ctx = document.getElementById('pcaChart');
+            if (ctx && ctx.chart) ctx.chart.destroy();
+            if (!ctx) return;
+            
+            ctx.chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['PC1', 'PC2', 'PC3'],
+                    datasets: [
+                        {
+                            label: 'Individual Variance',
+                            data: [37.3, 31.9, 30.7],
+                            backgroundColor: 'rgba(0, 82, 204, 0.55)',
+                            borderColor: '#0052cc',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Cumulative Variance',
+                            data: [37.3, 69.2, 100],
+                            backgroundColor: 'rgba(22, 163, 74, 0.2)',
+                            borderColor: '#16a34a',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            type: 'line',
+                            pointBackgroundColor: '#16a34a',
+                            pointBorderColor: '#16a34a',
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#64748b', font: { size: 10 } } } },
+                    scales: {
+                        y: {
+                            ticks: { color: '#64748b', font: { size: 10 } },
+                            grid: { color: '#e2e8f0', drawBorder: false },
+                            max: 100
+                        },
+                        x: {
+                            ticks: { color: '#64748b', font: { size: 10 } },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initTenorChart() {
+            const ctx = document.getElementById('tenorChart');
+            if (ctx && ctx.chart) ctx.chart.destroy();
+            if (!ctx) return;
+            
+            ctx.chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['0-1Y', '1-3Y', '3-5Y', '5-10Y', '10Y+'],
+                    datasets: [
+                        {
+                            label: 'EE (Mean)',
+                            data: [187, 356, 523, 412, 198],
+                            backgroundColor: 'rgba(0, 82, 204, 0.55)',
+                            borderColor: '#0052cc',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'PFE (95th)',
+                            data: [289, 712, 1023, 987, 412],
+                            backgroundColor: 'rgba(220, 38, 38, 0.35)',
+                            borderColor: '#dc2626',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#64748b', font: { size: 10 } } } },
+                    scales: {
+                        y: {
+                            ticks: { color: '#64748b', font: { size: 10 } },
+                            grid: { color: '#e2e8f0', drawBorder: false }
+                        },
+                        x: {
+                            ticks: { color: '#64748b', font: { size: 10 } },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        initPerformanceChart();
+        initPieChart();
+
+        function initPieChart() {
+            const ctx = document.getElementById('pieChart');
+            if (!ctx) return;
+            if (ctx.chart) ctx.chart.destroy();
+            ctx.chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['JP Morgan', 'Deutsche Bank', 'Barclays', 'BNP Paribas', 'Credit Suisse'],
+                    datasets: [{
+                        data: [567.8, 487.3, 312.4, 245.2, 234.6],
+                        backgroundColor: ['#0052cc','#d97706','#16a34a','#7c3aed','#dc2626'],
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '55%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#334155', font: { size: 10 }, padding: 10 } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) {
+                                    const total = 1847.3;
+                                    const pct = ((ctx.parsed / total) * 100).toFixed(1);
+                                    return ` $${ctx.parsed}M (${pct}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.target.classList.add('active');
+            setTimeout(() => {
+                if (tabName === 'dashboard') initPerformanceChart();
+                else if (tabName === 'pca') initPCAChart();
+                else if (tabName === 'pfe') initTenorChart();
+                else if (tabName === 'composition') initPieChart();
+            }, 100);
+        }
+    </script>
+</body>
+</html>
