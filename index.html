@@ -1183,22 +1183,22 @@
                     <div class="fo-alert-bar">
                         <div class="fo-alert critical">
                             <span class="fo-alert-icon">🔴</span>
-                            <div><strong>Deutsche Bank</strong> — Single-name limit at 81.2%. Dual-trigger active (Util &gt;80% + JTD 1.24%). No new trades without Senior Credit sign-off.</div>
-                            <span class="fo-alert-action">ESCALATE NOW →</span>
+                            <div><strong>Deutsche Bank — REJECT.</strong> Limit at 81.2% — exceeds 70% review threshold and credit risk concentration is elevated. No new trades until exposure is reduced below $420M.</div>
+                            <span class="fo-alert-action">BLOCKED →</span>
                         </div>
                         <div class="fo-alert warn">
                             <span class="fo-alert-icon">🟡</span>
-                            <div><strong>Barclays</strong> — Utilisation 69.4%. Next $80M trade will cross 75% threshold and trigger Desk Head review.</div>
-                            <span class="fo-alert-action">MONITOR →</span>
+                            <div><strong>JP Morgan — FLAG.</strong> Utilisation at 75.7% — in the 70–85% review band. Any new trade requires Senior Desk sign-off before booking.</div>
+                            <span class="fo-alert-action">SIGN-OFF REQUIRED →</span>
                         </div>
                         <div class="fo-alert warn">
                             <span class="fo-alert-icon">🟡</span>
-                            <div><strong>Credit Suisse</strong> — CVA reserve gap of $7M (WWR-adjusted). One-way CSA under legal review.</div>
+                            <div><strong>Credit Suisse — LEGAL HOLD.</strong> Collateral agreement under review. New trades permissible on exposure grounds but require Legal clearance first.</div>
                             <span class="fo-alert-action">LEGAL REVIEW →</span>
                         </div>
                         <div class="fo-alert ok">
                             <span class="fo-alert-icon">🟢</span>
-                            <div><strong>JP Morgan / BNP Paribas</strong> — Within limits. New trades up to $180M (JPM) and $150M (BNP) can be approved at Desk Head level.</div>
+                            <div><strong>Credit Suisse / Barclays / BNP Paribas — APPROVE.</strong> All below 70% threshold. Standard booking applies — no additional sign-off required.</div>
                             <span class="fo-alert-action">CLEAR →</span>
                         </div>
                     </div>
@@ -1217,43 +1217,43 @@
                                     Rating: BBB+ &nbsp;|&nbsp; CSA: Bilateral
                                 </div>
                                 <div class="headroom-bar"><div class="headroom-bar-fill" style="width:81.2%;background:#dc2626;"></div></div>
-                                <div style="margin-top:8px;"><span class="decision-badge dec-reject">ESCALATE</span></div>
-                            </div>
-
-                            <div class="headroom-card status-flag">
-                                <div class="headroom-cp">Credit Suisse</div>
-                                <div class="headroom-util flag">58.7%</div>
-                                <div class="headroom-meta">
-                                    <strong>Notional:</strong> $230M &nbsp;|&nbsp; <strong>Limit:</strong> $400M<br>
-                                    <strong>Headroom:</strong> <span style="color:#f59e0b;font-weight:700;">$170M</span><br>
-                                    Rating: A &nbsp;|&nbsp; CSA: One-Way ⚠
-                                </div>
-                                <div class="headroom-bar"><div class="headroom-bar-fill" style="width:58.7%;background:#f59e0b;"></div></div>
-                                <div style="margin-top:8px;"><span class="decision-badge dec-flag">MONITOR</span></div>
-                            </div>
-
-                            <div class="headroom-card status-flag">
-                                <div class="headroom-cp">Barclays</div>
-                                <div class="headroom-util flag">69.4%</div>
-                                <div class="headroom-meta">
-                                    <strong>Notional:</strong> $310M &nbsp;|&nbsp; <strong>Limit:</strong> $450M<br>
-                                    <strong>Headroom:</strong> <span style="color:#f59e0b;font-weight:700;">$140M</span><br>
-                                    Rating: A- &nbsp;|&nbsp; CSA: Bilateral
-                                </div>
-                                <div class="headroom-bar"><div class="headroom-bar-fill" style="width:69.4%;background:#f59e0b;"></div></div>
-                                <div style="margin-top:8px;"><span class="decision-badge dec-flag">DESK HEAD REVIEW</span></div>
+                                <div style="margin-top:8px;"><span class="decision-badge dec-reject">REJECT</span></div>
                             </div>
 
                             <div class="headroom-card status-ok">
+                                <div class="headroom-cp">Credit Suisse</div>
+                                <div class="headroom-util ok">58.7%</div>
+                                <div class="headroom-meta">
+                                    <strong>Notional:</strong> $230M &nbsp;|&nbsp; <strong>Limit:</strong> $400M<br>
+                                    <strong>Headroom:</strong> <span style="color:#16a34a;font-weight:700;">$170M</span><br>
+                                    Rating: A &nbsp;|&nbsp; CSA: One-Way ⚠
+                                </div>
+                                <div class="headroom-bar"><div class="headroom-bar-fill" style="width:58.7%;background:#16a34a;"></div></div>
+                                <div style="margin-top:8px;"><span class="decision-badge dec-approve">APPROVE</span></div>
+                            </div>
+
+                            <div class="headroom-card status-ok">
+                                <div class="headroom-cp">Barclays</div>
+                                <div class="headroom-util ok">69.4%</div>
+                                <div class="headroom-meta">
+                                    <strong>Notional:</strong> $310M &nbsp;|&nbsp; <strong>Limit:</strong> $450M<br>
+                                    <strong>Headroom:</strong> <span style="color:#16a34a;font-weight:700;">$140M</span><br>
+                                    Rating: A- &nbsp;|&nbsp; CSA: Bilateral
+                                </div>
+                                <div class="headroom-bar"><div class="headroom-bar-fill" style="width:69.4%;background:#16a34a;"></div></div>
+                                <div style="margin-top:8px;"><span class="decision-badge dec-approve">APPROVE</span></div>
+                            </div>
+
+                            <div class="headroom-card status-flag">
                                 <div class="headroom-cp">JP Morgan</div>
-                                <div class="headroom-util ok">75.7%</div>
+                                <div class="headroom-util flag">75.7%</div>
                                 <div class="headroom-meta">
                                     <strong>Notional:</strong> $570M &nbsp;|&nbsp; <strong>Limit:</strong> $750M<br>
-                                    <strong>Headroom:</strong> <span style="color:#16a34a;font-weight:700;">$180M</span><br>
+                                    <strong>Headroom:</strong> <span style="color:#f59e0b;font-weight:700;">$180M</span><br>
                                     Rating: A+ &nbsp;|&nbsp; CSA: Bilateral
                                 </div>
-                                <div class="headroom-bar"><div class="headroom-bar-fill" style="width:75.7%;background:#16a34a;"></div></div>
-                                <div style="margin-top:8px;"><span class="decision-badge dec-approve">APPROVE</span></div>
+                                <div class="headroom-bar"><div class="headroom-bar-fill" style="width:75.7%;background:#f59e0b;"></div></div>
+                                <div style="margin-top:8px;"><span class="decision-badge dec-flag">FLAG</span></div>
                             </div>
 
                             <div class="headroom-card status-ok">
@@ -1305,7 +1305,7 @@
                                     <td>$34M <small style="color:#dc2626;display:block;">+$9M WWR gap</small></td>
                                     <td><span style="color:#dc2626;font-weight:700;font-size:10px;">⚠ Dual-trigger active<br>JTD near limit</span></td>
                                     <td style="font-size:10px;">Bilateral · $10M threshold<br><span style="color:#16a34a;">✓ In place</span></td>
-                                    <td><span class="decision-badge dec-reject">ESCALATE</span></td>
+                                    <td><span class="decision-badge dec-reject">REJECT</span></td>
                                 </tr>
                                 <tr>
                                     <td><div class="cp-name">Credit Suisse</div><div class="cp-rating">EUR corporate · G-SIB</div></td>
@@ -1314,15 +1314,15 @@
                                     <td style="color:#64748b;">$400M</td>
                                     <td>
                                         <div class="util-bar-wrap">
-                                            <div class="util-bar-track"><div class="util-bar-fill" style="width:58.7%;background:#f59e0b;"></div></div>
-                                            <span class="warning">58.7%</span>
+                                            <div class="util-bar-track"><div class="util-bar-fill" style="width:58.7%;background:#16a34a;"></div></div>
+                                            <span class="positive">58.7%</span>
                                         </div>
                                     </td>
-                                    <td>$170M</td>
-                                    <td>$22M <small style="color:#f59e0b;display:block;">+$7M reserve gap</small></td>
-                                    <td><span style="color:#f59e0b;font-weight:700;font-size:10px;">⚠ One-way CSA<br>under legal review</span></td>
+                                    <td class="positive">$170M</td>
+                                    <td>$22M</td>
+                                    <td><span style="color:#f59e0b;font-weight:700;font-size:10px;">⚠ Legal hold on CSA</span></td>
                                     <td style="font-size:10px;">One-Way · $15M threshold<br><span style="color:#f59e0b;">⚠ Under review</span></td>
-                                    <td><span class="decision-badge dec-flag">FLAG</span></td>
+                                    <td><span class="decision-badge dec-approve">APPROVE*</span></td>
                                 </tr>
                                 <tr>
                                     <td><div class="cp-name">Barclays</div><div class="cp-rating">GBP corporate · G-SIB</div></td>
@@ -1331,15 +1331,15 @@
                                     <td style="color:#64748b;">$450M</td>
                                     <td>
                                         <div class="util-bar-wrap">
-                                            <div class="util-bar-track"><div class="util-bar-fill" style="width:69.4%;background:#f59e0b;"></div></div>
-                                            <span class="warning">69.4%</span>
+                                            <div class="util-bar-track"><div class="util-bar-fill" style="width:69.4%;background:#16a34a;"></div></div>
+                                            <span class="positive">69.4%</span>
                                         </div>
                                     </td>
-                                    <td>$140M</td>
+                                    <td class="positive">$140M</td>
                                     <td>$28M</td>
-                                    <td style="font-size:10px;color:#f59e0b;font-weight:700;">Next $80M → 75% threshold</td>
+                                    <td style="font-size:10px;color:#16a34a;font-weight:700;">✓ Within limits</td>
                                     <td style="font-size:10px;">Bilateral · $5M threshold<br><span style="color:#16a34a;">✓ In place</span></td>
-                                    <td><span class="decision-badge dec-flag">DESK REVIEW</span></td>
+                                    <td><span class="decision-badge dec-approve">APPROVE</span></td>
                                 </tr>
                                 <tr>
                                     <td><div class="cp-name">JP Morgan</div><div class="cp-rating">USD corporate · G-SIB</div></td>
@@ -1348,15 +1348,15 @@
                                     <td style="color:#64748b;">$750M</td>
                                     <td>
                                         <div class="util-bar-wrap">
-                                            <div class="util-bar-track"><div class="util-bar-fill" style="width:75.7%;background:#16a34a;"></div></div>
-                                            <span class="positive">75.7%</span>
+                                            <div class="util-bar-track"><div class="util-bar-fill" style="width:75.7%;background:#f59e0b;"></div></div>
+                                            <span class="warning">75.7%</span>
                                         </div>
                                     </td>
-                                    <td class="positive">$180M</td>
+                                    <td>$180M</td>
                                     <td>$19M</td>
-                                    <td style="font-size:10px;color:#16a34a;font-weight:700;">✓ Well within limits</td>
+                                    <td style="font-size:10px;color:#f59e0b;font-weight:700;">⚠ In review band — sign-off required</td>
                                     <td style="font-size:10px;">Bilateral · Zero threshold<br><span style="color:#16a34a;">✓ Fully collateralised</span></td>
-                                    <td><span class="decision-badge dec-approve">APPROVE</span></td>
+                                    <td><span class="decision-badge dec-flag">FLAG</span></td>
                                 </tr>
                                 <tr>
                                     <td><div class="cp-name">BNP Paribas</div><div class="cp-rating">EUR corporate · G-SIB</div></td>
@@ -2208,11 +2208,10 @@
                                 <button class="calc-btn" onclick="runPreTrade()">&#9654;&nbsp; RUN TRADE CHECK</button>
 
                                 <div style="margin-top:14px;background:#f8fafc;border-radius:6px;padding:10px 12px;font-size:10px;color:#64748b;">
-                                    <strong>Approval thresholds:</strong><br>
-                                    &lt;75% → Desk Head authority<br>
-                                    75–80% → Desk Head sign-off required<br>
-                                    80–90% → Senior Credit Approval<br>
-                                    &gt;90% → Cannot execute
+                                    <strong>Decision thresholds:</strong><br>
+                                    &lt;70% → <span style="color:#16a34a;font-weight:700;">APPROVE</span> — proceed immediately<br>
+                                    70–85% → <span style="color:#92400e;font-weight:700;">FLAG</span> — Senior Desk sign-off<br>
+                                    &gt;85% → <span style="color:#991b1b;font-weight:700;">REJECT</span> — cannot execute
                                 </div>
                             </div>
 
@@ -2289,32 +2288,25 @@
                             </thead>
                             <tbody>
                                 <tr style="background:#f0fdf4;">
-                                    <td><strong>&lt; 75%</strong></td>
+                                    <td><strong>&lt; 70%</strong></td>
                                     <td><span class="decision-badge dec-approve">APPROVE</span></td>
                                     <td>Desk Head</td>
                                     <td>&lt; 30 minutes</td>
-                                    <td>Trade ticket + limit check printout</td>
+                                    <td>Trade ticket only</td>
                                 </tr>
                                 <tr style="background:#fef9c3;">
-                                    <td><strong>75% – 80%</strong></td>
-                                    <td><span class="decision-badge dec-flag">DESK REVIEW</span></td>
-                                    <td>Desk Head + CCR sign-off</td>
-                                    <td>1–2 hours</td>
-                                    <td>Trade ticket + limit check + CCR memo</td>
-                                </tr>
-                                <tr style="background:#ffedd5;">
-                                    <td><strong>80% – 90%</strong></td>
-                                    <td><span class="decision-badge dec-escalate">ESCALATE</span></td>
-                                    <td>Senior Credit Officer</td>
-                                    <td>Same day (24h max)</td>
-                                    <td>Full credit memo + stress impact + remediation plan</td>
+                                    <td><strong>70% – 85%</strong></td>
+                                    <td><span class="decision-badge dec-flag">FLAG</span></td>
+                                    <td>Senior Desk + CCR sign-off</td>
+                                    <td>1–4 hours</td>
+                                    <td>Trade ticket + CCR limit check + Senior Desk sign-off</td>
                                 </tr>
                                 <tr style="background:#fee2e2;">
-                                    <td><strong>&gt; 90%</strong></td>
+                                    <td><strong>&gt; 85%</strong></td>
                                     <td><span class="decision-badge dec-reject">REJECT</span></td>
                                     <td>Trade cannot proceed</td>
                                     <td>N/A</td>
-                                    <td>Compress existing trades or obtain limit increase first</td>
+                                    <td>Compress existing exposure or obtain limit increase first</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -4479,22 +4471,18 @@
 
             // Decision
             let dec, decClass, reason, lod1;
-            if (newUtilPct < 75) {
+            if (newUtilPct < 70) {
                 dec = 'APPROVE'; decClass = 'approve';
-                reason = `Post-trade utilisation ${newUtilPct.toFixed(1)}% — within Desk Head authority. Trade can proceed immediately.`;
-                lod1 = `<strong>Finding:</strong> Utilisation remains below 75% threshold. <strong>Action:</strong> Obtain Desk Head sign-off and submit trade ticket. No further escalation required.`;
-            } else if (newUtilPct < 80) {
-                dec = 'DESK REVIEW'; decClass = 'flag';
-                reason = `Post-trade utilisation ${newUtilPct.toFixed(1)}% — crosses 75% threshold. Desk Head sign-off and CCR countersign required before execution.`;
-                lod1 = `<strong>Finding:</strong> Utilisation enters the 75–80% review band. <strong>Action:</strong> Obtain Desk Head and CCR co-sign-off. Document trade rationale and confirm no other pending trades with ${d.name}.`;
-            } else if (newUtilPct < 90) {
-                dec = 'ESCALATE'; decClass = 'escalate';
-                reason = `Post-trade utilisation ${newUtilPct.toFixed(1)}% — Senior Credit Approval required. Trade is blocked until SCO sign-off is obtained.`;
-                lod1 = `<strong>Finding:</strong> Utilisation exceeds 80% — dual-trigger escalation threshold active. <strong>Action:</strong> Prepare full credit memo with stress impact and submit to Senior Credit Officer. Same-day turnaround required; trade cannot be booked until written approval received.`;
+                reason = `Post-trade utilisation ${newUtilPct.toFixed(1)}% — within limit. Trade can proceed immediately.`;
+                lod1 = `<strong>Finding:</strong> Utilisation remains below 70% — no threshold breached. <strong>Action:</strong> Submit trade ticket for standard booking. No additional approval required.`;
+            } else if (newUtilPct <= 85) {
+                dec = 'FLAG'; decClass = 'flag';
+                reason = `Post-trade utilisation ${newUtilPct.toFixed(1)}% — enters review band (70–85%). Senior Desk sign-off required before trade is booked.`;
+                lod1 = `<strong>Finding:</strong> Utilisation crosses 70% — trade enters the flagged review band. <strong>Action:</strong> Obtain Senior Desk sign-off and CCR countersign. Confirm no other pending trades with ${d.name} before booking.`;
             } else {
                 dec = 'REJECT'; decClass = 'reject';
-                reason = `Post-trade utilisation ${newUtilPct.toFixed(1)}% — exceeds 90% hard limit. Trade cannot be executed. Compress existing exposure or request limit increase before retrying.`;
-                lod1 = `<strong>Finding:</strong> Utilisation would breach 90% hard ceiling. <strong>Action:</strong> Trade is blocked. Identify compressible trades with ${d.name} or escalate a limit increase request to Credit Committee. Do not attempt rebooking until headroom is confirmed.`;
+                reason = `Post-trade utilisation ${newUtilPct.toFixed(1)}% — exceeds 85% hard limit. Trade cannot be executed.`;
+                lod1 = `<strong>Finding:</strong> Utilisation would exceed 85% hard ceiling. <strong>Action:</strong> Trade is blocked. Compress existing exposure with ${d.name} or obtain a formal limit increase before retrying.`;
             }
 
             // Update decision box
