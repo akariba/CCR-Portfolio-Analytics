@@ -1,18 +1,24 @@
 import React from 'react';
-import { getDecision, utilPct } from '../../state/riskState';
+import { currentState } from '../../state/riskState';
 
 export default function AlertStrip({ counterparties }) {
   const alerts = [];
   Object.values(counterparties).forEach(cp => {
-    const u   = utilPct(cp.notional, cp.limit);
-    const dec = getDecision(u);
-    const hdm = cp.limit - cp.notional;
+    const { dec, util, headroom, effPFE } = currentState(cp);
     if (dec.cls === 'reject') {
-      alerts.push({ cls: 'reject', text: `${cp.name}: ${u.toFixed(1)}% utilised — exceeds 85% ceiling. No new trades. Compress exposure or raise limit.` });
+      alerts.push({ cls: 'reject',   text: `${cp.name}: PFE util ${util.toFixed(1)}% — exceeds 95% ceiling. No new trades.` });
+    } else if (dec.cls === 'escalate') {
+      alerts.push({ cls: 'escalate', text: `${cp.name}: PFE util ${util.toFixed(1)}% — 85–95% band. Escalate to Head of CCR before any new trades.` });
     } else if (dec.cls === 'flag') {
-      alerts.push({ cls: 'flag',   text: `${cp.name}: ${u.toFixed(1)}% utilised — in review band. Senior Desk sign-off required for new trades.` });
-    } else if (hdm < 80) {
-      alerts.push({ cls: 'flag',   text: `${cp.name}: headroom $${hdm}M — limited capacity. Monitor before adding exposure.` });
+      alerts.push({ cls: 'flag',     text: `${cp.name}: PFE util ${util.toFixed(1)}% — Senior Desk sign-off required for new trades.` });
+    } else if (headroom < 8) {
+      alerts.push({ cls: 'flag',     text: `${cp.name}: PFE headroom $${headroom.toFixed(1)}M — limited capacity. Monitor before adding exposure.` });
+    }
+    if (cp.csa.type === 'One-Way') {
+      alerts.push({ cls: 'flag',     text: `${cp.name}: One-way CSA — no collateral received. Higher capital charge applies.` });
+    }
+    if (cp.wwr === 'HIGH') {
+      alerts.push({ cls: 'escalate', text: `${cp.name}: HIGH wrong-way risk (ρ=${cp.wwr_rho}) — exposure amplified in stress.` });
     }
   });
   if (!alerts.length) {
