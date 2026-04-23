@@ -1,41 +1,75 @@
 export const COUNTERPARTIES = {
-  DB:  { id: 'DB',  name: 'Deutsche Bank',  notional: 490, limit: 600, cvaRate: 0.0695, region: 'EU',  rating: 'BBB+' },
-  CS:  { id: 'CS',  name: 'Credit Suisse',  notional: 230, limit: 400, cvaRate: 0.0957, region: 'EU',  rating: 'BBB'  },
-  BAR: { id: 'BAR', name: 'Barclays',       notional: 310, limit: 450, cvaRate: 0.0903, region: 'UK',  rating: 'BBB+' },
-  JPM: { id: 'JPM', name: 'JP Morgan',      notional: 570, limit: 750, cvaRate: 0.0333, region: 'US',  rating: 'AA-'  },
-  BNP: { id: 'BNP', name: 'BNP Paribas',   notional: 250, limit: 400, cvaRate: 0.0960, region: 'EU',  rating: 'BBB+' },
+  DB: {
+    id: 'DB', name: 'Deutsche Bank', notional: 490, limit: 600,
+    fairValue: 34.2, cva: 8.1, rating: 'BBB+', region: 'EU', cvaRate: 0.0695,
+    tenors:     ['6M',  '1Y',  '2Y',  '3Y',  '4Y',  '5Y',  '7Y',  '10Y'],
+    ee:         [8,     14,    22,    28,    25,    18,    12,    7   ],
+    pfe:        [18,    32,    48,    62,    56,    44,    30,    16  ],
+    tenorLimits:[40,    50,    65,    75,    70,    60,    48,    32  ],
+    var99: 12.4, stressVar: 28.6,
+    pl: { market: 2.1, carry: 0.8, residual: -0.3 },
+    wwr: 'HIGH', wwr_rho: 0.72, jtd: 34.2, jtdLimit: 50,
+    csa: { type: 'Bilateral', threshold: 10, mta: 0.5, law: 'NY Law', capitalFlag: true },
+    dsl: 50, settlementWindow: 2, settlementExposure: 18.4,
+  },
+  CS: {
+    id: 'CS', name: 'Credit Suisse', notional: 230, limit: 400,
+    fairValue: 22.4, cva: 5.3, rating: 'BBB', region: 'EU', cvaRate: 0.0957,
+    tenors:     ['6M',  '1Y',  '2Y',  '3Y',  '4Y',  '5Y',  '7Y',  '10Y'],
+    ee:         [5,     9,     14,    18,    16,    12,    8,     4   ],
+    pfe:        [12,    22,    34,    42,    38,    28,    18,    9   ],
+    tenorLimits:[30,    38,    50,    58,    52,    42,    32,    20  ],
+    var99: 7.8, stressVar: 18.4,
+    pl: { market: 1.2, carry: 0.5, residual: 0.1 },
+    wwr: 'HIGH', wwr_rho: 0.81, jtd: 22.4, jtdLimit: 40,
+    csa: { type: 'One-Way', threshold: 15, mta: 1.0, law: 'English Law', capitalFlag: true },
+    dsl: 30, settlementWindow: 1, settlementExposure: 8.2,
+  },
+  BAR: {
+    id: 'BAR', name: 'Barclays', notional: 310, limit: 450,
+    fairValue: 28.1, cva: 6.2, rating: 'BBB+', region: 'UK', cvaRate: 0.0903,
+    tenors:     ['6M',  '1Y',  '2Y',  '3Y',  '4Y',  '5Y',  '7Y',  '10Y'],
+    ee:         [6,     11,    18,    22,    20,    14,    9,     5   ],
+    pfe:        [14,    26,    40,    50,    44,    32,    22,    11  ],
+    tenorLimits:[32,    42,    55,    65,    58,    48,    36,    24  ],
+    var99: 9.2, stressVar: 21.8,
+    pl: { market: 1.8, carry: 0.6, residual: -0.1 },
+    wwr: 'MEDIUM', wwr_rho: 0.48, jtd: 28.1, jtdLimit: 50,
+    csa: { type: 'Bilateral', threshold: 5, mta: 0.25, law: 'English Law', capitalFlag: false },
+    dsl: 40, settlementWindow: 2, settlementExposure: 11.6,
+  },
+  JPM: {
+    id: 'JPM', name: 'JP Morgan', notional: 570, limit: 750,
+    fairValue: 19.4, cva: 3.8, rating: 'AA-', region: 'US', cvaRate: 0.0333,
+    tenors:     ['6M',  '1Y',  '2Y',  '3Y',  '4Y',  '5Y',  '7Y',  '10Y'],
+    ee:         [10,    18,    28,    36,    32,    24,    16,    8   ],
+    pfe:        [22,    40,    62,    80,    72,    54,    36,    18  ],
+    tenorLimits:[55,    68,    85,    100,   90,    74,    56,    36  ],
+    var99: 14.6, stressVar: 34.2,
+    pl: { market: 3.2, carry: 1.1, residual: -0.5 },
+    wwr: 'LOW', wwr_rho: 0.18, jtd: 19.4, jtdLimit: 100,
+    csa: { type: 'Bilateral', threshold: 0, mta: 0.1, law: 'NY Law', capitalFlag: false },
+    dsl: 80, settlementWindow: 1, settlementExposure: 6.8,
+  },
+  BNP: {
+    id: 'BNP', name: 'BNP Paribas', notional: 250, limit: 400,
+    fairValue: 24.0, cva: 5.8, rating: 'BBB+', region: 'EU', cvaRate: 0.0960,
+    tenors:     ['6M',  '1Y',  '2Y',  '3Y',  '4Y',  '5Y',  '7Y',  '10Y'],
+    ee:         [5,     9,     14,    18,    16,    12,    8,     4   ],
+    pfe:        [11,    20,    32,    40,    36,    26,    17,    8   ],
+    tenorLimits:[28,    36,    48,    55,    50,    40,    30,    18  ],
+    var99: 8.4, stressVar: 19.6,
+    pl: { market: 1.4, carry: 0.6, residual: 0.0 },
+    wwr: 'MEDIUM', wwr_rho: 0.55, jtd: 24.0, jtdLimit: 45,
+    csa: { type: 'Bilateral', threshold: 8, mta: 0.5, law: 'French Law', capitalFlag: false },
+    dsl: 35, settlementWindow: 2, settlementExposure: 9.1,
+  },
 };
 
 export const TRADE_TYPES = [
-  { value: 'fx',    label: 'FX Forward',      factor: 0.04,   maturityRequired: false },
-  { value: 'fxopt', label: 'FX Option',       factor: 0.052,  maturityRequired: false },
-  { value: 'irs',   label: 'Interest Rate Swap', factor: null, maturityRequired: true  },
-  { value: 'cds',   label: 'Credit Default Swap', factor: null, maturityRequired: true },
-  { value: 'eq',    label: 'Equity Derivative', factor: 0.32, maturityRequired: false },
+  { value: 'fx',    label: 'FX Forward',          maturityRequired: false },
+  { value: 'fxopt', label: 'FX Option',            maturityRequired: false },
+  { value: 'irs',   label: 'Interest Rate Swap',   maturityRequired: true  },
+  { value: 'cds',   label: 'Credit Default Swap',  maturityRequired: true  },
+  { value: 'eq',    label: 'Equity Derivative',    maturityRequired: false },
 ];
-
-export function calcExposureAddon(type, notional, maturity) {
-  const M = Math.max(parseFloat(maturity) || 1, 0.25);
-  const N = parseFloat(notional) || 0;
-  const MF = Math.sqrt(Math.min(M, 1));
-  let sf;
-  switch (type) {
-    case 'fx':    sf = 0.04; break;
-    case 'fxopt': sf = 0.052; break;
-    case 'irs':   sf = 0.005 * MF * M; break;
-    case 'cds':   sf = 0.0038 * MF * M; break;
-    case 'eq':    sf = 0.32; break;
-    default:      sf = 0.04;
-  }
-  return 1.4 * sf * N;
-}
-
-export function getDecision(utilPct) {
-  if (utilPct < 70) return { label: 'APPROVE', cls: 'approve', color: '#16a34a' };
-  if (utilPct <= 85) return { label: 'FLAG',    cls: 'flag',    color: '#d97706' };
-  return                     { label: 'REJECT',  cls: 'reject',  color: '#dc2626' };
-}
-
-export function utilPct(notional, limit) {
-  return (notional / limit) * 100;
-}
