@@ -654,6 +654,203 @@ section {
   margin: 0 0 56px;
 }
 
+/* ── Formula equation rows ────────────────────────────────────────────────── */
+.eq-section {
+  margin: 22px 0;
+}
+
+.eq-title {
+  font-family: var(--font-head);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.eq-num {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  background: var(--navy);
+  color: #fff;
+  border-radius: 2px;
+  padding: 2px 7px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.eq-desc {
+  font-size: 13px;
+  color: var(--text-sec);
+  line-height: 1.7;
+  margin-bottom: 10px;
+  max-width: 740px;
+}
+
+.formula-block-sm {
+  background: #1a1e2e;
+  border-radius: 4px;
+  padding: 16px 22px;
+  margin: 8px 0 6px;
+  overflow-x: auto;
+}
+
+.formula-block-sm pre {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 2;
+  color: #cdd6f4;
+  white-space: pre;
+}
+
+.formula-block-sm .comment { color: #6c7086; }
+.formula-block-sm .sym     { color: #89b4fa; }
+.formula-block-sm .val     { color: #a6e3a1; }
+.formula-block-sm .op      { color: #cba6f7; }
+.formula-block-sm .hi      { color: #f38ba8; }
+.formula-block-sm .str     { color: #f9e2af; }
+
+.eq-note {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-top: 4px;
+}
+
+.eq-note strong { color: var(--text-sec); font-weight: 600; }
+
+.eq-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 14px 0;
+}
+
+.eq-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--navy);
+  border-radius: 0 4px 4px 0;
+  padding: 14px 16px;
+}
+
+.eq-card.green { border-left-color: var(--green); }
+.eq-card.amber { border-left-color: var(--amber); }
+.eq-card.red   { border-left-color: #b91c1c; }
+
+.eq-card-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--navy);
+  margin-bottom: 7px;
+}
+.eq-card.green .eq-card-label { color: var(--green); }
+.eq-card.amber .eq-card-label { color: var(--amber); }
+.eq-card.red   .eq-card-label { color: #b91c1c; }
+
+.eq-card-body {
+  font-size: 12.5px;
+  color: var(--text-sec);
+  line-height: 1.7;
+}
+
+.eq-card-body .mono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 1px 5px;
+  color: var(--navy);
+  white-space: nowrap;
+}
+
+.steps-list {
+  counter-reset: step;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.steps-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  counter-increment: step;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.65;
+}
+
+.steps-list li::before {
+  content: counter(step, decimal-leading-zero);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--navy);
+  border-radius: 3px;
+  padding: 2px 6px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.param-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  margin: 10px 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.param-table th {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  background: var(--navy);
+  color: #fff;
+  padding: 8px 14px;
+  text-align: left;
+}
+
+.param-table td {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.55;
+}
+
+.param-table tr:last-child td { border-bottom: none; }
+.param-table tr:nth-child(even) td { background: var(--paper); }
+
+.param-table td:first-child {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--navy);
+  white-space: nowrap;
+}
+
+.param-table td:nth-child(2) {
+  color: var(--text-sec);
+  font-style: italic;
+  min-width: 160px;
+}
+
 /* ── Product blocks ───────────────────────────────────────────────────────── */
 .product-block {
   margin-bottom: 40px;
@@ -872,6 +1069,8 @@ section {
     <div class="nav-group-label">Methods</div>
     <a class="nav-item" href="#s4"><span class="nav-num">04</span>Curve models</a>
     <a class="nav-item" href="#s5"><span class="nav-num">05</span>Pricing commodities</a>
+
+    <a class="nav-item" href="#s5b"><span class="nav-num">05B</span>Expected future price</a>
 
     <div class="nav-group-label">Products</div>
     <a class="nav-item" href="#s8"><span class="nav-num">08</span>Commodity products</a>
@@ -1272,6 +1471,410 @@ section {
         a P&amp;L that appears flat in aggregate but oscillates within the quarter.
         <strong>Always decompose to the settlement granularity before discounting.</strong>
       </div>
+    </section>
+
+    <hr class="section-rule">
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- S5B: Expected future price — formulas & methods                    -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <section id="s5b">
+      <div class="section-eyebrow">Section 05B · Methods</div>
+      <div class="section-head">
+        <div class="step-tag" style="background:#4f46e5;">∑</div>
+        <h2>Expected <span class="acc">future price</span> — formulas &amp; methods</h2>
+      </div>
+
+      <p class="lede">
+        The "expected future price" has two distinct meanings that must never be confused.
+        The <strong>forward price</strong> F(0,T) is a market-observable contractual price for delivery at T —
+        no expectation required, no model required. The <strong>expected spot price</strong> E[S(T)] is a
+        probabilistic forecast of where spot will actually trade at T. Curve construction targets the
+        forward price. The relationship between the two is the risk premium — and understanding it
+        is what separates a pricing system from a forecasting system.
+      </p>
+
+      <div class="eq-grid">
+        <div class="eq-card green">
+          <div class="eq-card-label">Forward price — market observable</div>
+          <div class="eq-card-body">
+            <span class="mono">F(0,T)</span> — the price agreed today for delivery at T.
+            Observable from exchange futures and OTC quotes. No drift assumption. No risk premium.
+            This is what curve construction produces.
+          </div>
+        </div>
+        <div class="eq-card amber">
+          <div class="eq-card-label">Expected spot — model dependent</div>
+          <div class="eq-card-body">
+            <span class="mono">E<sup>ℙ</sup>[S(T)]</span> — the real-world average of where spot
+            will be at T. Requires a stochastic model, a drift assumption, and a risk premium.
+            This is what scenario generation and forecasting produce.
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Eq 1: Cost-of-carry ── -->
+      <div class="eq-section">
+        <div class="eq-title"><span class="eq-num">Eq 01</span> Cost-of-carry forward price (storable commodities)</div>
+        <p class="eq-desc">
+          For any commodity that can be stored, the no-arbitrage forward price is fully determined
+          by the cost of buying spot and holding it to delivery. Any deviation creates a cash-and-carry
+          arbitrage that is immediately traded away in liquid markets.
+        </p>
+        <div class="formula-block-sm"><pre>
+<span class="sym">F</span>(<span class="val">0</span>, <span class="sym">T</span>)  <span class="op">=</span>  <span class="sym">S</span>₀  <span class="op">·</span>  <span class="hi">e</span><span class="op">^</span>((<span class="sym">r</span> <span class="op">+</span> <span class="sym">s</span> <span class="op">−</span> <span class="sym">y</span>) <span class="op">·</span> <span class="sym">T</span>)
+
+<span class="comment">  S₀  =  spot price today</span>
+<span class="comment">  r   =  risk-free rate (continuously compounded, same currency as commodity)</span>
+<span class="comment">  s   =  storage cost rate (per year: warehousing, insurance, financing of physical)</span>
+<span class="comment">  y   =  convenience yield (per year: benefit of holding physical vs paper)</span>
+<span class="comment">  T   =  time to delivery in years</span></pre></div>
+        <div class="eq-grid" style="margin-top:12px;">
+          <div class="eq-card green">
+            <div class="eq-card-label">Contango condition (r + s &gt; y)</div>
+            <div class="eq-card-body">When storage costs exceed the convenience yield, forward prices exceed spot.
+            Buying spot and selling forward earns the carry. Prevalent in oil/metals during inventory surpluses.</div>
+          </div>
+          <div class="eq-card amber">
+            <div class="eq-card-label">Backwardation condition (y &gt; r + s)</div>
+            <div class="eq-card-body">When convenience yield dominates, forward prices fall below spot.
+            Physical holders earn a scarcity premium — "convenience" — that outweighs carry costs.
+            Prevalent in tight markets.</div>
+          </div>
+        </div>
+        <div class="def-box" style="margin-top:14px;">
+          <div class="def-box-label">Discrete compounding equivalent</div>
+          <p>For annual compounding: <strong>F(0,T) = S₀ · (1 + r + s − y)^T</strong>.
+          The continuous form is standard for derivatives; the discrete form is used in some
+          physical commodity markets. Never mix the two conventions within a single curve.</p>
+        </div>
+      </div>
+
+      <!-- ── Eq 2: Non-storable (power) ── -->
+      <div class="eq-section">
+        <div class="eq-title"><span class="eq-num">Eq 02</span> Non-storable commodity — direct calibration (power)</div>
+        <p class="eq-desc">
+          For power, storage is impossible. The cost-of-carry formula does not apply.
+          The forward price cannot be derived from spot — it must be read directly from market quotes
+          or anchored to fundamental economics. The no-arbitrage condition operates through
+          financial instruments only, not through physical carry.
+        </p>
+        <div class="formula-block-sm"><pre>
+<span class="comment"># Power: no cost-of-carry relationship exists.</span>
+<span class="comment"># Forward price is either directly market-quoted or anchored to fuel cost parity:</span>
+
+<span class="sym">F</span>_power(<span class="sym">T</span>)  <span class="op">≈</span>  <span class="sym">F</span>_gas(<span class="sym">T</span>) <span class="op">×</span> <span class="sym">HR</span>  <span class="op">+</span>  <span class="sym">F</span>_carbon(<span class="sym">T</span>) <span class="op">×</span> <span class="sym">EF</span>  <span class="op">+</span>  <span class="sym">OM</span>  <span class="op">+</span>  <span class="sym">capacity_premium</span>(<span class="sym">T</span>)
+
+<span class="comment">  HR    =  heat rate of the marginal generator (typically CCGT, ~49–52%)</span>
+<span class="comment">  EF    =  emission factor (tCO₂/MWh, ~0.35–0.40 for CCGT)</span>
+<span class="comment">  OM    =  variable O&amp;M cost of the marginal generator (€/MWh)</span>
+<span class="comment">  capacity_premium  =  scarcity premium above fuel cost; zero in normal conditions</span>
+
+<span class="comment"># Use this as a long-end anchor / sanity check, not as the primary construction method.</span></pre></div>
+      </div>
+
+      <!-- ── Eq 3: Mean-reversion (OU) ── -->
+      <div class="eq-section">
+        <div class="eq-title"><span class="eq-num">Eq 03</span> Mean-reverting expected price — Ornstein-Uhlenbeck</div>
+        <p class="eq-desc">
+          Mean reversion is the defining dynamic of energy and commodity prices.
+          The OU process models the speed at which prices return to a long-run equilibrium after a shock —
+          and its expected value formula is the mathematical expression of that reversion.
+        </p>
+        <div class="formula-block-sm"><pre>
+<span class="comment"># Stochastic differential equation (continuous time):</span>
+<span class="op">d</span><span class="sym">X</span>  <span class="op">=</span>  <span class="sym">κ</span> <span class="op">·</span> (<span class="sym">θ</span>(<span class="sym">t</span>) <span class="op">−</span> <span class="sym">X</span>) <span class="op">·</span> <span class="op">d</span><span class="sym">t</span>  <span class="op">+</span>  <span class="sym">σ</span> <span class="op">·</span> <span class="op">d</span><span class="sym">W</span>
+
+<span class="comment">  κ     =  mean-reversion speed (yr⁻¹); power: 3–10; gas: 1–5; oil: 0.5–2</span>
+<span class="comment">  θ(t)  =  seasonal equilibrium at time t  (see Eq 05 for seasonal form)</span>
+<span class="comment">  σ     =  volatility of the spot process</span>
+<span class="comment">  dW    =  standard Brownian increment</span>
+
+<span class="comment"># Closed-form expected value at horizon T:</span>
+<span class="sym">E</span>[<span class="sym">X</span>(<span class="sym">T</span>)]  <span class="op">=</span>  <span class="sym">θ</span>  <span class="op">+</span>  (<span class="sym">X</span>₀ <span class="op">−</span> <span class="sym">θ</span>) <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ</span> <span class="op">·</span> <span class="sym">T</span>)
+
+<span class="comment"># As T → ∞,  E[X(T)] → θ  (long-run equilibrium)</span>
+<span class="comment"># As T → 0,  E[X(T)] → X₀  (today's spot)</span>
+<span class="comment"># Half-life of a shock: T½ = ln(2) / κ   (time for 50% of shock to dissipate)</span>
+
+<span class="comment"># Discrete approximation for numerical bootstrapping (Euler-Maruyama):</span>
+<span class="sym">X</span>(<span class="sym">t</span><span class="op">+</span><span class="sym">Δt</span>)  <span class="op">≈</span>  <span class="sym">X</span>(<span class="sym">t</span>)  <span class="op">+</span>  <span class="sym">κ</span> <span class="op">·</span> (<span class="sym">θ</span> <span class="op">−</span> <span class="sym">X</span>(<span class="sym">t</span>)) <span class="op">·</span> <span class="sym">Δt</span>  <span class="op">+</span>  <span class="sym">σ</span> <span class="op">·</span> <span class="str">√Δt</span> <span class="op">·</span> <span class="sym">ε</span>   <span class="comment">  ε ~ N(0,1)</span></pre></div>
+        <p class="eq-note">
+          <strong>Calibrate κ:</strong> regress deseasonalised spot returns on lagged level →
+          AR(1) coefficient φ = e^(−κΔt), so κ = −ln(φ)/Δt.
+          A weekly calibration (Δt = 1/52) on power residuals typically yields κ ∈ [3, 8].
+        </p>
+      </div>
+
+      <!-- ── Eq 4: Two-factor (Schwartz-Smith) ── -->
+      <div class="eq-section">
+        <div class="eq-title"><span class="eq-num">Eq 04</span> Two-factor expected price — Schwartz-Smith decomposition</div>
+        <p class="eq-desc">
+          The two-factor model separates log-spot into a mean-reverting short-term deviation and a
+          random-walk long-term equilibrium. It explains the empirical observation that front-month
+          and back-of-curve prices are nearly uncorrelated — they are driven by different factors
+          with different speeds and different risk premia.
+        </p>
+        <div class="formula-block-sm"><pre>
+<span class="comment"># Decompose log spot price into two latent factors:</span>
+<span class="hi">ln</span> <span class="sym">S</span>(<span class="sym">t</span>)  <span class="op">=</span>  <span class="sym">χ</span>(<span class="sym">t</span>)  <span class="op">+</span>  <span class="sym">ξ</span>(<span class="sym">t</span>)
+
+<span class="comment">  χ(t)  =  short-term deviation  →  mean-reverts to zero at speed κ_χ</span>
+<span class="comment">  ξ(t)  =  long-term equilibrium →  random walk with drift μ_ξ</span>
+
+<span class="comment"># Factor dynamics:</span>
+<span class="op">d</span><span class="sym">χ</span>  <span class="op">=</span>  <span class="op">−</span><span class="sym">κ_χ</span> <span class="op">·</span> <span class="sym">χ</span> <span class="op">·</span> <span class="op">d</span><span class="sym">t</span>  <span class="op">+</span>  <span class="sym">σ_χ</span> <span class="op">·</span> <span class="op">d</span><span class="sym">W</span>₁
+<span class="op">d</span><span class="sym">ξ</span>  <span class="op">=</span>  <span class="sym">μ_ξ</span> <span class="op">·</span> <span class="op">d</span><span class="sym">t</span>    <span class="op">+</span>  <span class="sym">σ_ξ</span> <span class="op">·</span> <span class="op">d</span><span class="sym">W</span>₂    <span class="comment">  Corr(dW₁, dW₂) = ρ</span>
+
+<span class="comment"># Expected values at horizon T (under ℙ, real-world):</span>
+<span class="sym">E</span>[<span class="sym">χ</span>(<span class="sym">T</span>)]     <span class="op">=</span>  <span class="sym">χ</span>₀ <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ_χ</span> <span class="op">·</span> <span class="sym">T</span>)           <span class="comment">  decays to zero as T → ∞</span>
+<span class="sym">E</span>[<span class="sym">ξ</span>(<span class="sym">T</span>)]     <span class="op">=</span>  <span class="sym">ξ</span>₀ <span class="op">+</span> <span class="sym">μ_ξ</span> <span class="op">·</span> <span class="sym">T</span>              <span class="comment">  long-term equilibrium drifts</span>
+<span class="sym">E</span>[<span class="hi">ln</span> <span class="sym">S</span>(<span class="sym">T</span>)]  <span class="op">=</span>  <span class="sym">χ</span>₀ <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ_χ</span><span class="sym">T</span>) <span class="op">+</span> <span class="sym">ξ</span>₀ <span class="op">+</span> <span class="sym">μ_ξ</span><span class="sym">T</span>
+
+<span class="comment"># Forward price (under ℚ, risk-neutral) adds risk premium corrections λ_χ, λ_ξ:</span>
+<span class="hi">ln</span> <span class="sym">F</span>(<span class="val">0</span>,<span class="sym">T</span>)  <span class="op">=</span>  <span class="sym">χ</span>₀<span class="op">·</span><span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ_χT</span>) <span class="op">+</span> <span class="sym">ξ</span>₀ <span class="op">+</span> (<span class="sym">μ_ξ</span><span class="op">−</span><span class="sym">λ_ξ</span>)<span class="sym">T</span> <span class="op">−</span> <span class="sym">λ_χ</span>(<span class="val">1</span><span class="op">−</span><span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ_χT</span>))<span class="op">/</span><span class="sym">κ_χ</span> <span class="op">+</span> <span class="sym">variance_correction</span>(<span class="sym">T</span>)
+
+<span class="comment">  variance_correction(T) = ½[σ_χ²(1−e^(−2κT))/(2κ) + σ_ξ²T + 2ρσ_χσ_ξ(1−e^(−κT))/κ]</span></pre></div>
+        <p class="eq-note">
+          <strong>Practical use:</strong> calibrate {κ_χ, σ_χ, σ_ξ, μ_ξ, ρ, λ_χ, λ_ξ} via
+          Kalman filter on the historical futures strip. The term structure of futures
+          volatility (decreasing with maturity) is the key identifying feature of the
+          short-term factor.
+        </p>
+      </div>
+
+      <!-- ── Eq 5: Seasonal expected price ── -->
+      <div class="eq-section">
+        <div class="eq-title"><span class="eq-num">Eq 05</span> Seasonal expected price — Fourier equilibrium</div>
+        <p class="eq-desc">
+          For energy commodities, the long-run equilibrium θ is not a constant — it is a
+          deterministic seasonal function of time. Separating the deterministic seasonal component
+          from the stochastic residual is the essential first step before calibrating any
+          mean-reversion or volatility parameter.
+        </p>
+        <div class="formula-block-sm"><pre>
+<span class="comment"># Additive seasonal mean-reversion model:</span>
+<span class="sym">E</span>[<span class="sym">S</span>(<span class="sym">T</span>)]  <span class="op">=</span>  <span class="sym">θ</span>(<span class="sym">T</span>)  <span class="op">+</span>  (<span class="sym">S</span>₀ <span class="op">−</span> <span class="sym">θ</span>(<span class="val">0</span>)) <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ</span> <span class="op">·</span> <span class="sym">T</span>)
+
+<span class="comment"># Fourier seasonal equilibrium (annual + sub-annual cycles):</span>
+<span class="sym">θ</span>(<span class="sym">T</span>)  <span class="op">=</span>  <span class="sym">α</span>₀  <span class="op">+</span>  <span class="op">Σ</span><span class="str">ₖ</span>  [<span class="sym">aₖ</span> <span class="op">·</span> <span class="hi">cos</span>(<span class="val">2π</span><span class="sym">k</span><span class="sym">T</span><span class="op">/</span><span class="sym">P</span>)  <span class="op">+</span>  <span class="sym">bₖ</span> <span class="op">·</span> <span class="hi">sin</span>(<span class="val">2π</span><span class="sym">k</span><span class="sym">T</span><span class="op">/</span><span class="sym">P</span>)]
+
+<span class="comment">  α₀     =  long-run mean price level</span>
+<span class="comment">  aₖ,bₖ =  Fourier coefficients for harmonic k  (estimated by OLS on historical data)</span>
+<span class="comment">  P      =  period: 1 year for annual cycle, 1/52 for weekly, 1/365 for intra-day</span>
+<span class="comment">  k      =  harmonic number; k=1 gives fundamental cycle, k=2 semi-annual, etc.</span>
+
+<span class="comment"># Amplitude and phase of each harmonic:</span>
+<span class="sym">Amplitude</span>ₖ  <span class="op">=</span>  <span class="str">√</span>(<span class="sym">aₖ</span><span class="op">²</span> <span class="op">+</span> <span class="sym">bₖ</span><span class="op">²</span>)
+<span class="sym">Phase</span>ₖ      <span class="op">=</span>  <span class="hi">arctan</span>(<span class="sym">bₖ</span> <span class="op">/</span> <span class="sym">aₖ</span>)      <span class="comment">  tells you when the seasonal peak occurs</span>
+
+<span class="comment"># Multiplicative alternative (log-space, avoids negative prices):</span>
+<span class="hi">ln</span> <span class="sym">θ</span>(<span class="sym">T</span>)  <span class="op">=</span>  <span class="hi">ln</span> <span class="sym">α</span>₀  <span class="op">+</span>  <span class="op">Σ</span><span class="str">ₖ</span>  [<span class="sym">aₖ</span> <span class="op">·</span> <span class="hi">cos</span>(<span class="val">2π</span><span class="sym">k</span><span class="sym">T</span><span class="op">/</span><span class="sym">P</span>)  <span class="op">+</span>  <span class="sym">bₖ</span> <span class="op">·</span> <span class="hi">sin</span>(<span class="val">2π</span><span class="sym">k</span><span class="sym">T</span><span class="op">/</span><span class="sym">P</span>)]</pre></div>
+        <p class="eq-note">
+          <strong>Governance note:</strong> the Fourier coefficients {aₖ, bₖ} are model parameters — they must be locked between approval cycles, documented with the number of harmonics used, the historical estimation window, and any temperature-normalisation applied.
+          A change to any coefficient is a methodology change requiring formal sign-off.
+        </p>
+      </div>
+
+      <!-- ── Eq 6: Risk premium ── -->
+      <div class="eq-section">
+        <div class="eq-title"><span class="eq-num">Eq 06</span> Risk premium — forward price vs expected spot</div>
+        <p class="eq-desc">
+          The forward price is not an unbiased forecast of the future spot price.
+          The difference — the risk premium — compensates holders of forward contracts for
+          bearing price risk. In commodity markets, the sign and magnitude of the risk premium
+          vary by product, maturity, and market regime.
+        </p>
+        <div class="formula-block-sm"><pre>
+<span class="comment"># General relationship (under constant risk premium λ):</span>
+<span class="sym">F</span>(<span class="val">0</span>,<span class="sym">T</span>)  <span class="op">=</span>  <span class="sym">E</span><span class="op">^</span><span class="hi">ℙ</span>[<span class="sym">S</span>(<span class="sym">T</span>)]  <span class="op">·</span>  <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">λ</span> <span class="op">·</span> <span class="sym">σ</span> <span class="op">·</span> <span class="sym">T</span>)
+
+<span class="comment">  λ   =  market price of risk (Sharpe ratio of the commodity position)</span>
+<span class="comment">  σ   =  annualised volatility of the spot price</span>
+
+<span class="comment"># Rearranged — expected spot given the observed forward price:</span>
+<span class="sym">E</span><span class="op">^</span><span class="hi">ℙ</span>[<span class="sym">S</span>(<span class="sym">T</span>)]  <span class="op">=</span>  <span class="sym">F</span>(<span class="val">0</span>,<span class="sym">T</span>)  <span class="op">·</span>  <span class="hi">e</span><span class="op">^</span>(<span class="sym">λ</span> <span class="op">·</span> <span class="sym">σ</span> <span class="op">·</span> <span class="sym">T</span>)
+
+<span class="comment"># Sign convention:</span>
+<span class="comment">  λ &gt; 0  →  normal backwardation:  F(0,T) &lt; E[S(T)]  (short hedger pays premium)</span>
+<span class="comment">  λ &lt; 0  →  normal contango:       F(0,T) &gt; E[S(T)]  (long hedger pays premium)</span>
+<span class="comment">  λ = 0  →  forward = expected spot  (risk-neutral; only valid for financial assets)</span>
+
+<span class="comment"># Per-commodity empirical guidance (annualised, indicative):</span>
+<span class="comment">  Power (front):   λ ≈ +0.10 to +0.30  (short hedging pressure from generators)</span>
+<span class="comment">  Gas (front):     λ ≈ +0.05 to +0.15</span>
+<span class="comment">  Oil (long-end):  λ ≈ −0.05 to +0.05  (near-zero; efficient liquid market)</span>
+<span class="comment">  Metals:          λ ≈ −0.10 to +0.10  (regime-dependent)</span></pre></div>
+        <div class="def-box" style="margin-top:12px;">
+          <div class="def-box-label">Practical implication</div>
+          <p>For valuation and hedging, use the <strong>forward price</strong> — do not adjust for risk premium.
+          The forward price is the fair value of the position under risk-neutral pricing;
+          the risk premium is a measure of expected profit on the hedge, not a correction to fair value.
+          For scenario generation and real-world stress testing, use
+          <strong>E<sup>ℙ</sup>[S(T)] = F(0,T) · e^(λσT)</strong> with an explicit, documented choice of λ.
+          Conflating the two is a common source of model error.</p>
+        </div>
+      </div>
+
+      <!-- ── Eq 7: Log-normal baseline ── -->
+      <div class="eq-section">
+        <div class="eq-title"><span class="eq-num">Eq 07</span> Log-normal baseline — GBM and the Black formula</div>
+        <p class="eq-desc">
+          When mean reversion is slow relative to the horizon (typical for oil at long tenors),
+          geometric Brownian motion is a tractable baseline. It underlies the Black-76 formula
+          used to price commodity options and is the benchmark against which more complex models
+          are compared.
+        </p>
+        <div class="formula-block-sm"><pre>
+<span class="comment"># Geometric Brownian Motion for spot price:</span>
+<span class="op">d</span><span class="sym">S</span>  <span class="op">=</span>  <span class="sym">μ</span> <span class="op">·</span> <span class="sym">S</span> <span class="op">·</span> <span class="op">d</span><span class="sym">t</span>  <span class="op">+</span>  <span class="sym">σ</span> <span class="op">·</span> <span class="sym">S</span> <span class="op">·</span> <span class="op">d</span><span class="sym">W</span>
+
+<span class="comment"># Closed-form expected value (real-world drift μ):</span>
+<span class="sym">E</span>[<span class="sym">S</span>(<span class="sym">T</span>)]     <span class="op">=</span>  <span class="sym">S</span>₀ <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="sym">μ</span><span class="sym">T</span>)
+
+<span class="comment"># Log-normal distribution of S(T):</span>
+<span class="hi">ln</span> <span class="sym">S</span>(<span class="sym">T</span>)  <span class="op">~</span>  <span class="hi">𝒩</span>( <span class="hi">ln</span><span class="sym">S</span>₀ <span class="op">+</span> (<span class="sym">μ</span> <span class="op">−</span> <span class="sym">σ</span><span class="op">²</span><span class="op">/</span><span class="val">2</span>)<span class="sym">T</span>,   <span class="sym">σ</span><span class="op">²</span><span class="sym">T</span> )
+
+<span class="comment"># Black-76 forward price under risk-neutral measure (μ → r, no dividends):</span>
+<span class="sym">F</span>(<span class="val">0</span>,<span class="sym">T</span>)  <span class="op">=</span>  <span class="sym">S</span>₀ <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="sym">r</span><span class="sym">T</span>)   <span class="comment">  (no convenience yield; financial asset assumption)</span>
+
+<span class="comment"># Black-76 call option on a forward contract:</span>
+<span class="sym">C</span>  <span class="op">=</span>  <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">r</span><span class="sym">T</span>) <span class="op">·</span> [ <span class="sym">F</span> <span class="op">·</span> <span class="hi">N</span>(<span class="sym">d</span>₁) <span class="op">−</span> <span class="sym">K</span> <span class="op">·</span> <span class="hi">N</span>(<span class="sym">d</span>₂) ]
+
+<span class="comment">  d₁ = [ ln(F/K) + ½σ²T ] / (σ√T)</span>
+<span class="comment">  d₂ = d₁ − σ√T</span>
+<span class="comment">  N  = standard normal CDF</span>
+<span class="comment">  F  = current forward price;   K = strike;   σ = implied vol</span></pre></div>
+        <p class="eq-note">
+          <strong>Limitation:</strong> GBM assumes log-normally distributed prices with no mean reversion.
+          For power and gas, this is materially wrong at short tenors (mean reversion is fast).
+          Use GBM only as a first approximation for liquid long-end oil or metals positions,
+          or as a Black-76 option baseline against which mean-reverting model prices are compared.
+        </p>
+      </div>
+
+      <!-- ── Eq 8: Complete forward curve construction ── -->
+      <div class="eq-section">
+        <div class="eq-title"><span class="eq-num">Eq 08</span> The complete forward price — all adjustments combined</div>
+        <p class="eq-desc">
+          In practice the forward price at any maturity combines cost-of-carry, mean-reversion
+          dynamics, seasonality, and risk premium. The full expression for an energy forward curve
+          makes each layer explicit and shows where each governance parameter lives.
+        </p>
+        <div class="formula-block-sm"><pre>
+<span class="comment"># Full forward price at maturity T (energy, storable with slow storage like gas):</span>
+
+<span class="sym">F</span>(<span class="sym">T</span>)  <span class="op">=</span>   <span class="val">[</span> <span class="sym">θ</span>  <span class="op">+</span>  (<span class="sym">S</span>₀ <span class="op">−</span> <span class="sym">θ</span>) <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ</span><span class="sym">T</span>) <span class="val">]</span>    <span class="comment">← mean reversion to long-run level θ</span>
+        <span class="op">×</span>  <span class="sym">seasonal</span>(<span class="sym">T</span>)                  <span class="comment">← Fourier seasonal adjustment</span>
+        <span class="op">×</span>  <span class="hi">e</span><span class="op">^</span>((<span class="sym">r</span> <span class="op">+</span> <span class="sym">s</span> <span class="op">−</span> <span class="sym">y</span>)<span class="sym">T</span>)            <span class="comment">← cost of carry (if storable)</span>
+        <span class="op">×</span>  <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">λ</span><span class="sym">σ</span><span class="sym">T</span>)                   <span class="comment">← risk premium (if targeting E^ℙ, set λ; if F, set λ=0)</span>
+        <span class="op">×</span>  <span class="sym">shape</span>(<span class="sym">T</span>)                    <span class="comment">← intra-period delivery profile (peak vs base)</span>
+
+<span class="comment"># Each layer maps to a governance parameter:</span>
+<span class="comment">  θ, κ         →  mean-reversion methodology note  (review trigger: structural market change)</span>
+<span class="comment">  seasonal(T)  →  shape model methodology note     (review trigger: generation mix change)</span>
+<span class="comment">  r, s, y      →  curve inputs register            (review trigger: storage tariff, rate change)</span>
+<span class="comment">  λ            →  risk premium documentation       (review trigger: hedging regime change)</span>
+<span class="comment">  shape(T)     →  shaping model approval record    (review trigger: load profile shift)</span></pre></div>
+      </div>
+
+      <!-- ── Step-by-step procedure ── -->
+      <div class="eq-section">
+        <div class="eq-title"><span class="eq-num">Method</span> Step-by-step: building the expected future price curve</div>
+        <p class="eq-desc">A practical, ordered procedure applicable to any energy commodity.</p>
+        <ol class="steps-list">
+          <li><strong>Bootstrap the observable near end.</strong> Take exchange-quoted futures for the first 1–3 months. Assign F(tᵢ) = market quote directly. No model, no assumption — exact reprice is the standard.</li>
+          <li><strong>Estimate the long-run equilibrium θ.</strong> For storable commodities: long-run marginal cost of supply. For power: fuel-cost parity (gas × heat rate + carbon × EF + O&M). Document the source and review frequency.</li>
+          <li><strong>Calibrate mean-reversion speed κ.</strong> Regress deseasonalised spot price changes on lagged level: ΔX_t = −κ·X_{t-1}·Δt + ε. Report the estimated half-life T½ = ln(2)/κ alongside κ.</li>
+          <li><strong>Extract and lock seasonal parameters.</strong> Regress historical spot on Fourier basis features for annual/weekly cycles. Lock the coefficients as governance parameters. Document the estimation window and temperature normalisation used.</li>
+          <li><strong>Compute E[S(T)] = θ(T) + (S₀ − θ(0)) · e^(−κT)</strong> at every required delivery horizon. This is the model-implied expected future price under the real-world measure.</li>
+          <li><strong>Apply cost-of-carry adjustment (storable only).</strong> Multiply by e^((r+s−y)T) using current risk-free rate, documented storage cost, and calibrated convenience yield.</li>
+          <li><strong>Set risk premium λ.</strong> For valuation and hedging: set λ = 0 (use forward price, not drift-adjusted expectation). For scenario generation: use historically calibrated λ, documented explicitly.</li>
+          <li><strong>Decompose to delivery granularity.</strong> Apply shape model to convert base/quarterly pillars into intra-period hourly or daily expected prices. Record the shape model version in the audit log.</li>
+          <li><strong>Validate.</strong> Run round-trip reprice on all calibrating instruments. Check no-arbitrage (calendar spread monotonicity, cost-of-carry bounds). Back-test rolling 3/6/12-month horizon against realised settlements. Escalate any failure before publication.</li>
+        </ol>
+      </div>
+
+      <!-- ── Per-product parameter table ── -->
+      <div class="eq-section">
+        <div class="eq-title"><span class="eq-num">Ref</span> Typical parameter ranges by product</div>
+        <table class="param-table">
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Interpretation</th>
+              <th>Power</th>
+              <th>Gas</th>
+              <th>Crude Oil</th>
+              <th>EUAs</th>
+              <th>Base Metals</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>κ (yr⁻¹)</td>
+              <td>Mean-reversion speed</td>
+              <td>3 – 10</td>
+              <td>1 – 5</td>
+              <td>0.3 – 1.5</td>
+              <td>0.1 – 0.5 *</td>
+              <td>0.5 – 2</td>
+            </tr>
+            <tr>
+              <td>T½ (months)</td>
+              <td>Shock half-life</td>
+              <td>1 – 3</td>
+              <td>2 – 8</td>
+              <td>6 – 28</td>
+              <td>16 – 84 *</td>
+              <td>4 – 17</td>
+            </tr>
+            <tr>
+              <td>σ_spot (ann.)</td>
+              <td>Spot volatility</td>
+              <td>40 – 150 %</td>
+              <td>30 – 80 %</td>
+              <td>25 – 50 %</td>
+              <td>30 – 70 %</td>
+              <td>15 – 40 %</td>
+            </tr>
+            <tr>
+              <td>y (ann.)</td>
+              <td>Convenience yield</td>
+              <td>N/A †</td>
+              <td>0 – 15 %</td>
+              <td>0 – 12 %</td>
+              <td>N/A ‡</td>
+              <td>−2 – 8 %</td>
+            </tr>
+            <tr>
+              <td>λ (risk premium)</td>
+              <td>Market price of risk</td>
+              <td>+0.10 – +0.30</td>
+              <td>+0.05 – +0.15</td>
+              <td>−0.05 – +0.05</td>
+              <td>Uncertain</td>
+              <td>−0.10 – +0.10</td>
+            </tr>
+            <tr>
+              <td>Seasonal harmonics</td>
+              <td>Number of Fourier terms</td>
+              <td>3 – 6</td>
+              <td>2 – 4</td>
+              <td>1 (mild)</td>
+              <td>0 – 1 §</td>
+              <td>0 – 1 (mild)</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="eq-note" style="margin-top:10px;">
+          * EUA mean-reversion reflects policy-driven price anchoring; standard OU calibration is unreliable — use scenario-based approach instead.<br>
+          † Power is non-storable; cost-of-carry framework does not apply; convenience yield is undefined.<br>
+          ‡ EUAs are fully bankable; no convenience yield; forward price is purely cost-of-carry (r·T).<br>
+          § EUA seasonality enters through compliance demand (April 30 bunching), not through supply or storage economics.
+        </p>
+      </div>
+
     </section>
 
     <hr class="section-rule">
