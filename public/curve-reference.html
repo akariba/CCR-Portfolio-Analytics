@@ -654,6 +654,150 @@ section {
   margin: 0 0 56px;
 }
 
+/* ── Product blocks ───────────────────────────────────────────────────────── */
+.product-block {
+  margin-bottom: 40px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--white);
+}
+
+.product-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 22px;
+  background: var(--navy);
+  color: #fff;
+}
+
+.product-header.gas    { background: #0e6b72; }
+.product-header.oil    { background: #374151; }
+.product-header.coal   { background: #44403c; }
+.product-header.carbon { background: #166534; }
+.product-header.metals { background: #1e3a5f; }
+
+.product-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.28);
+  border-radius: 3px;
+  padding: 3px 9px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.product-meta { flex: 1; }
+
+.product-name {
+  font-family: var(--font-head);
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 3px;
+}
+
+.product-desc {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(255,255,255,.72);
+  letter-spacing: .04em;
+  line-height: 1.4;
+}
+
+.attr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 0;
+}
+
+.attr-card {
+  padding: 16px 20px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.attr-card:last-child  { border-right: none; }
+.attr-card:nth-child(2n) { border-right: none; }
+
+.attr-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.attr-label::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.attr-label.calc    { color: var(--navy);  } .attr-label.calc::before    { background: var(--navy);  }
+.attr-label.model   { color: var(--green); } .attr-label.model::before   { background: var(--green); }
+.attr-label.limits  { color: #b91c1c;      } .attr-label.limits::before  { background: #b91c1c;      }
+.attr-label.assume  { color: #64748b;      } .attr-label.assume::before  { background: #64748b;      }
+.attr-label.valid   { color: #6d28d9;      } .attr-label.valid::before   { background: #6d28d9;      }
+
+.attr-body {
+  font-size: 12.5px;
+  color: var(--text-sec);
+  line-height: 1.7;
+}
+
+.attr-body ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.attr-body ul li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.attr-body ul li::before {
+  content: '–';
+  color: var(--border2);
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  margin-top: 1px;
+}
+
+.attr-body strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.attr-body .mono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 1px 5px;
+  color: var(--navy);
+}
+
 /* ── Responsive ───────────────────────────────────────────────────────────── */
 @media (max-width: 1000px) {
   .shell { display: block; }
@@ -728,6 +872,15 @@ section {
     <div class="nav-group-label">Methods</div>
     <a class="nav-item" href="#s4"><span class="nav-num">04</span>Curve models</a>
     <a class="nav-item" href="#s5"><span class="nav-num">05</span>Pricing commodities</a>
+
+    <div class="nav-group-label">Products</div>
+    <a class="nav-item" href="#s8"><span class="nav-num">08</span>Commodity products</a>
+    <a class="nav-item" href="#s8-power"><span class="nav-num">↳</span>Power / Electricity</a>
+    <a class="nav-item" href="#s8-gas"><span class="nav-num">↳</span>Natural Gas</a>
+    <a class="nav-item" href="#s8-oil"><span class="nav-num">↳</span>Crude Oil &amp; Products</a>
+    <a class="nav-item" href="#s8-coal"><span class="nav-num">↳</span>Coal</a>
+    <a class="nav-item" href="#s8-carbon"><span class="nav-num">↳</span>Carbon / Emissions</a>
+    <a class="nav-item" href="#s8-metals"><span class="nav-num">↳</span>Base Metals (LME)</a>
 
     <div class="nav-group-label">Reference</div>
     <a class="nav-item" href="#s6"><span class="nav-num">06</span>Rates → energy mapping</a>
@@ -1233,12 +1386,489 @@ section {
       </ul>
     </section>
 
+    <hr class="section-rule">
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- S8: Commodity products                                             -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <section id="s8">
+      <div class="section-eyebrow">Section 08 · Products</div>
+      <div class="section-head">
+        <div class="step-tag">8</div>
+        <h2>Commodity <span class="acc">products</span></h2>
+      </div>
+
+      <p class="lede">
+        Each commodity class has a different physical structure, a different liquidity profile, and
+        a different dominant price driver — and those differences determine which curve model is
+        appropriate, what starting assumptions are valid, and which validation checks can actually
+        catch a bad curve before it reaches production.
+      </p>
+
+      <!-- ── Power / Electricity ── -->
+      <div class="product-block" id="s8-power">
+        <div class="product-header">
+          <div class="product-badge">01 · Power</div>
+          <div class="product-meta">
+            <div class="product-name">Power / Electricity</div>
+            <div class="product-desc">Non-storable · mean-reverting · strong multi-scale seasonality · spike risk on scarcity</div>
+          </div>
+        </div>
+        <div class="attr-grid">
+
+          <div class="attr-card">
+            <div class="attr-label calc">Calculation approach</div>
+            <div class="attr-body"><ul>
+              <li><strong>Near (0–3M):</strong> direct bootstrap from exchange day-ahead and month-ahead futures (EEX, ICE). Step-function reprice — exact by construction.</li>
+              <li><strong>Mid (3M–2Y):</strong> calibrate seasonal quarterly/annual OTC swaps; decompose base/peak via a load or temperature shape model. Clamped cubic spline over seasonal pillars, preserving winter/summer differentials.</li>
+              <li><strong>Long (2Y+):</strong> Fourier-extended parametric model (Nelson-Siegel + seasonal terms) or factor/PCA. Expert overlay anchored to fuel-cost parity: <span class="mono">F ≈ gas × heat_rate + carbon × EF + O&M</span>.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card">
+            <div class="attr-label model">Best model</div>
+            <div class="attr-body"><ul>
+              <li><strong>Spot dynamics:</strong> Ornstein-Uhlenbeck with Fourier seasonal mean — <span class="mono">dX = κ(θ(t)−X)dt + σdW</span> where θ(t) is a seasonal equilibrium.</li>
+              <li><strong>Spikes:</strong> add compound-Poisson jump term (<span class="mono">J·dN</span>); Gaussian-only models understate tail risk.</li>
+              <li><strong>Two-factor (Schwartz-Smith style):</strong> short-term spike factor + long-term equilibrium; explains why front/back decorrelate.</li>
+              <li>For the daily production mark: zoned bootstrap + spline + seasonal shape — not a full stochastic model.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card">
+            <div class="attr-label limits">Limitations</div>
+            <div class="attr-body"><ul>
+              <li><strong>Non-storability:</strong> no cost-of-carry constraint; the curve can be internally inconsistent without a physical correction mechanism to force it back.</li>
+              <li><strong>Spike risk:</strong> extreme scarcity events make historical calibration of κ and σ unreliable; parameters estimated in normal regimes understate crisis tails.</li>
+              <li><strong>Shape uncertainty:</strong> base/peak decomposition is model-dependent; ungoverned seasonality is the primary source of cross-BU price inconsistency.</li>
+              <li><strong>Structural change:</strong> renewable penetration reshapes the intra-day profile (duck curve) over time; parameters calibrated on 5-year history may already be stale.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card">
+            <div class="attr-label assume">Starting assumptions</div>
+            <div class="attr-body"><ul>
+              <li><strong>Mean-reversion speed κ:</strong> typically 3–10 yr⁻¹ (fast); calibrate from deseasonalised residuals via AR(1).</li>
+              <li><strong>Long-run equilibrium:</strong> fuel-cost stack — gas forward × heat rate + carbon × emission factor + fixed O&M.</li>
+              <li><strong>Seasonality:</strong> ≥5 years of hourly data, temperature-normalised; annual + weekly + intra-day Fourier terms.</li>
+              <li><strong>Peak/base ratio:</strong> derived from historical load profile; reviewed when generation mix changes by &gt;5% of installed capacity.</li>
+              <li><strong>No storage arbitrage:</strong> power is non-storable — the no-arbitrage condition applies only to financial products, not to physical delivery.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card" style="border-bottom:none;">
+            <div class="attr-label valid">Validation methods</div>
+            <div class="attr-body"><ul>
+              <li><strong>Round-trip reprice:</strong> all calibrating exchange futures and OTC swaps must reprice to zero error (bootstrap) or within bid-ask (best-fit).</li>
+              <li><strong>Calendar-spread monotonicity:</strong> seasonal peaks must not imply risk-free arbitrage vs adjacent quarters.</li>
+              <li><strong>Fuel parity check:</strong> implied clean spark spread at long end must be economically plausible (≥0 for expected generation margin).</li>
+              <li><strong>Peak/base ratio:</strong> implied ratio must sit within observable historical range; outliers trigger shape model review.</li>
+              <li><strong>Back-test:</strong> rolling comparison of curve at construction date vs subsequently settled prompt prices; report bias and RMSE per tenor bucket.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card" style="border-bottom:none; border-right:none;">
+            <div class="attr-label" style="color:#94a3b8;">&#9432; Key risk</div>
+            <div class="attr-body">
+              <div class="def-box" style="margin:0;">
+                <div class="def-box-label">Non-storability trap</div>
+                <p>In every other commodity, storage arbitrage provides a floor under the forward curve. In power it does not. A power forward curve can imply calendar spreads that would be arbitraged away in any storable market — and they persist because no one can carry physical power across time. This means governance (approval cycles, parameter locks, overlay documentation) does all the work that physical arbitrage does in other markets.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Natural Gas ── -->
+      <div class="product-block" id="s8-gas">
+        <div class="product-header gas">
+          <div class="product-badge">02 · Gas</div>
+          <div class="product-meta">
+            <div class="product-name">Natural Gas</div>
+            <div class="product-desc">Storable · seasonal · hub-fragmented · storage economics define winter/summer spread</div>
+          </div>
+        </div>
+        <div class="attr-grid">
+
+          <div class="attr-card">
+            <div class="attr-label calc">Calculation approach</div>
+            <div class="attr-body"><ul>
+              <li><strong>Near (0–3M):</strong> day-ahead and prompt-month TTF/NCG/NBP settlement. Direct bootstrap; instruments are clean and liquid.</li>
+              <li><strong>Mid (3M–2Y):</strong> seasonal summer/winter swaps and quarterly OTC. Cubic spline preserving winter premium; summer/winter spread must satisfy storage economics: <span class="mono">W−S ≥ inject + withdraw + capital</span>.</li>
+              <li><strong>Long (2Y+):</strong> gas-to-power parity (dark spread) + LNG netback constraint as a soft ceiling. Factor model or expert overlay; this is the most governance-intensive zone.</li>
+              <li>Hub basis curves (TTF vs NCG, TTF vs NBP) built separately and added as spread adjustments.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card">
+            <div class="attr-label model">Best model</div>
+            <div class="attr-body"><ul>
+              <li><strong>Gabillon two-factor:</strong> short-term spot deviation + long-term equilibrium, both mean-reverting; explains seasonal pattern without overfit.</li>
+              <li><strong>Storage-constrained seasonality:</strong> winter/summer spread bounded below by injection + withdrawal costs; bound is a hard constraint, not a model parameter.</li>
+              <li><strong>Regime-aware:</strong> LNG import/export regimes change the effective long-run anchor; model should support scenario switching on long-run mean.</li>
+              <li>For the daily mark: bootstrap near end; seasonal spline mid; expert-overlay-adjusted parametric long end.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card">
+            <div class="attr-label limits">Limitations</div>
+            <div class="attr-body"><ul>
+              <li><strong>Storage bound is a floor, not a cap:</strong> extreme weather can push winter prices above any storage-implied ceiling; the model will understate peak-winter risk.</li>
+              <li><strong>Hub fragmentation:</strong> TTF, NCG, NBP, PSV, TTF/NBP basis all require separate curves; basis risk is not captured in a single-curve framework.</li>
+              <li><strong>LNG globalisation:</strong> the long end is increasingly linked to global LNG pricing, breaking historical TTF-anchored relationships.</li>
+              <li><strong>Within-day gap:</strong> curve is built on day-ahead settlement but delivery is intraday; intra-day spread is unobserved and unhedgeable from the forward curve alone.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card">
+            <div class="attr-label assume">Starting assumptions</div>
+            <div class="attr-body"><ul>
+              <li><strong>Seasonal structure:</strong> winter premium calibrated from ≥5 storage cycles; normalise for above/below-average temperature years.</li>
+              <li><strong>Storage parameters:</strong> injection rate, withdrawal rate, working capacity — these set the no-arbitrage bounds on the winter/summer spread.</li>
+              <li><strong>Gas heat rate:</strong> 49–52% for CCGT; used in gas-to-power parity constraint.</li>
+              <li><strong>Basis differentials:</strong> TTF→NCG, TTF→NBP spreads treated as independent forward curves; do not embed in the main TTF curve.</li>
+              <li><strong>LNG parity:</strong> long end bounded softly by delivered LNG cost (subject to regasification capacity and shipping); treat as a stress scenario, not a hard constraint.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card" style="border-bottom:none;">
+            <div class="attr-label valid">Validation methods</div>
+            <div class="attr-body"><ul>
+              <li><strong>Storage economics test:</strong> winter/summer spread ≥ documented injection + withdrawal + capital cost; violation is a hard arbitrage flag.</li>
+              <li><strong>Hub parity:</strong> implied basis spread vs broker-quoted hub differentials; deviation beyond historical bid-ask triggers an input-quote review.</li>
+              <li><strong>Fuel parity:</strong> gas forward × heat rate + carbon cost ≈ power forward; systematic deviation signals cross-commodity inconsistency.</li>
+              <li><strong>Back-test per season:</strong> winter and summer RMSE tracked separately; seasonal bias more informative than a full-year average error.</li>
+              <li><strong>Overlay frequency monitor:</strong> high long-end overlay frequency signals the model is chasing noise — triggers a formal methodology review.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card" style="border-bottom:none; border-right:none;">
+            <div class="attr-label" style="color:#94a3b8;">&#9432; Key risk</div>
+            <div class="attr-body">
+              <div class="callout" style="margin:0;">
+                <div class="callout-label">Storage arbitrage as governance anchor</div>
+                Unlike power, gas storage provides a physical no-arbitrage bound. The winter/summer spread cannot persistently fall below injection + withdrawal cost without creating a profitable storage trade. Use this bound as a hard governance check — a curve that violates it is mis-marked regardless of what the solver produced.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Crude Oil & Products ── -->
+      <div class="product-block" id="s8-oil">
+        <div class="product-header oil">
+          <div class="product-badge">03 · Oil</div>
+          <div class="product-meta">
+            <div class="product-name">Crude Oil &amp; Oil Products</div>
+            <div class="product-desc">Highly storable · cost-of-carry dominant · convenience yield driven by inventory levels</div>
+          </div>
+        </div>
+        <div class="attr-grid">
+
+          <div class="attr-card">
+            <div class="attr-label calc">Calculation approach</div>
+            <div class="attr-body"><ul>
+              <li><strong>Near (0–6M):</strong> prompt monthly Brent/WTI (ICE/CME) and refined products (gasoil, jet, RBOB). Exact bootstrap; instruments are liquid and well-observed.</li>
+              <li><strong>Mid (6M–3Y):</strong> monthly and quarterly calendar swaps. Spline interpolation; cost-of-carry relationship disciplines the shape: <span class="mono">F(T) = S · e^((r+s−y)T)</span>.</li>
+              <li><strong>Long (3Y+):</strong> convenience yield model with mean-reversion of the spot price to long-run marginal cost. Parametric extrapolation (NS or power-law decay of convenience yield).</li>
+              <li>Crack spread curves (gasoil/crude, jet/crude) built as separate differential curves, not embedded in the flat-price curve.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card">
+            <div class="attr-label model">Best model</div>
+            <div class="attr-body"><ul>
+              <li><strong>Gibson-Schwartz two-factor:</strong> spot price (mean-reverting) + stochastic convenience yield (also mean-reverting); explains the term structure of futures volatility and contango/backwardation transitions.</li>
+              <li><strong>Schwartz-Smith:</strong> short-term deviation from equilibrium + long-term equilibrium with drift; well-calibrated to historical Brent/WTI strip data.</li>
+              <li>For the daily mark: bootstrap near end directly from CME/ICE settlements; spline over monthly pillars; parametric beyond 3Y.</li>
+              <li>Convenience yield observable from the cash-to-3M spread; use as an input, not an output.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card">
+            <div class="attr-label limits">Limitations</div>
+            <div class="attr-body"><ul>
+              <li><strong>Convenience yield is unobservable beyond the front of the curve;</strong> at long tenors it must be assumed, not calibrated — the main source of long-end model risk.</li>
+              <li><strong>Geopolitical discontinuities:</strong> OPEC production decisions and supply shocks create discrete jumps not captured by continuous diffusion. Historical calibration over-weights normal regimes.</li>
+              <li><strong>Crack spread volatility:</strong> crude and product curves are linked but crack spreads are independently volatile; a flat-price model that ignores this understates product-specific risk.</li>
+              <li><strong>Mean-reversion speed to long-run cost uncertain:</strong> historical range is 5–15 years; long-end sensitivity to this assumption is very high.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card">
+            <div class="attr-label assume">Starting assumptions</div>
+            <div class="attr-body"><ul>
+              <li><strong>Storage cost:</strong> ~0.5–1.0 USD/bbl/month (tanker storage); verifiable from published tanker rates.</li>
+              <li><strong>Risk-free rate:</strong> USD SOFR; oil markets are USD-denominated.</li>
+              <li><strong>Convenience yield:</strong> calibrated from near-term calendar spread; typically 0–10% annualised; strongly negative in contango (inventory surplus), zero/positive in backwardation.</li>
+              <li><strong>Long-run marginal cost:</strong> 60–80 USD/bbl for conventional production (cost-curve dependent; review annually with IEA/EIA supply-cost data).</li>
+              <li><strong>Correlation crude/products:</strong> ~0.85–0.95 for gasoil/crude; crack spreads modelled as residuals on a separate curve.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card" style="border-bottom:none;">
+            <div class="attr-label valid">Validation methods</div>
+            <div class="attr-body"><ul>
+              <li><strong>Cost-of-carry bound:</strong> <span class="mono">F(T) ≤ S · e^((r+s)T)</span>; if breached, a documented storage arbitrage exists — hard flag.</li>
+              <li><strong>Crack spread consistency:</strong> implied gasoil/crude forward ratio within historical crack spread range (typically 10–25 USD/bbl); outlier triggers product-curve review.</li>
+              <li><strong>Convenience yield vs inventory:</strong> implied convenience yield should be negatively correlated with published inventory levels (EIA weekly, IEA monthly); divergence signals model-input error.</li>
+              <li><strong>DV01 decay:</strong> price sensitivity per pillar should decrease monotonically with maturity for a cost-of-carry curve; flat or rising DV01 at long end signals over-reliance on parametric extrapolation.</li>
+              <li><strong>Calendar spread vs storage cost documentation:</strong> near-term spread deviation beyond documented storage cost must be escalated before publication.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card" style="border-bottom:none; border-right:none;">
+            <div class="attr-label" style="color:#94a3b8;">&#9432; Key risk</div>
+            <div class="attr-body">
+              <div class="def-box" style="margin:0;">
+                <div class="def-box-label">Regime shift risk</div>
+                <p>Oil markets alternate between contango (inventory surplus, cost-of-carry dominates) and backwardation (inventory deficit, convenience yield dominates). The transition between these regimes is regime-like — the forward curve shape flips quickly when OPEC cuts production or a major supply disruption occurs. A model calibrated in one regime will misjudge the other. Governance response: run both regimes as named scenarios and flag when the market is transitioning.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Coal ── -->
+      <div class="product-block" id="s8-coal">
+        <div class="product-header coal">
+          <div class="product-badge">04 · Coal</div>
+          <div class="product-meta">
+            <div class="product-name">Thermal Coal</div>
+            <div class="product-desc">Storable · freight-embedded · structurally declining demand in carbon-regulated markets</div>
+          </div>
+        </div>
+        <div class="attr-grid">
+
+          <div class="attr-card">
+            <div class="attr-label calc">Calculation approach</div>
+            <div class="attr-body"><ul>
+              <li><strong>Near (0–6M):</strong> API2 (ARA CIF) and API4 (Richards Bay FOB) index from ICE/Platts. Monthly bootstrap; instruments are reasonably liquid in prompt months.</li>
+              <li><strong>Mid (6M–2Y):</strong> seasonal and annual OTC swaps; OTC market is thinner than gas/power — best-fit solver preferred over sequential bootstrap to handle overlapping instruments.</li>
+              <li><strong>Long (2Y+):</strong> supply-side anchor: long-run marginal cost of seaborne thermal coal + freight. Expert overlay dominates; every parameter must be documented.</li>
+              <li>API2/API4 spread modelled as a freight + quality differential curve; built and governed separately from the flat-price coal curve.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card">
+            <div class="attr-label model">Best model</div>
+            <div class="attr-body"><ul>
+              <li><strong>Cost-of-carry with quality adjustment:</strong> simpler dynamics than gas or power; seasonality is mild relative to temperature-driven commodities.</li>
+              <li><strong>Mean-reversion to marginal supply cost:</strong> long-run anchor is the marginal cost of extraction + freight + quality premium; reversion is slower than gas (1–3 yr⁻¹ typical).</li>
+              <li><strong>No seasonal model required</strong> for flat-price coal; seasonality enters through demand (winter heating) and is observable in the OTC swap strip rather than requiring a shape model.</li>
+              <li>API2/API4 basis: model as an independent mean-reverting spread; freight and quality adjustments applied as additive overlays.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card">
+            <div class="attr-label limits">Limitations</div>
+            <div class="attr-body"><ul>
+              <li><strong>Thin long-end liquidity:</strong> the OTC market beyond 2Y is illiquid; long-end curve is essentially expert overlay with a market anchor at 2Y.</li>
+              <li><strong>Quality heterogeneity:</strong> API2 is for 6,000 kcal/kg NAR standard specification; physical delivery involves quality adjustment factors not captured in the forward price.</li>
+              <li><strong>Carbon dependency:</strong> clean dark spread (coal-to-power profitability net of carbon) drives demand; the coal curve cannot be governed independently of the EUA curve — a 10 EUR/t carbon move is a direct coal demand shock.</li>
+              <li><strong>Freight risk embedded:</strong> API2 is CIF ARA — freight cost embedded in the price; changes in Baltic/Capesize rates affect the curve independently of commodity value.</li>
+              <li><strong>Structural demand decline:</strong> European coal demand is in secular decline due to carbon pricing; long-end assumptions about demand levels become stale faster than in other markets.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card">
+            <div class="attr-label assume">Starting assumptions</div>
+            <div class="attr-body"><ul>
+              <li><strong>Standard specification:</strong> API2 = API4 = 6,000 kcal/kg NAR; any non-standard coal requires an explicit calorific value adjustment factor.</li>
+              <li><strong>Freight baseline:</strong> benchmark Capesize rate (Baltic Exchange); treat as a separate risk factor, not embedded in the commodity price model.</li>
+              <li><strong>Carbon pass-through:</strong> assume 100% carbon cost pass-through to the dark spread; if the regulatory regime changes this assumption, it must be updated formally.</li>
+              <li><strong>Long-run supply cost:</strong> 60–90 USD/t for seaborne thermal coal; derived from published cost-curve data (IEA, Wood Mackenzie); review annually.</li>
+              <li><strong>Demand trajectory:</strong> declining in Europe; long-end curve must reflect structural demand decline in line with agreed policy scenario.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card" style="border-bottom:none;">
+            <div class="attr-label valid">Validation methods</div>
+            <div class="attr-body"><ul>
+              <li><strong>Clean dark spread:</strong> <span class="mono">F_coal × heat_rate − F_carbon × EF ≥ 0</span> at the long end for coal to remain in the dispatch stack; violation signals that carbon assumptions are inconsistent with power/coal curves.</li>
+              <li><strong>API2/API4 spread:</strong> implied basis must sit within historical freight + quality differential range; outlier triggers freight-model review.</li>
+              <li><strong>Back-test vs ICE/Platts settlements:</strong> rolling RMSE per maturity bucket; persistent bias in the 1–2Y zone signals OTC liquidity deterioration not reflected in instrument weighting.</li>
+              <li><strong>Expert overlay log:</strong> every long-end overlay must be documented with a named rationale (fleet retirement schedule, policy scenario, demand outlook); undocumented overlays are a governance violation.</li>
+              <li><strong>Liquidity flag:</strong> instruments used beyond 2Y must carry a low-liquidity flag; confidence intervals widen explicitly in the documentation.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card" style="border-bottom:none; border-right:none;">
+            <div class="attr-label" style="color:#94a3b8;">&#9432; Key risk</div>
+            <div class="attr-body">
+              <div class="warning-box" style="margin:0;">
+                <div class="warning-label">Cross-commodity dependency</div>
+                A coal curve that is not jointly governed with the carbon curve will produce internally inconsistent clean dark spreads. Any scenario where carbon rises sharply must simultaneously update the coal curve's implied demand assumptions — failing to do so produces a coal curve that implies perpetual uneconomic coal generation, which is both commercially wrong and a governance red flag.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Carbon / Emissions ── -->
+      <div class="product-block" id="s8-carbon">
+        <div class="product-header carbon">
+          <div class="product-badge">05 · Carbon</div>
+          <div class="product-meta">
+            <div class="product-name">Carbon / Emissions (EU ETS — EUAs)</div>
+            <div class="product-desc">Bankable · policy-driven · one-directional carry · compliance deadline seasonality</div>
+          </div>
+        </div>
+        <div class="attr-grid">
+
+          <div class="attr-card">
+            <div class="attr-label calc">Calculation approach</div>
+            <div class="attr-body"><ul>
+              <li><strong>Near curve:</strong> EUA December futures (ICE ECX) for current and next vintage. Annual vintages are the primary instruments; strip of December prices is the forward curve.</li>
+              <li><strong>Forward structure:</strong> EUAs are bankable (carry forward without cost beyond financing), so the dominant relationship is: <span class="mono">F(T) ≈ S · e^(r·T)</span> — a pure cost-of-carry curve in normal conditions.</li>
+              <li><strong>Compliance seasonality:</strong> near-term curve reflects April 30 compliance demand — a predictable annual demand spike that slightly elevates prices in Q1.</li>
+              <li><strong>Long end (beyond current Phase):</strong> this is entirely policy assumption — cap trajectory, MSR withdrawal rules, and abatement cost curve; not a market-calibrated zone.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card">
+            <div class="attr-label model">Best model</div>
+            <div class="attr-body"><ul>
+              <li><strong>Cost-of-carry + policy overlay:</strong> <span class="mono">F(T) = S · e^(r·T)</span> adjusted for expected cap tightening trajectory and MSR withdrawal schedule.</li>
+              <li><strong>Regime-switching:</strong> EUA prices jump on regulatory announcements (CBAM, REPowerEU, Phase 5 design); a continuous diffusion model will systematically understate jump risk at announcement dates.</li>
+              <li><strong>No seasonal model for EUAs themselves;</strong> seasonality appears only through demand (power/industrial activity drives surrender demand) — do not impose a seasonal shape on the EUA curve itself.</li>
+              <li>For scenario analysis: abatement cost curve model — marginal cost of the cheapest available abatement technology sets a floor under the long-run EUA price.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card">
+            <div class="attr-label limits">Limitations</div>
+            <div class="attr-body"><ul>
+              <li><strong>Regulatory risk is the dominant risk and is fundamentally non-market:</strong> a policy decision can shift the entire curve instantaneously; no market model captures this.</li>
+              <li><strong>No borrowing:</strong> unlike most financial instruments, EUAs cannot be borrowed across compliance years (EU ETS rules); the forward curve can only be above spot × e^(rT), never below.</li>
+              <li><strong>Compliance bunching:</strong> large voluntary demand around April 30 creates near-term demand spikes not captured by continuous models; underestimated in Q1 pricing.</li>
+              <li><strong>Phase boundary uncertainty:</strong> Phase 5 rules (post-2030) are not fully determined; any long-end curve beyond 2030 is a named scenario, not a calibrated market price.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card">
+            <div class="attr-label assume">Starting assumptions</div>
+            <div class="attr-body"><ul>
+              <li><strong>Bankability:</strong> EUAs carry forward without cost (beyond EUR financing rate); no depreciation, no storage cost.</li>
+              <li><strong>No borrowing:</strong> forward prices cannot fall below <span class="mono">S · e^(r·T)</span>; any quote below this is either a data error or a structural trade with non-standard settlement.</li>
+              <li><strong>Risk-free rate:</strong> EUR €STR (risk-free overnight); EUA market is EUR-denominated.</li>
+              <li><strong>Long-run price:</strong> marginal abatement cost of the technology that clears the cap trajectory; currently 60–150 EUR/t depending on the policy scenario.</li>
+              <li><strong>MSR withdrawal:</strong> modelled as a known deterministic schedule per published MSR rules; scenario sensitivity run on both faster and slower withdrawal assumptions.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card" style="border-bottom:none;">
+            <div class="attr-label valid">Validation methods</div>
+            <div class="attr-body"><ul>
+              <li><strong>Cost-of-carry lower bound:</strong> <span class="mono">F(T) ≥ S · e^(r·T)</span> — any violation is either a data error or implies a risk-free arbitrage (buy spot, sell forward, finance at risk-free rate); hard governance flag.</li>
+              <li><strong>Vintage spread vs carry cost:</strong> the December-to-December spread between consecutive vintages should equal the EUR financing cost; persistent excess signals market dislocation or input error.</li>
+              <li><strong>Phase transition test:</strong> curve must not implicitly price banking across Phase 4/5 boundary at rates inconsistent with regulatory rules.</li>
+              <li><strong>Policy scenario stress:</strong> curve must be explicitly stress-tested against published EU ETS reform scenarios (REPowerEU, Fit-for-55, delayed reform); results documented alongside base curve.</li>
+              <li><strong>Compliance date effect:</strong> near-term Q1 pricing should reflect April 30 compliance demand; if it does not, the curve may be understating near-term demand pressure.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card" style="border-bottom:none; border-right:none;">
+            <div class="attr-label" style="color:#94a3b8;">&#9432; Key risk</div>
+            <div class="attr-body">
+              <div class="def-box green" style="margin:0;">
+                <div class="def-box-label">Policy as a model parameter</div>
+                <p>In every other commodity, the model parameters are physical or financial quantities that can be observed or estimated from data. In carbon, the long-run price is ultimately a political variable — it is what policymakers decide the cap should be. The governance response is to make the policy assumption explicit, name it, and run scenarios around it rather than burying it inside a model parameter that looks like a calibrated constant.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Base Metals ── -->
+      <div class="product-block" id="s8-metals">
+        <div class="product-header metals">
+          <div class="product-badge">06 · Metals</div>
+          <div class="product-meta">
+            <div class="product-name">Base Metals — LME (Copper, Aluminium, Zinc, Nickel)</div>
+            <div class="product-desc">Highly storable · LME prompt-date convention · lease rate as convenience yield proxy</div>
+          </div>
+        </div>
+        <div class="attr-grid">
+
+          <div class="attr-card">
+            <div class="attr-label calc">Calculation approach</div>
+            <div class="attr-body"><ul>
+              <li><strong>Near (cash to 3M):</strong> LME prompt-date strip — every business day is a delivery date; a daily bootstrap is required, not a monthly one. Cash price + daily forward differentials from broker quotes.</li>
+              <li><strong>Mid (3M–15M):</strong> LME monthly third-Wednesday prompts out to 15/16 months. Monthly bootstrap; cost-of-carry disciplines the shape.</li>
+              <li><strong>Long (15M–3Y+):</strong> annual carries from LME or OTC market-makers. Cost-of-carry model with mean-reverting convenience yield; parametric extrapolation beyond 2Y with long-run marginal cost anchor.</li>
+              <li>LME lease rate curve provides an observable proxy for convenience yield and should be used as a calibration input, not a model output.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card">
+            <div class="attr-label model">Best model</div>
+            <div class="attr-body"><ul>
+              <li><strong>Gibson-Schwartz two-factor:</strong> spot price (mean-reverting) + stochastic convenience yield; explains both the term structure and the correlation between nearby and deferred prices.</li>
+              <li><strong>LME lease rate as convenience yield input:</strong> <span class="mono">F(T) = S · e^((r + s − y)T)</span> where y = lease rate + any additional scarcity premium.</li>
+              <li><strong>Schwartz-Smith</strong> as an alternative: short-term deviation + long-term equilibrium; calibrates well to historical LME copper and aluminium strips.</li>
+              <li>For the daily mark: bootstrap the LME prompt-date strip directly; parametric extrapolation beyond 2Y anchored to published long-run marginal cost estimates.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card">
+            <div class="attr-label limits">Limitations</div>
+            <div class="attr-body"><ul>
+              <li><strong>LME prompt-date convention:</strong> the non-standard daily time axis in the first 3 months requires explicit handling; a monthly bootstrap will miss the daily forward structure and produce errors in near-term hedges.</li>
+              <li><strong>Off-warrant stocks are unobserved:</strong> LME registered stocks are a subset of global inventory; off-warrant metal affects convenience yield without appearing in public data — the model observes less than it models.</li>
+              <li><strong>Squeeze risk:</strong> when a single party holds a dominant long position, the cash-to-3M spread can blow out far beyond cost-of-carry bounds (LME squeeze events); the curve becomes uninformative during a squeeze.</li>
+              <li><strong>Regime transitions:</strong> the move from surplus (contango) to deficit (backwardation) is rapid and regime-like; parameters calibrated in one regime will systematically mis-estimate in the other.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card">
+            <div class="attr-label assume">Starting assumptions</div>
+            <div class="attr-body"><ul>
+              <li><strong>Storage cost:</strong> ~0.5–1.0 USD/t/month for LME-registered metal (warehouse rent + insurance + financing); published in LME tariff schedule.</li>
+              <li><strong>Risk-free rate:</strong> USD SOFR; LME metals are USD-denominated.</li>
+              <li><strong>Convenience yield:</strong> calibrated from cash-3M spread; negative in contango (surplus), zero/positive in backwardation (deficit). Use LME published lease rate as starting input.</li>
+              <li><strong>Long-run marginal cost:</strong> copper ~6,500–8,000 USD/t; aluminium ~1,800–2,500 USD/t; zinc ~2,000–2,800 USD/t. Derived from published cost-curve data; review annually.</li>
+              <li><strong>Stock-convenience yield relationship:</strong> calibrate the sensitivity of convenience yield to LME stock levels; this relationship must be re-estimated when warehouse rules or reporting change.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card" style="border-bottom:none;">
+            <div class="attr-label valid">Validation methods</div>
+            <div class="attr-body"><ul>
+              <li><strong>Cost-of-carry upper bound:</strong> <span class="mono">F(T) ≤ S · e^((r+s)T)</span>; if breached, a documented LME storage arbitrage exists — buy spot, deliver to LME, sell forward.</li>
+              <li><strong>Lease rate consistency:</strong> convenience yield implied by the curve should track published LME lease rate quotes within bid-ask; persistent divergence signals input data or model error.</li>
+              <li><strong>Stock correlation:</strong> implied convenience yield should be negatively correlated with LME registered stock levels; a decorrelation event must be investigated and documented.</li>
+              <li><strong>DV01 monotonic decay:</strong> sensitivity per pillar should decrease with maturity for a cost-of-carry curve; flat or rising DV01 at long end flags over-reliance on parametric extrapolation.</li>
+              <li><strong>Back-test vs LME official settlements:</strong> rolling comparison per maturity bucket (cash, 3M, 15M, 27M); RMSE by bucket tracked across rolling 6-month window.</li>
+            </ul></div>
+          </div>
+
+          <div class="attr-card" style="border-bottom:none; border-right:none;">
+            <div class="attr-label" style="color:#94a3b8;">&#9432; Key risk</div>
+            <div class="attr-body">
+              <div class="def-box" style="margin:0;">
+                <div class="def-box-label">The prompt-date trap</div>
+                <p>The LME daily prompt-date convention is unique among major commodity markets. A curve built on monthly pillars will produce systematically wrong prices for the daily forward strip — and most hedges against near-term delivery are sized against the daily prompt dates. Verify that your bootstrap correctly handles the LME daily convention before the first live trade.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
   </main>
 </div><!-- /shell -->
 
 <script>
 (function () {
-  const sections = Array.from(document.querySelectorAll('section[id]'));
+  const sections = Array.from(document.querySelectorAll('section[id], div[id^="s8-"]'));
   const navItems = Array.from(document.querySelectorAll('.nav-item'));
 
   function setActive(id) {
