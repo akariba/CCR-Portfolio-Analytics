@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import VisitorTracker   from './components/VisitorTracker';
 import TradePage        from './pages/TradePage';
 import ExposurePage     from './pages/ExposurePage';
 import PortfolioPage    from './pages/PortfolioPage';
@@ -8,6 +9,7 @@ import MarketRiskPage   from './pages/MarketRiskPage';
 import PLPage           from './pages/PLPage';
 import PricingPage      from './pages/PricingPage';
 import CVAPage          from './pages/CVAPage';
+import EonForwardCurvesPage from './pages/EonForwardCurvesPage';
 
 const PAGES = [
   { id:'trade',      label:'Trade Decision',        group:'Decision Support'  },
@@ -19,6 +21,7 @@ const PAGES = [
   { id:'pl',         label:'P&L Attribution',       group:'Risk Analytics'    },
   { id:'pricing',    label:'Derivative Pricing',    group:'Pricing'           },
   { id:'cva',        label:'CVA Pricing',           group:'Pricing'           },
+  { id:'pfc',        label:'Forward Curves',        group:'Energy PFC'        },
 ];
 
 const NOW = new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
@@ -41,12 +44,14 @@ export default function App() {
       case 'pl':         return <PLPage         {...props} />;
       case 'pricing':    return <PricingPage    {...props} />;
       case 'cva':        return <CVAPage        {...props} />;
+      case 'pfc':        return <EonForwardCurvesPage />;
       default:           return <TradePage      {...props} />;
     }
   }
 
   return (
     <>
+      <VisitorTracker />
       {/* Top bar */}
       <header className="topbar">
         <div className="topbar-logo">
