@@ -1107,37 +1107,42 @@ section {
       </p>
 
       <div class="two-panel">
-        <div class="panel">
-          <div class="panel-tag">Job 01 — Discounting</div>
-          <div class="panel-title">Present value</div>
+        <div class="panel green-top">
+          <div class="panel-tag">Job 01 — Price forward curve (PFC)</div>
+          <div class="panel-title">Expected delivery price</div>
           <div class="panel-body">
-            A discount curve answers: <em>what is a future cashflow worth today?</em>
-            It supplies discount factors P(t) = 1 / (1 + y(t))<sup>t</sup> — one per maturity —
-            which convert a future payment into its present equivalent. In energy, every
-            future-delivery cashflow is discounted on a risk-free overnight curve, regardless
-            of the commodity it relates to.
+            The forward curve answers: <em>what price does the market expect for commodity
+            delivery at each future date?</em> For power it is the expected €/MWh for base
+            or peak delivery in each future period. For gas it is the expected €/MWh (or p/therm)
+            at the relevant hub. For oil it is the USD/bbl for the relevant grade and delivery
+            point. This is what traders, risk systems, valuation engines, and hedging desks read
+            when they look at the curve — the central number in every commodity transaction.
           </div>
         </div>
-        <div class="panel green-top">
-          <div class="panel-tag">Job 02 — Projection / Forward</div>
-          <div class="panel-title">Expected future price</div>
+        <div class="panel">
+          <div class="panel-tag">Job 02 — Spot vs forward relationship</div>
+          <div class="panel-title">Cost-of-carry &amp; market expectation</div>
           <div class="panel-body">
-            A forward (projection) curve answers: <em>what price does the market expect at
-            each future delivery date?</em> In energy this is the price forward curve (PFC) —
-            the expected power, gas, or carbon price for delivery at each future period.
-            This is what traders, risk systems, and valuation engines read when they look
-            at the curve.
+            The forward price is not simply "spot plus interest". For storable commodities
+            (gas, oil, coal, metals) it embeds the cost of physical storage, financing, and
+            the convenience yield from holding inventory:
+            <strong>F(T) = S · e^((r + s − y)·T)</strong>.
+            For non-storable commodities (power) there is no carry relationship — the forward
+            price is a pure market expectation of supply-demand balance at the future delivery
+            date, anchored to fuel-cost economics at the long end.
           </div>
         </div>
       </div>
 
       <div class="def-box">
-        <div class="def-box-label">Core principle</div>
+        <div class="def-box-label">Core principle — commodity no-arbitrage</div>
         <p>
-          <strong>A curve must reprice every instrument it was built from.</strong> If it does not,
-          a market participant can trade simultaneously against the curve and the market for a
-          risk-free gain. This is the no-arbitrage condition, and it governs every construction
-          method described in this document.
+          <strong>A curve must reprice every instrument it was built from.</strong>
+          For storable commodities, physical storage provides a second layer of discipline:
+          if the forward price exceeds spot plus carry costs, traders buy spot, store, and
+          sell forward — collapsing the deviation. For non-storable commodities (power), only
+          the financial no-arbitrage condition applies: the curve must reprice all calibrating
+          futures and swaps, or a risk-free financial trade exists against it.
         </p>
       </div>
     </section>
