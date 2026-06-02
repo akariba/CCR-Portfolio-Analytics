@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commodity Curve Construction — CCR Risk Analytics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & base ─────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:       #2b3a8c;
+  --navy-light: #e8ecf8;
+  --navy-mid:   #c5cef0;
+  --green:      #0f7a5a;
+  --green-bg:   #e8f5f0;
+  --green-b:    #a7d9ca;
+  --amber:      #b45309;
+  --amber-bg:   #fef3e2;
+  --amber-b:    #f0c97a;
+  --paper:      #f7f8fa;
+  --white:      #ffffff;
+  --border:     #e2e4ea;
+  --border2:    #c8ccd6;
+  --text:       #1a1e2e;
+  --text-sec:   #4a5068;
+  --text-muted: #8a90a4;
+  --topbar-h:   58px;
+  --sidebar-w:  280px;
+  --font-body:  'IBM Plex Sans', system-ui, sans-serif;
+  --font-head:  'Newsreader', Georgia, serif;
+  --font-mono:  'IBM Plex Mono', 'SFMono-Regular', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── Top bar ──────────────────────────────────────────────────────────────── */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--topbar-h);
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.07);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.monogram {
+  width: 38px;
+  height: 38px;
+  background: var(--navy);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .03em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.topbar-title {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+.topbar-title .accent { color: var(--navy); }
+
+.topbar-sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: .04em;
+  margin-top: 2px;
+  text-transform: uppercase;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-sec);
+  text-align: right;
+}
+
+.status-dot {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green);
+  font-family: var(--font-mono);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.status-dot::before {
+  content: '●';
+  font-size: 9px;
+}
+
+.desk-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  text-align: right;
+}
+
+/* ── Shell layout ─────────────────────────────────────────────────────────── */
+.shell {
+  display: flex;
+  align-items: flex-start;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* ── Sidebar ──────────────────────────────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  position: sticky;
+  top: var(--topbar-h);
+  height: calc(100vh - var(--topbar-h));
+  overflow-y: auto;
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  padding: 28px 0 40px;
+}
+
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.nav-group-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 18px 22px 8px;
+}
+
+.nav-group-label:first-child { padding-top: 8px; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 22px;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text-sec);
+  font-size: 12.5px;
+  font-weight: 500;
+  transition: background .1s, color .1s;
+  border-left: 2px solid transparent;
+  line-height: 1.35;
+}
+
+.nav-item:hover {
+  background: var(--paper);
+  color: var(--text);
+}
+
+.nav-item.active {
+  background: var(--navy-light);
+  color: var(--navy);
+  border-left-color: var(--navy);
+  font-weight: 600;
+}
+
+.nav-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  min-width: 16px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.nav-item.active .nav-num { color: var(--navy); }
+
+/* ── Main content ─────────────────────────────────────────────────────────── */
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 40px 48px 80px;
+}
+
+/* ── Section ──────────────────────────────────────────────────────────────── */
+section {
+  margin-bottom: 56px;
+  scroll-margin-top: calc(var(--topbar-h) + 24px);
+}
+
+/* ── Step tag ─────────────────────────────────────────────────────────────── */
+.step-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* ── Eyebrow + heading ────────────────────────────────────────────────────── */
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.section-head h2 {
+  font-family: var(--font-head);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.section-head h2 .acc { color: var(--navy); }
+
+.lede {
+  font-size: 14px;
+  color: var(--text-sec);
+  line-height: 1.75;
+  margin-bottom: 20px;
+  max-width: 740px;
+}
+
+/* ── Two-column comparison panel ─────────────────────────────────────────── */
+.two-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.panel {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--navy);
+  border-radius: 4px;
+  padding: 18px 20px;
+}
+
+.panel.green-top  { border-top-color: var(--green); }
+.panel.amber-top  { border-top-color: var(--amber); }
+
+.panel-tag {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+.panel.green-top .panel-tag { color: var(--green); }
+.panel.amber-top .panel-tag { color: var(--amber); }
+
+.panel-title {
+  font-family: var(--font-head);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.panel-body {
+  font-size: 13px;
+  color: var(--text-sec);
+  line-height: 1.65;
+}
+
+/* ── Definition box ───────────────────────────────────────────────────────── */
+.def-box {
+  border-left: 3px solid var(--navy);
+  background: var(--navy-light);
+  border-radius: 0 4px 4px 0;
+  padding: 14px 18px;
+  margin: 18px 0;
+}
+
+.def-box.green { border-left-color: var(--green); background: var(--green-bg); }
+.def-box.amber { border-left-color: var(--amber); background: var(--amber-bg); }
+
+.def-box-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+.def-box.green .def-box-label { color: var(--green); }
+.def-box.amber .def-box-label { color: var(--amber); }
+
+.def-box p {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.def-box strong { font-weight: 600; color: var(--text); }
+
+/* ── Callout (energy-specific, green) ────────────────────────────────────── */
+.callout {
+  border: 1px solid var(--green-b);
+  border-left: 3px solid var(--green);
+  background: var(--green-bg);
+  border-radius: 0 4px 4px 0;
+  padding: 14px 18px;
+  margin: 18px 0;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.callout-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 6px;
+}
+
+/* ── Warning box (amber) ──────────────────────────────────────────────────── */
+.warning-box {
+  border: 1px solid var(--amber-b);
+  border-left: 3px solid var(--amber);
+  background: var(--amber-bg);
+  border-radius: 0 4px 4px 0;
+  padding: 14px 18px;
+  margin: 18px 0;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.warning-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 6px;
+}
+
+/* ── Checklist ────────────────────────────────────────────────────────────── */
+.checklist {
+  list-style: none;
+  margin: 14px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13.5px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.check-key {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  background: var(--navy);
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+.check-key.green { background: var(--green); }
+
+/* ── Model cards grid ─────────────────────────────────────────────────────── */
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.model-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 18px 18px 16px;
+  border-top: 3px solid var(--navy);
+}
+
+.model-tag {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+
+.model-name {
+  font-family: var(--font-head);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.model-desc {
+  font-size: 12.5px;
+  color: var(--text-sec);
+  line-height: 1.65;
+  margin-bottom: 12px;
+}
+
+.model-use {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  line-height: 1.5;
+}
+
+.model-use strong {
+  color: var(--navy);
+  font-weight: 600;
+}
+
+/* ── Formula block ────────────────────────────────────────────────────────── */
+.formula-block {
+  background: #1a1e2e;
+  border-radius: 4px;
+  padding: 20px 24px;
+  margin: 18px 0;
+  overflow-x: auto;
+}
+
+.formula-block pre {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.9;
+  color: #cdd6f4;
+  white-space: pre;
+}
+
+.formula-block .comment { color: #6c7086; }
+.formula-block .sym     { color: #89b4fa; }
+.formula-block .val     { color: #a6e3a1; }
+.formula-block .op      { color: #cba6f7; }
+
+/* ── Numbered factors ─────────────────────────────────────────────────────── */
+.factors {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 18px 0;
+  counter-reset: factor;
+}
+
+.factors li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  counter-increment: factor;
+}
+
+.factor-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--white);
+  background: var(--navy);
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.factor-body {
+  flex: 1;
+}
+
+.factor-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.factor-desc {
+  font-size: 12.5px;
+  color: var(--text-sec);
+  line-height: 1.6;
+}
+
+/* ── Mapping table ────────────────────────────────────────────────────────── */
+.map-table-wrap {
+  margin: 18px 0;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.map-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.map-table thead tr {
+  background: var(--navy);
+  color: #fff;
+}
+
+.map-table thead th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  padding: 11px 18px;
+  text-align: left;
+}
+
+.map-table tbody tr:nth-child(even) {
+  background: var(--paper);
+}
+
+.map-table tbody tr:nth-child(odd) {
+  background: var(--white);
+}
+
+.map-table tbody tr:hover {
+  background: var(--navy-light);
+}
+
+.map-table td {
+  padding: 10px 18px;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  line-height: 1.5;
+  vertical-align: top;
+}
+
+.map-table tr:last-child td { border-bottom: none; }
+
+.map-table td:first-child {
+  font-weight: 500;
+  color: var(--navy);
+}
+
+/* ── Summary ──────────────────────────────────────────────────────────────── */
+.summary-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.summary-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13.5px;
+  color: var(--text);
+  line-height: 1.65;
+}
+
+.summary-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--navy);
+  background: var(--navy-light);
+  border: 1px solid var(--navy-mid);
+  border-radius: 2px;
+  padding: 2px 7px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── Section divider ──────────────────────────────────────────────────────── */
+.section-rule {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0 0 56px;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 1000px) {
+  .shell { display: block; }
+
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+
+  .nav-group-label { display: none; }
+
+  .nav-item {
+    padding: 6px 14px;
+    font-size: 12px;
+    border-left: none;
+    border-bottom: 2px solid transparent;
+  }
+
+  .nav-item.active {
+    border-bottom-color: var(--navy);
+    border-left-color: transparent;
+    background: var(--navy-light);
+  }
+
+  .main { padding: 28px 20px 60px; }
+
+  .two-panel { grid-template-columns: 1fr; }
+  .model-grid { grid-template-columns: 1fr; }
+
+  .topbar { padding: 0 16px; }
+  .topbar-right { display: none; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ── Top bar ─────────────────────────────────────────────────────────────── -->
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="monogram">CCR</div>
+    <div>
+      <div class="topbar-title">Commodity <span class="accent">Curve Construction</span></div>
+      <div class="topbar-sub">Institutional Reference · Energy &amp; Commodity Markets</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div>
+      <div class="status-dot">Reference</div>
+      <div class="desk-label" style="margin-top:3px;">CCR Desk · Derivatives &amp; Structured</div>
+    </div>
+  </div>
+</header>
+
+<!-- ── Shell ───────────────────────────────────────────────────────────────── -->
+<div class="shell">
+
+  <!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
+  <nav class="sidebar" id="sidebar-nav">
+    <div class="nav-group-label">Foundations</div>
+    <a class="nav-item active" href="#s1"><span class="nav-num">01</span>What is a curve</a>
+    <a class="nav-item"        href="#s2"><span class="nav-num">02</span>What is a forward curve</a>
+    <a class="nav-item"        href="#s3"><span class="nav-num">03</span>Why we need them</a>
+
+    <div class="nav-group-label">Methods</div>
+    <a class="nav-item" href="#s4"><span class="nav-num">04</span>Curve models</a>
+    <a class="nav-item" href="#s5"><span class="nav-num">05</span>Pricing commodities</a>
+
+    <div class="nav-group-label">Reference</div>
+    <a class="nav-item" href="#s6"><span class="nav-num">06</span>Rates → energy mapping</a>
+    <a class="nav-item" href="#s7"><span class="nav-num">07</span>Five-line summary</a>
+  </nav>
+
+  <!-- ── Main ────────────────────────────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- S1: What is a curve                                                -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <section id="s1">
+      <div class="section-eyebrow">Section 01 · Foundations</div>
+      <div class="section-head">
+        <div class="step-tag">1</div>
+        <h2>What is a <span class="acc">curve</span></h2>
+      </div>
+
+      <p class="lede">
+        A curve is a structured representation of the market's expectation of a price or rate at every
+        future maturity — built so that it exactly reprices, or minimises the pricing error of, every
+        liquid instrument used to construct it. It is the central input to valuation, risk measurement,
+        and hedging across any asset class with forward delivery.
+      </p>
+
+      <div class="two-panel">
+        <div class="panel">
+          <div class="panel-tag">Job 01 — Discounting</div>
+          <div class="panel-title">Present value</div>
+          <div class="panel-body">
+            A discount curve answers: <em>what is a future cashflow worth today?</em>
+            It supplies discount factors P(t) = 1 / (1 + y(t))<sup>t</sup> — one per maturity —
+            which convert a future payment into its present equivalent. In energy, every
+            future-delivery cashflow is discounted on a risk-free overnight curve, regardless
+            of the commodity it relates to.
+          </div>
+        </div>
+        <div class="panel green-top">
+          <div class="panel-tag">Job 02 — Projection / Forward</div>
+          <div class="panel-title">Expected future price</div>
+          <div class="panel-body">
+            A forward (projection) curve answers: <em>what price does the market expect at
+            each future delivery date?</em> In energy this is the price forward curve (PFC) —
+            the expected power, gas, or carbon price for delivery at each future period.
+            This is what traders, risk systems, and valuation engines read when they look
+            at the curve.
+          </div>
+        </div>
+      </div>
+
+      <div class="def-box">
+        <div class="def-box-label">Core principle</div>
+        <p>
+          <strong>A curve must reprice every instrument it was built from.</strong> If it does not,
+          a market participant can trade simultaneously against the curve and the market for a
+          risk-free gain. This is the no-arbitrage condition, and it governs every construction
+          method described in this document.
+        </p>
+      </div>
+    </section>
+
+    <hr class="section-rule">
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- S2: What is a forward curve                                        -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <section id="s2">
+      <div class="section-eyebrow">Section 02 · Foundations</div>
+      <div class="section-head">
+        <div class="step-tag">2</div>
+        <h2>What is a <span class="acc">forward curve</span></h2>
+      </div>
+
+      <p class="lede">
+        A forward curve is the strip of market-implied prices for delivery at each future date,
+        extracted from traded instruments — futures, swaps, and calendar spreads. The shape of the
+        curve carries information about supply/demand expectations, storage economics, and
+        seasonal patterns specific to the underlying commodity.
+      </p>
+
+      <div class="two-panel">
+        <div class="panel green-top">
+          <div class="panel-tag">Shape — Contango</div>
+          <div class="panel-title">Forward &gt; Spot</div>
+          <div class="panel-body">
+            Deferred prices exceed nearby prices. Typical when storage is plentiful and
+            cost-of-carry (financing, warehousing, insurance) is the dominant price driver.
+            A market in contango implies that holding inventory is economical: traders can
+            buy spot, store, and sell forward at a profit net of carry costs. Common in
+            oil and natural gas during low-demand periods.
+          </div>
+        </div>
+        <div class="panel amber-top">
+          <div class="panel-tag">Shape — Backwardation</div>
+          <div class="panel-title">Forward &lt; Spot</div>
+          <div class="panel-body">
+            Nearby prices exceed deferred prices. Signals immediate supply tightness or
+            strong near-term demand — the "convenience yield" on holding physical inventory
+            outweighs carry costs. Power markets frequently exhibit backwardation ahead of
+            seasonal demand peaks (winter heating, summer cooling) when generation scarcity
+            drives prompt prices above forward expectations.
+          </div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-label">Energy-specific — Seasonality</div>
+        Power and gas forward curves do not follow simple contango or backwardation — they embed
+        a <strong>repeating seasonal structure</strong>: winter peaks for heating demand, summer
+        peaks for cooling, weekly peaks for industrial load, and intra-day peaks for on-peak
+        delivery windows. This seasonality is not noise to be smoothed away; it is a primary
+        structural feature that the curve must preserve through every interpolation and
+        extrapolation regime. A smooth curve in a seasonal market is a wrong curve.
+      </div>
+    </section>
+
+    <hr class="section-rule">
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- S3: Why we need them                                               -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <section id="s3">
+      <div class="section-eyebrow">Section 03 · Foundations</div>
+      <div class="section-head">
+        <div class="step-tag">3</div>
+        <h2>Why we <span class="acc">need them</span></h2>
+      </div>
+
+      <p class="lede">
+        A price forward curve is not a convenience — it is the methodological backbone of every
+        function that touches multi-period price exposure. Without a consistent, governed curve,
+        valuation is arbitrary, risk is unmeasurable, and hedging is guesswork.
+      </p>
+
+      <ul class="checklist">
+        <li>
+          <span class="check-key">Valuation</span>
+          Mark-to-market and fair-value accounting of any instrument with forward delivery
+          requires a curve to discount future cashflows and establish the expected delivery price.
+          Without it, every desk can use a different price and the aggregated P&amp;L is fiction.
+        </li>
+        <li>
+          <span class="check-key">Risk</span>
+          Potential Future Exposure (PFE), Value-at-Risk (VaR), and scenario analysis all depend
+          on a consistent forward price surface. DV01/price sensitivity across the curve maturity
+          spectrum can only be computed if the curve is a coherent, differentiable structure.
+        </li>
+        <li>
+          <span class="check-key">Hedging</span>
+          A hedge must be sized against the same forward price used to value the position it
+          hedges. Curve consistency ensures that a delta hedge computed from the curve actually
+          offsets the market risk — inconsistent curves produce phantom hedges that leave
+          residual exposure undetected.
+        </li>
+        <li>
+          <span class="check-key green">Margin / Collateral</span>
+          Variation margin calls, initial margin requirements, and collateral disputes are all
+          resolved against a reference forward price. Curve governance — who owns it, how it is
+          built, how it is challenged — determines whether those disputes are resolved quickly
+          or become operational risk events.
+        </li>
+      </ul>
+
+      <div class="def-box">
+        <div class="def-box-label">Definition — No-arbitrage</div>
+        <p>
+          <strong>Arbitrage</strong> is a risk-free profit from a price inconsistency: buying and
+          selling related instruments simultaneously to lock in a gain with no net exposure.
+          In liquid markets, arbitrage opportunities cannot persist — participants trade them away,
+          restoring consistency. A curve that violates no-arbitrage (e.g. implying a calendar
+          spread that can be traded for risk-free profit) is a curve that is wrong, and any
+          system priced against it is mis-marked.
+        </p>
+      </div>
+    </section>
+
+    <hr class="section-rule">
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- S4: Different curve models                                         -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <section id="s4">
+      <div class="section-eyebrow">Section 04 · Methods</div>
+      <div class="section-head">
+        <div class="step-tag">4</div>
+        <h2>Curve <span class="acc">models</span></h2>
+      </div>
+
+      <p class="lede">
+        No single construction method is universally correct. The choice is a governance decision:
+        each method occupies a different position on the flexibility / transparency / stability
+        triangle and is suited to different maturity zones and liquidity regimes.
+      </p>
+
+      <div class="model-grid">
+
+        <div class="model-card">
+          <div class="model-tag">Method 01</div>
+          <div class="model-name">Sequential Bootstrapping</div>
+          <div class="model-desc">
+            Build the curve instrument-by-instrument from the short end outward. Each calibrating
+            instrument is solved to exactly zero repricing error before advancing to the next
+            maturity. Every node is independently auditable — the price at each pillar is the
+            direct market quote with no smoothing.
+          </div>
+          <div class="model-use">
+            <strong>Use when:</strong> near-curve (0–3 months), liquid exchange futures with
+            clean settlement prices. Anchors are reliable; exact reprice matters for settlement
+            and audit.
+          </div>
+        </div>
+
+        <div class="model-card">
+          <div class="model-tag">Method 02</div>
+          <div class="model-name">Best-fit / Solver</div>
+          <div class="model-desc">
+            Solve all curve points jointly via a nonlinear least-squares solver that minimises
+            weighted pricing error across all instruments simultaneously. Handles overlapping
+            instruments and interdependencies cleanly. Repricing errors are minimised but
+            not guaranteed to be zero.
+          </div>
+          <div class="model-use">
+            <strong>Use when:</strong> mid-curve with overlapping OTC instruments (quarterly
+            swaps that span multiple pillars). Robustness matters more than exact audit trail.
+          </div>
+        </div>
+
+        <div class="model-card">
+          <div class="model-tag">Method 03</div>
+          <div class="model-name">Spline Interpolation</div>
+          <div class="model-desc">
+            Fit a smooth piecewise-polynomial (cubic or tension spline) through the calibrated
+            pillar prices. Guarantees continuous first and second derivatives. Can produce
+            oscillation or negative implied forward prices between sparse pillars if
+            unconstrained.
+          </div>
+          <div class="model-use">
+            <strong>Use when:</strong> seasonal mid-curve (3 months – 2 years) where smooth
+            shape matters for risk aggregation. Use natural or clamped boundary conditions to
+            suppress endpoint oscillation.
+          </div>
+        </div>
+
+        <div class="model-card">
+          <div class="model-tag">Method 04</div>
+          <div class="model-name">Seasonal Shaping</div>
+          <div class="model-desc">
+            Decompose base/peak calendar quotes into hourly granularity via a load or temperature
+            model. The shape model converts aggregate quarterly anchors into the intra-period
+            profile the market does not directly quote. Must be versioned and formally approved —
+            it is the primary source of cross-BU price inconsistency when ungoverned.
+          </div>
+          <div class="model-use">
+            <strong>Use when:</strong> hourly or daily granularity is required for settlement,
+            structured product valuation, or generation dispatch optimisation.
+          </div>
+        </div>
+
+        <div class="model-card">
+          <div class="model-tag">Method 05</div>
+          <div class="model-name">Factor / PCA Model</div>
+          <div class="model-desc">
+            Reduce the curve to a small number of orthogonal factors (level, slope, curvature —
+            analogous to Nelson-Siegel in rates) estimated from historical covariance. Stable
+            and parsimonious; well-behaved extrapolation to illiquid tenors. Cannot reprice
+            every pillar exactly; misspecification risk if seasonal structure is strong.
+          </div>
+          <div class="model-use">
+            <strong>Use when:</strong> sparse illiquid long end (2Y+), scenario generation,
+            or stress testing. Stability and interpretability outweigh exact calibration.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <hr class="section-rule">
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- S5: How we price commodities                                       -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <section id="s5">
+      <div class="section-eyebrow">Section 05 · Methods</div>
+      <div class="section-head">
+        <div class="step-tag">5</div>
+        <h2>How we price <span class="acc">commodities</span></h2>
+      </div>
+
+      <p class="lede">
+        The present value of a commodity position is the sum of discounted forward cashflows over
+        every delivery period. The formula is structurally identical to a fixed-income present
+        value — only the interpretation of the forward rate and the delivery profile changes.
+      </p>
+
+      <div class="formula-block">
+        <pre><span class="comment"># Present value of a commodity forward position</span>
+
+<span class="sym">PV</span>  <span class="op">=</span>  <span class="sym">Σ</span>  <span class="sym">P</span>(<span class="sym">tᵢ</span>)  <span class="op">×</span>  <span class="sym">F</span>(<span class="sym">tᵢ</span>)  <span class="op">×</span>  <span class="sym">Qᵢ</span>   <span class="comment">  summed over delivery periods i = 1 … N</span>
+
+<span class="comment">  P(tᵢ)  =  discount factor at delivery time tᵢ  =  1 / (1 + r(tᵢ))^tᵢ</span>
+<span class="comment">  F(tᵢ)  =  forward price for delivery at tᵢ   (from the price forward curve)</span>
+<span class="comment">  Qᵢ     =  quantity delivered in period i      (MWh, MMBtu, tonne, barrel …)</span></pre>
+      </div>
+
+      <p style="font-size:13.5px; color:var(--text-sec); margin-bottom:18px; line-height:1.7;">
+        Six factors determine whether this formula produces a number that is commercially correct
+        or technically precise but commercially wrong:
+      </p>
+
+      <ol class="factors">
+        <li>
+          <div class="factor-num">1</div>
+          <div class="factor-body">
+            <div class="factor-title">Delivery profile</div>
+            <div class="factor-desc">
+              Q<sub>i</sub> is not a single number — it is a per-period quantity that reflects
+              the actual delivery schedule: base-load vs peak-hour, weekday vs weekend, swing
+              volume rights. Getting the profile wrong mis-sizes every hedge derived from the PV.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="factor-num">2</div>
+          <div class="factor-body">
+            <div class="factor-title">Storage / cost-of-carry</div>
+            <div class="factor-desc">
+              For storable commodities (gas, oil, metals), the forward curve embeds storage
+              costs, financing, and the convenience yield. These must be reflected in F(t<sub>i</sub>)
+              or stripped out before computing spread positions — failing to do so conflates
+              carry with directional exposure.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="factor-num">3</div>
+          <div class="factor-body">
+            <div class="factor-title">Seasonality</div>
+            <div class="factor-desc">
+              F(t<sub>i</sub>) varies structurally across the year. Using a flat or linearly
+              interpolated price between quarterly pillars ignores intra-quarter seasonal peaks
+              and produces systematic mis-marking of peak/off-peak structured products.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="factor-num">4</div>
+          <div class="factor-body">
+            <div class="factor-title">Cross-commodity coupling</div>
+            <div class="factor-desc">
+              Power F(t<sub>i</sub>) is not independent of gas and carbon prices — spark and
+              dark spreads link them economically. A position priced solely on the power curve
+              without accounting for these linkages may appear hedged while carrying implicit
+              fuel-price exposure.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="factor-num">5</div>
+          <div class="factor-body">
+            <div class="factor-title">Volatility / optionality</div>
+            <div class="factor-desc">
+              Instruments with optionality (swing contracts, tolling agreements, embedded call
+              options) cannot be priced by the forward curve alone — they require a volatility
+              surface or stochastic model. The PV formula above is the deterministic core; add
+              an option-adjusted spread or run a Monte Carlo on top for optionality.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="factor-num">6</div>
+          <div class="factor-body">
+            <div class="factor-title">Liquidity / granularity gap</div>
+            <div class="factor-desc">
+              The market quotes quarterly or monthly — the position requires daily or hourly.
+              The granularity gap between market anchor and delivery period is filled by the
+              shape model. Any error in shaping flows directly into F(t<sub>i</sub>) and is
+              indistinguishable from market price movement in P&amp;L attribution.
+            </div>
+          </div>
+        </li>
+      </ol>
+
+      <div class="warning-box">
+        <div class="warning-label">Recurring trap — granularity mismatch</div>
+        The most common pricing error in commodity desks is using a quarterly forward price
+        as a proxy for an intra-quarter delivery. A Q1 base price applied to a January-only
+        peak contract over-prices in February and March while under-pricing January — producing
+        a P&amp;L that appears flat in aggregate but oscillates within the quarter.
+        <strong>Always decompose to the settlement granularity before discounting.</strong>
+      </div>
+    </section>
+
+    <hr class="section-rule">
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- S6: Rates → energy mapping                                         -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <section id="s6">
+      <div class="section-eyebrow">Section 06 · Reference</div>
+      <div class="section-head">
+        <div class="step-tag">6</div>
+        <h2>Rates → energy <span class="acc">mapping</span></h2>
+      </div>
+
+      <p class="lede">
+        The multi-curve, no-arbitrage framework that became standard for interest-rate derivatives
+        transfers directly to commodity curve construction. The table below maps each concept
+        from its rates-world origin to its energy-world equivalent.
+      </p>
+
+      <div class="map-table-wrap">
+        <table class="map-table">
+          <thead>
+            <tr>
+              <th>Rates world</th>
+              <th>Energy world</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Discounting curve (OIS / risk-free overnight)</td>
+              <td>Discount factors applied to future-delivery cashflows — same curve, same logic; commodity is irrelevant</td>
+            </tr>
+            <tr>
+              <td>Projection / forward curve (term index rate)</td>
+              <td>Price forward curve — the expected power, gas, or carbon price for each future delivery period</td>
+            </tr>
+            <tr>
+              <td>Calibrate to deposits, FRAs, futures, swaps</td>
+              <td>Calibrate to exchange futures (EEX, ICE), calendar swaps, seasonal OTC quotes</td>
+            </tr>
+            <tr>
+              <td>Multi-curve: right curve for right purpose</td>
+              <td>Multi-commodity: power, gas, carbon — distinct curves, coupled by spark/dark spreads</td>
+            </tr>
+            <tr>
+              <td>No-arbitrage = reprice all calibrating instruments</td>
+              <td>Same: round-trip reprice test + monotonic calendar-spread test</td>
+            </tr>
+            <tr>
+              <td>Bootstrapping / interpolation / Nelson-Siegel</td>
+              <td>Same methods applied to energy pillars, with seasonal shaping added as an extra layer</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <div class="callout-label">What changes in energy</div>
+        The construction discipline is identical. What energy adds on top: <strong>seasonality</strong>
+        (repeating winter/summer wave that must be preserved, not smoothed), <strong>mean reversion
+        and spikes</strong> (power reverts to a seasonal equilibrium and spikes on scarcity — rates
+        do not), <strong>delivery over a period</strong> (power is for a month/quarter, not a point
+        in time, requiring decomposition to granular shape), and <strong>cross-commodity coupling</strong>
+        (power, gas, and carbon curves are not independent).
+      </div>
+    </section>
+
+    <hr class="section-rule">
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- S7: Five-line summary                                              -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <section id="s7">
+      <div class="section-eyebrow">Section 07 · Reference</div>
+      <div class="section-head">
+        <div class="step-tag">7</div>
+        <h2>Five-line <span class="acc">summary</span></h2>
+      </div>
+
+      <ul class="summary-list">
+        <li>
+          <span class="summary-num">01</span>
+          A curve maps future maturities to market-implied prices or rates, calibrated so it
+          reprices every liquid instrument used to build it — that reprice condition is
+          the no-arbitrage constraint made operational.
+        </li>
+        <li>
+          <span class="summary-num">02</span>
+          Every curve does two jobs: discounting (what a future cashflow is worth today) and
+          projection (what the market expects the price to be at each future date). In energy,
+          these are always separate curves.
+        </li>
+        <li>
+          <span class="summary-num">03</span>
+          Construction method choice — bootstrapping for the liquid near curve, spline for the
+          seasonal mid curve, factor/PCA for the sparse long end — is a governance decision, not
+          a technical default.
+        </li>
+        <li>
+          <span class="summary-num">04</span>
+          Energy curves carry everything rates curves carry, plus four additional layers:
+          seasonality, mean reversion and spikes, delivery-over-a-period decomposition, and
+          cross-commodity coupling through fuel spreads.
+        </li>
+        <li>
+          <span class="summary-num">05</span>
+          The construction-and-governance discipline — calibrate, interpolate, validate,
+          document — is identical across asset classes. The energy-specific behaviour is what
+          the modelling layer adds on top of that shared foundation.
+        </li>
+      </ul>
+    </section>
+
+  </main>
+</div><!-- /shell -->
+
+<script>
+(function () {
+  const sections = Array.from(document.querySelectorAll('section[id]'));
+  const navItems = Array.from(document.querySelectorAll('.nav-item'));
+
+  function setActive(id) {
+    navItems.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+  }
+
+  // IntersectionObserver: track which section is in view
+  const observer = new IntersectionObserver(
+    entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) setActive(entry.target.id);
+      });
+    },
+    {
+      rootMargin: '-' + (parseInt(getComputedStyle(document.documentElement)
+        .getPropertyValue('--topbar-h')) + 10) + 'px 0px -60% 0px',
+      threshold: 0,
+    }
+  );
+
+  sections.forEach(s => observer.observe(s));
+
+  // Smooth scroll on nav click (already handled by CSS scroll-behavior,
+  // but prevent default to avoid hash-jump jank on some browsers)
+  navItems.forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
