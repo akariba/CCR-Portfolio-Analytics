@@ -10,6 +10,7 @@ import PLPage           from './pages/PLPage';
 import PricingPage      from './pages/PricingPage';
 import CVAPage          from './pages/CVAPage';
 import EonForwardCurvesPage from './pages/EonForwardCurvesPage';
+import RatesToPowerPage     from './pages/RatesToPowerPage';
 
 const PAGES = [
   { id:'trade',      label:'Trade Decision',        group:'Decision Support'  },
@@ -22,6 +23,7 @@ const PAGES = [
   { id:'pricing',    label:'Derivative Pricing',    group:'Pricing'           },
   { id:'cva',        label:'CVA Pricing',           group:'Pricing'           },
   { id:'pfc',        label:'Forward Curves',        group:'Energy PFC'        },
+  { id:'rates2power',label:'Curve Framework',       group:'Energy PFC'        },
 ];
 
 const NOW = new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
@@ -45,6 +47,7 @@ export default function App() {
       case 'pricing':    return <PricingPage    {...props} />;
       case 'cva':        return <CVAPage        {...props} />;
       case 'pfc':        return <EonForwardCurvesPage />;
+      case 'rates2power':return <RatesToPowerPage />;
       default:           return <TradePage      {...props} />;
     }
   }

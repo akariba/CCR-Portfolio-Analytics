@@ -51,15 +51,6 @@ const GOV_ROWS = [
   ['Model review cycle',      'Periodic formal review of methodologies vs market-structure change; ad hoc trigger on detected structural break'],
 ];
 
-const RATES_TO_POWER_ROWS = [
-  ['Discounting curve (OIS / risk-free)',      'Discount factors for future-delivery cashflows'],
-  ['Projection / forward curve (index)',        'Power/gas price forward curve'],
-  ['Calibrate to deposits, futures, swaps',     'Calibrate to futures, calendar/seasonal swaps'],
-  ['Multi-curve: right curve for right purpose','Multi-commodity: power, gas, carbon — coupled by spreads'],
-  ['No-arbitrage = reprice all instruments',    'Same: round-trip test, monotonic calendar spreads'],
-  ['Bootstrapping / interpolation',             'Same methods + seasonality shaping'],
-];
-
 const TABS = [
   'Methodology & construction',
   'Market analysis & instruments',
@@ -326,27 +317,6 @@ function SubLabel({ children }) {
       textTransform: 'uppercase', letterSpacing: '.05em', margin: '16px 0 8px',
     }}>
       {children}
-    </div>
-  );
-}
-
-// ── Definition box ─────────────────────────────────────────────────────────────
-function DefinitionBox({ term, children }) {
-  return (
-    <div style={{
-      background: 'var(--surface2)', border: '1px solid var(--border)',
-      borderLeft: '3px solid var(--accent)', borderRadius: 4,
-      padding: '14px 16px', margin: '14px 0',
-    }}>
-      <div style={{
-        fontSize: 10, fontWeight: 700, color: 'var(--accent)',
-        textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: 8,
-      }}>
-        Definition — {term}
-      </div>
-      <div style={{ fontSize: 12, color: 'var(--text)', lineHeight: 1.65 }}>
-        {children}
-      </div>
     </div>
   );
 }
@@ -618,81 +588,6 @@ export default function EonForwardCurvesPage() {
           </div>
         )}
       </SectionCard>
-
-      {/* ── BRIDGE: From rates to power ──────────────────────────────────── */}
-      <div id="rates-to-power">
-        <SectionCard title="From rates to power: one framework, two assets">
-          <p style={{ fontSize: 13, color: 'var(--text)', lineHeight: 1.7, marginBottom: 14 }}>
-            Curve construction is the same discipline whether the underlying is an interest rate or a power price: build the market's expectation of a value at each future maturity, calibrated so it reprices the liquid instruments it was built from. The framework that became standard for interest-rate derivatives — multi-curve, discount-vs-project separation, no-arbitrage enforcement — transfers directly to energy, with asset-specific differences in shape and instruments.
-          </p>
-
-          {/* A — Two jobs of a curve */}
-          <SubLabel>A — The two jobs of a curve</SubLabel>
-          <FourCardGrid cards={[
-            {
-              title: 'Discounting',
-              body: 'What a future cashflow is worth today, expressed via discount factors: P(t) = 1 / (1 + y(t))^t. In energy, used to present-value future-delivery cashflows. The discount curve is derived from risk-free overnight instruments and applied uniformly regardless of the commodity.',
-            },
-            {
-              title: 'Projection / forward',
-              body: 'The expected price at each future maturity — the forward curve itself. In energy, the expected power or gas price for delivery at each future date. This is what traders, risk managers, and valuation systems read when they look at the price forward curve.',
-            },
-          ]} />
-
-          {/* B — Why multi-curve */}
-          <SubLabel>B — Why the framework went multi-curve</SubLabel>
-          <p style={{ fontSize: 13, color: 'var(--text)', lineHeight: 1.7, marginBottom: 10 }}>
-            Before 2008 a single curve served both jobs: it discounted cashflows and projected the floating index rate. Post-2008, unsecured lending carried credit and liquidity risk, and a persistent gap opened between the overnight risk-free rate and the term index used for projection. The resolution — discount on the overnight (OIS) curve; project off the relevant index curve — is the multi-curve standard: right curve for the right purpose. The subsequent transition to risk-free reference rates preserved this two-curve architecture.
-          </p>
-          <Callout intent="accent">
-            <strong>Energy parallel — multi-commodity:</strong> power, gas, and carbon forward curves are distinct instruments but linked by physical and economic relationships (spark spread, dark spread, clean-spark spread). A change in gas prices propagates into the power curve; a carbon-price move affects both. The correct approach is to maintain several coupled curves — each governed separately, each reflecting its own market instruments — rather than one monolithic price surface. Same architectural principle, different assets.
-          </Callout>
-
-          {/* C — No-arbitrage */}
-          <SubLabel>C — No-arbitrage as the unifying principle</SubLabel>
-          <DefinitionBox term="Arbitrage">
-            A risk-free profit from a price inconsistency: buying and selling related instruments simultaneously to lock in a gain with no net exposure. In liquid, well-functioning markets an arbitrage opportunity cannot persist — participants immediately trade it away, moving prices back to consistency.
-          </DefinitionBox>
-          <p style={{ fontSize: 13, color: 'var(--text)', lineHeight: 1.7, marginBottom: 10 }}>
-            A curve that does not reprice the instruments it was calibrated from creates an arbitrage: a market participant could simultaneously trade against the curve and the market to extract a risk-free gain. The no-arbitrage condition therefore requires that every calibrating instrument re-prices to zero error (bootstrapping) or minimum weighted error (best-fit solver) before the curve is published.
-          </p>
-          <p style={{ fontSize: 13, color: 'var(--text)', lineHeight: 1.7, marginBottom: 14 }}>
-            In practice the no-arbitrage condition has two operational expressions that appear in both rates and energy curve governance: the <strong>round-trip / re-pricing test</strong> (every calibrating instrument must price back to market), and the <strong>monotonic calendar-spread test</strong> (forward prices cannot imply risk-free storage arbitrage across adjacent delivery periods). Both checks appear in the quality monitoring table in the previous section — they are the same principle made operational.
-          </p>
-
-          {/* D — Mapping table */}
-          <SubLabel>D — The framework mapping</SubLabel>
-          <DataTable
-            columns={['Rates world', 'Energy world']}
-            rows={RATES_TO_POWER_ROWS}
-          />
-
-          {/* E — What's genuinely different */}
-          <SubLabel>E — What's genuinely different</SubLabel>
-          <FourCardGrid cards={[
-            {
-              title: 'Seasonality',
-              body: 'Rates curves are smooth; power curves embed a repeating winter/summer, peak/off-peak wave. Seasonality is not noise to smooth over — it is a primary structural feature that must be preserved through the interpolation regime and governed as a formal parameter.',
-            },
-            {
-              title: 'Mean reversion & spikes',
-              body: 'Power prices revert to a seasonal equilibrium and spike on scarcity. Rates do not exhibit equivalent spike behaviour. Any scenario or long-end extrapolation model that ignores mean reversion will produce implausible dynamics for power.',
-            },
-            {
-              title: 'Delivery over a period',
-              body: 'A power price is for delivery over a calendar month or quarter, not a point in time. Base and peak quotes must be decomposed into hourly granularity via a shape model — this shaping step has no direct analogue in rates and is a significant source of model risk if ungoverned.',
-            },
-            {
-              title: 'Cross-commodity coupling',
-              body: 'Power, gas, and carbon curves are not independent: spark and dark spreads link them economically. Curve construction for power must account for cross-commodity consistency as a constraint, not an afterthought.',
-            },
-          ]} />
-
-          <Callout intent="flag">
-            The construction-and-governance discipline — calibrate, interpolate, validate, document — transfers directly between asset classes. The energy-specific behaviour (seasonality, mean reversion, spikes, cross-commodity links) is what the modelling layer adds on top.
-          </Callout>
-        </SectionCard>
-      </div>
 
       {/* ── NEW: Quantitative methods ─────────────────────────────────────── */}
       <SectionCard title="Quantitative methods" action="A3 · Q1 · Q3 · Q4">
