@@ -1038,561 +1038,311 @@ section {
 </head>
 
 <body>
-
-<!-- ── Top bar ─────────────────────────────────────────────────────────────── -->
 <header class="topbar">
   <div class="topbar-left">
-    <div class="monogram">CCR</div>
+    <div class="monogram">PFC</div>
     <div>
-      <div class="topbar-title">Commodity <span class="accent">Curve Construction</span></div>
-      <div class="topbar-sub">Institutional Reference · Energy &amp; Commodity Markets</div>
+      <div class="topbar-title">E.ON Forward Curve <span class="accent">Modelling &amp; Governance</span></div>
+      <div class="topbar-sub">Senior Analyst Reference · Power &amp; Gas Markets · European Utilities</div>
     </div>
   </div>
   <div class="topbar-right">
     <div>
       <div class="status-dot">Reference</div>
-      <div class="desk-label" style="margin-top:3px;">CCR Desk · Derivatives &amp; Structured</div>
+      <div class="desk-label" style="margin-top:3px;">E.ON Energy Markets · Forward Curve &amp; Governance</div>
     </div>
   </div>
 </header>
 
-<!-- ── Shell ───────────────────────────────────────────────────────────────── -->
 <div class="shell">
-
-  <!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
   <nav class="sidebar" id="sidebar-nav">
     <div class="nav-group-label">Foundations</div>
     <a class="nav-item active" href="#s1"><span class="nav-num">01</span>What is a curve</a>
-    <a class="nav-item"        href="#s2"><span class="nav-num">02</span>What is a forward curve</a>
+    <a class="nav-item"        href="#s2"><span class="nav-num">02</span>Forward curve shape</a>
     <a class="nav-item"        href="#s3"><span class="nav-num">03</span>Why we need them</a>
-
     <div class="nav-group-label">Methods</div>
     <a class="nav-item" href="#s4"><span class="nav-num">04</span>Curve models</a>
-    <a class="nav-item" href="#s5"><span class="nav-num">05</span>Pricing commodities</a>
-
+    <a class="nav-item" href="#s5"><span class="nav-num">05</span>Pricing</a>
     <a class="nav-item" href="#s5b"><span class="nav-num">05B</span>Expected future price</a>
-
+    <a class="nav-item" href="#s5c"><span class="nav-num">05C</span>Generation spreads</a>
     <div class="nav-group-label">Products</div>
-    <a class="nav-item" href="#s7"><span class="nav-num">07</span>Commodity products</a>
+    <a class="nav-item" href="#s7"><span class="nav-num">06</span>E.ON products</a>
     <a class="nav-item" href="#s7-power"><span class="nav-num">↳</span>Power / Electricity</a>
     <a class="nav-item" href="#s7-gas"><span class="nav-num">↳</span>Natural Gas</a>
-    <a class="nav-item" href="#s7-oil"><span class="nav-num">↳</span>Crude Oil &amp; Products</a>
-    <a class="nav-item" href="#s7-coal"><span class="nav-num">↳</span>Coal</a>
-    <a class="nav-item" href="#s7-carbon"><span class="nav-num">↳</span>Carbon / Emissions</a>
-    <a class="nav-item" href="#s7-metals"><span class="nav-num">↳</span>Base Metals (LME)</a>
-
+    <a class="nav-item" href="#s7-carbon"><span class="nav-num">↳</span>Carbon / EUAs</a>
     <div class="nav-group-label">Reference</div>
-    <a class="nav-item" href="#s6"><span class="nav-num">06</span>Five-line summary</a>
+    <a class="nav-item" href="#s6"><span class="nav-num">07</span>Five-line summary</a>
   </nav>
-
-  <!-- ── Main ────────────────────────────────────────────────────────────── -->
   <main class="main">
 
-    <!-- ═══════════════════════════════════════════════════════════════════ -->
-    <!-- S1: What is a curve                                                -->
-    <!-- ═══════════════════════════════════════════════════════════════════ -->
     <section id="s1">
       <div class="section-eyebrow">Section 01 · Foundations</div>
       <div class="section-head">
         <div class="step-tag">1</div>
         <h2>What is a <span class="acc">curve</span></h2>
       </div>
-
-      <p class="lede">
-        A curve is a structured representation of the market's expectation of a price or rate at every
-        future maturity — built so that it exactly reprices, or minimises the pricing error of, every
-        liquid instrument used to construct it. It is the central input to valuation, risk measurement,
-        and hedging across any asset class with forward delivery.
-      </p>
-
+      <p class="lede">A curve maps the market's expectation of a price at every future maturity — constructed so it exactly reprices every liquid instrument used to build it. For a European power and gas utility, the price forward curve is the methodological backbone of generation fleet valuation, supply portfolio marking, hedge sizing, and regulatory reporting.</p>
       <div class="two-panel">
         <div class="panel green-top">
-          <div class="panel-tag">Job 01 — Price forward curve (PFC)</div>
+          <div class="panel-tag">Job 01 — Price Forward Curve (PFC)</div>
           <div class="panel-title">Expected delivery price</div>
-          <div class="panel-body">
-            The forward curve answers: <em>what price does the market expect for commodity
-            delivery at each future date?</em> For power it is the expected €/MWh for base
-            or peak delivery in each future period. For gas it is the expected €/MWh (or p/therm)
-            at the relevant hub. For oil it is the USD/bbl for the relevant grade and delivery
-            point. This is what traders, risk systems, valuation engines, and hedging desks read
-            when they look at the curve — the central number in every commodity transaction.
-          </div>
+          <div class="panel-body">The PFC answers: <em>what price does the market expect for power or gas delivery at each future date?</em> For power it is the expected €/MWh for base or peak delivery in the German DE-LU/AT zone, UK N2EX, or Dutch APX market. For gas it is the €/MWh at TTF or NCG. This is the central input to every generation dispatch model, supply contract valuation, and hedge position at E.ON.</div>
         </div>
         <div class="panel">
-          <div class="panel-tag">Job 02 — Spot vs forward relationship</div>
-          <div class="panel-title">Cost-of-carry &amp; market expectation</div>
-          <div class="panel-body">
-            The forward price is not simply "spot plus interest". For storable commodities
-            (gas, oil, coal, metals) it embeds the cost of physical storage, financing, and
-            the convenience yield from holding inventory:
-            <strong>F(T) = S · e^((r + s − y)·T)</strong>.
-            For non-storable commodities (power) there is no carry relationship — the forward
-            price is a pure market expectation of supply-demand balance at the future delivery
-            date, anchored to fuel-cost economics at the long end.
-          </div>
+          <div class="panel-tag">Job 02 — Non-storability: the defining constraint</div>
+          <div class="panel-title">Power has no cost-of-carry</div>
+          <div class="panel-body">For storable commodities (gas, metals), the forward price is anchored by storage economics: <strong>F(T) = S₀ · e^((r+s−y)T)</strong>. For power, this relationship does not exist — electricity cannot be stored across delivery periods. The forward price is a pure market expectation of supply/demand balance at that future date, anchored at the long end by fuel-cost economics: <strong>gas × heat rate + carbon × EF + O&amp;M</strong>. With no physical carry to discipline the curve, governance does all the work.</div>
         </div>
       </div>
-
       <div class="def-box">
-        <div class="def-box-label">Core principle — commodity no-arbitrage</div>
-        <p>
-          <strong>A curve must reprice every instrument it was built from.</strong>
-          For storable commodities, physical storage provides a second layer of discipline:
-          if the forward price exceeds spot plus carry costs, traders buy spot, store, and
-          sell forward — collapsing the deviation. For non-storable commodities (power), only
-          the financial no-arbitrage condition applies: the curve must reprice all calibrating
-          futures and swaps, or a risk-free financial trade exists against it.
-        </p>
+        <div class="def-box-label">Core principle — power non-storability</div>
+        <p><strong>A power forward curve can imply calendar spreads that would be instantly arbitraged away in any storable market — and they persist because no one can carry physical electricity from January to February.</strong> This absence of physical discipline is why curve governance — parameter approval cycles, methodology notes, sign-off on overlays, validation logs — is not a compliance overhead for power: it is the only mechanism that enforces consistency. Every other commodity has physics as a backstop. Power does not.</p>
       </div>
     </section>
-
     <hr class="section-rule">
 
-    <!-- ═══════════════════════════════════════════════════════════════════ -->
-    <!-- S2: What is a forward curve                                        -->
-    <!-- ═══════════════════════════════════════════════════════════════════ -->
     <section id="s2">
       <div class="section-eyebrow">Section 02 · Foundations</div>
       <div class="section-head">
         <div class="step-tag">2</div>
-        <h2>What is a <span class="acc">forward curve</span></h2>
+        <h2>Forward curve <span class="acc">shape</span></h2>
       </div>
-
-      <p class="lede">
-        A forward curve is the strip of market-implied prices for delivery at each future date,
-        extracted from traded instruments — futures, swaps, and calendar spreads. The shape of the
-        curve carries information about supply/demand expectations, storage economics, and
-        seasonal patterns specific to the underlying commodity.
-      </p>
-
+      <p class="lede">The power forward curve is the strip of market-implied €/MWh prices for base and peak delivery at each future period, extracted from traded exchange and OTC instruments. Its shape carries information about seasonal demand, fuel economics, capacity adequacy, and renewable penetration that simple interpolation cannot replicate.</p>
       <div class="two-panel">
         <div class="panel green-top">
-          <div class="panel-tag">Shape — Contango</div>
-          <div class="panel-title">Forward &gt; Spot</div>
-          <div class="panel-body">
-            Deferred prices exceed nearby prices. Typical when storage is plentiful and
-            cost-of-carry (financing, warehousing, insurance) is the dominant price driver.
-            A market in contango implies that holding inventory is economical: traders can
-            buy spot, store, and sell forward at a profit net of carry costs. Common in
-            oil and natural gas during low-demand periods.
-          </div>
+          <div class="panel-tag">Shape — Contango (deferred &gt; nearby)</div>
+          <div class="panel-title">Market expects price rise</div>
+          <div class="panel-body">In power markets, contango across seasons typically reflects expected demand growth, tighter supply conditions ahead, or a structural winter premium building as the heating season approaches. Unlike in gas, contango cannot be locked in by a storage-and-forward trade — it persists only as long as the market consensus holds it.</div>
         </div>
         <div class="panel amber-top">
-          <div class="panel-tag">Shape — Backwardation</div>
-          <div class="panel-title">Forward &lt; Spot</div>
-          <div class="panel-body">
-            Nearby prices exceed deferred prices. Signals immediate supply tightness or
-            strong near-term demand — the "convenience yield" on holding physical inventory
-            outweighs carry costs. Power markets frequently exhibit backwardation ahead of
-            seasonal demand peaks (winter heating, summer cooling) when generation scarcity
-            drives prompt prices above forward expectations.
-          </div>
+          <div class="panel-tag">Shape — Backwardation (nearby &gt; deferred)</div>
+          <div class="panel-title">Prompt tightness or scarcity</div>
+          <div class="panel-body">Near-term prices above forward expectations signals immediate supply/demand tightness — a generator outage, cold snap, low wind output, or gas supply disruption. Power spot markets (EPEX) spike on scarcity because no storage buffer absorbs the imbalance. A curve in steep near-term backwardation signals a stressed system.</div>
         </div>
       </div>
-
       <div class="callout">
-        <div class="callout-label">Energy-specific — Seasonality</div>
-        Power and gas forward curves do not follow simple contango or backwardation — they embed
-        a <strong>repeating seasonal structure</strong>: winter peaks for heating demand, summer
-        peaks for cooling, weekly peaks for industrial load, and intra-day peaks for on-peak
-        delivery windows. This seasonality is not noise to be smoothed away; it is a primary
-        structural feature that the curve must preserve through every interpolation and
-        extrapolation regime. A smooth curve in a seasonal market is a wrong curve.
+        <div class="callout-label">E.ON markets — Multi-scale seasonal structure</div>
+        The German/Continental power forward curve has a pronounced annual seasonal structure: winter Cal (Q4+Q1) trades at a significant premium to summer Cal (Q2+Q3) driven by heating demand and lower renewable generation. Within quarters, base and peak quotes diverge by 15–50% depending on season. Within days — observable in EPEX day-ahead settlements — the morning ramp, noon solar suppression, and evening demand peak can span 50+ €/MWh even outside stress conditions. <strong>The forward curve must preserve this multi-scale seasonal structure — not smooth it. A flat interpolation between quarterly anchors is commercially wrong.</strong>
       </div>
     </section>
-
     <hr class="section-rule">
 
-    <!-- ═══════════════════════════════════════════════════════════════════ -->
-    <!-- S3: Why we need them                                               -->
-    <!-- ═══════════════════════════════════════════════════════════════════ -->
     <section id="s3">
       <div class="section-eyebrow">Section 03 · Foundations</div>
       <div class="section-head">
         <div class="step-tag">3</div>
         <h2>Why we <span class="acc">need them</span></h2>
       </div>
-
-      <p class="lede">
-        A price forward curve is not a convenience — it is the methodological backbone of every
-        function that touches multi-period price exposure. Without a consistent, governed curve,
-        valuation is arbitrary, risk is unmeasurable, and hedging is guesswork.
-      </p>
-
+      <p class="lede">For a vertically integrated European energy utility, the price forward curve flows through every business function that touches price exposure. Its accuracy and governance directly affect P&amp;L reporting, risk limits, hedging effectiveness, and regulatory capital requirements.</p>
       <ul class="checklist">
         <li>
-          <span class="check-key">Valuation</span>
-          Mark-to-market and fair-value accounting of any instrument with forward delivery
-          requires a curve to discount future cashflows and establish the expected delivery price.
-          Without it, every desk can use a different price and the aggregated P&amp;L is fiction.
+          <span class="check-key">Generation</span>
+          Mark-to-market of the generation fleet — forward power sales, gas and carbon purchase hedges, PPAs, CfDs, and tolling agreements all require a consistent forward curve. Without it, valuations across business units diverge and P&amp;L aggregation is meaningless.
+        </li>
+        <li>
+          <span class="check-key">Supply</span>
+          Retail and B2B supply portfolios with fixed-price and indexed contracts require a PFC to mark the procurement book, size the hedging requirement by delivery period, and compute margin. A flat or stale curve produces phantom hedging surpluses or deficits that are invisible until settlement.
         </li>
         <li>
           <span class="check-key">Risk</span>
-          Potential Future Exposure (PFE), Value-at-Risk (VaR), and scenario analysis all depend
-          on a consistent forward price surface. DV01/price sensitivity across the curve maturity
-          spectrum can only be computed if the curve is a coherent, differentiable structure.
-        </li>
-        <li>
-          <span class="check-key">Hedging</span>
-          A hedge must be sized against the same forward price used to value the position it
-          hedges. Curve consistency ensures that a delta hedge computed from the curve actually
-          offsets the market risk — inconsistent curves produce phantom hedges that leave
-          residual exposure undetected.
+          PFE on open supply positions, VaR and CVaR on the generation margin book, clean spark spread sensitivity (DV01 per €/MWh of power, gas, and carbon), and scenario P&amp;L all require the curve as a common input. Inconsistent curves across desks produce a risk figure that cannot be aggregated.
         </li>
         <li>
           <span class="check-key green">Margin / Collateral</span>
-          Variation margin calls, initial margin requirements, and collateral disputes are all
-          resolved against a reference forward price. Curve governance — who owns it, how it is
-          built, how it is challenged — determines whether those disputes are resolved quickly
-          or become operational risk events.
+          EEX and ICE clearing margin calls, bilateral CSA variation margin, and collateral optimization across power, gas, and carbon hedges are all resolved against the reference forward price. Disputes with counterparties over variation margin are fundamentally disputes about the curve. Governance determines whether those disputes are resolved in hours or become operational risk events.
         </li>
       </ul>
-
       <div class="def-box">
-        <div class="def-box-label">Definition — No-arbitrage</div>
-        <p>
-          <strong>Arbitrage</strong> is a risk-free profit from a price inconsistency: buying and
-          selling related instruments simultaneously to lock in a gain with no net exposure.
-          In liquid markets, arbitrage opportunities cannot persist — participants trade them away,
-          restoring consistency. A curve that violates no-arbitrage (e.g. implying a calendar
-          spread that can be traded for risk-free profit) is a curve that is wrong, and any
-          system priced against it is mis-marked.
-        </p>
+        <div class="def-box-label">Definition — No-arbitrage in power markets</div>
+        <p><strong>Arbitrage</strong> is a risk-free profit from a price inconsistency. For power, the no-arbitrage condition is purely financial — there is no physical mechanism to trade it away. A power forward curve that implies a Q1/Q2 spread tradeable for risk-free profit against exchange-quoted instruments is a wrong curve. The curve must reprice every calibrating instrument it was built from, or a financial arbitrage exists against it. Unlike in gas or metals, no warehousing trade will automatically correct it.</p>
       </div>
     </section>
-
     <hr class="section-rule">
 
-    <!-- ═══════════════════════════════════════════════════════════════════ -->
-    <!-- S4: Different curve models                                         -->
-    <!-- ═══════════════════════════════════════════════════════════════════ -->
     <section id="s4">
       <div class="section-eyebrow">Section 04 · Methods</div>
       <div class="section-head">
         <div class="step-tag">4</div>
         <h2>Curve <span class="acc">models</span></h2>
       </div>
-
-      <p class="lede">
-        No single construction method is universally correct. The choice is a governance decision:
-        each method occupies a different position on the flexibility / transparency / stability
-        triangle and is suited to different maturity zones and liquidity regimes.
-      </p>
-
+      <p class="lede">No single construction method is correct for all maturities. The choice is a governance decision: each method occupies a different position on the flexibility / transparency / stability triangle. In power and gas markets, the maturity zones map naturally to the liquidity structure of traded instruments.</p>
       <div class="model-grid">
-
         <div class="model-card">
           <div class="model-tag">Method 01</div>
           <div class="model-name">Sequential Bootstrapping</div>
-          <div class="model-desc">
-            Build the curve instrument-by-instrument from the short end outward. Each calibrating
-            instrument is solved to exactly zero repricing error before advancing to the next
-            maturity. Every node is independently auditable — the price at each pillar is the
-            direct market quote with no smoothing.
-          </div>
-          <div class="model-use">
-            <strong>Use when:</strong> near-curve (0–3 months), liquid exchange futures with
-            clean settlement prices. Anchors are reliable; exact reprice matters for settlement
-            and audit.
-          </div>
+          <div class="model-desc">Build the curve node-by-node from the short end. Each calibrating instrument is solved to exactly zero repricing error before moving to the next maturity. Every pillar is independently auditable — the price at each node is the direct market quote, unmodified by any smoothing.</div>
+          <div class="model-use"><strong>Use when:</strong> near-curve (0–3M power from EEX day-ahead and ICE month-ahead; 0–3M gas from TTF/NCG prompt-month settlement). Instruments are liquid with tight bid-ask; exact reprice is required for settlement and audit.</div>
         </div>
-
         <div class="model-card">
           <div class="model-tag">Method 02</div>
           <div class="model-name">Best-fit / Solver</div>
-          <div class="model-desc">
-            Solve all curve points jointly via a nonlinear least-squares solver that minimises
-            weighted pricing error across all instruments simultaneously. Handles overlapping
-            instruments and interdependencies cleanly. Repricing errors are minimised but
-            not guaranteed to be zero.
-          </div>
-          <div class="model-use">
-            <strong>Use when:</strong> mid-curve with overlapping OTC instruments (quarterly
-            swaps that span multiple pillars). Robustness matters more than exact audit trail.
-          </div>
+          <div class="model-desc">Solve all curve points jointly via a nonlinear least-squares solver minimising weighted pricing error. Handles overlapping instruments — quarterly swaps that span multiple monthly pillars — cleanly. Repricing errors are minimised but not guaranteed zero.</div>
+          <div class="model-use"><strong>Use when:</strong> mid-curve with overlapping OTC instruments (power quarterly/annual swaps; TTF seasonal storage swaps). Robustness to overlap matters more than exact reprice.</div>
         </div>
-
         <div class="model-card">
           <div class="model-tag">Method 03</div>
           <div class="model-name">Spline Interpolation</div>
-          <div class="model-desc">
-            Fit a smooth piecewise-polynomial (cubic or tension spline) through the calibrated
-            pillar prices. Guarantees continuous first and second derivatives. Can produce
-            oscillation or negative implied forward prices between sparse pillars if
-            unconstrained.
-          </div>
-          <div class="model-use">
-            <strong>Use when:</strong> seasonal mid-curve (3 months – 2 years) where smooth
-            shape matters for risk aggregation. Use natural or clamped boundary conditions to
-            suppress endpoint oscillation.
-          </div>
+          <div class="model-desc">Fit a smooth piecewise-polynomial (cubic or tension spline) through calibrated pillar prices. Guarantees continuous first and second derivatives. Can produce oscillation between sparse pillars — especially in seasonal markets where adjacent quarterly prices differ substantially.</div>
+          <div class="model-use"><strong>Use when:</strong> seasonal mid-curve (3M–2Y) for power and gas where smooth shape is required for risk aggregation. Use natural or clamped boundary conditions. Never accept negative implied forward prices from an unconstrained spline.</div>
         </div>
-
         <div class="model-card">
           <div class="model-tag">Method 04</div>
           <div class="model-name">Seasonal Shaping</div>
-          <div class="model-desc">
-            Decompose base/peak calendar quotes into hourly granularity via a load or temperature
-            model. The shape model converts aggregate quarterly anchors into the intra-period
-            profile the market does not directly quote. Must be versioned and formally approved —
-            it is the primary source of cross-BU price inconsistency when ungoverned.
-          </div>
-          <div class="model-use">
-            <strong>Use when:</strong> hourly or daily granularity is required for settlement,
-            structured product valuation, or generation dispatch optimisation.
-          </div>
+          <div class="model-desc">Decompose base/peak calendar or quarterly quotes into hourly or daily granularity via a load or temperature shape model. Converts the quarterly anchor the market quotes into the intra-period delivery profile that EPEX settles. Must be versioned, formally approved, and reviewed when the generation mix changes.</div>
+          <div class="model-use"><strong>Use when:</strong> hourly or daily granularity is required — EPEX settlement, structured product valuation (base+peak decomposition), CCGT dispatch optimization. Not optional: it is the bridge between what the market quotes and what physically settles.</div>
         </div>
-
         <div class="model-card">
           <div class="model-tag">Method 05</div>
           <div class="model-name">Factor / PCA Model</div>
-          <div class="model-desc">
-            Reduce the curve to a small number of orthogonal factors (level, slope, curvature —
-            analogous to Nelson-Siegel in rates) estimated from historical covariance. Stable
-            and parsimonious; well-behaved extrapolation to illiquid tenors. Cannot reprice
-            every pillar exactly; misspecification risk if seasonal structure is strong.
-          </div>
-          <div class="model-use">
-            <strong>Use when:</strong> sparse illiquid long end (2Y+), scenario generation,
-            or stress testing. Stability and interpretability outweigh exact calibration.
-          </div>
+          <div class="model-desc">Reduce the curve to orthogonal factors (level, slope, curvature) estimated from historical covariance of the futures strip. Stable and parsimonious; well-behaved extrapolation to illiquid tenors. Cannot reprice every pillar exactly; misspecification risk if seasonal structure is strong.</div>
+          <div class="model-use"><strong>Use when:</strong> sparse illiquid long end (2Y+ for power and gas), scenario generation, stress testing, or VaR computation where curve-factor decomposition is needed. A seasonal factor (4th PCA component in energy) should be explicitly identified.</div>
         </div>
-
       </div>
     </section>
-
     <hr class="section-rule">
 
-    <!-- ═══════════════════════════════════════════════════════════════════ -->
-    <!-- S5: How we price commodities                                       -->
-    <!-- ═══════════════════════════════════════════════════════════════════ -->
     <section id="s5">
       <div class="section-eyebrow">Section 05 · Methods</div>
       <div class="section-head">
         <div class="step-tag">5</div>
-        <h2>How we price <span class="acc">commodities</span></h2>
+        <h2>How we price <span class="acc">power &amp; gas positions</span></h2>
       </div>
-
-      <p class="lede">
-        The present value of a commodity position is the sum of discounted forward cashflows over
-        every delivery period. The formula is structurally identical to a fixed-income present
-        value — only the interpretation of the forward rate and the delivery profile changes.
-      </p>
-
+      <p class="lede">The present value of any commodity position is the sum of discounted forward cashflows over every delivery period. For power and gas, the complexity is in what you put into F(tᵢ) and Qᵢ — not in the formula itself.</p>
       <div class="formula-block">
-        <pre><span class="comment"># Present value of a commodity forward position</span>
+        <pre><span class="comment"># Present value of a power or gas forward position</span>
 
-<span class="sym">PV</span>  <span class="op">=</span>  <span class="sym">Σ</span>  <span class="sym">P</span>(<span class="sym">tᵢ</span>)  <span class="op">×</span>  <span class="sym">F</span>(<span class="sym">tᵢ</span>)  <span class="op">×</span>  <span class="sym">Qᵢ</span>   <span class="comment">  summed over delivery periods i = 1 … N</span>
+<span class="sym">PV</span>  <span class="op">=</span>  <span class="sym">Σ</span>  <span class="sym">P</span>(<span class="sym">tᵢ</span>)  <span class="op">×</span>  <span class="sym">F</span>(<span class="sym">tᵢ</span>)  <span class="op">×</span>  <span class="sym">Qᵢ</span>     <span class="comment">summed over delivery periods i = 1 … N</span>
 
-<span class="comment">  P(tᵢ)  =  discount factor at delivery time tᵢ  =  1 / (1 + r(tᵢ))^tᵢ</span>
-<span class="comment">  F(tᵢ)  =  forward price for delivery at tᵢ   (from the price forward curve)</span>
-<span class="comment">  Qᵢ     =  quantity delivered in period i      (MWh, MMBtu, tonne, barrel …)</span></pre>
+<span class="comment">  P(tᵢ)  =  discount factor at delivery time tᵢ   =  1 / (1 + r(tᵢ))^tᵢ</span>
+<span class="comment">  F(tᵢ)  =  forward price for delivery at tᵢ      (from the price forward curve, €/MWh)</span>
+<span class="comment">  Qᵢ     =  quantity delivered in period i         (MWh for power; MWh or therm for gas)</span></pre>
       </div>
-
-      <p style="font-size:13.5px; color:var(--text-sec); margin-bottom:18px; line-height:1.7;">
-        Six factors determine whether this formula produces a number that is commercially correct
-        or technically precise but commercially wrong:
-      </p>
-
+      <p style="font-size:13.5px; color:var(--text-sec); margin-bottom:18px; line-height:1.7;">Six factors determine whether this formula produces a number that is commercially correct or technically precise but commercially wrong:</p>
       <ol class="factors">
         <li>
           <div class="factor-num">1</div>
           <div class="factor-body">
             <div class="factor-title">Delivery profile</div>
-            <div class="factor-desc">
-              Q<sub>i</sub> is not a single number — it is a per-period quantity that reflects
-              the actual delivery schedule: base-load vs peak-hour, weekday vs weekend, swing
-              volume rights. Getting the profile wrong mis-sizes every hedge derived from the PV.
-            </div>
+            <div class="factor-desc">Qᵢ is not a single number — it is a per-hour or per-day quantity reflecting the actual delivery schedule: base vs peak hours, weekday vs weekend, swing volume rights. Getting the profile wrong mis-sizes every hedge. A quarterly base sale against a peak delivery contract is an unhedged peak exposure disguised as a flat position.</div>
           </div>
         </li>
         <li>
           <div class="factor-num">2</div>
           <div class="factor-body">
-            <div class="factor-title">Storage / cost-of-carry</div>
-            <div class="factor-desc">
-              For storable commodities (gas, oil, metals), the forward curve embeds storage
-              costs, financing, and the convenience yield. These must be reflected in F(t<sub>i</sub>)
-              or stripped out before computing spread positions — failing to do so conflates
-              carry with directional exposure.
-            </div>
+            <div class="factor-title">Non-storability (power) vs storage economics (gas)</div>
+            <div class="factor-desc">For power, F(tᵢ) is a pure supply/demand expectation — no carry bound constrains it. For gas, the forward is bounded by storage economics (winter–summer spread ≥ inject + withdraw + working gas financing). When building a mixed power/gas position P&amp;L, the different anchoring mechanisms must be reflected in how curve errors propagate.</div>
           </div>
         </li>
         <li>
           <div class="factor-num">3</div>
           <div class="factor-body">
             <div class="factor-title">Seasonality</div>
-            <div class="factor-desc">
-              F(t<sub>i</sub>) varies structurally across the year. Using a flat or linearly
-              interpolated price between quarterly pillars ignores intra-quarter seasonal peaks
-              and produces systematic mis-marking of peak/off-peak structured products.
-            </div>
+            <div class="factor-desc">F(tᵢ) varies structurally across the year — by month, week, and hour. Using a quarterly average for an intra-quarter delivery ignores seasonal peaks. In German power, January and February prices can be 15–30% above Q1 base. Peak hours can trade 25–50% above base in winter. This is not noise — it is structure that must be preserved.</div>
           </div>
         </li>
         <li>
           <div class="factor-num">4</div>
           <div class="factor-body">
-            <div class="factor-title">Cross-commodity coupling</div>
-            <div class="factor-desc">
-              Power F(t<sub>i</sub>) is not independent of gas and carbon prices — spark and
-              dark spreads link them economically. A position priced solely on the power curve
-              without accounting for these linkages may appear hedged while carrying implicit
-              fuel-price exposure.
-            </div>
+            <div class="factor-title">Cross-commodity coupling (generation margin)</div>
+            <div class="factor-desc">Power F(tᵢ) is not independent of gas and carbon prices. The clean spark spread — F_power − F_gas × HR − F_carbon × EF — is the CCGT generation margin at each delivery period. A position priced solely on the power curve without accounting for gas and carbon inputs is a position with three open commodity legs, not one.</div>
           </div>
         </li>
         <li>
           <div class="factor-num">5</div>
           <div class="factor-body">
-            <div class="factor-title">Volatility / optionality</div>
-            <div class="factor-desc">
-              Instruments with optionality (swing contracts, tolling agreements, embedded call
-              options) cannot be priced by the forward curve alone — they require a volatility
-              surface or stochastic model. The PV formula above is the deterministic core; add
-              an option-adjusted spread or run a Monte Carlo on top for optionality.
-            </div>
+            <div class="factor-title">Optionality</div>
+            <div class="factor-desc">Tolling agreements, swing gas contracts, virtual PPAs, indexed supply contracts, and embedded generation optionality cannot be priced by the forward curve alone — they require a volatility surface or stochastic model. The PV formula above is the deterministic core; add an option-adjusted model on top for optionality.</div>
           </div>
         </li>
         <li>
           <div class="factor-num">6</div>
           <div class="factor-body">
-            <div class="factor-title">Liquidity / granularity gap</div>
-            <div class="factor-desc">
-              The market quotes quarterly or monthly — the position requires daily or hourly.
-              The granularity gap between market anchor and delivery period is filled by the
-              shape model. Any error in shaping flows directly into F(t<sub>i</sub>) and is
-              indistinguishable from market price movement in P&amp;L attribution.
-            </div>
+            <div class="factor-title">Granularity gap</div>
+            <div class="factor-desc">EEX quotes quarterly base and peak — EPEX settles hourly. The shape model fills this gap. Any error in the shape model flows directly into F(tᵢ) and is indistinguishable from a market price movement in P&amp;L attribution. An ungoverned shape model is a hidden P&amp;L source.</div>
           </div>
         </li>
       </ol>
-
       <div class="warning-box">
         <div class="warning-label">Recurring trap — granularity mismatch</div>
-        The most common pricing error in commodity desks is using a quarterly forward price
-        as a proxy for an intra-quarter delivery. A Q1 base price applied to a January-only
-        peak contract over-prices in February and March while under-pricing January — producing
-        a P&amp;L that appears flat in aggregate but oscillates within the quarter.
-        <strong>Always decompose to the settlement granularity before discounting.</strong>
+        The most common pricing error in power desks is using a quarterly base forward price as a proxy for an intra-quarter peak delivery. A Q1 German base price applied to January peak hours over-prices February base while under-pricing January peak — producing a P&amp;L that looks flat in aggregate but oscillates sharply within the quarter. <strong>Always decompose to settlement granularity before discounting.</strong>
       </div>
     </section>
-
     <hr class="section-rule">
 
-    <!-- ═══════════════════════════════════════════════════════════════════ -->
-    <!-- S5B: Expected future price — formulas & methods                    -->
-    <!-- ═══════════════════════════════════════════════════════════════════ -->
     <section id="s5b">
       <div class="section-eyebrow">Section 05B · Methods</div>
       <div class="section-head">
         <div class="step-tag" style="background:#4f46e5;">∑</div>
         <h2>Expected <span class="acc">future price</span> — formulas &amp; methods</h2>
       </div>
-
-      <p class="lede">
-        The expected future commodity price at maturity T is the market's best estimate of where
-        the spot price will be when delivery occurs. For storable commodities it is anchored by the
-        cost of physically carrying inventory to that date. For non-storable commodities it is
-        a pure supply-demand expectation. The formulas below show how to calculate it for each case
-        and how all the layers — carry, mean-reversion, seasonality, and delivery profile — combine
-        into the full forward price used in valuation and hedging.
-      </p>
-
+      <p class="lede">The expected future commodity price at maturity T is the market's best estimate of where the delivery price will be at that date. For power it is a pure supply-demand expectation anchored to fuel-cost economics. For gas it is disciplined by storage carry. The formulas show how to calculate it and how the layers — carry, mean-reversion, seasonality — combine.</p>
       <div class="eq-grid">
         <div class="eq-card green">
-          <div class="eq-card-label">Storable commodities (gas, oil, coal, metals)</div>
-          <div class="eq-card-body">
-            The expected delivery price is <strong>anchored by storage economics</strong>:
-            <span class="mono">F(T) = S₀ · e^((r+s−y)·T)</span>.
-            Physical arbitrage enforces this — if the forward diverges from carry cost,
-            traders buy spot, store, and sell forward until it corrects.
-          </div>
+          <div class="eq-card-label">Gas (storable) — carry-anchored</div>
+          <div class="eq-card-body">The expected gas price is anchored by storage economics: <span class="mono">F(T) = S₀ · e^((r+s−y)·T)</span>. Physical storage enforces this — if the winter/summer spread falls below inject + withdraw costs, operators arbitrage the spread by injection. E.ON's gas storage assets (Rehden, Haidach) provide internal reference for calibrating the storage cost parameters.</div>
         </div>
         <div class="eq-card amber">
-          <div class="eq-card-label">Non-storable commodities (power)</div>
-          <div class="eq-card-body">
-            No cost-of-carry exists. The expected delivery price is a <strong>market consensus
-            on future supply/demand balance</strong>, anchored at the long end by fuel-cost
-            economics: <span class="mono">F ≈ gas × heat_rate + carbon × EF + O&amp;M</span>.
-            No physical arbitrage enforces it — governance does.
-          </div>
+          <div class="eq-card-label">Power (non-storable) — governance-anchored</div>
+          <div class="eq-card-body">No cost-of-carry exists. The expected price is a market consensus on future supply/demand balance, anchored at the long end by fuel-cost parity: <span class="mono">F ≈ F_gas × HR + F_carbon × EF + O&amp;M</span>. No physical mechanism enforces it. Governance does.</div>
         </div>
       </div>
 
-      <!-- ── Eq 1: Cost-of-carry ── -->
       <div class="eq-section">
-        <div class="eq-title"><span class="eq-num">Eq 01</span> Cost-of-carry forward price (storable commodities)</div>
-        <p class="eq-desc">
-          For any commodity that can be stored, the no-arbitrage forward price is fully determined
-          by the cost of buying spot and holding it to delivery. Any deviation creates a cash-and-carry
-          arbitrage that is immediately traded away in liquid markets.
-        </p>
+        <div class="eq-title"><span class="eq-num">Eq 01</span> Cost-of-carry forward price (gas / storable commodities)</div>
+        <p class="eq-desc">For gas, the no-arbitrage forward price is determined by the cost of buying spot and holding to delivery. Winter/summer spread violations create physical storage arbitrages traded away in liquid markets.</p>
         <div class="formula-block-sm"><pre>
 <span class="sym">F</span>(<span class="val">0</span>, <span class="sym">T</span>)  <span class="op">=</span>  <span class="sym">S</span>₀  <span class="op">·</span>  <span class="hi">e</span><span class="op">^</span>((<span class="sym">r</span> <span class="op">+</span> <span class="sym">s</span> <span class="op">−</span> <span class="sym">y</span>) <span class="op">·</span> <span class="sym">T</span>)
 
-<span class="comment">  S₀  =  spot price today</span>
-<span class="comment">  r   =  risk-free rate (continuously compounded, same currency as commodity)</span>
-<span class="comment">  s   =  storage cost rate (per year: warehousing, insurance, financing of physical)</span>
-<span class="comment">  y   =  convenience yield (per year: benefit of holding physical vs paper)</span>
-<span class="comment">  T   =  time to delivery in years</span></pre></div>
+<span class="comment">  S₀  =  spot price today  (€/MWh for TTF)</span>
+<span class="comment">  r   =  EUR risk-free rate  (€STR, continuously compounded)</span>
+<span class="comment">  s   =  storage cost rate  (per year: injection + withdrawal + working gas financing)</span>
+<span class="comment">  y   =  convenience yield  (per year: benefit from holding physical gas inventory)</span>
+<span class="comment">  T   =  time to delivery in years</span>
+
+<span class="comment"># Storage no-arbitrage bound (gas governance hard constraint):</span>
+<span class="comment">  Winter/summer spread  ≥  inject_cost + withdraw_cost + financing_cost</span>
+<span class="comment">  Violation = documented storage arbitrage = hard governance flag, curve cannot publish.</span></pre></div>
         <div class="eq-grid" style="margin-top:12px;">
           <div class="eq-card green">
-            <div class="eq-card-label">Contango condition (r + s &gt; y)</div>
-            <div class="eq-card-body">When storage costs exceed the convenience yield, forward prices exceed spot.
-            Buying spot and selling forward earns the carry. Prevalent in oil/metals during inventory surpluses.</div>
+            <div class="eq-card-label">Contango (r + s &gt; y)</div>
+            <div class="eq-card-body">Storage costs exceed convenience yield. Gas summer prices below winter — deferred prices include the cost of storing summer gas for winter delivery. Standard injection-season structure.</div>
           </div>
           <div class="eq-card amber">
-            <div class="eq-card-label">Backwardation condition (y &gt; r + s)</div>
-            <div class="eq-card-body">When convenience yield dominates, forward prices fall below spot.
-            Physical holders earn a scarcity premium — "convenience" — that outweighs carry costs.
-            Prevalent in tight markets.</div>
+            <div class="eq-card-label">Backwardation (y &gt; r + s)</div>
+            <div class="eq-card-body">Scarcity premium exceeds carry. Nearby gas above forward — physical holders earn a premium. Typical in cold snaps or supply disruptions when buyers compete for immediate delivery.</div>
           </div>
-        </div>
-        <div class="def-box" style="margin-top:14px;">
-          <div class="def-box-label">Discrete compounding equivalent</div>
-          <p>For annual compounding: <strong>F(0,T) = S₀ · (1 + r + s − y)^T</strong>.
-          The continuous form is standard for derivatives; the discrete form is used in some
-          physical commodity markets. Never mix the two conventions within a single curve.</p>
         </div>
       </div>
 
-      <!-- ── Eq 2: Non-storable (power) ── -->
       <div class="eq-section">
-        <div class="eq-title"><span class="eq-num">Eq 02</span> Non-storable commodity — direct calibration (power)</div>
-        <p class="eq-desc">
-          For power, storage is impossible. The cost-of-carry formula does not apply.
-          The forward price cannot be derived from spot — it must be read directly from market quotes
-          or anchored to fundamental economics. The no-arbitrage condition operates through
-          financial instruments only, not through physical carry.
-        </p>
+        <div class="eq-title"><span class="eq-num">Eq 02</span> Non-storable commodity — fuel-cost parity anchor (power)</div>
+        <p class="eq-desc">For power, storage is impossible. The cost-of-carry formula does not apply. At the long end, the market-clearing price is anchored to the economics of the marginal generator — a CCGT in European markets.</p>
         <div class="formula-block-sm"><pre>
 <span class="comment"># Power: no cost-of-carry relationship exists.</span>
-<span class="comment"># Forward price is either directly market-quoted or anchored to fuel cost parity:</span>
+<span class="comment"># Long-end anchor — fuel-cost parity of the marginal CCGT:</span>
 
 <span class="sym">F</span>_power(<span class="sym">T</span>)  <span class="op">≈</span>  <span class="sym">F</span>_gas(<span class="sym">T</span>) <span class="op">×</span> <span class="sym">HR</span>  <span class="op">+</span>  <span class="sym">F</span>_carbon(<span class="sym">T</span>) <span class="op">×</span> <span class="sym">EF</span>  <span class="op">+</span>  <span class="sym">OM</span>  <span class="op">+</span>  <span class="sym">capacity_premium</span>(<span class="sym">T</span>)
 
-<span class="comment">  HR    =  heat rate of the marginal generator (typically CCGT, ~49–52%)</span>
-<span class="comment">  EF    =  emission factor (tCO₂/MWh, ~0.35–0.40 for CCGT)</span>
-<span class="comment">  OM    =  variable O&amp;M cost of the marginal generator (€/MWh)</span>
-<span class="comment">  capacity_premium  =  scarcity premium above fuel cost; zero in normal conditions</span>
+<span class="comment">  F_gas(T)   =  TTF/NCG forward price at T   (€/MWh)</span>
+<span class="comment">  HR         =  heat rate of marginal CCGT   (~1.92–2.04 MWh_gas per MWh_el, = 49–52% eff.)</span>
+<span class="comment">  F_carbon(T) =  EUA forward at T            (€/tCO₂)</span>
+<span class="comment">  EF         =  CCGT emission factor         (~0.35–0.40 tCO₂/MWh_el)</span>
+<span class="comment">  OM         =  variable O&amp;M of marginal CCGT (~3–6 €/MWh)</span>
+<span class="comment">  capacity_premium = scarcity premium above fuel cost; zero in normal conditions</span>
 
-<span class="comment"># Use this as a long-end anchor / sanity check, not as the primary construction method.</span></pre></div>
+<span class="comment"># Use as long-end governance anchor / sanity check, not as primary construction input.</span>
+<span class="comment"># Primary input is market-quoted EEX/ICE instruments for liquid near and mid curve.</span></pre></div>
       </div>
 
-      <!-- ── Eq 3: Mean-reversion (OU) ── -->
       <div class="eq-section">
         <div class="eq-title"><span class="eq-num">Eq 03</span> Mean-reverting expected price — Ornstein-Uhlenbeck</div>
-        <p class="eq-desc">
-          Mean reversion is the defining dynamic of energy and commodity prices.
-          The OU process models the speed at which prices return to a long-run equilibrium after a shock —
-          and its expected value formula is the mathematical expression of that reversion.
-        </p>
+        <p class="eq-desc">Mean reversion is the defining dynamic of power and gas prices. Prices spike on scarcity then revert to seasonal equilibrium as supply responds. The OU process captures this dynamic — its expected value formula is the mathematical expression of that reversion.</p>
         <div class="formula-block-sm"><pre>
-<span class="comment"># Stochastic differential equation (continuous time):</span>
+<span class="comment"># Stochastic differential equation:</span>
 <span class="op">d</span><span class="sym">X</span>  <span class="op">=</span>  <span class="sym">κ</span> <span class="op">·</span> (<span class="sym">θ</span>(<span class="sym">t</span>) <span class="op">−</span> <span class="sym">X</span>) <span class="op">·</span> <span class="op">d</span><span class="sym">t</span>  <span class="op">+</span>  <span class="sym">σ</span> <span class="op">·</span> <span class="op">d</span><span class="sym">W</span>
 
-<span class="comment">  κ     =  mean-reversion speed (yr⁻¹); power: 3–10; gas: 1–5; oil: 0.5–2</span>
-<span class="comment">  θ(t)  =  seasonal equilibrium at time t  (see Eq 05 for seasonal form)</span>
+<span class="comment">  κ     =  mean-reversion speed (yr⁻¹)  power: 3–10  gas: 1–5</span>
+<span class="comment">  θ(t)  =  seasonal equilibrium at time t  (see Eq 05 for Fourier form)</span>
 <span class="comment">  σ     =  volatility of the spot process</span>
 <span class="comment">  dW    =  standard Brownian increment</span>
 
@@ -1600,168 +1350,115 @@ section {
 <span class="sym">E</span>[<span class="sym">X</span>(<span class="sym">T</span>)]  <span class="op">=</span>  <span class="sym">θ</span>  <span class="op">+</span>  (<span class="sym">X</span>₀ <span class="op">−</span> <span class="sym">θ</span>) <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ</span> <span class="op">·</span> <span class="sym">T</span>)
 
 <span class="comment"># As T → ∞,  E[X(T)] → θ  (long-run equilibrium)</span>
-<span class="comment"># As T → 0,  E[X(T)] → X₀  (today's spot)</span>
-<span class="comment"># Half-life of a shock: T½ = ln(2) / κ   (time for 50% of shock to dissipate)</span>
+<span class="comment"># Half-life of a shock: T½ = ln(2) / κ  →  power: 1–3 months; gas: 2–8 months</span>
 
-<span class="comment"># Discrete approximation for numerical bootstrapping (Euler-Maruyama):</span>
-<span class="sym">X</span>(<span class="sym">t</span><span class="op">+</span><span class="sym">Δt</span>)  <span class="op">≈</span>  <span class="sym">X</span>(<span class="sym">t</span>)  <span class="op">+</span>  <span class="sym">κ</span> <span class="op">·</span> (<span class="sym">θ</span> <span class="op">−</span> <span class="sym">X</span>(<span class="sym">t</span>)) <span class="op">·</span> <span class="sym">Δt</span>  <span class="op">+</span>  <span class="sym">σ</span> <span class="op">·</span> <span class="str">√Δt</span> <span class="op">·</span> <span class="sym">ε</span>   <span class="comment">  ε ~ N(0,1)</span></pre></div>
-        <p class="eq-note">
-          <strong>Calibrate κ:</strong> regress deseasonalised spot returns on lagged level →
-          AR(1) coefficient φ = e^(−κΔt), so κ = −ln(φ)/Δt.
-          A weekly calibration (Δt = 1/52) on power residuals typically yields κ ∈ [3, 8].
-        </p>
+<span class="comment"># Calibrate κ from deseasonalised spot AR(1) on weekly EPEX/TTF settlements:</span>
+<span class="comment">#   AR(1) coefficient φ = e^(−κΔt)  →  κ = −ln(φ)/Δt</span></pre></div>
+        <p class="eq-note"><strong>Governance note:</strong> κ and σ must be re-estimated when the generation mix changes materially — large renewable capacity additions change the frequency and severity of spike events, making parameters calibrated in prior regimes unreliable for tail risk.</p>
       </div>
 
-      <!-- ── Eq 4: Two-factor (Schwartz-Smith) ── -->
       <div class="eq-section">
         <div class="eq-title"><span class="eq-num">Eq 04</span> Two-factor expected price — Schwartz-Smith decomposition</div>
-        <p class="eq-desc">
-          The two-factor model separates log-spot into a mean-reverting short-term deviation and a
-          random-walk long-term equilibrium. It explains the empirical observation that front-month
-          and back-of-curve prices are nearly uncorrelated — they are driven by different factors
-          with different speeds and different risk premia.
-        </p>
+        <p class="eq-desc">The two-factor model separates spot dynamics into a fast-reverting short-term component (spikes, supply disruptions) and a slow-moving long-term equilibrium (fuel-cost anchored). This explains why power front-month and Cal+2 prices are nearly uncorrelated — driven by different factors.</p>
         <div class="formula-block-sm"><pre>
-<span class="comment"># Decompose log spot price into two latent factors:</span>
+<span class="comment"># Decompose log spot into two latent factors:</span>
 <span class="hi">ln</span> <span class="sym">S</span>(<span class="sym">t</span>)  <span class="op">=</span>  <span class="sym">χ</span>(<span class="sym">t</span>)  <span class="op">+</span>  <span class="sym">ξ</span>(<span class="sym">t</span>)
 
-<span class="comment">  χ(t)  =  short-term deviation  →  mean-reverts to zero at speed κ_χ</span>
-<span class="comment">  ξ(t)  =  long-term equilibrium →  random walk with drift μ_ξ</span>
+<span class="comment">  χ(t)  =  short-term deviation  →  fast mean-reversion  (κ_χ: power 3–10 yr⁻¹)</span>
+<span class="comment">  ξ(t)  =  long-term equilibrium →  slow drift anchored to fuel-cost parity</span>
 
 <span class="comment"># Factor dynamics:</span>
 <span class="op">d</span><span class="sym">χ</span>  <span class="op">=</span>  <span class="op">−</span><span class="sym">κ_χ</span> <span class="op">·</span> <span class="sym">χ</span> <span class="op">·</span> <span class="op">d</span><span class="sym">t</span>  <span class="op">+</span>  <span class="sym">σ_χ</span> <span class="op">·</span> <span class="op">d</span><span class="sym">W</span>₁
 <span class="op">d</span><span class="sym">ξ</span>  <span class="op">=</span>  <span class="sym">μ_ξ</span> <span class="op">·</span> <span class="op">d</span><span class="sym">t</span>    <span class="op">+</span>  <span class="sym">σ_ξ</span> <span class="op">·</span> <span class="op">d</span><span class="sym">W</span>₂    <span class="comment">  Corr(dW₁, dW₂) = ρ</span>
 
-<span class="comment"># Expected commodity price at horizon T:</span>
-<span class="sym">E</span>[<span class="sym">χ</span>(<span class="sym">T</span>)]     <span class="op">=</span>  <span class="sym">χ</span>₀ <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ_χ</span> <span class="op">·</span> <span class="sym">T</span>)           <span class="comment">  short-term factor decays to zero as T → ∞</span>
-<span class="sym">E</span>[<span class="sym">ξ</span>(<span class="sym">T</span>)]     <span class="op">=</span>  <span class="sym">ξ</span>₀ <span class="op">+</span> <span class="sym">μ_ξ</span> <span class="op">·</span> <span class="sym">T</span>              <span class="comment">  long-term equilibrium grows at rate μ_ξ</span>
+<span class="comment"># Expected price at horizon T:</span>
 <span class="sym">E</span>[<span class="hi">ln</span> <span class="sym">S</span>(<span class="sym">T</span>)]  <span class="op">=</span>  <span class="sym">χ</span>₀ <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ_χ</span><span class="sym">T</span>) <span class="op">+</span> <span class="sym">ξ</span>₀ <span class="op">+</span> <span class="sym">μ_ξ</span><span class="sym">T</span>
 
-<span class="comment"># Observed forward price — calibrate by matching the model to the market futures strip:</span>
-<span class="hi">ln</span> <span class="sym">F</span>(<span class="val">0</span>,<span class="sym">T</span>)  <span class="op">=</span>  <span class="sym">χ</span>₀<span class="op">·</span><span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ_χT</span>) <span class="op">+</span> <span class="sym">ξ</span>₀ <span class="op">+</span> <span class="sym">μ_ξ</span><span class="sym">T</span> <span class="op">+</span> <span class="sym">variance_correction</span>(<span class="sym">T</span>)
-
-<span class="comment">  variance_correction(T) = ½[σ_χ²(1−e^(−2κT))/(2κ) + σ_ξ²T + 2ρσ_χσ_ξ(1−e^(−κT))/κ]</span>
-<span class="comment">  This Jensen's inequality correction converts E[ln S] to ln E[S] for a log-normal process.</span></pre></div>
-        <p class="eq-note">
-          <strong>Practical use:</strong> calibrate {κ_χ, σ_χ, σ_ξ, μ_ξ, ρ} via
-          Kalman filter on the historical commodity futures strip. The term structure of futures
-          volatility (decreasing with maturity) is the key identifying feature of the
-          short-term factor.
-        </p>
+<span class="comment"># Calibrate {κ_χ, σ_χ, σ_ξ, μ_ξ, ρ} via Kalman filter on EEX/ICE futures strip.</span>
+<span class="comment"># Identifying feature: term structure of futures volatility decreasing with maturity</span>
+<span class="comment">#   → that term structure slope is the short-term factor's signature.</span></pre></div>
+        <p class="eq-note"><strong>Practical use:</strong> the term structure of futures volatility (decreasing with maturity for power and gas) is the key identifying feature of the short-term factor. Use the Kalman filter on the historical forward strip to calibrate jointly.</p>
       </div>
 
-      <!-- ── Eq 5: Seasonal expected price ── -->
       <div class="eq-section">
         <div class="eq-title"><span class="eq-num">Eq 05</span> Seasonal expected price — Fourier equilibrium</div>
-        <p class="eq-desc">
-          For energy commodities, the long-run equilibrium θ is not a constant — it is a
-          deterministic seasonal function of time. Separating the deterministic seasonal component
-          from the stochastic residual is the essential first step before calibrating any
-          mean-reversion or volatility parameter.
-        </p>
+        <p class="eq-desc">The long-run equilibrium θ is not a constant for energy — it is a deterministic seasonal function of time. Separating the deterministic seasonal component from the stochastic residual is the essential first step before calibrating any mean-reversion or volatility parameter.</p>
         <div class="formula-block-sm"><pre>
-<span class="comment"># Additive seasonal mean-reversion model:</span>
+<span class="comment"># Additive seasonal mean-reversion:</span>
 <span class="sym">E</span>[<span class="sym">S</span>(<span class="sym">T</span>)]  <span class="op">=</span>  <span class="sym">θ</span>(<span class="sym">T</span>)  <span class="op">+</span>  (<span class="sym">S</span>₀ <span class="op">−</span> <span class="sym">θ</span>(<span class="val">0</span>)) <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ</span> <span class="op">·</span> <span class="sym">T</span>)
 
-<span class="comment"># Fourier seasonal equilibrium (annual + sub-annual cycles):</span>
+<span class="comment"># Fourier seasonal equilibrium:</span>
 <span class="sym">θ</span>(<span class="sym">T</span>)  <span class="op">=</span>  <span class="sym">α</span>₀  <span class="op">+</span>  <span class="op">Σ</span><span class="str">ₖ</span>  [<span class="sym">aₖ</span> <span class="op">·</span> <span class="hi">cos</span>(<span class="val">2π</span><span class="sym">k</span><span class="sym">T</span><span class="op">/</span><span class="sym">P</span>)  <span class="op">+</span>  <span class="sym">bₖ</span> <span class="op">·</span> <span class="hi">sin</span>(<span class="val">2π</span><span class="sym">k</span><span class="sym">T</span><span class="op">/</span><span class="sym">P</span>)]
 
-<span class="comment">  α₀     =  long-run mean price level</span>
+<span class="comment">  α₀     =  long-run mean price level  (fuel-cost parity anchor for power)</span>
 <span class="comment">  aₖ,bₖ =  Fourier coefficients for harmonic k  (estimated by OLS on historical data)</span>
-<span class="comment">  P      =  period: 1 year for annual cycle, 1/52 for weekly, 1/365 for intra-day</span>
-<span class="comment">  k      =  harmonic number; k=1 gives fundamental cycle, k=2 semi-annual, etc.</span>
-
-<span class="comment"># Amplitude and phase of each harmonic:</span>
-<span class="sym">Amplitude</span>ₖ  <span class="op">=</span>  <span class="str">√</span>(<span class="sym">aₖ</span><span class="op">²</span> <span class="op">+</span> <span class="sym">bₖ</span><span class="op">²</span>)
-<span class="sym">Phase</span>ₖ      <span class="op">=</span>  <span class="hi">arctan</span>(<span class="sym">bₖ</span> <span class="op">/</span> <span class="sym">aₖ</span>)      <span class="comment">  tells you when the seasonal peak occurs</span>
-
-<span class="comment"># Multiplicative alternative (log-space, avoids negative prices):</span>
-<span class="hi">ln</span> <span class="sym">θ</span>(<span class="sym">T</span>)  <span class="op">=</span>  <span class="hi">ln</span> <span class="sym">α</span>₀  <span class="op">+</span>  <span class="op">Σ</span><span class="str">ₖ</span>  [<span class="sym">aₖ</span> <span class="op">·</span> <span class="hi">cos</span>(<span class="val">2π</span><span class="sym">k</span><span class="sym">T</span><span class="op">/</span><span class="sym">P</span>)  <span class="op">+</span>  <span class="sym">bₖ</span> <span class="op">·</span> <span class="hi">sin</span>(<span class="val">2π</span><span class="sym">k</span><span class="sym">T</span><span class="op">/</span><span class="sym">P</span>)]</pre></div>
-        <p class="eq-note">
-          <strong>Governance note:</strong> the Fourier coefficients {aₖ, bₖ} are model parameters — they must be locked between approval cycles, documented with the number of harmonics used, the historical estimation window, and any temperature-normalisation applied.
-          A change to any coefficient is a methodology change requiring formal sign-off.
-        </p>
+<span class="comment">  P      =  period: 1 year for annual cycle, 1/52 for weekly</span>
+<span class="comment">  k      =  harmonic; k=1 annual, k=2 semi-annual, k=3 quarterly …</span>
+<span class="comment">  German power: 3–6 harmonics standard; fewer than 3 fails to capture sub-annual peaks</span></pre></div>
+        <p class="eq-note"><strong>Governance note:</strong> the Fourier coefficients {aₖ, bₖ} are locked parameters — documented with number of harmonics, estimation window (minimum 5 years), and temperature-normalisation method applied. A change to any coefficient is a methodology change requiring formal sign-off.</p>
       </div>
 
-      <!-- ── Eq 6: Commodity forward price premium ── -->
       <div class="eq-section">
         <div class="eq-title"><span class="eq-num">Eq 06</span> Commodity hedging pressure &amp; forward price bias</div>
-        <p class="eq-desc">
-          In commodity markets, producers (miners, generators, farmers) systematically sell
-          forward to lock in revenue, creating excess supply of forward contracts relative to demand.
-          Buyers of that forward risk earn a premium — the forward price tends to trade <em>below</em>
-          the expected delivery price for short-dated contracts (Keynes' "normal backwardation").
-          For long-dated contracts or buyer-hedging-dominated markets, the sign reverses.
-        </p>
+        <p class="eq-desc">In power markets, generators (including E.ON generation) systematically sell forward to lock in generation margin, creating excess supply of forward contracts. Buyers of that forward risk earn a premium — the forward price tends to trade below the expected delivery price (Keynes' normal backwardation).</p>
         <div class="formula-block-sm"><pre>
 <span class="comment"># Commodity forward price premium (Keynes normal backwardation):</span>
 <span class="sym">F</span>(<span class="val">0</span>,<span class="sym">T</span>)  <span class="op">=</span>  <span class="sym">E</span>[<span class="sym">S</span>(<span class="sym">T</span>)]  <span class="op">−</span>  <span class="sym">π</span>(<span class="sym">T</span>)
 
-<span class="comment">  E[S(T)]  =  market's best estimate of spot at delivery (fundamental value)</span>
+<span class="comment">  E[S(T)]  =  market's expected spot at delivery (fundamental value)</span>
 <span class="comment">  π(T)     =  hedging premium paid by producers to buyers of forward price risk</span>
 
-<span class="comment"># When producers dominate hedging (generators, oil majors, miners):</span>
-<span class="comment">  π(T) &gt; 0  →  forward price BELOW expected spot  (buyers earn a premium)</span>
+<span class="comment"># Power: generators are net forward sellers  →  π(T) &gt; 0  →  forward &lt; expected spot</span>
+<span class="comment"># Gas:   producers are net short hedgers     →  similar sign to power (short tenors)</span>
+<span class="comment"># EUAs:  compliance buyers create demand     →  forward ≥ expected spot</span>
 
-<span class="comment"># When consumers dominate hedging (utilities buying gas, manufacturers buying metals):</span>
-<span class="comment">  π(T) &lt; 0  →  forward price ABOVE expected spot  (sellers earn a premium)</span>
-
-<span class="comment"># Empirical direction by commodity (indicative, front months):</span>
-<span class="comment">  Power:        forward &lt; expected spot  (generators are net short hedgers)</span>
-<span class="comment">  Natural gas:  forward &lt; expected spot  (producers are net short hedgers)</span>
-<span class="comment">  Crude oil:    near-zero bias           (balanced hedging both sides)</span>
-<span class="comment">  Base metals:  sign varies by cycle     (miners vs industrial consumers)</span>
-<span class="comment">  EUAs:         forward ≥ expected spot  (compliance buyers create demand pressure)</span></pre></div>
+<span class="comment"># Implication:</span>
+<span class="comment">#   Valuation / M2M:          use the observed forward price  (contractual fair value)</span>
+<span class="comment">#   Scenario / fundamental:   may use E[S(T)]  (add back estimated hedging premium)</span>
+<span class="comment">#   Always state explicitly which you are computing.</span></pre></div>
         <div class="def-box" style="margin-top:12px;">
           <div class="def-box-label">Curve construction implication</div>
-          <p>For <strong>valuation and mark-to-market</strong>, always use the <strong>observed forward price</strong>
-          from the market — it is the fair contractual value regardless of any hedging premium.
-          For <strong>scenario generation and fundamental price forecasting</strong>, you may want the
-          expected spot, which requires adding the estimated hedging premium back to the forward price.
-          The two are different numbers for different purposes — always be explicit about which one you are using.</p>
+          <p>For <strong>valuation and mark-to-market</strong>, always use the <strong>observed forward price</strong> from the market — it is the fair contractual value regardless of hedging premium. For <strong>scenario generation and fundamental price forecasting</strong>, you may want the expected spot price. The two are different numbers for different purposes — always be explicit about which one you are computing.</p>
         </div>
       </div>
 
-      <!-- ── Eq 8: Complete forward curve construction ── -->
       <div class="eq-section">
         <div class="eq-title"><span class="eq-num">Eq 08</span> The complete forward price — all adjustments combined</div>
-        <p class="eq-desc">
-          In practice the forward price at any maturity combines cost-of-carry, mean-reversion
-          dynamics, seasonality, and risk premium. The full expression for an energy forward curve
-          makes each layer explicit and shows where each governance parameter lives.
-        </p>
+        <p class="eq-desc">The full expression for a power or gas forward curve makes each governance layer explicit — mean-reversion, seasonality, carry (gas only), and intra-period shape.</p>
         <div class="formula-block-sm"><pre>
-<span class="comment"># Full forward price at maturity T (energy, storable with slow storage like gas):</span>
+<span class="comment"># Gas (storable):</span>
+<span class="sym">F</span>_gas(<span class="sym">T</span>)  <span class="op">=</span>   <span class="val">[</span> <span class="sym">θ_gas</span>  <span class="op">+</span>  (<span class="sym">S</span>₀ <span class="op">−</span> <span class="sym">θ_gas</span>) <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κT</span>) <span class="val">]</span>   <span class="comment">← mean reversion to seasonal equilibrium</span>
+              <span class="op">×</span>  <span class="sym">seasonal</span>(<span class="sym">T</span>)                             <span class="comment">← Fourier seasonal adjustment</span>
+              <span class="op">×</span>  <span class="hi">e</span><span class="op">^</span>((<span class="sym">r</span> <span class="op">+</span> <span class="sym">s</span> <span class="op">−</span> <span class="sym">y</span>)<span class="sym">T</span>)                        <span class="comment">← cost of carry (storage economics)</span>
+              <span class="op">×</span>  <span class="sym">shape</span>(<span class="sym">T</span>)                                  <span class="comment">← intra-period delivery profile</span>
 
-<span class="sym">F</span>(<span class="sym">T</span>)  <span class="op">=</span>   <span class="val">[</span> <span class="sym">θ</span>  <span class="op">+</span>  (<span class="sym">S</span>₀ <span class="op">−</span> <span class="sym">θ</span>) <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ</span><span class="sym">T</span>) <span class="val">]</span>    <span class="comment">← mean reversion to long-run level θ</span>
-        <span class="op">×</span>  <span class="sym">seasonal</span>(<span class="sym">T</span>)                  <span class="comment">← Fourier seasonal adjustment</span>
-        <span class="op">×</span>  <span class="hi">e</span><span class="op">^</span>((<span class="sym">r</span> <span class="op">+</span> <span class="sym">s</span> <span class="op">−</span> <span class="sym">y</span>)<span class="sym">T</span>)            <span class="comment">← cost of carry (if storable)</span>
-        <span class="op">×</span>  <span class="sym">shape</span>(<span class="sym">T</span>)                    <span class="comment">← intra-period delivery profile (peak vs base)</span>
+<span class="comment"># Power (non-storable):</span>
+<span class="sym">F</span>_power(<span class="sym">T</span>)  <span class="op">=</span>  <span class="val">[</span> <span class="sym">θ</span>(<span class="sym">T</span>)  <span class="op">+</span>  (<span class="sym">S</span>₀ <span class="op">−</span> <span class="sym">θ</span>(<span class="val">0</span>)) <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κT</span>) <span class="val">]</span>    <span class="comment">← mean reversion + seasonal equilibrium</span>
+               <span class="op">×</span>  <span class="sym">shape</span>(<span class="sym">T</span>)                                 <span class="comment">← base/peak intra-period profile</span>
+<span class="comment"># No cost-of-carry term. Long-end θ(T) anchored to fuel-cost parity.</span>
 
-<span class="comment"># Each layer maps to a governance parameter:</span>
-<span class="comment">  θ, κ         →  mean-reversion methodology note  (review trigger: structural market change)</span>
-<span class="comment">  seasonal(T)  →  shape model methodology note     (review trigger: generation mix change)</span>
-<span class="comment">  r, s, y      →  curve inputs register            (review trigger: storage tariff, rate change)</span>
-<span class="comment">  shape(T)     →  shaping model approval record    (review trigger: load profile shift)</span></pre></div>
+<span class="comment"># Governance parameters:</span>
+<span class="comment">  θ, κ         →  mean-reversion methodology note  (review: structural market or fuel change)</span>
+<span class="comment">  seasonal(T)  →  seasonal model note               (review: generation mix change)</span>
+<span class="comment">  r, s, y      →  gas inputs register               (review: storage tariff, rate change)</span>
+<span class="comment">  shape(T)     →  shaping model approval record     (review: load profile / solar growth)</span></pre></div>
       </div>
 
-      <!-- ── Step-by-step procedure ── -->
       <div class="eq-section">
-        <div class="eq-title"><span class="eq-num">Method</span> Step-by-step: building the expected future price curve</div>
-        <p class="eq-desc">A practical, ordered procedure applicable to any energy commodity.</p>
+        <div class="eq-title"><span class="eq-num">Method</span> Step-by-step: building the power or gas PFC</div>
+        <p class="eq-desc">An ordered procedure for E.ON's core energy products.</p>
         <ol class="steps-list">
-          <li><strong>Bootstrap the observable near end.</strong> Take exchange-quoted futures for the first 1–3 months. Assign F(tᵢ) = market quote directly. No model, no assumption — exact reprice is the standard.</li>
-          <li><strong>Estimate the long-run equilibrium θ.</strong> For storable commodities: long-run marginal cost of supply. For power: fuel-cost parity (gas × heat rate + carbon × EF + O&M). Document the source and review frequency.</li>
-          <li><strong>Calibrate mean-reversion speed κ.</strong> Regress deseasonalised spot price changes on lagged level: ΔX_t = −κ·X_{t-1}·Δt + ε. Report the estimated half-life T½ = ln(2)/κ alongside κ.</li>
-          <li><strong>Extract and lock seasonal parameters.</strong> Regress historical spot on Fourier basis features for annual/weekly cycles. Lock the coefficients as governance parameters. Document the estimation window and temperature normalisation used.</li>
-          <li><strong>Compute E[S(T)] = θ(T) + (S₀ − θ(0)) · e^(−κT)</strong> at every required delivery horizon to produce the model-implied expected future price.</li>
-          <li><strong>Apply cost-of-carry adjustment (storable only).</strong> Multiply by e^((r+s−y)T) using current risk-free rate, documented storage cost, and calibrated convenience yield.</li>
-          <li><strong>Decompose to delivery granularity.</strong> Apply shape model to convert base/quarterly pillars into intra-period hourly or daily expected prices. Record the shape model version in the audit log.</li>
-          <li><strong>Validate.</strong> Run round-trip reprice on all calibrating instruments. Check no-arbitrage (calendar spread monotonicity, cost-of-carry bounds). Back-test rolling 3/6/12-month horizon against realised settlements. Escalate any failure before publication.</li>
+          <li><strong>Bootstrap the observable near end.</strong> Take exchange-quoted EEX (power) or ICE/EEX TTF (gas) settlement prices for 0–3 months. Assign F(tᵢ) = market quote directly. Exact reprice — no model, no assumption.</li>
+          <li><strong>Estimate the long-run equilibrium θ.</strong> For gas: long-run marginal cost of supply (LNG netback, production cost). For power: fuel-cost parity — F_gas × heat rate + F_carbon × EF + O&amp;M of the marginal CCGT. Document the CCGT efficiency assumption and review frequency.</li>
+          <li><strong>Calibrate mean-reversion speed κ.</strong> Regress deseasonalised spot changes on lagged level: ΔX_t = −κ·X_{t-1}·Δt + ε. Report half-life T½ = ln(2)/κ alongside κ. Review when renewable generation capacity changes materially in the zone.</li>
+          <li><strong>Extract and lock seasonal parameters.</strong> Regress historical spot on Fourier basis features. Lock the coefficients as governance parameters. Document estimation window (minimum 5 years for annual cycle) and temperature normalisation applied.</li>
+          <li><strong>Compute E[S(T)] = θ(T) + (S₀ − θ(0)) · e^(−κT)</strong> at every required delivery horizon.</li>
+          <li><strong>Apply cost-of-carry adjustment (gas only).</strong> Multiply by e^((r+s−y)T) using EUR €STR rate, documented TTF storage injection/withdrawal cost, and calibrated convenience yield. Verify winter/summer spread satisfies the storage-bound constraint.</li>
+          <li><strong>Decompose to delivery granularity.</strong> Apply shape model to convert base/quarterly pillars into intra-period hourly prices. Record the shape model version number in the audit log. For power: base/peak; for gas: within-day profile for swing valuation.</li>
+          <li><strong>Validate.</strong> Round-trip reprice on all calibrating instruments. Calendar spread no-arbitrage check. For gas: verify winter/summer spread ≥ storage cost floor. For power: verify implied clean spark spread is economically plausible. Back-test vs realised settlements. Escalate any failure before publication.</li>
         </ol>
       </div>
 
-      <!-- ── Per-product parameter table ── -->
       <div class="eq-section">
         <div class="eq-title"><span class="eq-num">Ref</span> Typical parameter ranges by product</div>
         <table class="param-table">
@@ -1770,595 +1467,386 @@ section {
               <th>Parameter</th>
               <th>Interpretation</th>
               <th>Power</th>
-              <th>Gas</th>
-              <th>Crude Oil</th>
+              <th>Gas (TTF)</th>
               <th>EUAs</th>
-              <th>Base Metals</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>κ (yr⁻¹)</td>
-              <td>Mean-reversion speed</td>
-              <td>3 – 10</td>
-              <td>1 – 5</td>
-              <td>0.3 – 1.5</td>
-              <td>0.1 – 0.5 *</td>
-              <td>0.5 – 2</td>
-            </tr>
-            <tr>
-              <td>T½ (months)</td>
-              <td>Shock half-life</td>
-              <td>1 – 3</td>
-              <td>2 – 8</td>
-              <td>6 – 28</td>
-              <td>16 – 84 *</td>
-              <td>4 – 17</td>
-            </tr>
-            <tr>
-              <td>σ_spot (ann.)</td>
-              <td>Spot volatility</td>
-              <td>40 – 150 %</td>
-              <td>30 – 80 %</td>
-              <td>25 – 50 %</td>
-              <td>30 – 70 %</td>
-              <td>15 – 40 %</td>
-            </tr>
-            <tr>
-              <td>y (ann.)</td>
-              <td>Convenience yield</td>
-              <td>N/A †</td>
-              <td>0 – 15 %</td>
-              <td>0 – 12 %</td>
-              <td>N/A ‡</td>
-              <td>−2 – 8 %</td>
-            </tr>
-            <tr>
-              <td>Seasonal harmonics</td>
-              <td>Number of Fourier terms</td>
-              <td>3 – 6</td>
-              <td>2 – 4</td>
-              <td>1 (mild)</td>
-              <td>0 – 1 §</td>
-              <td>0 – 1 (mild)</td>
-            </tr>
+            <tr><td>κ (yr⁻¹)</td><td>Mean-reversion speed</td><td>3 – 10</td><td>1 – 5</td><td>0.1 – 0.5 *</td></tr>
+            <tr><td>T½ (months)</td><td>Shock half-life</td><td>1 – 3</td><td>2 – 8</td><td>16 – 84 *</td></tr>
+            <tr><td>σ_spot (ann.)</td><td>Spot volatility</td><td>40 – 150 %</td><td>30 – 80 %</td><td>30 – 70 %</td></tr>
+            <tr><td>y (ann.)</td><td>Convenience yield</td><td>N/A †</td><td>0 – 15 %</td><td>N/A ‡</td></tr>
+            <tr><td>Seasonal harmonics</td><td>Fourier terms</td><td>3 – 6</td><td>2 – 4</td><td>0 – 1 §</td></tr>
           </tbody>
         </table>
         <p class="eq-note" style="margin-top:10px;">
-          * EUA mean-reversion reflects policy-driven price anchoring; standard OU calibration is unreliable — use scenario-based approach instead.<br>
-          † Power is non-storable; cost-of-carry framework does not apply; convenience yield is undefined.<br>
-          ‡ EUAs are fully bankable; no convenience yield; forward price is purely cost-of-carry (r·T).<br>
-          § EUA seasonality enters through compliance demand (April 30 bunching), not through supply or storage economics.
+          * EUA mean-reversion reflects policy-driven price anchoring; standard OU calibration unreliable — use scenario-based approach.<br>
+          † Power is non-storable; cost-of-carry does not apply; convenience yield is undefined.<br>
+          ‡ EUAs are fully bankable; no storage cost; forward price is S·e^(r·T).<br>
+          § EUA seasonality enters through compliance demand (April 30 bunching), not storage economics.
         </p>
       </div>
-
     </section>
-
     <hr class="section-rule">
 
-    <!-- ═══════════════════════════════════════════════════════════════════ -->
-    <!-- S6: Five-line summary                                              -->
-    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <section id="s5c">
+      <div class="section-eyebrow">Section 05C · Methods</div>
+      <div class="section-head">
+        <div class="step-tag" style="background:#0f7a5a;">⚡</div>
+        <h2>Generation spreads &amp; <span class="acc">cross-commodity coupling</span></h2>
+      </div>
+      <p class="lede">The generation margin — what a CCGT earns to convert gas into electricity, net of carbon costs — is E.ON's primary generation economics metric. It is measured by forward spreads, not by the level of any single commodity. Power, gas, and carbon curves are not three independent outputs: they are three legs of a single generation economics surface and must be jointly governed.</p>
+      <div class="two-panel">
+        <div class="panel green-top">
+          <div class="panel-tag">Spark spread (gross)</div>
+          <div class="panel-title">F_power − F_gas × HR</div>
+          <div class="panel-body">The gross spark spread is the generation margin before carbon costs. It measures whether a gas plant earns a positive contribution margin at a given delivery period in the forward curve. If the forward spark spread &gt; 0, the CCGT is "in the money" — it should be scheduled to dispatch. If &lt; 0, the plant is out of merit and should not run unless there are contractual obligations.</div>
+        </div>
+        <div class="panel">
+          <div class="panel-tag">Clean spark spread (net generation margin)</div>
+          <div class="panel-title">F_power − F_gas × HR − F_carbon × EF</div>
+          <div class="panel-body">The clean spark spread subtracts the cost of CO₂ allowances the plant must surrender. It is the true generation margin in a carbon-regulated market. <strong>This is the primary metric for E.ON's CCGT fleet.</strong> A negative clean spark spread means the plant loses money on every MWh generated and should not be dispatched except to honour contractual commitments.</div>
+        </div>
+      </div>
+      <div class="def-box green">
+        <div class="def-box-label">Fuel-cost parity anchor — why it governs the power long end</div>
+        <p>The clean spark spread is the mechanism through which the power forward curve anchors to gas and carbon at the long end. In equilibrium, generators cannot persistently sell power at a price that makes dispatch uneconomic — the market clearing price converges to fuel cost. A power forward curve with a persistently negative clean spark spread at Cal+2 is either forecasting sustained uneconomic dispatch or is mis-marked. In either case, it requires formal documented justification before publication.</p>
+      </div>
+      <div class="formula-block">
+        <pre><span class="comment"># Generation spread definitions  (all in €/MWh of electricity output)</span>
+
+<span class="comment"># Spark spread (gross):</span>
+<span class="sym">Spark</span>          <span class="op">=</span>  <span class="sym">F</span>_power(<span class="sym">T</span>)  <span class="op">−</span>  <span class="sym">F</span>_gas(<span class="sym">T</span>) <span class="op">×</span> <span class="sym">HR</span>
+
+<span class="comment"># Clean spark spread (net CCGT generation margin):</span>
+<span class="sym">CSS</span>            <span class="op">=</span>  <span class="sym">F</span>_power(<span class="sym">T</span>)  <span class="op">−</span>  <span class="sym">F</span>_gas(<span class="sym">T</span>) <span class="op">×</span> <span class="sym">HR</span>  <span class="op">−</span>  <span class="sym">F</span>_carbon(<span class="sym">T</span>) <span class="op">×</span> <span class="sym">EF</span>
+
+<span class="comment"># Dark spread (gross — coal reference, legacy context):</span>
+<span class="sym">Dark</span>           <span class="op">=</span>  <span class="sym">F</span>_power(<span class="sym">T</span>)  <span class="op">−</span>  <span class="sym">F</span>_coal(<span class="sym">T</span>) <span class="op">×</span> <span class="sym">HR</span>_coal
+
+<span class="comment"># Clean dark spread (coal net margin — market context, not active E.ON dispatch):</span>
+<span class="sym">CDS</span>            <span class="op">=</span>  <span class="sym">F</span>_power(<span class="sym">T</span>)  <span class="op">−</span>  <span class="sym">F</span>_coal(<span class="sym">T</span>) <span class="op">×</span> <span class="sym">HR</span>_coal  <span class="op">−</span>  <span class="sym">F</span>_carbon(<span class="sym">T</span>) <span class="op">×</span> <span class="sym">EF</span>_coal
+
+<span class="comment">  HR         =  CCGT heat rate         (~1.92–2.04 MWh_gas/MWh_el  =  49–52% eff.)</span>
+<span class="comment">  EF         =  CCGT emission factor   (~0.35–0.40 tCO₂/MWh_el)</span>
+<span class="comment">  HR_coal    =  coal plant heat rate   (~2.5–3.0 MWh_coal/MWh_el  =  33–40% eff.)</span>
+<span class="comment">  EF_coal    =  coal emission factor   (~0.85–1.0 tCO₂/MWh_el)</span>
+
+<span class="comment"># Typical E.ON context — forward clean spark spread (German CCGT):</span>
+<span class="comment">#   Q+1 to Q+4:   −5 to +15 €/MWh   (highly variable; calendar structure dominant)</span>
+<span class="comment">#   Cal+1 to +3:  0 to +10 €/MWh    (tighter; long-run parity limits deviation)</span>
+<span class="comment">#   Negative CSS: plant out-of-merit; uneconomic to dispatch without fixed obligations</span></pre>
+      </div>
+      <div class="callout">
+        <div class="callout-label">E.ON context — coal is a reference, not an active curve</div>
+        E.ON has largely exited coal generation. The dark spread and clean dark spread remain relevant as <strong>market-context metrics</strong> — they determine where coal sits in the German merit order, which affects the clearing price for gas plants. They are also required for residual legacy contract valuations. No standalone coal PFC is maintained: coal-related exposure is managed through the cross-commodity spread surface, not a dedicated coal curve team.
+      </div>
+      <div class="map-table-wrap">
+        <table class="map-table">
+          <thead>
+            <tr><th>Spread</th><th>Construction inputs</th><th>Governance check</th><th>Sign interpretation</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Spark spread</td><td>F_power, F_gas, heat rate</td><td>Independent round-trip reprice of power and gas curves</td><td>+: CCGT in merit order · −: CCGT out of merit</td></tr>
+            <tr><td>Clean spark spread</td><td>F_power, F_gas, F_carbon, HR, EF</td><td>Joint consistency: power, gas, and carbon curve teams; primary cross-commodity validation output</td><td>+: positive CCGT generation margin · −: uneconomic dispatch</td></tr>
+            <tr><td>Dark spread</td><td>F_power, F_coal, HR_coal</td><td>Coal reference only; low-liquidity flag beyond 2Y</td><td>Indicator of coal plant in/out of merit order</td></tr>
+            <tr><td>Clean dark spread</td><td>F_power, F_coal, F_carbon, HR_coal, EF_coal</td><td>Carbon consistency check; structural demand signal for German generation stack</td><td>Persistently negative = coal largely out of merit; consistent with high-carbon-price scenarios</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="warning-box">
+        <div class="warning-label">Governance requirement — joint curve consistency</div>
+        Power, gas, and carbon curves must be reviewed together as a set, not independently. A clean spark spread that oscillates by ±5 €/MWh purely on publication-day curve re-calibration — with no underlying market move — is a signal that the curves are not jointly governed. <strong>Mandate: any curve publication that changes the clean spark spread by more than a defined tolerance at Cal+2 requires a second-line review before release.</strong>
+      </div>
+    </section>
+    <hr class="section-rule">
+
     <section id="s6">
       <div class="section-eyebrow">Section 06 · Reference</div>
       <div class="section-head">
         <div class="step-tag">6</div>
         <h2>Five-line <span class="acc">summary</span></h2>
       </div>
-
       <ul class="summary-list">
         <li>
           <span class="summary-num">01</span>
-          A commodity price forward curve maps future delivery maturities to market-implied
-          prices, calibrated so it reprices every liquid exchange-quoted instrument used to
-          build it — that reprice condition is the no-arbitrage constraint made operational.
+          A power forward curve maps future delivery dates to market-implied €/MWh prices, calibrated so it reprices every traded instrument used to build it — the no-arbitrage condition made operational in a non-storable market.
         </li>
         <li>
           <span class="summary-num">02</span>
-          The price forward curve is the single output: the expected commodity price at each
-          future delivery date. For storable commodities it is bounded by the cost-of-carry
-          relationship; for non-storables such as power it is anchored by fuel-cost parity.
+          Power is non-storable: there is no cost-of-carry to discipline the forward curve. The long end is anchored by fuel-cost parity (F_gas × HR + F_carbon × EF + O&amp;M of the marginal CCGT), not by physical carry. Governance — parameter approval cycles, methodology notes, overlay sign-off, validation logs — does all the work that storage arbitrage does in every other commodity market.
         </li>
         <li>
           <span class="summary-num">03</span>
-          Construction method choice — bootstrapping for the liquid near curve, spline for the
-          seasonal mid curve, factor/PCA for the sparse long end — is a governance decision, not
-          a technical default.
+          Construction method choice — bootstrap for the liquid near curve (EEX/ICE), spline for the seasonal mid curve (3M–2Y), factor/PCA for the sparse long end — is a governance decision, not a technical default. Seasonal shaping (base/peak to hourly decomposition) is not optional in a market that settles by the hour.
         </li>
         <li>
           <span class="summary-num">04</span>
-          Commodity curves require four layers beyond simple interpolation:
-          seasonality (repeating winter/summer wave that must be preserved),
-          mean reversion and spikes (fast-reverting spot with scarcity spikes),
-          delivery-over-a-period decomposition (base/peak into hourly shape),
-          and cross-commodity coupling through fuel spreads.
+          Power, gas, and carbon curves must be jointly governed through the clean spark spread. A curve team that builds all three independently without cross-consistency checks will produce a generation margin surface that oscillates on model noise. The sign of the forward clean spark spread at Cal+2 is a primary model-validation output.
         </li>
         <li>
           <span class="summary-num">05</span>
-          Governance owns the parameters — θ, κ, seasonal harmonics, shape model version,
-          convenience yield — not the build system. Every published curve must be traceable
-          to an approved methodology note, a set of frozen inputs, and a passed validation log.
+          Governance owns the parameters: θ (long-run equilibrium, anchored to fuel-cost parity), κ (mean-reversion speed, reviewed on material market structure change), seasonal Fourier coefficients (locked between review cycles), and shape model version (audited for every publication). Every published curve must be traceable to a named methodology note, frozen inputs, and a passed validation log.
         </li>
       </ul>
     </section>
-
     <hr class="section-rule">
 
-    <!-- ═══════════════════════════════════════════════════════════════════ -->
-    <!-- S8: Commodity products                                             -->
-    <!-- ═══════════════════════════════════════════════════════════════════ -->
     <section id="s7">
       <div class="section-eyebrow">Section 07 · Products</div>
       <div class="section-head">
         <div class="step-tag">7</div>
-        <h2>Commodity <span class="acc">products</span></h2>
+        <h2>E.ON core <span class="acc">products</span></h2>
+      </div>
+      <p class="lede">E.ON's three primary curve exposures — power, gas, and carbon — are economically coupled through the generation margin. Each has a different physical structure, different construction approach by maturity zone, and different governance requirements. They must be managed as a system.</p>
+      <div class="callout">
+        <div class="callout-label">Scope note — what is not covered here</div>
+        Crude oil and base metals are out of scope for the E.ON forward curve team. Coal is not maintained as a standalone active product — it is referenced as a spread input in Section 05C (generation spreads / clean dark spread) and for legacy contract valuations only.
       </div>
 
-      <p class="lede">
-        Each commodity class has a different physical structure, a different liquidity profile, and
-        a different dominant price driver — and those differences determine which curve model is
-        appropriate, what starting assumptions are valid, and which validation checks can actually
-        catch a bad curve before it reaches production.
-      </p>
-
-      <!-- ── Power / Electricity ── -->
+      <!-- Power product block -->
       <div class="product-block" id="s7-power">
         <div class="product-header">
-          <div class="product-badge">01 · Power</div>
+          <div class="product-badge">01 · Power · Primary</div>
           <div class="product-meta">
             <div class="product-name">Power / Electricity</div>
-            <div class="product-desc">Non-storable · mean-reverting · strong multi-scale seasonality · spike risk on scarcity</div>
+            <div class="product-desc">Non-storable · E.ON primary exposure · generation + supply + networks · EPEX settlement</div>
           </div>
         </div>
         <div class="attr-grid">
-
           <div class="attr-card">
-            <div class="attr-label calc">Calculation approach</div>
-            <div class="attr-body"><ul>
-              <li><strong>Near (0–3M):</strong> direct bootstrap from exchange day-ahead and month-ahead futures (EEX, ICE). Step-function reprice — exact by construction.</li>
-              <li><strong>Mid (3M–2Y):</strong> calibrate seasonal quarterly/annual OTC swaps; decompose base/peak via a load or temperature shape model. Clamped cubic spline over seasonal pillars, preserving winter/summer differentials.</li>
-              <li><strong>Long (2Y+):</strong> Fourier-extended parametric model (Nelson-Siegel + seasonal terms) or factor/PCA. Expert overlay anchored to fuel-cost parity: <span class="mono">F ≈ gas × heat_rate + carbon × EF + O&M</span>.</li>
-            </ul></div>
+            <div class="attr-label calc">Curve construction</div>
+            <div class="attr-body">
+              <ul>
+                <li><strong>Near (0–3M):</strong> daily EEX settlement and ICE month-ahead for German DE-LU/AT zone. Direct bootstrap — exact reprice.</li>
+                <li><strong>Mid (3M–2Y):</strong> seasonal quarterly/annual OTC swaps (EEX, ICE) for base and peak load. Best-fit solver for overlapping instruments; clamped cubic spline over seasonal pillars preserving winter/summer differential. Base/peak decomposition via temperature or load shape model — shape model version must be in the audit log.</li>
+                <li><strong>Long (2Y+):</strong> Fourier-extended parametric or factor/PCA, with expert overlay anchored to fuel-cost parity F ≈ F_gas × HR + F_carbon × EF + O&amp;M. Every parameter in this zone must be named, approved, and traceable.</li>
+                <li><strong>Zones:</strong> primary is DE-LU/AT (EEX). Dutch APX, UK N2EX, and Nordic NordPool maintained as spread curves over the German anchor.</li>
+              </ul>
+            </div>
           </div>
-
           <div class="attr-card">
-            <div class="attr-label model">Best model</div>
-            <div class="attr-body"><ul>
-              <li><strong>Spot dynamics:</strong> Ornstein-Uhlenbeck with Fourier seasonal mean — <span class="mono">dX = κ(θ(t)−X)dt + σdW</span> where θ(t) is a seasonal equilibrium.</li>
-              <li><strong>Spikes:</strong> add compound-Poisson jump term (<span class="mono">J·dN</span>); Gaussian-only models understate tail risk.</li>
-              <li><strong>Two-factor (Schwartz-Smith style):</strong> short-term spike factor + long-term equilibrium; explains why front/back decorrelate.</li>
-              <li>For the daily production mark: zoned bootstrap + spline + seasonal shape — not a full stochastic model.</li>
-            </ul></div>
+            <div class="attr-label model">Stochastic model</div>
+            <div class="attr-body">
+              <ul>
+                <li><strong>Spot dynamics:</strong> OU with Fourier seasonal mean — dX = κ(θ(t)−X)dt + σdW, where θ(t) is the seasonal equilibrium fuel-cost-anchored at the long end.</li>
+                <li><strong>Spikes:</strong> compound-Poisson jump term (J·dN) added to OU base; Gaussian-only models understate tail risk — experience in 2021/22 confirmed that parameters calibrated in normal conditions are unreliable in stress.</li>
+                <li><strong>Two-factor (Schwartz-Smith style):</strong> short-term spike factor (κ_χ ~ 5–10 yr⁻¹) + slow long-term equilibrium; explains why prompt and Cal+3 prices are nearly uncorrelated.</li>
+                <li><strong>Daily production mark:</strong> zoned bootstrap + seasonal spline + shape model. Not a stochastic model — a deterministic construction that exactly reprices calibrating instruments.</li>
+              </ul>
+            </div>
           </div>
-
           <div class="attr-card">
-            <div class="attr-label limits">Limitations</div>
-            <div class="attr-body"><ul>
-              <li><strong>Non-storability:</strong> no cost-of-carry constraint; the curve can be internally inconsistent without a physical correction mechanism to force it back.</li>
-              <li><strong>Spike risk:</strong> extreme scarcity events make historical calibration of κ and σ unreliable; parameters estimated in normal regimes understate crisis tails.</li>
-              <li><strong>Shape uncertainty:</strong> base/peak decomposition is model-dependent; ungoverned seasonality is the primary source of cross-BU price inconsistency.</li>
-              <li><strong>Structural change:</strong> renewable penetration reshapes the intra-day profile (duck curve) over time; parameters calibrated on 5-year history may already be stale.</li>
-            </ul></div>
+            <div class="attr-label limits">Key limitations</div>
+            <div class="attr-body">
+              <ul>
+                <li><strong>Non-storability:</strong> no cost-of-carry bound constrains calendar spreads. This is the fundamental reason power curve governance is more demanding than for any storable commodity.</li>
+                <li><strong>Duck curve:</strong> solar generation suppresses midday EPEX prices, reshaping the intra-day profile year-on-year as solar capacity grows. Shape parameters calibrated on pre-2022 data misrepresent 2024+ intra-day structure. Review shape model when solar penetration changes by more than 5 GW in a zone.</li>
+                <li><strong>Negative price events:</strong> power prices go negative on high renewable surplus. A curve that cannot represent expected negative prices in certain delivery windows is systematically mis-marking renewable-correlated positions.</li>
+                <li><strong>Structural demand uncertainty:</strong> electrification of heat, transport, and industry creates long-end demand uncertainty that historical calibration cannot capture. Long-end overlays must name the electrification scenario assumed.</li>
+                <li><strong>Market design risk:</strong> capacity remuneration mechanisms, renewable subsidy changes, nodal pricing discussions. Treat as named scenario sensitivities.</li>
+              </ul>
+            </div>
           </div>
-
           <div class="attr-card">
-            <div class="attr-label assume">Starting assumptions</div>
-            <div class="attr-body"><ul>
-              <li><strong>Mean-reversion speed κ:</strong> typically 3–10 yr⁻¹ (fast); calibrate from deseasonalised residuals via AR(1).</li>
-              <li><strong>Long-run equilibrium:</strong> fuel-cost stack — gas forward × heat rate + carbon × emission factor + fixed O&M.</li>
-              <li><strong>Seasonality:</strong> ≥5 years of hourly data, temperature-normalised; annual + weekly + intra-day Fourier terms.</li>
-              <li><strong>Peak/base ratio:</strong> derived from historical load profile; reviewed when generation mix changes by &gt;5% of installed capacity.</li>
-              <li><strong>No storage arbitrage:</strong> power is non-storable — the no-arbitrage condition applies only to financial products, not to physical delivery.</li>
-            </ul></div>
+            <div class="attr-label assume">Key assumptions</div>
+            <div class="attr-body">
+              <ul>
+                <li><strong>Mean-reversion speed κ:</strong> 3–10 yr⁻¹; calibrate from deseasonalised spot AR(1) on weekly EPEX settlements. Half-life of 1–3 months expected for German power.</li>
+                <li><strong>Long-run equilibrium θ:</strong> fuel-cost parity — F_gas(TTF) × CCGT heat rate + F_carbon(EUA) × emission factor + O&amp;M (3–6 €/MWh). Specify the CCGT efficiency assumption (49–52% = HR 1.92–2.04) in the methodology note.</li>
+                <li><strong>Seasonal harmonics:</strong> minimum 5 years of hourly EPEX data, temperature-normalised; annual (k=1) + semi-annual (k=2) + quarterly (k=3) as minimum; 3–6 harmonics typical for German power.</li>
+                <li><strong>Peak/base ratio:</strong> derived from historical load profile; reviewed when net load profile changes by &gt;5 GW in the zone. Distinguish weekday vs weekend ratio separately.</li>
+                <li><strong>No storage arbitrage:</strong> document explicitly that the no-arbitrage condition for power applies only to financial products — users must not apply gas-style calendar spread bounds.</li>
+              </ul>
+            </div>
           </div>
-
-          <div class="attr-card" style="border-bottom:none;">
-            <div class="attr-label valid">Validation methods</div>
-            <div class="attr-body"><ul>
-              <li><strong>Round-trip reprice:</strong> all calibrating exchange futures and OTC swaps must reprice to zero error (bootstrap) or within bid-ask (best-fit).</li>
-              <li><strong>Calendar-spread monotonicity:</strong> seasonal peaks must not imply risk-free arbitrage vs adjacent quarters.</li>
-              <li><strong>Fuel parity check:</strong> implied clean spark spread at long end must be economically plausible (≥0 for expected generation margin).</li>
-              <li><strong>Peak/base ratio:</strong> implied ratio must sit within observable historical range; outliers trigger shape model review.</li>
-              <li><strong>Back-test:</strong> rolling comparison of curve at construction date vs subsequently settled prompt prices; report bias and RMSE per tenor bucket.</li>
-            </ul></div>
+          <div class="attr-card">
+            <div class="attr-label valid">Validation</div>
+            <div class="attr-body">
+              <ul>
+                <li><strong>Round-trip reprice:</strong> all calibrating EEX and ICE futures and OTC swaps reprice to zero error (bootstrap) or within bid-ask (best-fit). Minimum required before publication.</li>
+                <li><strong>Calendar-spread consistency:</strong> seasonal peaks must not imply risk-free financial arbitrage vs adjacent quarters. No physical storage enforces this — the curve build must.</li>
+                <li><strong>Fuel parity check:</strong> implied clean spark spread at the long end must be economically plausible — positive for expected CCGT dispatch conditions; persistently negative requires formal justification before publication.</li>
+                <li><strong>Peak/base ratio:</strong> implied ratio from shape model within historically observed range; outlier triggers shape model review before publication.</li>
+                <li><strong>Zone basis:</strong> spread between DE-LU/AT and Dutch/UK/Nordic zones within historical range.</li>
+                <li><strong>Back-test:</strong> rolling EPEX settlement comparison; report bias and RMSE per tenor bucket and separately for winter vs summer.</li>
+              </ul>
+            </div>
           </div>
-
-          <div class="attr-card" style="border-bottom:none; border-right:none;">
-            <div class="attr-label" style="color:#94a3b8;">&#9432; Key risk</div>
+          <div class="attr-card">
+            <div class="attr-label limits">Key risk</div>
             <div class="attr-body">
               <div class="def-box" style="margin:0;">
-                <div class="def-box-label">Non-storability trap</div>
-                <p>In every other commodity, storage arbitrage provides a floor under the forward curve. In power it does not. A power forward curve can imply calendar spreads that would be arbitraged away in any storable market — and they persist because no one can carry physical power across time. This means governance (approval cycles, parameter locks, overlay documentation) does all the work that physical arbitrage does in other markets.</p>
+                <div class="def-box-label">Non-storability trap — governance is the only backstop</div>
+                <p>In every other commodity, storage arbitrage provides a floor under the forward curve. In power it does not. A power forward curve can imply calendar spreads that would be instantly arbitraged away in gas, oil, or metals — and they persist because no one can carry physical electricity across time. This means governance (approval cycles, parameter locks, overlay documentation, cross-commodity consistency checks) does all the work that physical arbitrage does in other markets. A power curve team that treats governance as a compliance overhead rather than a core modelling function will consistently publish wrong curves. This is the defining insight of the role.</p>
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
-      <!-- ── Natural Gas ── -->
+      <!-- Gas product block -->
       <div class="product-block" id="s7-gas">
         <div class="product-header gas">
-          <div class="product-badge">02 · Gas</div>
+          <div class="product-badge">02 · Gas · Core Input</div>
           <div class="product-meta">
             <div class="product-name">Natural Gas</div>
-            <div class="product-desc">Storable · seasonal · hub-fragmented · storage economics define winter/summer spread</div>
+            <div class="product-desc">Storable · TTF primary hub · generation fuel · storage economics · supply procurement</div>
           </div>
         </div>
         <div class="attr-grid">
-
           <div class="attr-card">
-            <div class="attr-label calc">Calculation approach</div>
-            <div class="attr-body"><ul>
-              <li><strong>Near (0–3M):</strong> day-ahead and prompt-month TTF/NCG/NBP settlement. Direct bootstrap; instruments are clean and liquid.</li>
-              <li><strong>Mid (3M–2Y):</strong> seasonal summer/winter swaps and quarterly OTC. Cubic spline preserving winter premium; summer/winter spread must satisfy storage economics: <span class="mono">W−S ≥ inject + withdraw + capital</span>.</li>
-              <li><strong>Long (2Y+):</strong> gas-to-power parity (dark spread) + LNG netback constraint as a soft ceiling. Factor model or expert overlay; this is the most governance-intensive zone.</li>
-              <li>Hub basis curves (TTF vs NCG, TTF vs NBP) built separately and added as spread adjustments.</li>
-            </ul></div>
+            <div class="attr-label calc">Curve construction</div>
+            <div class="attr-body">
+              <ul>
+                <li><strong>Near (0–3M):</strong> day-ahead and prompt-month TTF and NCG settlement. Direct bootstrap; instruments are clean and liquid. Hub basis (TTF vs NCG) maintained as a separate spread curve.</li>
+                <li><strong>Mid (3M–2Y):</strong> seasonal summer/winter gas swaps and quarterly OTC (EEX Natural Gas, ICE TTF). Best-fit solver; cubic spline preserving winter premium. Winter/summer spread must satisfy the storage-economics bound: W − S ≥ inject + withdraw + working gas financing cost — this is a hard governance constraint.</li>
+                <li><strong>Long (2Y+):</strong> gas-to-power parity as a soft sanity check; factor model or expert overlay; LNG netback constraint as a soft ceiling.</li>
+                <li><strong>Storage link:</strong> E.ON's gas storage assets (Rehden: ~4.2 TWh working capacity; Haidach: E.ON share) provide physical market insight for calibrating storage cost assumptions.</li>
+              </ul>
+            </div>
           </div>
-
           <div class="attr-card">
-            <div class="attr-label model">Best model</div>
-            <div class="attr-body"><ul>
-              <li><strong>Gabillon two-factor:</strong> short-term spot deviation + long-term equilibrium, both mean-reverting; explains seasonal pattern without overfit.</li>
-              <li><strong>Storage-constrained seasonality:</strong> winter/summer spread bounded below by injection + withdrawal costs; bound is a hard constraint, not a model parameter.</li>
-              <li><strong>Regime-aware:</strong> LNG import/export regimes change the effective long-run anchor; model should support scenario switching on long-run mean.</li>
-              <li>For the daily mark: bootstrap near end; seasonal spline mid; expert-overlay-adjusted parametric long end.</li>
-            </ul></div>
+            <div class="attr-label model">Stochastic model</div>
+            <div class="attr-body">
+              <ul>
+                <li><strong>Storage-constrained seasonality:</strong> winter/summer spread bounded below by documented injection + withdrawal + capital costs — a hard physical constraint, not a model parameter.</li>
+                <li><strong>OU mean-reversion:</strong> long-run equilibrium anchored to long-run marginal gas supply cost (mix of Norwegian pipeline, LNG netback, remaining import routes). κ ~ 1–5 yr⁻¹ for TTF.</li>
+                <li><strong>Two-factor (Gabillon-style):</strong> short-term deviation + long-term equilibrium; explains seasonal pattern and LNG regime shifts without overfitting.</li>
+                <li><strong>Regime-aware:</strong> LNG import capacity and utilisation changes the effective long-run anchor; model must support scenario switching on the long-run mean.</li>
+                <li><strong>Daily mark:</strong> bootstrap near end; seasonal spline mid; expert-overlay parametric long end.</li>
+              </ul>
+            </div>
           </div>
-
           <div class="attr-card">
-            <div class="attr-label limits">Limitations</div>
-            <div class="attr-body"><ul>
-              <li><strong>Storage bound is a floor, not a cap:</strong> extreme weather can push winter prices above any storage-implied ceiling; the model will understate peak-winter risk.</li>
-              <li><strong>Hub fragmentation:</strong> TTF, NCG, NBP, PSV, TTF/NBP basis all require separate curves; basis risk is not captured in a single-curve framework.</li>
-              <li><strong>LNG globalisation:</strong> the long end is increasingly linked to global LNG pricing, breaking historical TTF-anchored relationships.</li>
-              <li><strong>Within-day gap:</strong> curve is built on day-ahead settlement but delivery is intraday; intra-day spread is unobserved and unhedgeable from the forward curve alone.</li>
-            </ul></div>
+            <div class="attr-label limits">Key limitations</div>
+            <div class="attr-body">
+              <ul>
+                <li><strong>Storage bound is a floor, not a cap:</strong> extreme cold events can push winter prices above any storage-derived ceiling; the model will understate peak-winter spike risk.</li>
+                <li><strong>Hub fragmentation:</strong> TTF, NCG, NBP, PSV — all require separate curves; basis risk is not captured in a single-hub framework, and E.ON's multi-country supply business requires each hub to be governed.</li>
+                <li><strong>LNG globalisation:</strong> the TTF long end is increasingly linked to Asian LNG spot prices, breaking historical European-only relationships. Pre-2021 calibrations embed regime assumptions that no longer hold.</li>
+                <li><strong>Gas-to-power coupling:</strong> TTF gas is an input to German power fuel-cost parity — an error in the gas curve propagates directly into the power curve's long-end anchor. The two curves must be jointly reviewed.</li>
+              </ul>
+            </div>
           </div>
-
           <div class="attr-card">
-            <div class="attr-label assume">Starting assumptions</div>
-            <div class="attr-body"><ul>
-              <li><strong>Seasonal structure:</strong> winter premium calibrated from ≥5 storage cycles; normalise for above/below-average temperature years.</li>
-              <li><strong>Storage parameters:</strong> injection rate, withdrawal rate, working capacity — these set the no-arbitrage bounds on the winter/summer spread.</li>
-              <li><strong>Gas heat rate:</strong> 49–52% for CCGT; used in gas-to-power parity constraint.</li>
-              <li><strong>Basis differentials:</strong> TTF→NCG, TTF→NBP spreads treated as independent forward curves; do not embed in the main TTF curve.</li>
-              <li><strong>LNG parity:</strong> long end bounded softly by delivered LNG cost (subject to regasification capacity and shipping); treat as a stress scenario, not a hard constraint.</li>
-            </ul></div>
+            <div class="attr-label assume">Key assumptions</div>
+            <div class="attr-body">
+              <ul>
+                <li><strong>Seasonal structure:</strong> winter premium calibrated from ≥5 storage cycles of TTF settlement; temperature-normalised.</li>
+                <li><strong>Storage economics (hard bound):</strong> injection rate, withdrawal rate, working gas capacity from published storage operator data and E.ON's own storage operational parameters. These set the no-arbitrage floor on winter/summer spread.</li>
+                <li><strong>CCGT heat rate:</strong> 49–52% for German CCGT fleet; used in gas-to-power parity cross-check.</li>
+                <li><strong>Hub basis:</strong> TTF→NCG spread modelled as a separate independent forward curve.</li>
+                <li><strong>Long-run supply cost:</strong> weighted average of LNG netback (delivered ARA), Norwegian pipeline cost; review annually and after any major supply-route disruption.</li>
+              </ul>
+            </div>
           </div>
-
-          <div class="attr-card" style="border-bottom:none;">
-            <div class="attr-label valid">Validation methods</div>
-            <div class="attr-body"><ul>
-              <li><strong>Storage economics test:</strong> winter/summer spread ≥ documented injection + withdrawal + capital cost; violation is a hard arbitrage flag.</li>
-              <li><strong>Hub parity:</strong> implied basis spread vs broker-quoted hub differentials; deviation beyond historical bid-ask triggers an input-quote review.</li>
-              <li><strong>Fuel parity:</strong> gas forward × heat rate + carbon cost ≈ power forward; systematic deviation signals cross-commodity inconsistency.</li>
-              <li><strong>Back-test per season:</strong> winter and summer RMSE tracked separately; seasonal bias more informative than a full-year average error.</li>
-              <li><strong>Overlay frequency monitor:</strong> high long-end overlay frequency signals the model is chasing noise — triggers a formal methodology review.</li>
-            </ul></div>
+          <div class="attr-card">
+            <div class="attr-label valid">Validation</div>
+            <div class="attr-body">
+              <ul>
+                <li><strong>Storage economics bound (hard flag):</strong> winter/summer spread ≥ documented inject + withdraw + financing cost. Violation = documented arbitrage = curve cannot publish.</li>
+                <li><strong>Hub parity:</strong> TTF/NCG implied basis spread vs broker-quoted differentials; deviation beyond historical bid-ask triggers input review.</li>
+                <li><strong>Gas-to-power parity:</strong> F_gas × HR + F_carbon × EF ≈ F_power at long end; systematic deviation signals cross-commodity inconsistency between gas and power teams.</li>
+                <li><strong>Back-test per season:</strong> winter and summer RMSE tracked separately.</li>
+                <li><strong>LNG regime check:</strong> implied long-end price vs published DES ARA LNG assessments.</li>
+              </ul>
+            </div>
           </div>
-
-          <div class="attr-card" style="border-bottom:none; border-right:none;">
-            <div class="attr-label" style="color:#94a3b8;">&#9432; Key risk</div>
+          <div class="attr-card">
+            <div class="attr-label model">Key risk</div>
             <div class="attr-body">
               <div class="callout" style="margin:0;">
                 <div class="callout-label">Storage arbitrage as governance anchor</div>
-                Unlike power, gas storage provides a physical no-arbitrage bound. The winter/summer spread cannot persistently fall below injection + withdrawal cost without creating a profitable storage trade. Use this bound as a hard governance check — a curve that violates it is mis-marked regardless of what the solver produced.
+                Unlike power, gas storage provides a physical no-arbitrage bound. The winter/summer spread cannot persistently fall below injection + withdrawal cost without creating a profitable storage trade. Use this bound as a hard governance floor — a curve that violates it is mis-marked regardless of what the solver produced. E.ON's storage operations team is an internal reference for validating the storage cost parameters.
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
-      <!-- ── Crude Oil & Products ── -->
-      <div class="product-block" id="s7-oil">
-        <div class="product-header oil">
-          <div class="product-badge">03 · Oil</div>
-          <div class="product-meta">
-            <div class="product-name">Crude Oil &amp; Oil Products</div>
-            <div class="product-desc">Highly storable · cost-of-carry dominant · convenience yield driven by inventory levels</div>
-          </div>
-        </div>
-        <div class="attr-grid">
-
-          <div class="attr-card">
-            <div class="attr-label calc">Calculation approach</div>
-            <div class="attr-body"><ul>
-              <li><strong>Near (0–6M):</strong> prompt monthly Brent/WTI (ICE/CME) and refined products (gasoil, jet, RBOB). Exact bootstrap; instruments are liquid and well-observed.</li>
-              <li><strong>Mid (6M–3Y):</strong> monthly and quarterly calendar swaps. Spline interpolation; cost-of-carry relationship disciplines the shape: <span class="mono">F(T) = S · e^((r+s−y)T)</span>.</li>
-              <li><strong>Long (3Y+):</strong> convenience yield model with mean-reversion of the spot price to long-run marginal cost. Parametric extrapolation (NS or power-law decay of convenience yield).</li>
-              <li>Crack spread curves (gasoil/crude, jet/crude) built as separate differential curves, not embedded in the flat-price curve.</li>
-            </ul></div>
-          </div>
-
-          <div class="attr-card">
-            <div class="attr-label model">Best model</div>
-            <div class="attr-body"><ul>
-              <li><strong>Gibson-Schwartz two-factor:</strong> spot price (mean-reverting) + stochastic convenience yield (also mean-reverting); explains the term structure of futures volatility and contango/backwardation transitions.</li>
-              <li><strong>Schwartz-Smith:</strong> short-term deviation from equilibrium + long-term equilibrium with drift; well-calibrated to historical Brent/WTI strip data.</li>
-              <li>For the daily mark: bootstrap near end directly from CME/ICE settlements; spline over monthly pillars; parametric beyond 3Y.</li>
-              <li>Convenience yield observable from the cash-to-3M spread; use as an input, not an output.</li>
-            </ul></div>
-          </div>
-
-          <div class="attr-card">
-            <div class="attr-label limits">Limitations</div>
-            <div class="attr-body"><ul>
-              <li><strong>Convenience yield is unobservable beyond the front of the curve;</strong> at long tenors it must be assumed, not calibrated — the main source of long-end model risk.</li>
-              <li><strong>Geopolitical discontinuities:</strong> OPEC production decisions and supply shocks create discrete jumps not captured by continuous diffusion. Historical calibration over-weights normal regimes.</li>
-              <li><strong>Crack spread volatility:</strong> crude and product curves are linked but crack spreads are independently volatile; a flat-price model that ignores this understates product-specific risk.</li>
-              <li><strong>Mean-reversion speed to long-run cost uncertain:</strong> historical range is 5–15 years; long-end sensitivity to this assumption is very high.</li>
-            </ul></div>
-          </div>
-
-          <div class="attr-card">
-            <div class="attr-label assume">Starting assumptions</div>
-            <div class="attr-body"><ul>
-              <li><strong>Storage cost:</strong> ~0.5–1.0 USD/bbl/month (tanker storage); verifiable from published tanker rates.</li>
-              <li><strong>Risk-free rate:</strong> USD SOFR; oil markets are USD-denominated.</li>
-              <li><strong>Convenience yield:</strong> calibrated from near-term calendar spread; typically 0–10% annualised; strongly negative in contango (inventory surplus), zero/positive in backwardation.</li>
-              <li><strong>Long-run marginal cost:</strong> 60–80 USD/bbl for conventional production (cost-curve dependent; review annually with IEA/EIA supply-cost data).</li>
-              <li><strong>Correlation crude/products:</strong> ~0.85–0.95 for gasoil/crude; crack spreads modelled as residuals on a separate curve.</li>
-            </ul></div>
-          </div>
-
-          <div class="attr-card" style="border-bottom:none;">
-            <div class="attr-label valid">Validation methods</div>
-            <div class="attr-body"><ul>
-              <li><strong>Cost-of-carry bound:</strong> <span class="mono">F(T) ≤ S · e^((r+s)T)</span>; if breached, a documented storage arbitrage exists — hard flag.</li>
-              <li><strong>Crack spread consistency:</strong> implied gasoil/crude forward ratio within historical crack spread range (typically 10–25 USD/bbl); outlier triggers product-curve review.</li>
-              <li><strong>Convenience yield vs inventory:</strong> implied convenience yield should be negatively correlated with published inventory levels (EIA weekly, IEA monthly); divergence signals model-input error.</li>
-              <li><strong>DV01 decay:</strong> price sensitivity per pillar should decrease monotonically with maturity for a cost-of-carry curve; flat or rising DV01 at long end signals over-reliance on parametric extrapolation.</li>
-              <li><strong>Calendar spread vs storage cost documentation:</strong> near-term spread deviation beyond documented storage cost must be escalated before publication.</li>
-            </ul></div>
-          </div>
-
-          <div class="attr-card" style="border-bottom:none; border-right:none;">
-            <div class="attr-label" style="color:#94a3b8;">&#9432; Key risk</div>
-            <div class="attr-body">
-              <div class="def-box" style="margin:0;">
-                <div class="def-box-label">Regime shift risk</div>
-                <p>Oil markets alternate between contango (inventory surplus, cost-of-carry dominates) and backwardation (inventory deficit, convenience yield dominates). The transition between these regimes is regime-like — the forward curve shape flips quickly when OPEC cuts production or a major supply disruption occurs. A model calibrated in one regime will misjudge the other. Governance response: run both regimes as named scenarios and flag when the market is transitioning.</p>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ── Coal ── -->
-      <div class="product-block" id="s7-coal">
-        <div class="product-header coal">
-          <div class="product-badge">04 · Coal</div>
-          <div class="product-meta">
-            <div class="product-name">Thermal Coal</div>
-            <div class="product-desc">Storable · freight-embedded · structurally declining demand in carbon-regulated markets</div>
-          </div>
-        </div>
-        <div class="attr-grid">
-
-          <div class="attr-card">
-            <div class="attr-label calc">Calculation approach</div>
-            <div class="attr-body"><ul>
-              <li><strong>Near (0–6M):</strong> API2 (ARA CIF) and API4 (Richards Bay FOB) index from ICE/Platts. Monthly bootstrap; instruments are reasonably liquid in prompt months.</li>
-              <li><strong>Mid (6M–2Y):</strong> seasonal and annual OTC swaps; OTC market is thinner than gas/power — best-fit solver preferred over sequential bootstrap to handle overlapping instruments.</li>
-              <li><strong>Long (2Y+):</strong> supply-side anchor: long-run marginal cost of seaborne thermal coal + freight. Expert overlay dominates; every parameter must be documented.</li>
-              <li>API2/API4 spread modelled as a freight + quality differential curve; built and governed separately from the flat-price coal curve.</li>
-            </ul></div>
-          </div>
-
-          <div class="attr-card">
-            <div class="attr-label model">Best model</div>
-            <div class="attr-body"><ul>
-              <li><strong>Cost-of-carry with quality adjustment:</strong> simpler dynamics than gas or power; seasonality is mild relative to temperature-driven commodities.</li>
-              <li><strong>Mean-reversion to marginal supply cost:</strong> long-run anchor is the marginal cost of extraction + freight + quality premium; reversion is slower than gas (1–3 yr⁻¹ typical).</li>
-              <li><strong>No seasonal model required</strong> for flat-price coal; seasonality enters through demand (winter heating) and is observable in the OTC swap strip rather than requiring a shape model.</li>
-              <li>API2/API4 basis: model as an independent mean-reverting spread; freight and quality adjustments applied as additive overlays.</li>
-            </ul></div>
-          </div>
-
-          <div class="attr-card">
-            <div class="attr-label limits">Limitations</div>
-            <div class="attr-body"><ul>
-              <li><strong>Thin long-end liquidity:</strong> the OTC market beyond 2Y is illiquid; long-end curve is essentially expert overlay with a market anchor at 2Y.</li>
-              <li><strong>Quality heterogeneity:</strong> API2 is for 6,000 kcal/kg NAR standard specification; physical delivery involves quality adjustment factors not captured in the forward price.</li>
-              <li><strong>Carbon dependency:</strong> clean dark spread (coal-to-power profitability net of carbon) drives demand; the coal curve cannot be governed independently of the EUA curve — a 10 EUR/t carbon move is a direct coal demand shock.</li>
-              <li><strong>Freight risk embedded:</strong> API2 is CIF ARA — freight cost embedded in the price; changes in Baltic/Capesize rates affect the curve independently of commodity value.</li>
-              <li><strong>Structural demand decline:</strong> European coal demand is in secular decline due to carbon pricing; long-end assumptions about demand levels become stale faster than in other markets.</li>
-            </ul></div>
-          </div>
-
-          <div class="attr-card">
-            <div class="attr-label assume">Starting assumptions</div>
-            <div class="attr-body"><ul>
-              <li><strong>Standard specification:</strong> API2 = API4 = 6,000 kcal/kg NAR; any non-standard coal requires an explicit calorific value adjustment factor.</li>
-              <li><strong>Freight baseline:</strong> benchmark Capesize rate (Baltic Exchange); treat as a separate risk factor, not embedded in the commodity price model.</li>
-              <li><strong>Carbon pass-through:</strong> assume 100% carbon cost pass-through to the dark spread; if the regulatory regime changes this assumption, it must be updated formally.</li>
-              <li><strong>Long-run supply cost:</strong> 60–90 USD/t for seaborne thermal coal; derived from published cost-curve data (IEA, Wood Mackenzie); review annually.</li>
-              <li><strong>Demand trajectory:</strong> declining in Europe; long-end curve must reflect structural demand decline in line with agreed policy scenario.</li>
-            </ul></div>
-          </div>
-
-          <div class="attr-card" style="border-bottom:none;">
-            <div class="attr-label valid">Validation methods</div>
-            <div class="attr-body"><ul>
-              <li><strong>Clean dark spread:</strong> <span class="mono">F_coal × heat_rate − F_carbon × EF ≥ 0</span> at the long end for coal to remain in the dispatch stack; violation signals that carbon assumptions are inconsistent with power/coal curves.</li>
-              <li><strong>API2/API4 spread:</strong> implied basis must sit within historical freight + quality differential range; outlier triggers freight-model review.</li>
-              <li><strong>Back-test vs ICE/Platts settlements:</strong> rolling RMSE per maturity bucket; persistent bias in the 1–2Y zone signals OTC liquidity deterioration not reflected in instrument weighting.</li>
-              <li><strong>Expert overlay log:</strong> every long-end overlay must be documented with a named rationale (fleet retirement schedule, policy scenario, demand outlook); undocumented overlays are a governance violation.</li>
-              <li><strong>Liquidity flag:</strong> instruments used beyond 2Y must carry a low-liquidity flag; confidence intervals widen explicitly in the documentation.</li>
-            </ul></div>
-          </div>
-
-          <div class="attr-card" style="border-bottom:none; border-right:none;">
-            <div class="attr-label" style="color:#94a3b8;">&#9432; Key risk</div>
-            <div class="attr-body">
-              <div class="warning-box" style="margin:0;">
-                <div class="warning-label">Cross-commodity dependency</div>
-                A coal curve that is not jointly governed with the carbon curve will produce internally inconsistent clean dark spreads. Any scenario where carbon rises sharply must simultaneously update the coal curve's implied demand assumptions — failing to do so produces a coal curve that implies perpetual uneconomic coal generation, which is both commercially wrong and a governance red flag.
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ── Carbon / Emissions ── -->
+      <!-- Carbon product block -->
       <div class="product-block" id="s7-carbon">
         <div class="product-header carbon">
-          <div class="product-badge">05 · Carbon</div>
+          <div class="product-badge">03 · Carbon · Compliance</div>
           <div class="product-meta">
             <div class="product-name">Carbon / Emissions (EU ETS — EUAs)</div>
-            <div class="product-desc">Bankable · policy-driven · one-directional carry · compliance deadline seasonality</div>
+            <div class="product-desc">Bankable · policy-driven · major compliance buyer · dispatch economics driver</div>
           </div>
         </div>
         <div class="attr-grid">
-
           <div class="attr-card">
-            <div class="attr-label calc">Calculation approach</div>
-            <div class="attr-body"><ul>
-              <li><strong>Near curve:</strong> EUA December futures (ICE ECX) for current and next vintage. Annual vintages are the primary instruments; strip of December prices is the forward curve.</li>
-              <li><strong>Forward structure:</strong> EUAs are bankable (carry forward without cost beyond financing), so the dominant relationship is: <span class="mono">F(T) ≈ S · e^(r·T)</span> — a pure cost-of-carry curve in normal conditions.</li>
-              <li><strong>Compliance seasonality:</strong> near-term curve reflects April 30 compliance demand — a predictable annual demand spike that slightly elevates prices in Q1.</li>
-              <li><strong>Long end (beyond current Phase):</strong> this is entirely policy assumption — cap trajectory, MSR withdrawal rules, and abatement cost curve; not a market-calibrated zone.</li>
-            </ul></div>
+            <div class="attr-label calc">Curve construction</div>
+            <div class="attr-body">
+              <ul>
+                <li><strong>Forward structure:</strong> EUA December futures (ICE ECX) for current and next vintages. Strip of December futures prices is the EUA forward curve.</li>
+                <li><strong>Carry relationship:</strong> EUAs are bankable — F(T) ≈ S · e^(r·T). Forward prices cannot fall below this bound (no borrowing across compliance years).</li>
+                <li><strong>Compliance seasonality:</strong> April 30 surrender deadline creates near-term demand visible in Q1 pricing. The only seasonal structure in EUAs comes from compliance demand.</li>
+                <li><strong>Long end (beyond current Phase):</strong> Phase 5 post-2030 is entirely a policy assumption. This zone is not market-calibrated — it is a named scenario with explicit uncertainty bounds.</li>
+                <li><strong>E.ON position:</strong> large net EUA buyer for compliance (generation-related CO₂ emissions); manages position to optimise purchase timing and hedge against carbon cost increases in the generation margin.</li>
+              </ul>
+            </div>
           </div>
-
           <div class="attr-card">
-            <div class="attr-label model">Best model</div>
-            <div class="attr-body"><ul>
-              <li><strong>Cost-of-carry + policy overlay:</strong> <span class="mono">F(T) = S · e^(r·T)</span> adjusted for expected cap tightening trajectory and MSR withdrawal schedule.</li>
-              <li><strong>Regime-switching:</strong> EUA prices jump on regulatory announcements (CBAM, REPowerEU, Phase 5 design); a continuous diffusion model will systematically understate jump risk at announcement dates.</li>
-              <li><strong>No seasonal model for EUAs themselves;</strong> seasonality appears only through demand (power/industrial activity drives surrender demand) — do not impose a seasonal shape on the EUA curve itself.</li>
-              <li>For scenario analysis: abatement cost curve model — marginal cost of the cheapest available abatement technology sets a floor under the long-run EUA price.</li>
-            </ul></div>
+            <div class="attr-label model">Stochastic model</div>
+            <div class="attr-body">
+              <ul>
+                <li><strong>Cost-of-carry + policy overlay:</strong> F(T) = S · e^(r·T) adjusted for expected cap tightening trajectory and MSR withdrawal schedule.</li>
+                <li><strong>Regime-switching:</strong> EUA prices jump on regulatory announcements (CBAM, REPowerEU, Phase 5 design). Continuous diffusion models understate jump risk at policy announcement dates — use named scenario overlays for known decision dates.</li>
+                <li><strong>No seasonal model for EUAs themselves;</strong> seasonality appears only through surrender demand.</li>
+                <li><strong>Abatement cost floor for scenario analysis:</strong> marginal cost of the cheapest available abatement technology; currently 60–100 EUR/t near-term under base policy scenario.</li>
+              </ul>
+            </div>
           </div>
-
           <div class="attr-card">
-            <div class="attr-label limits">Limitations</div>
-            <div class="attr-body"><ul>
-              <li><strong>Regulatory risk is the dominant risk and is fundamentally non-market:</strong> a policy decision can shift the entire curve instantaneously; no market model captures this.</li>
-              <li><strong>No borrowing:</strong> unlike most financial instruments, EUAs cannot be borrowed across compliance years (EU ETS rules); the forward curve can only be above spot × e^(rT), never below.</li>
-              <li><strong>Compliance bunching:</strong> large voluntary demand around April 30 creates near-term demand spikes not captured by continuous models; underestimated in Q1 pricing.</li>
-              <li><strong>Phase boundary uncertainty:</strong> Phase 5 rules (post-2030) are not fully determined; any long-end curve beyond 2030 is a named scenario, not a calibrated market price.</li>
-            </ul></div>
+            <div class="attr-label limits">Key limitations</div>
+            <div class="attr-body">
+              <ul>
+                <li><strong>Regulatory risk is the dominant risk:</strong> a policy decision can shift the entire forward curve instantaneously. No market model captures this — requires named scenario curves and stress tests around key policy decision dates.</li>
+                <li><strong>No borrowing:</strong> EUAs cannot be borrowed across compliance years. Forward prices can only be at or above spot × e^(rT).</li>
+                <li><strong>April 30 compliance bunching:</strong> demand spikes around surrender deadline create near-term price pressure not in smooth models.</li>
+                <li><strong>Cross-commodity propagation:</strong> a +10 EUR/t EUA move increases CCGT cost by ~3.5–4 €/MWh and directly reduces the clean spark spread. An EUA curve update without simultaneous review of generation economics is incomplete.</li>
+                <li><strong>Phase 5 uncertainty:</strong> rules post-2030 not fully determined. Any EUA curve beyond the current Phase is a named scenario, not a calibrated market price.</li>
+              </ul>
+            </div>
           </div>
-
           <div class="attr-card">
-            <div class="attr-label assume">Starting assumptions</div>
-            <div class="attr-body"><ul>
-              <li><strong>Bankability:</strong> EUAs carry forward without cost (beyond EUR financing rate); no depreciation, no storage cost.</li>
-              <li><strong>No borrowing:</strong> forward prices cannot fall below <span class="mono">S · e^(r·T)</span>; any quote below this is either a data error or a structural trade with non-standard settlement.</li>
-              <li><strong>Risk-free rate:</strong> EUR €STR (risk-free overnight); EUA market is EUR-denominated.</li>
-              <li><strong>Long-run price:</strong> marginal abatement cost of the technology that clears the cap trajectory; currently 60–150 EUR/t depending on the policy scenario.</li>
-              <li><strong>MSR withdrawal:</strong> modelled as a known deterministic schedule per published MSR rules; scenario sensitivity run on both faster and slower withdrawal assumptions.</li>
-            </ul></div>
+            <div class="attr-label assume">Key assumptions</div>
+            <div class="attr-body">
+              <ul>
+                <li><strong>Bankability:</strong> EUAs carry forward without cost beyond EUR €STR financing; no depreciation, no storage cost.</li>
+                <li><strong>No borrowing constraint:</strong> F(T) ≥ S · e^(r·T) — hard bound.</li>
+                <li><strong>Risk-free rate:</strong> EUR €STR; EUA market is EUR-denominated.</li>
+                <li><strong>MSR withdrawal:</strong> deterministic schedule per published MSR rules; scenario sensitivity on faster/slower withdrawal.</li>
+                <li><strong>Long-run carbon price:</strong> E.ON's governance-approved policy scenario value must be named in the methodology note — this is the most consequential long-run assumption in the generation economics model.</li>
+              </ul>
+            </div>
           </div>
-
-          <div class="attr-card" style="border-bottom:none;">
-            <div class="attr-label valid">Validation methods</div>
-            <div class="attr-body"><ul>
-              <li><strong>Cost-of-carry lower bound:</strong> <span class="mono">F(T) ≥ S · e^(r·T)</span> — any violation is either a data error or implies a risk-free arbitrage (buy spot, sell forward, finance at risk-free rate); hard governance flag.</li>
-              <li><strong>Vintage spread vs carry cost:</strong> the December-to-December spread between consecutive vintages should equal the EUR financing cost; persistent excess signals market dislocation or input error.</li>
-              <li><strong>Phase transition test:</strong> curve must not implicitly price banking across Phase 4/5 boundary at rates inconsistent with regulatory rules.</li>
-              <li><strong>Policy scenario stress:</strong> curve must be explicitly stress-tested against published EU ETS reform scenarios (REPowerEU, Fit-for-55, delayed reform); results documented alongside base curve.</li>
-              <li><strong>Compliance date effect:</strong> near-term Q1 pricing should reflect April 30 compliance demand; if it does not, the curve may be understating near-term demand pressure.</li>
-            </ul></div>
+          <div class="attr-card">
+            <div class="attr-label valid">Validation</div>
+            <div class="attr-body">
+              <ul>
+                <li><strong>Cost-of-carry lower bound (hard flag):</strong> F(T) ≥ S · e^(r·T). Violation = data error or risk-free arbitrage. Hard governance flag.</li>
+                <li><strong>Vintage spread vs carry:</strong> December-to-December spread between consecutive vintages should equal EUR financing cost; persistent excess signals dislocation.</li>
+                <li><strong>Generation margin consistency:</strong> EUA curve update must be accompanied by a re-check of the clean spark spread. A +5 EUR/t carbon move should reduce CSS by ~1.75–2 €/MWh; inconsistency signals curves are not jointly governed.</li>
+                <li><strong>Policy scenario stress:</strong> stress-test against published EU ETS reform scenarios; document results alongside base curve on each publication date.</li>
+                <li><strong>Compliance date effect:</strong> Q1 pricing should reflect April 30 demand; if not, near-term curve understates demand pressure.</li>
+              </ul>
+            </div>
           </div>
-
-          <div class="attr-card" style="border-bottom:none; border-right:none;">
-            <div class="attr-label" style="color:#94a3b8;">&#9432; Key risk</div>
+          <div class="attr-card">
+            <div class="attr-label limits">Key risk</div>
             <div class="attr-body">
               <div class="def-box green" style="margin:0;">
-                <div class="def-box-label">Policy as a model parameter</div>
-                <p>In every other commodity, the model parameters are physical or financial quantities that can be observed or estimated from data. In carbon, the long-run price is ultimately a political variable — it is what policymakers decide the cap should be. The governance response is to make the policy assumption explicit, name it, and run scenarios around it rather than burying it inside a model parameter that looks like a calibrated constant.</p>
+                <div class="def-box-label">Policy as a model parameter — and generation margin propagation</div>
+                <p>In every other commodity, the model parameters are observable. In carbon, the long-run price is ultimately a political variable — what policymakers decide the cap should be. The governance response: make the policy scenario explicit, name it, and run sensitivity around it rather than treating it as a calibrated constant. Additionally, every EUA curve publication must be accompanied by the implied impact on the clean spark spread. Carbon is not a standalone curve — it is the third leg of E.ON's generation economics and must be governed as such.</p>
               </div>
             </div>
           </div>
-
-        </div>
-      </div>
-
-      <!-- ── Base Metals ── -->
-      <div class="product-block" id="s7-metals">
-        <div class="product-header metals">
-          <div class="product-badge">06 · Metals</div>
-          <div class="product-meta">
-            <div class="product-name">Base Metals — LME (Copper, Aluminium, Zinc, Nickel)</div>
-            <div class="product-desc">Highly storable · LME prompt-date convention · lease rate as convenience yield proxy</div>
-          </div>
-        </div>
-        <div class="attr-grid">
-
-          <div class="attr-card">
-            <div class="attr-label calc">Calculation approach</div>
-            <div class="attr-body"><ul>
-              <li><strong>Near (cash to 3M):</strong> LME prompt-date strip — every business day is a delivery date; a daily bootstrap is required, not a monthly one. Cash price + daily forward differentials from broker quotes.</li>
-              <li><strong>Mid (3M–15M):</strong> LME monthly third-Wednesday prompts out to 15/16 months. Monthly bootstrap; cost-of-carry disciplines the shape.</li>
-              <li><strong>Long (15M–3Y+):</strong> annual carries from LME or OTC market-makers. Cost-of-carry model with mean-reverting convenience yield; parametric extrapolation beyond 2Y with long-run marginal cost anchor.</li>
-              <li>LME lease rate curve provides an observable proxy for convenience yield and should be used as a calibration input, not a model output.</li>
-            </ul></div>
-          </div>
-
-          <div class="attr-card">
-            <div class="attr-label model">Best model</div>
-            <div class="attr-body"><ul>
-              <li><strong>Gibson-Schwartz two-factor:</strong> spot price (mean-reverting) + stochastic convenience yield; explains both the term structure and the correlation between nearby and deferred prices.</li>
-              <li><strong>LME lease rate as convenience yield input:</strong> <span class="mono">F(T) = S · e^((r + s − y)T)</span> where y = lease rate + any additional scarcity premium.</li>
-              <li><strong>Schwartz-Smith</strong> as an alternative: short-term deviation + long-term equilibrium; calibrates well to historical LME copper and aluminium strips.</li>
-              <li>For the daily mark: bootstrap the LME prompt-date strip directly; parametric extrapolation beyond 2Y anchored to published long-run marginal cost estimates.</li>
-            </ul></div>
-          </div>
-
-          <div class="attr-card">
-            <div class="attr-label limits">Limitations</div>
-            <div class="attr-body"><ul>
-              <li><strong>LME prompt-date convention:</strong> the non-standard daily time axis in the first 3 months requires explicit handling; a monthly bootstrap will miss the daily forward structure and produce errors in near-term hedges.</li>
-              <li><strong>Off-warrant stocks are unobserved:</strong> LME registered stocks are a subset of global inventory; off-warrant metal affects convenience yield without appearing in public data — the model observes less than it models.</li>
-              <li><strong>Squeeze risk:</strong> when a single party holds a dominant long position, the cash-to-3M spread can blow out far beyond cost-of-carry bounds (LME squeeze events); the curve becomes uninformative during a squeeze.</li>
-              <li><strong>Regime transitions:</strong> the move from surplus (contango) to deficit (backwardation) is rapid and regime-like; parameters calibrated in one regime will systematically mis-estimate in the other.</li>
-            </ul></div>
-          </div>
-
-          <div class="attr-card">
-            <div class="attr-label assume">Starting assumptions</div>
-            <div class="attr-body"><ul>
-              <li><strong>Storage cost:</strong> ~0.5–1.0 USD/t/month for LME-registered metal (warehouse rent + insurance + financing); published in LME tariff schedule.</li>
-              <li><strong>Risk-free rate:</strong> USD SOFR; LME metals are USD-denominated.</li>
-              <li><strong>Convenience yield:</strong> calibrated from cash-3M spread; negative in contango (surplus), zero/positive in backwardation (deficit). Use LME published lease rate as starting input.</li>
-              <li><strong>Long-run marginal cost:</strong> copper ~6,500–8,000 USD/t; aluminium ~1,800–2,500 USD/t; zinc ~2,000–2,800 USD/t. Derived from published cost-curve data; review annually.</li>
-              <li><strong>Stock-convenience yield relationship:</strong> calibrate the sensitivity of convenience yield to LME stock levels; this relationship must be re-estimated when warehouse rules or reporting change.</li>
-            </ul></div>
-          </div>
-
-          <div class="attr-card" style="border-bottom:none;">
-            <div class="attr-label valid">Validation methods</div>
-            <div class="attr-body"><ul>
-              <li><strong>Cost-of-carry upper bound:</strong> <span class="mono">F(T) ≤ S · e^((r+s)T)</span>; if breached, a documented LME storage arbitrage exists — buy spot, deliver to LME, sell forward.</li>
-              <li><strong>Lease rate consistency:</strong> convenience yield implied by the curve should track published LME lease rate quotes within bid-ask; persistent divergence signals input data or model error.</li>
-              <li><strong>Stock correlation:</strong> implied convenience yield should be negatively correlated with LME registered stock levels; a decorrelation event must be investigated and documented.</li>
-              <li><strong>DV01 monotonic decay:</strong> sensitivity per pillar should decrease with maturity for a cost-of-carry curve; flat or rising DV01 at long end flags over-reliance on parametric extrapolation.</li>
-              <li><strong>Back-test vs LME official settlements:</strong> rolling comparison per maturity bucket (cash, 3M, 15M, 27M); RMSE by bucket tracked across rolling 6-month window.</li>
-            </ul></div>
-          </div>
-
-          <div class="attr-card" style="border-bottom:none; border-right:none;">
-            <div class="attr-label" style="color:#94a3b8;">&#9432; Key risk</div>
-            <div class="attr-body">
-              <div class="def-box" style="margin:0;">
-                <div class="def-box-label">The prompt-date trap</div>
-                <p>The LME daily prompt-date convention is unique among major commodity markets. A curve built on monthly pillars will produce systematically wrong prices for the daily forward strip — and most hedges against near-term delivery are sized against the daily prompt dates. Verify that your bootstrap correctly handles the LME daily convention before the first live trade.</p>
-              </div>
-            </div>
-          </div>
-
         </div>
       </div>
 
     </section>
-
   </main>
 </div><!-- /shell -->
 
@@ -2373,7 +1861,6 @@ section {
     });
   }
 
-  // IntersectionObserver: track which section is in view
   const observer = new IntersectionObserver(
     entries => {
       entries.forEach(entry => {
@@ -2389,8 +1876,6 @@ section {
 
   sections.forEach(s => observer.observe(s));
 
-  // Smooth scroll on nav click (already handled by CSS scroll-behavior,
-  // but prevent default to avoid hash-jump jank on some browsers)
   navItems.forEach(a => {
     a.addEventListener('click', e => {
       e.preventDefault();
@@ -2400,6 +1885,5 @@ section {
   });
 })();
 </script>
-
 </body>
 </html>
