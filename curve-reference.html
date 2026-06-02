@@ -1073,17 +1073,16 @@ section {
     <a class="nav-item" href="#s5b"><span class="nav-num">05B</span>Expected future price</a>
 
     <div class="nav-group-label">Products</div>
-    <a class="nav-item" href="#s8"><span class="nav-num">08</span>Commodity products</a>
-    <a class="nav-item" href="#s8-power"><span class="nav-num">↳</span>Power / Electricity</a>
-    <a class="nav-item" href="#s8-gas"><span class="nav-num">↳</span>Natural Gas</a>
-    <a class="nav-item" href="#s8-oil"><span class="nav-num">↳</span>Crude Oil &amp; Products</a>
-    <a class="nav-item" href="#s8-coal"><span class="nav-num">↳</span>Coal</a>
-    <a class="nav-item" href="#s8-carbon"><span class="nav-num">↳</span>Carbon / Emissions</a>
-    <a class="nav-item" href="#s8-metals"><span class="nav-num">↳</span>Base Metals (LME)</a>
+    <a class="nav-item" href="#s7"><span class="nav-num">07</span>Commodity products</a>
+    <a class="nav-item" href="#s7-power"><span class="nav-num">↳</span>Power / Electricity</a>
+    <a class="nav-item" href="#s7-gas"><span class="nav-num">↳</span>Natural Gas</a>
+    <a class="nav-item" href="#s7-oil"><span class="nav-num">↳</span>Crude Oil &amp; Products</a>
+    <a class="nav-item" href="#s7-coal"><span class="nav-num">↳</span>Coal</a>
+    <a class="nav-item" href="#s7-carbon"><span class="nav-num">↳</span>Carbon / Emissions</a>
+    <a class="nav-item" href="#s7-metals"><span class="nav-num">↳</span>Base Metals (LME)</a>
 
     <div class="nav-group-label">Reference</div>
-    <a class="nav-item" href="#s6"><span class="nav-num">06</span>Rates → energy mapping</a>
-    <a class="nav-item" href="#s7"><span class="nav-num">07</span>Five-line summary</a>
+    <a class="nav-item" href="#s6"><span class="nav-num">06</span>Five-line summary</a>
   </nav>
 
   <!-- ── Main ────────────────────────────────────────────────────────────── -->
@@ -1491,29 +1490,31 @@ section {
       </div>
 
       <p class="lede">
-        The "expected future price" has two distinct meanings that must never be confused.
-        The <strong>forward price</strong> F(0,T) is a market-observable contractual price for delivery at T —
-        no expectation required, no model required. The <strong>expected spot price</strong> E[S(T)] is a
-        probabilistic forecast of where spot will actually trade at T. Curve construction targets the
-        forward price. The relationship between the two is the risk premium — and understanding it
-        is what separates a pricing system from a forecasting system.
+        The expected future commodity price at maturity T is the market's best estimate of where
+        the spot price will be when delivery occurs. For storable commodities it is anchored by the
+        cost of physically carrying inventory to that date. For non-storable commodities it is
+        a pure supply-demand expectation. The formulas below show how to calculate it for each case
+        and how all the layers — carry, mean-reversion, seasonality, and delivery profile — combine
+        into the full forward price used in valuation and hedging.
       </p>
 
       <div class="eq-grid">
         <div class="eq-card green">
-          <div class="eq-card-label">Forward price — market observable</div>
+          <div class="eq-card-label">Storable commodities (gas, oil, coal, metals)</div>
           <div class="eq-card-body">
-            <span class="mono">F(0,T)</span> — the price agreed today for delivery at T.
-            Observable from exchange futures and OTC quotes. No drift assumption. No risk premium.
-            This is what curve construction produces.
+            The expected delivery price is <strong>anchored by storage economics</strong>:
+            <span class="mono">F(T) = S₀ · e^((r+s−y)·T)</span>.
+            Physical arbitrage enforces this — if the forward diverges from carry cost,
+            traders buy spot, store, and sell forward until it corrects.
           </div>
         </div>
         <div class="eq-card amber">
-          <div class="eq-card-label">Expected spot — model dependent</div>
+          <div class="eq-card-label">Non-storable commodities (power)</div>
           <div class="eq-card-body">
-            <span class="mono">E<sup>ℙ</sup>[S(T)]</span> — the real-world average of where spot
-            will be at T. Requires a stochastic model, a drift assumption, and a risk premium.
-            This is what scenario generation and forecasting produce.
+            No cost-of-carry exists. The expected delivery price is a <strong>market consensus
+            on future supply/demand balance</strong>, anchored at the long end by fuel-cost
+            economics: <span class="mono">F ≈ gas × heat_rate + carbon × EF + O&amp;M</span>.
+            No physical arbitrage enforces it — governance does.
           </div>
         </div>
       </div>
@@ -1631,18 +1632,19 @@ section {
 <span class="op">d</span><span class="sym">χ</span>  <span class="op">=</span>  <span class="op">−</span><span class="sym">κ_χ</span> <span class="op">·</span> <span class="sym">χ</span> <span class="op">·</span> <span class="op">d</span><span class="sym">t</span>  <span class="op">+</span>  <span class="sym">σ_χ</span> <span class="op">·</span> <span class="op">d</span><span class="sym">W</span>₁
 <span class="op">d</span><span class="sym">ξ</span>  <span class="op">=</span>  <span class="sym">μ_ξ</span> <span class="op">·</span> <span class="op">d</span><span class="sym">t</span>    <span class="op">+</span>  <span class="sym">σ_ξ</span> <span class="op">·</span> <span class="op">d</span><span class="sym">W</span>₂    <span class="comment">  Corr(dW₁, dW₂) = ρ</span>
 
-<span class="comment"># Expected values at horizon T (under ℙ, real-world):</span>
-<span class="sym">E</span>[<span class="sym">χ</span>(<span class="sym">T</span>)]     <span class="op">=</span>  <span class="sym">χ</span>₀ <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ_χ</span> <span class="op">·</span> <span class="sym">T</span>)           <span class="comment">  decays to zero as T → ∞</span>
-<span class="sym">E</span>[<span class="sym">ξ</span>(<span class="sym">T</span>)]     <span class="op">=</span>  <span class="sym">ξ</span>₀ <span class="op">+</span> <span class="sym">μ_ξ</span> <span class="op">·</span> <span class="sym">T</span>              <span class="comment">  long-term equilibrium drifts</span>
+<span class="comment"># Expected commodity price at horizon T:</span>
+<span class="sym">E</span>[<span class="sym">χ</span>(<span class="sym">T</span>)]     <span class="op">=</span>  <span class="sym">χ</span>₀ <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ_χ</span> <span class="op">·</span> <span class="sym">T</span>)           <span class="comment">  short-term factor decays to zero as T → ∞</span>
+<span class="sym">E</span>[<span class="sym">ξ</span>(<span class="sym">T</span>)]     <span class="op">=</span>  <span class="sym">ξ</span>₀ <span class="op">+</span> <span class="sym">μ_ξ</span> <span class="op">·</span> <span class="sym">T</span>              <span class="comment">  long-term equilibrium grows at rate μ_ξ</span>
 <span class="sym">E</span>[<span class="hi">ln</span> <span class="sym">S</span>(<span class="sym">T</span>)]  <span class="op">=</span>  <span class="sym">χ</span>₀ <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ_χ</span><span class="sym">T</span>) <span class="op">+</span> <span class="sym">ξ</span>₀ <span class="op">+</span> <span class="sym">μ_ξ</span><span class="sym">T</span>
 
-<span class="comment"># Forward price (under ℚ, risk-neutral) adds risk premium corrections λ_χ, λ_ξ:</span>
-<span class="hi">ln</span> <span class="sym">F</span>(<span class="val">0</span>,<span class="sym">T</span>)  <span class="op">=</span>  <span class="sym">χ</span>₀<span class="op">·</span><span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ_χT</span>) <span class="op">+</span> <span class="sym">ξ</span>₀ <span class="op">+</span> (<span class="sym">μ_ξ</span><span class="op">−</span><span class="sym">λ_ξ</span>)<span class="sym">T</span> <span class="op">−</span> <span class="sym">λ_χ</span>(<span class="val">1</span><span class="op">−</span><span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ_χT</span>))<span class="op">/</span><span class="sym">κ_χ</span> <span class="op">+</span> <span class="sym">variance_correction</span>(<span class="sym">T</span>)
+<span class="comment"># Observed forward price — calibrate by matching the model to the market futures strip:</span>
+<span class="hi">ln</span> <span class="sym">F</span>(<span class="val">0</span>,<span class="sym">T</span>)  <span class="op">=</span>  <span class="sym">χ</span>₀<span class="op">·</span><span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ_χT</span>) <span class="op">+</span> <span class="sym">ξ</span>₀ <span class="op">+</span> <span class="sym">μ_ξ</span><span class="sym">T</span> <span class="op">+</span> <span class="sym">variance_correction</span>(<span class="sym">T</span>)
 
-<span class="comment">  variance_correction(T) = ½[σ_χ²(1−e^(−2κT))/(2κ) + σ_ξ²T + 2ρσ_χσ_ξ(1−e^(−κT))/κ]</span></pre></div>
+<span class="comment">  variance_correction(T) = ½[σ_χ²(1−e^(−2κT))/(2κ) + σ_ξ²T + 2ρσ_χσ_ξ(1−e^(−κT))/κ]</span>
+<span class="comment">  This Jensen's inequality correction converts E[ln S] to ln E[S] for a log-normal process.</span></pre></div>
         <p class="eq-note">
-          <strong>Practical use:</strong> calibrate {κ_χ, σ_χ, σ_ξ, μ_ξ, ρ, λ_χ, λ_ξ} via
-          Kalman filter on the historical futures strip. The term structure of futures
+          <strong>Practical use:</strong> calibrate {κ_χ, σ_χ, σ_ξ, μ_ξ, ρ} via
+          Kalman filter on the historical commodity futures strip. The term structure of futures
           volatility (decreasing with maturity) is the key identifying feature of the
           short-term factor.
         </p>
@@ -1681,81 +1683,43 @@ section {
         </p>
       </div>
 
-      <!-- ── Eq 6: Risk premium ── -->
+      <!-- ── Eq 6: Commodity forward price premium ── -->
       <div class="eq-section">
-        <div class="eq-title"><span class="eq-num">Eq 06</span> Risk premium — forward price vs expected spot</div>
+        <div class="eq-title"><span class="eq-num">Eq 06</span> Commodity hedging pressure &amp; forward price bias</div>
         <p class="eq-desc">
-          The forward price is not an unbiased forecast of the future spot price.
-          The difference — the risk premium — compensates holders of forward contracts for
-          bearing price risk. In commodity markets, the sign and magnitude of the risk premium
-          vary by product, maturity, and market regime.
+          In commodity markets, producers (miners, generators, farmers) systematically sell
+          forward to lock in revenue, creating excess supply of forward contracts relative to demand.
+          Buyers of that forward risk earn a premium — the forward price tends to trade <em>below</em>
+          the expected delivery price for short-dated contracts (Keynes' "normal backwardation").
+          For long-dated contracts or buyer-hedging-dominated markets, the sign reverses.
         </p>
         <div class="formula-block-sm"><pre>
-<span class="comment"># General relationship (under constant risk premium λ):</span>
-<span class="sym">F</span>(<span class="val">0</span>,<span class="sym">T</span>)  <span class="op">=</span>  <span class="sym">E</span><span class="op">^</span><span class="hi">ℙ</span>[<span class="sym">S</span>(<span class="sym">T</span>)]  <span class="op">·</span>  <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">λ</span> <span class="op">·</span> <span class="sym">σ</span> <span class="op">·</span> <span class="sym">T</span>)
+<span class="comment"># Commodity forward price premium (Keynes normal backwardation):</span>
+<span class="sym">F</span>(<span class="val">0</span>,<span class="sym">T</span>)  <span class="op">=</span>  <span class="sym">E</span>[<span class="sym">S</span>(<span class="sym">T</span>)]  <span class="op">−</span>  <span class="sym">π</span>(<span class="sym">T</span>)
 
-<span class="comment">  λ   =  market price of risk (Sharpe ratio of the commodity position)</span>
-<span class="comment">  σ   =  annualised volatility of the spot price</span>
+<span class="comment">  E[S(T)]  =  market's best estimate of spot at delivery (fundamental value)</span>
+<span class="comment">  π(T)     =  hedging premium paid by producers to buyers of forward price risk</span>
 
-<span class="comment"># Rearranged — expected spot given the observed forward price:</span>
-<span class="sym">E</span><span class="op">^</span><span class="hi">ℙ</span>[<span class="sym">S</span>(<span class="sym">T</span>)]  <span class="op">=</span>  <span class="sym">F</span>(<span class="val">0</span>,<span class="sym">T</span>)  <span class="op">·</span>  <span class="hi">e</span><span class="op">^</span>(<span class="sym">λ</span> <span class="op">·</span> <span class="sym">σ</span> <span class="op">·</span> <span class="sym">T</span>)
+<span class="comment"># When producers dominate hedging (generators, oil majors, miners):</span>
+<span class="comment">  π(T) &gt; 0  →  forward price BELOW expected spot  (buyers earn a premium)</span>
 
-<span class="comment"># Sign convention:</span>
-<span class="comment">  λ &gt; 0  →  normal backwardation:  F(0,T) &lt; E[S(T)]  (short hedger pays premium)</span>
-<span class="comment">  λ &lt; 0  →  normal contango:       F(0,T) &gt; E[S(T)]  (long hedger pays premium)</span>
-<span class="comment">  λ = 0  →  forward = expected spot  (risk-neutral; only valid for financial assets)</span>
+<span class="comment"># When consumers dominate hedging (utilities buying gas, manufacturers buying metals):</span>
+<span class="comment">  π(T) &lt; 0  →  forward price ABOVE expected spot  (sellers earn a premium)</span>
 
-<span class="comment"># Per-commodity empirical guidance (annualised, indicative):</span>
-<span class="comment">  Power (front):   λ ≈ +0.10 to +0.30  (short hedging pressure from generators)</span>
-<span class="comment">  Gas (front):     λ ≈ +0.05 to +0.15</span>
-<span class="comment">  Oil (long-end):  λ ≈ −0.05 to +0.05  (near-zero; efficient liquid market)</span>
-<span class="comment">  Metals:          λ ≈ −0.10 to +0.10  (regime-dependent)</span></pre></div>
+<span class="comment"># Empirical direction by commodity (indicative, front months):</span>
+<span class="comment">  Power:        forward &lt; expected spot  (generators are net short hedgers)</span>
+<span class="comment">  Natural gas:  forward &lt; expected spot  (producers are net short hedgers)</span>
+<span class="comment">  Crude oil:    near-zero bias           (balanced hedging both sides)</span>
+<span class="comment">  Base metals:  sign varies by cycle     (miners vs industrial consumers)</span>
+<span class="comment">  EUAs:         forward ≥ expected spot  (compliance buyers create demand pressure)</span></pre></div>
         <div class="def-box" style="margin-top:12px;">
-          <div class="def-box-label">Practical implication</div>
-          <p>For valuation and hedging, use the <strong>forward price</strong> — do not adjust for risk premium.
-          The forward price is the fair value of the position under risk-neutral pricing;
-          the risk premium is a measure of expected profit on the hedge, not a correction to fair value.
-          For scenario generation and real-world stress testing, use
-          <strong>E<sup>ℙ</sup>[S(T)] = F(0,T) · e^(λσT)</strong> with an explicit, documented choice of λ.
-          Conflating the two is a common source of model error.</p>
+          <div class="def-box-label">Curve construction implication</div>
+          <p>For <strong>valuation and mark-to-market</strong>, always use the <strong>observed forward price</strong>
+          from the market — it is the fair contractual value regardless of any hedging premium.
+          For <strong>scenario generation and fundamental price forecasting</strong>, you may want the
+          expected spot, which requires adding the estimated hedging premium back to the forward price.
+          The two are different numbers for different purposes — always be explicit about which one you are using.</p>
         </div>
-      </div>
-
-      <!-- ── Eq 7: Log-normal baseline ── -->
-      <div class="eq-section">
-        <div class="eq-title"><span class="eq-num">Eq 07</span> Log-normal baseline — GBM and the Black formula</div>
-        <p class="eq-desc">
-          When mean reversion is slow relative to the horizon (typical for oil at long tenors),
-          geometric Brownian motion is a tractable baseline. It underlies the Black-76 formula
-          used to price commodity options and is the benchmark against which more complex models
-          are compared.
-        </p>
-        <div class="formula-block-sm"><pre>
-<span class="comment"># Geometric Brownian Motion for spot price:</span>
-<span class="op">d</span><span class="sym">S</span>  <span class="op">=</span>  <span class="sym">μ</span> <span class="op">·</span> <span class="sym">S</span> <span class="op">·</span> <span class="op">d</span><span class="sym">t</span>  <span class="op">+</span>  <span class="sym">σ</span> <span class="op">·</span> <span class="sym">S</span> <span class="op">·</span> <span class="op">d</span><span class="sym">W</span>
-
-<span class="comment"># Closed-form expected value (real-world drift μ):</span>
-<span class="sym">E</span>[<span class="sym">S</span>(<span class="sym">T</span>)]     <span class="op">=</span>  <span class="sym">S</span>₀ <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="sym">μ</span><span class="sym">T</span>)
-
-<span class="comment"># Log-normal distribution of S(T):</span>
-<span class="hi">ln</span> <span class="sym">S</span>(<span class="sym">T</span>)  <span class="op">~</span>  <span class="hi">𝒩</span>( <span class="hi">ln</span><span class="sym">S</span>₀ <span class="op">+</span> (<span class="sym">μ</span> <span class="op">−</span> <span class="sym">σ</span><span class="op">²</span><span class="op">/</span><span class="val">2</span>)<span class="sym">T</span>,   <span class="sym">σ</span><span class="op">²</span><span class="sym">T</span> )
-
-<span class="comment"># Black-76 forward price under risk-neutral measure (μ → r, no dividends):</span>
-<span class="sym">F</span>(<span class="val">0</span>,<span class="sym">T</span>)  <span class="op">=</span>  <span class="sym">S</span>₀ <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="sym">r</span><span class="sym">T</span>)   <span class="comment">  (no convenience yield; financial asset assumption)</span>
-
-<span class="comment"># Black-76 call option on a forward contract:</span>
-<span class="sym">C</span>  <span class="op">=</span>  <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">r</span><span class="sym">T</span>) <span class="op">·</span> [ <span class="sym">F</span> <span class="op">·</span> <span class="hi">N</span>(<span class="sym">d</span>₁) <span class="op">−</span> <span class="sym">K</span> <span class="op">·</span> <span class="hi">N</span>(<span class="sym">d</span>₂) ]
-
-<span class="comment">  d₁ = [ ln(F/K) + ½σ²T ] / (σ√T)</span>
-<span class="comment">  d₂ = d₁ − σ√T</span>
-<span class="comment">  N  = standard normal CDF</span>
-<span class="comment">  F  = current forward price;   K = strike;   σ = implied vol</span></pre></div>
-        <p class="eq-note">
-          <strong>Limitation:</strong> GBM assumes log-normally distributed prices with no mean reversion.
-          For power and gas, this is materially wrong at short tenors (mean reversion is fast).
-          Use GBM only as a first approximation for liquid long-end oil or metals positions,
-          or as a Black-76 option baseline against which mean-reverting model prices are compared.
-        </p>
       </div>
 
       <!-- ── Eq 8: Complete forward curve construction ── -->
@@ -1772,14 +1736,12 @@ section {
 <span class="sym">F</span>(<span class="sym">T</span>)  <span class="op">=</span>   <span class="val">[</span> <span class="sym">θ</span>  <span class="op">+</span>  (<span class="sym">S</span>₀ <span class="op">−</span> <span class="sym">θ</span>) <span class="op">·</span> <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">κ</span><span class="sym">T</span>) <span class="val">]</span>    <span class="comment">← mean reversion to long-run level θ</span>
         <span class="op">×</span>  <span class="sym">seasonal</span>(<span class="sym">T</span>)                  <span class="comment">← Fourier seasonal adjustment</span>
         <span class="op">×</span>  <span class="hi">e</span><span class="op">^</span>((<span class="sym">r</span> <span class="op">+</span> <span class="sym">s</span> <span class="op">−</span> <span class="sym">y</span>)<span class="sym">T</span>)            <span class="comment">← cost of carry (if storable)</span>
-        <span class="op">×</span>  <span class="hi">e</span><span class="op">^</span>(<span class="op">−</span><span class="sym">λ</span><span class="sym">σ</span><span class="sym">T</span>)                   <span class="comment">← risk premium (if targeting E^ℙ, set λ; if F, set λ=0)</span>
         <span class="op">×</span>  <span class="sym">shape</span>(<span class="sym">T</span>)                    <span class="comment">← intra-period delivery profile (peak vs base)</span>
 
 <span class="comment"># Each layer maps to a governance parameter:</span>
 <span class="comment">  θ, κ         →  mean-reversion methodology note  (review trigger: structural market change)</span>
 <span class="comment">  seasonal(T)  →  shape model methodology note     (review trigger: generation mix change)</span>
 <span class="comment">  r, s, y      →  curve inputs register            (review trigger: storage tariff, rate change)</span>
-<span class="comment">  λ            →  risk premium documentation       (review trigger: hedging regime change)</span>
 <span class="comment">  shape(T)     →  shaping model approval record    (review trigger: load profile shift)</span></pre></div>
       </div>
 
@@ -1792,9 +1754,8 @@ section {
           <li><strong>Estimate the long-run equilibrium θ.</strong> For storable commodities: long-run marginal cost of supply. For power: fuel-cost parity (gas × heat rate + carbon × EF + O&M). Document the source and review frequency.</li>
           <li><strong>Calibrate mean-reversion speed κ.</strong> Regress deseasonalised spot price changes on lagged level: ΔX_t = −κ·X_{t-1}·Δt + ε. Report the estimated half-life T½ = ln(2)/κ alongside κ.</li>
           <li><strong>Extract and lock seasonal parameters.</strong> Regress historical spot on Fourier basis features for annual/weekly cycles. Lock the coefficients as governance parameters. Document the estimation window and temperature normalisation used.</li>
-          <li><strong>Compute E[S(T)] = θ(T) + (S₀ − θ(0)) · e^(−κT)</strong> at every required delivery horizon. This is the model-implied expected future price under the real-world measure.</li>
+          <li><strong>Compute E[S(T)] = θ(T) + (S₀ − θ(0)) · e^(−κT)</strong> at every required delivery horizon to produce the model-implied expected future price.</li>
           <li><strong>Apply cost-of-carry adjustment (storable only).</strong> Multiply by e^((r+s−y)T) using current risk-free rate, documented storage cost, and calibrated convenience yield.</li>
-          <li><strong>Set risk premium λ.</strong> For valuation and hedging: set λ = 0 (use forward price, not drift-adjusted expectation). For scenario generation: use historically calibrated λ, documented explicitly.</li>
           <li><strong>Decompose to delivery granularity.</strong> Apply shape model to convert base/quarterly pillars into intra-period hourly or daily expected prices. Record the shape model version in the audit log.</li>
           <li><strong>Validate.</strong> Run round-trip reprice on all calibrating instruments. Check no-arbitrage (calendar spread monotonicity, cost-of-carry bounds). Back-test rolling 3/6/12-month horizon against realised settlements. Escalate any failure before publication.</li>
         </ol>
@@ -1853,15 +1814,6 @@ section {
               <td>−2 – 8 %</td>
             </tr>
             <tr>
-              <td>λ (risk premium)</td>
-              <td>Market price of risk</td>
-              <td>+0.10 – +0.30</td>
-              <td>+0.05 – +0.15</td>
-              <td>−0.05 – +0.05</td>
-              <td>Uncertain</td>
-              <td>−0.10 – +0.10</td>
-            </tr>
-            <tr>
               <td>Seasonal harmonics</td>
               <td>Number of Fourier terms</td>
               <td>3 – 6</td>
@@ -1885,93 +1837,27 @@ section {
     <hr class="section-rule">
 
     <!-- ═══════════════════════════════════════════════════════════════════ -->
-    <!-- S6: Rates → energy mapping                                         -->
+    <!-- S6: Five-line summary                                              -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <section id="s6">
       <div class="section-eyebrow">Section 06 · Reference</div>
       <div class="section-head">
         <div class="step-tag">6</div>
-        <h2>Rates → energy <span class="acc">mapping</span></h2>
-      </div>
-
-      <p class="lede">
-        The multi-curve, no-arbitrage framework that became standard for interest-rate derivatives
-        transfers directly to commodity curve construction. The table below maps each concept
-        from its rates-world origin to its energy-world equivalent.
-      </p>
-
-      <div class="map-table-wrap">
-        <table class="map-table">
-          <thead>
-            <tr>
-              <th>Rates world</th>
-              <th>Energy world</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Discounting curve (OIS / risk-free overnight)</td>
-              <td>Discount factors applied to future-delivery cashflows — same curve, same logic; commodity is irrelevant</td>
-            </tr>
-            <tr>
-              <td>Projection / forward curve (term index rate)</td>
-              <td>Price forward curve — the expected power, gas, or carbon price for each future delivery period</td>
-            </tr>
-            <tr>
-              <td>Calibrate to deposits, FRAs, futures, swaps</td>
-              <td>Calibrate to exchange futures (EEX, ICE), calendar swaps, seasonal OTC quotes</td>
-            </tr>
-            <tr>
-              <td>Multi-curve: right curve for right purpose</td>
-              <td>Multi-commodity: power, gas, carbon — distinct curves, coupled by spark/dark spreads</td>
-            </tr>
-            <tr>
-              <td>No-arbitrage = reprice all calibrating instruments</td>
-              <td>Same: round-trip reprice test + monotonic calendar-spread test</td>
-            </tr>
-            <tr>
-              <td>Bootstrapping / interpolation / Nelson-Siegel</td>
-              <td>Same methods applied to energy pillars, with seasonal shaping added as an extra layer</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="callout">
-        <div class="callout-label">What changes in energy</div>
-        The construction discipline is identical. What energy adds on top: <strong>seasonality</strong>
-        (repeating winter/summer wave that must be preserved, not smoothed), <strong>mean reversion
-        and spikes</strong> (power reverts to a seasonal equilibrium and spikes on scarcity — rates
-        do not), <strong>delivery over a period</strong> (power is for a month/quarter, not a point
-        in time, requiring decomposition to granular shape), and <strong>cross-commodity coupling</strong>
-        (power, gas, and carbon curves are not independent).
-      </div>
-    </section>
-
-    <hr class="section-rule">
-
-    <!-- ═══════════════════════════════════════════════════════════════════ -->
-    <!-- S7: Five-line summary                                              -->
-    <!-- ═══════════════════════════════════════════════════════════════════ -->
-    <section id="s7">
-      <div class="section-eyebrow">Section 07 · Reference</div>
-      <div class="section-head">
-        <div class="step-tag">7</div>
         <h2>Five-line <span class="acc">summary</span></h2>
       </div>
 
       <ul class="summary-list">
         <li>
           <span class="summary-num">01</span>
-          A curve maps future maturities to market-implied prices or rates, calibrated so it
-          reprices every liquid instrument used to build it — that reprice condition is
-          the no-arbitrage constraint made operational.
+          A commodity price forward curve maps future delivery maturities to market-implied
+          prices, calibrated so it reprices every liquid exchange-quoted instrument used to
+          build it — that reprice condition is the no-arbitrage constraint made operational.
         </li>
         <li>
           <span class="summary-num">02</span>
-          Every curve does two jobs: discounting (what a future cashflow is worth today) and
-          projection (what the market expects the price to be at each future date). In energy,
-          these are always separate curves.
+          The price forward curve is the single output: the expected commodity price at each
+          future delivery date. For storable commodities it is bounded by the cost-of-carry
+          relationship; for non-storables such as power it is anchored by fuel-cost parity.
         </li>
         <li>
           <span class="summary-num">03</span>
@@ -1981,15 +1867,17 @@ section {
         </li>
         <li>
           <span class="summary-num">04</span>
-          Energy curves carry everything rates curves carry, plus four additional layers:
-          seasonality, mean reversion and spikes, delivery-over-a-period decomposition, and
-          cross-commodity coupling through fuel spreads.
+          Commodity curves require four layers beyond simple interpolation:
+          seasonality (repeating winter/summer wave that must be preserved),
+          mean reversion and spikes (fast-reverting spot with scarcity spikes),
+          delivery-over-a-period decomposition (base/peak into hourly shape),
+          and cross-commodity coupling through fuel spreads.
         </li>
         <li>
           <span class="summary-num">05</span>
-          The construction-and-governance discipline — calibrate, interpolate, validate,
-          document — is identical across asset classes. The energy-specific behaviour is what
-          the modelling layer adds on top of that shared foundation.
+          Governance owns the parameters — θ, κ, seasonal harmonics, shape model version,
+          convenience yield — not the build system. Every published curve must be traceable
+          to an approved methodology note, a set of frozen inputs, and a passed validation log.
         </li>
       </ul>
     </section>
@@ -1999,10 +1887,10 @@ section {
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!-- S8: Commodity products                                             -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
-    <section id="s8">
-      <div class="section-eyebrow">Section 08 · Products</div>
+    <section id="s7">
+      <div class="section-eyebrow">Section 07 · Products</div>
       <div class="section-head">
-        <div class="step-tag">8</div>
+        <div class="step-tag">7</div>
         <h2>Commodity <span class="acc">products</span></h2>
       </div>
 
@@ -2014,7 +1902,7 @@ section {
       </p>
 
       <!-- ── Power / Electricity ── -->
-      <div class="product-block" id="s8-power">
+      <div class="product-block" id="s7-power">
         <div class="product-header">
           <div class="product-badge">01 · Power</div>
           <div class="product-meta">
@@ -2089,7 +1977,7 @@ section {
       </div>
 
       <!-- ── Natural Gas ── -->
-      <div class="product-block" id="s8-gas">
+      <div class="product-block" id="s7-gas">
         <div class="product-header gas">
           <div class="product-badge">02 · Gas</div>
           <div class="product-meta">
@@ -2165,7 +2053,7 @@ section {
       </div>
 
       <!-- ── Crude Oil & Products ── -->
-      <div class="product-block" id="s8-oil">
+      <div class="product-block" id="s7-oil">
         <div class="product-header oil">
           <div class="product-badge">03 · Oil</div>
           <div class="product-meta">
@@ -2241,7 +2129,7 @@ section {
       </div>
 
       <!-- ── Coal ── -->
-      <div class="product-block" id="s8-coal">
+      <div class="product-block" id="s7-coal">
         <div class="product-header coal">
           <div class="product-badge">04 · Coal</div>
           <div class="product-meta">
@@ -2318,7 +2206,7 @@ section {
       </div>
 
       <!-- ── Carbon / Emissions ── -->
-      <div class="product-block" id="s8-carbon">
+      <div class="product-block" id="s7-carbon">
         <div class="product-header carbon">
           <div class="product-badge">05 · Carbon</div>
           <div class="product-meta">
@@ -2394,7 +2282,7 @@ section {
       </div>
 
       <!-- ── Base Metals ── -->
-      <div class="product-block" id="s8-metals">
+      <div class="product-block" id="s7-metals">
         <div class="product-header metals">
           <div class="product-badge">06 · Metals</div>
           <div class="product-meta">
@@ -2476,7 +2364,7 @@ section {
 
 <script>
 (function () {
-  const sections = Array.from(document.querySelectorAll('section[id], div[id^="s8-"]'));
+  const sections = Array.from(document.querySelectorAll('section[id], div[id^="s7-"]'));
   const navItems = Array.from(document.querySelectorAll('.nav-item'));
 
   function setActive(id) {
