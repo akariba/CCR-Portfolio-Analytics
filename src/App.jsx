@@ -24,6 +24,7 @@ const PAGES = [
   { id:'cva',        label:'CVA Pricing',           group:'Pricing'           },
   { id:'pfc',        label:'Forward Curves',        group:'Energy PFC'        },
   { id:'rates2power',label:'Curve Framework',       group:'Energy PFC'        },
+  { id:'curveref',   label:'Curve Construction ↗',  group:'Energy PFC', href:'./curve-reference.html' },
 ];
 
 const NOW = new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
@@ -82,7 +83,7 @@ export default function App() {
                   <div
                     key={p.id}
                     className={`nav-item${page===p.id?' active':''}`}
-                    onClick={()=>setPage(p.id)}
+                    onClick={()=> p.href ? window.open(p.href, '_blank') : setPage(p.id)}
                   >
                     <span className="nav-num">{n}</span>
                     {p.label}
