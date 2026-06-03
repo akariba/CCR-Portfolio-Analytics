@@ -1,3 +1,18 @@
+Hi Kumar,
+
+I wanted to clarify — this is a standard university form, not a legal or corporate document. You would simply be confirming as my supervisor that I work here and what my duties are, the same way a manager would sign a reference letter.
+
+I have already filled everything in. It just needs your signature and a company stamp from HR taht i will request later.
+
+Would you be okay with this?
+
+Best regards,
+Ala-Eddine
+
+
+
+
+
 # CCR Portfolio Analytics
 
 A browser-based counterparty credit risk dashboard for monitoring
