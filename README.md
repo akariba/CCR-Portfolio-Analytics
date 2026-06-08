@@ -10,7 +10,7 @@ Best regards,
 Ala-Eddine
 
 
-
+Hi Kumar
 
 
 # CCR Portfolio Analytics
