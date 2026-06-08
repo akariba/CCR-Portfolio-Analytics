@@ -1,3 +1,26 @@
+Thanks.. I’m fine with wording in the certificate (reproduced below). Note that Alaeddine has worked for me since Jan 2026. 
+
+During the professional work the student provided the following services:
+•	Gathering, analysing and documenting business and technical requirements for banking technology systems and regulatory programmes.
+•	Translating business requirements into functional specifications and user stories for software development and system enhancement projects.
+•	Supporting the SABRE AMCST migration programme — coordinating migration of 339 credit portfolios across 8 business units from legacy systems to the SABRE platform.
+•	Performing data analysis, reconciliation and validation of financial data including NPV, PV and accrual calculations across multi-currency derivative portfolios.
+•	Collaborating with software engineers, system architects, QA teams, finance stakeholders and project managers within Agile delivery frameworks.
+•	Working with enterprise banking platforms including Murex, SABRE/Cortex and Aspire sub-ledger systems.
+•	Supporting system testing, defect analysis and user acceptance testing for technology deliverables.
+•	Creating and maintaining technical and functional documentation including business requirements documents, process flows and working group minutes.
+•	Applying Python and SQL to automate reporting, extract data and validate migration outputs.
+•	Participating in governance meetings and stakeholder sessions; preparing materials and tracking follow-up actions.
+
+
+Thanks
+Kumar
+
+
+
+
+
+
 Hi Kumar,
 
 I wanted to clarify — this is a standard university form, not a legal or corporate document. You would simply be confirming as my supervisor that I work here and what my duties are, the same way a manager would sign a reference letter.
