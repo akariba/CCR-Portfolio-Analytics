@@ -1,3 +1,25 @@
+
+Token constraint: finish autonomously in one compact pass.
+
+Do not provide further narration, plans, repeated inspections, or intermediate summaries. Do not ask nonessential questions.
+
+Complete the approved Step 2.1 backend and frontend implementation, run only the necessary compact validation suite, create all documentation, and generate the final ZIP.
+
+Do not run the optional live API test unless the approved environment is already immediately available. Do not spend tokens trying to discover the unresolved Sonnet 5 identifier; leave it clearly documented as a blocker and do not guess.
+
+Stop only for a required permission or a genuine blocking failure.
+
+Final response only:
+1. ZIP location
+2. changed files
+3. tests passed/failed
+4. live test status
+5. unresolved Sonnet identifier
+6. exact installation/restart steps
+
+No partial delivery. The ZIP must contain complete replacement files and be ready for installation.
+
+
 Do not apply edits directly to `Rapid Portfolio Review - Copy`, its backup folders, or the original `RPR_v11_1_Trigger1` folder.
 
 Create a completely separate output folder named:
