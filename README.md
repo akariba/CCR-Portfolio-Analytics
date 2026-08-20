@@ -1,3 +1,157 @@
+Use `RPR_v11_2_Step21_Analyst_Context.zip` as the completed Step 2.1 implementation package.
+
+Your job is installation and minimal verification—not redesign, planning, or reimplementation. Keep narration extremely short to conserve tokens.
+
+PACKAGE PURPOSE
+
+This package is built on `RPR_v11_1_Trigger1(1).zip` and implements Step 2.1 analyst-controlled Additional Context and Assumption Upload.
+
+Implemented changes:
+
+* Additional Context is treated as a controlling scenario instruction.
+
+* CSV/XLSX assumptions are parsed, reviewed, removable, and passed into generation.
+
+* Required upload column: `assumption`.
+
+* Optional columns: `time_horizon`, `analyst_notes`.
+
+* Conflicts with confirmed Step 1 facts return a visible validation warning.
+
+* The analyst can edit the instruction or explicitly override identified conflicts.
+
+* Final assumptions show `Analyst supplied` or `Model generated`.
+
+* Analyst instructions are positioned near the beginning of the model prompt in this order:
+
+  1. Confirmed Step 1 event and accepted overrides.
+  2. Additional Context.
+  3. Uploaded assumptions.
+  4. Selected horizon.
+  5. Model-generated supporting assumptions.
+
+* Active Sonnet 4.6 defaults were removed.
+
+* Gemini and Opus routing remain unchanged.
+
+* Trigger 1, AI Assist, feedback panels, Step 2.2 onward, and the v31 visual design remain unchanged.
+
+The package includes complete replacement files, not patch fragments.
+
+IMPORTANT RESTRICTIONS
+
+* Do not use the public internet.
+* Do not introduce demo data, demo clients, public fallbacks, mocked runtime responses, model downgrades, or fabricated results.
+* Mocked model responses are allowed only inside the included isolated unit tests.
+* Use only the existing company APIs, R2D2 adapter, tokens, certificates, and endpoints.
+* Do not modify Trigger 1.
+* Preserve the Bible rule of up to three events per accepted theme.
+* Do not modify Step 2.2 or later steps.
+* Do not redesign the frontend.
+* Do not remove or alter AI Assist or separate feedback panels.
+* Do not attempt to fix `Discovery response did not contain an events array`; it is a recorded separate Trigger 1 issue.
+* Do not guess the Sonnet 5 API identifier.
+
+EXECUTION
+
+1. Read these package files first:
+
+   * `INSTALL.txt`
+   * `CHANGE_MANIFEST.md`
+   * `VALIDATION_RESULTS.md`
+
+2. Identify the active full project root. It should contain:
+
+   * `backend/server.py`
+   * `backend/llm_gateway.py`
+   * `frontend/rpr-v8-consolidated-test.html`
+   * the existing approved company adapters and environment configuration.
+
+The extracted package is a replacement overlay, not the destination project.
+
+If exactly one active project root matches, use it. Ask me only if multiple possible active roots remain genuinely ambiguous.
+
+3. Create the recoverable backup specified in `INSTALL.txt`.
+
+4. Verify the exact organization-approved Sonnet 5 identifier from the active company configuration, model catalogue, or existing adapter conventions.
+
+Do not infer the identifier from the display name “Claude Sonnet 5”. Do not search the internet.
+
+Set:
+
+`RPR_APPROVED_SONNET5_MODEL=<exact approved identifier>`
+
+using the project’s existing environment mechanism.
+
+If the exact identifier is not available locally, stop only this configuration step and report the exact missing item. Do not replace it with a guessed value.
+
+5. Copy the complete replacement files according to `INSTALL.txt`.
+
+Changed production files:
+
+* `RUNTIME_ENV.ps1`
+* `backend/step2_routes.py`
+* `backend/step2_uploads.py`
+* `backend/step2_service.py`
+* `backend/prompts/step2_context_assessor.txt`
+* `backend/prompts/step2_scenario.txt`
+* `backend/prompts/step2_scenario_revision.txt`
+* `backend/theme_assistant.py`
+* `backend/theme_assistant_batch.py`
+* `backend/rpr_feedback_service.py`
+* `frontend/rpr-v8-consolidated-test.html`
+
+Also install the four files under `templates/`.
+
+6. Run only the cost-effective verification:
+
+* Static search proving no active Sonnet 4.6 references remain.
+* Python compile checks.
+* Included Step 2.1 unit and DOM tests.
+* Frontend JavaScript syntax check.
+* Confirm Trigger 1 files/prompts were not changed.
+* Confirm production code contains no demo/mock/public-web fallback.
+
+The package previously passed 12/12 scoped tests. Do not rewrite passing code.
+
+7. If a test fails solely because of a concrete active-project integration mismatch, make the smallest possible compatibility fix within the listed Step 2.1 files, rerun the affected tests, and document the exact change. Do not expand scope.
+
+8. Restart the backend using the active project’s existing Uvicorn command and run `/health`.
+
+9. Run one minimal live company-API Step 2.1 smoke test only if the approved identifier, credentials, certificates, and endpoint are already available.
+
+Test:
+
+* No Additional Context.
+* Typed Additional Context.
+* Upload example XLSX.
+* Confirm parsed review/removal.
+* Generate and confirm provenance labels.
+* Test one conflict warning and explicit override.
+
+Do not run Trigger 1 for this verification.
+
+FINAL RESPONSE
+
+Return only:
+
+* Exact active project root used.
+* Exact Sonnet 5 identifier source—not tokens or confidential values.
+* Files copied or minimally adjusted.
+* Test pass/fail totals.
+* Backend restart and health-check result.
+* Whether a real company-API smoke test was performed.
+* Any remaining blocker.
+* Rollback location.
+
+Do not provide more planning or explanations. Execute the installation and verification now.
+
+
+
+4444444444444444
+
+
+
 STOP: “No frontend code change required” is incorrect.
 
 Endpoint wiring alone does not satisfy the requirement. The current frontend shows uploaded file names, not parsed assumption rows.
