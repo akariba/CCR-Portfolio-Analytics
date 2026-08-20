@@ -1,6 +1,217 @@
-You are continuing the existing RPR project. Treat the uploaded `RPR_v12_4_Portfolio_Context_Priority.zip` as the current source of truth and as an append-only continuation of our previous v12.3 work.
 
-Do not reconstruct the project from older files. Do not revert existing fixes. Do not use the internet because this is a company-audited environment.
+Continue my RPR project using the attached ZIP as the current source of truth.
+
+Another assistant already performed a read-only inspection of `RPR_v11_1_Trigger1.zip`. No code was changed and no new ZIP has been generated yet. Do not claim that Step 2.1 has already been implemented.
+
+What the inspection established:
+
+1. The package is primarily a Trigger 1 replacement package.
+2. `backend/server.py` imports and registers `step2_router`.
+3. The ZIP does not contain the active `backend/step2_routes.py`.
+4. The ZIP does not contain `backend/llm_gateway.py`.
+5. The frontend already contains:
+
+   * an Additional Context textarea;
+   * a generic context-upload area;
+   * a call to `/api/v1/rpr/step2/context/extract`;
+   * a Step 2.1 generation request containing `confirmed_step1`, `horizon`, `typed_context`, and `uploaded_contexts`.
+6. The current implementation does not yet satisfy the required credit-analyst assumption-upload contract, row-level review/removal, conflict handling, or provenance labels.
+7. Active Sonnet 4.6 references were found in:
+
+   * `RUNTIME_ENV.ps1`
+
+     * `STEP2_SONNET_MODEL`
+     * `RPR_FEEDBACK_MODEL`
+     * `RPR_THEME_GATE_MODEL`
+   * `backend/theme_assistant_batch.py`
+
+     * the fallback value for `RPR_THEME_GATE_MODEL`
+8. The attached files do not reveal the exact organization-approved Sonnet 5 identifier. Do not guess it.
+
+What changed in the previous v11.1 version:
+
+`RPR_v11_1_Trigger1.zip` addressed Trigger 1 release blockers, including:
+
+* preserving the Bible-rule ceiling of up to three events per accepted theme;
+* live-safe discovery, enrichment, and refinement timeouts;
+* progressive per-theme and per-event processing;
+* correct semaphore ownership after timeout;
+* keeping Scan/Re-scan disabled for the full active job;
+* preserving confirmed analyst content when a later generated version arrives;
+* explicit Review & Compare/Keep Confirmed behavior;
+* stage-aware retry controls;
+* preventing fully failed jobs from being cached;
+* preserving `client_theme_id`;
+* local Event 1/2/3 numbering for each theme.
+
+All those v11.1 behaviors must remain intact. The new work is not a Trigger 1 rewrite.
+
+What the next ZIP must add:
+
+Implement Step 2.1 analyst-controlled Additional Context and Assumption Upload only.
+
+Business priority:
+
+1. Confirmed Step 1 event and accepted analyst override decisions.
+2. Analyst Additional Context.
+3. Analyst-uploaded assumptions.
+4. Selected scenario horizon.
+5. Model-generated supporting assumptions.
+
+Additional Context must be treated as a controlling scenario instruction. Preserve its intended meaning, incorporate it visibly, and reconcile it with the confirmed Step 1 event and horizon. Never silently ignore or replace it.
+
+If analyst context conflicts with a confirmed fact:
+
+* do not fabricate a reconciliation;
+* return a visible validation warning;
+* allow the analyst to edit the instruction or explicitly override the conflict.
+
+Assumption upload requirements:
+
+* Accept only `.csv` and `.xlsx`.
+* Required column: `assumption`.
+* Optional columns:
+
+  * `time_horizon`
+  * `analyst_notes`
+* Each nonblank row represents one analyst-supplied assumption.
+* Reject unsupported or malformed files clearly.
+* Never silently drop rows.
+* Parse and normalize all valid rows.
+* Display them for analyst review before generation.
+* Allow individual uploaded assumptions to be removed.
+* Pass the remaining reviewed assumptions into Step 2.1 generation.
+* Give uploaded assumptions the same priority as typed Additional Context.
+* Do not insert sample assumptions automatically.
+
+The final Step 2.1 response must preserve provenance. Every final assumption must be visibly labelled as either:
+
+* `Analyst supplied`
+* `Model generated`
+
+Never represent an analyst-supplied assumption as a model discovery.
+
+Templates required in the new ZIP:
+
+Provide blank and example templates in both CSV and XLSX formats.
+
+The blank template must contain only:
+
+* `assumption`
+* `time_horizon`
+* `analyst_notes`
+
+The example template should include:
+
+* Federal Reserve policy rates increase by 50 basis points during the scenario horizon.
+* Borrowing costs increase for leveraged borrowers.
+* Refinancing spreads widen for lower-rated issuers.
+* Credit demand weakens as funding costs rise.
+* Debt-service coverage deteriorates for rate-sensitive borrowers.
+
+Frontend expectations:
+
+* Preserve the exact v31 design, layout, colours, typography, spacing, panels, and existing styling.
+* Reuse the existing Step 2.1 visual vocabulary.
+* Do not redesign the page.
+* Retain the current Additional Context area.
+* Convert or extend the existing generic upload control into the required “Upload Assumptions” control.
+* Show parsed assumptions in a review list before generation.
+* Allow removing each uploaded assumption.
+* Show validation/conflict warnings visibly.
+* Label final assumptions by provenance.
+* Preserve separate feedback controls for every step.
+* Do not modify unrelated pages.
+
+Backend expectations:
+
+* Trace the current Step 2.1 route before editing.
+* Extend the existing request contract without breaking existing callers.
+* Preserve and validate analyst inputs.
+* Put analyst context and uploaded assumptions explicitly near the beginning of the model prompt—not as low-priority appended notes.
+* Return structured provenance and structured validation warnings.
+* Log counts and processing stages only.
+* Never log confidential assumption contents, tokens, credentials, or certificates.
+* Continue using the existing company-approved adapters and APIs.
+* No public-web access, demo data, mocked runtime output, fallback data, model downgrade, or fabricated response.
+
+Model routing:
+
+* Gemini 3.5 Flash remains the enterprise evidence-search/retrieval model.
+* Claude Sonnet remains responsible for assessment, quality-gate, and context processing where currently applicable.
+* Claude Opus remains responsible for refinement/synthesis where currently applicable.
+* Replace Sonnet 4.6 with the exact organization-approved Sonnet 5 identifier.
+* Verify that identifier from the current company configuration or adapter convention.
+* Do not guess.
+* Do not change Gemini or Opus routing unless repairing a demonstrated integration defect.
+
+Expected active replacement files:
+
+* `backend/step2_routes.py`
+* `frontend/rpr-v8-consolidated-test.html`
+* `RUNTIME_ENV.ps1`
+* `backend/theme_assistant_batch.py`
+
+Additional files expected:
+
+* blank assumption template in CSV;
+* blank assumption template in XLSX;
+* example assumption template in CSV;
+* example assumption template in XLSX;
+* scoped Step 2.1 backend tests;
+* scoped frontend DOM/syntax tests;
+* `INSTALL.txt`;
+* `CHANGE_MANIFEST.md`;
+* `VALIDATION_RESULTS.md`.
+
+Do not change `backend/server.py` unless inspection proves a strictly necessary Step 2.1 integration change. Do not change Trigger 1 orchestration, limits, timeouts, prompts, AI Assist behavior, Trigger 2, Step 2.2, the CAGID/sector database, or Step 2.3 onward.
+
+Known separate open issue:
+
+Some successful Trigger 1 model responses may use a different schema and cause:
+
+`Discovery response did not contain an events array.`
+
+Record this in the validation documentation as an open issue. Do not modify Trigger 1 during this task.
+
+Validation required:
+
+1. Static search proving no active Sonnet 4.6 references remain.
+2. Python compile/import checks.
+3. Unit tests with mocked model responses for:
+
+   * no analyst context;
+   * typed Additional Context;
+   * CSV upload;
+   * XLSX upload;
+   * typed context plus uploaded assumptions;
+   * invalid file;
+   * conflicting assumption;
+   * provenance labels.
+4. Frontend JavaScript syntax tests.
+5. Frontend DOM tests for upload review, removal, warnings, and provenance.
+6. One minimal live company-API smoke test only if the approved environment is already available.
+7. Clearly distinguish mocked verification from live verification.
+
+Before editing, report the exact files you intend to change and why.
+
+If `backend/step2_routes.py`, `backend/llm_gateway.py`, or the configuration containing the approved Sonnet 5 identifier is missing, stop and request only those specific current files. Do not reconstruct them from older versions and do not guess.
+
+Final delivery:
+
+Produce one downloadable ZIP containing every complete modified or new file with its correct directory structure. Do not provide fragments or patch-only instructions.
+
+The final response must clearly state:
+
+* every changed file;
+* what changed compared with `RPR_v11_1_Trigger1.zip`;
+* what was tested;
+* whether any live company-API test was actually performed;
+* what still requires my workstation verification;
+* exact backup, replacement, runtime-loading, restart, health-check, and rollback instructions.
+
+
+
 
 ## First required change: Sonnet 5 migration
 
