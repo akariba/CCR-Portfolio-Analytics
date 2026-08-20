@@ -1,3 +1,7 @@
+The active destination project is C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review - Copy. The folder RPR_v11_2_Step21_Analyst_Context is the completed replacement overlay. Follow its INSTALL.txt: back up the active files, copy the replacements, find the exact approved Sonnet 5 identifier only from the active company configuration, run the included scoped tests, restart the backend, and perform the health check. Do not redesign, reimplement, modify Trigger 1, add demo data, or use the public internet. Minimal narration—execute now.
+
+
+
 Use `RPR_v11_2_Step21_Analyst_Context.zip` as the completed Step 2.1 implementation package.
 
 Your job is installation and minimal verification—not redesign, planning, or reimplementation. Keep narration extremely short to conserve tokens.
