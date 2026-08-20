@@ -1,3 +1,27 @@
+Both workspace roots are now visible:
+
+1. RPR_v11_1_Trigger1
+2. Rapid Portfolio Review - Copy
+
+First list and inspect both workspace roots.
+
+Use RPR_v11_1_Trigger1 as the source of truth for overlapping files. Use Rapid Portfolio Review - Copy only for the missing active files, especially:
+
+- Rapid Portfolio Review - Copy/backend/step2_routes.py
+- Rapid Portfolio Review - Copy/backend/llm_gateway.py
+- Step 2 prompts and service dependencies
+- active company model configuration
+
+Do not edit anything yet. First confirm the files were found and report the exact files you intend to change and why.
+
+
+
+
+
+
+
+
+
 I have now added the full active project to the workspace.
 
 Use RPR_v11_1_Trigger1 as the source of truth for every file it contains. Use the full active project only to retrieve the missing current Step 2 files, llm_gateway.py, Step 2 prompts/services, and approved model configuration.
