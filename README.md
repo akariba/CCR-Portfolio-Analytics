@@ -1,3 +1,24 @@
+I have now added the full active project to the workspace.
+
+Use RPR_v11_1_Trigger1 as the source of truth for every file it contains. Use the full active project only to retrieve the missing current Step 2 files, llm_gateway.py, Step 2 prompts/services, and approved model configuration.
+
+Do not replace newer v11.1 Trigger 1 files with older copies from the full project.
+
+Now:
+
+1. Inspect backend/step2_routes.py and all direct Step 2 dependencies.
+2. Inspect backend/llm_gateway.py and the active configuration to identify the exact organization-approved Sonnet 5 identifier.
+3. Search the full active project for all active Sonnet 4.6 references.
+4. Report the exact files you will modify and why before editing.
+5. Then proceed with the approved Step 2.1-only implementation.
+6. Preserve all RPR v11.1 Trigger 1 behavior, AI Assist, Trigger 2, separate feedback panels, and the complete v31 visual baseline.
+7. Do not implement Step 2.2 or modify Trigger 1.
+8. Deliver complete replacement files and one final ZIP with INSTALL.txt, CHANGE_MANIFEST.md, VALIDATION_RESULTS.md, tests, and the blank/example assumption templates.
+
+Do not use public internet, guess the Sonnet 5 identifier, fabricate results, or claim live verification unless a real approved company-API call succeeds.
+
+
+
 
 Continue my RPR project using the attached ZIP as the current source of truth.
 
