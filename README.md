@@ -1,18 +1,23 @@
+STOP: “No frontend code change required” is incorrect.
 
-STOP. Do not finalize docs or ZIP yet.
+Endpoint wiring alone does not satisfy the requirement. The current frontend shows uploaded file names, not parsed assumption rows.
 
-I skipped because copying demo_data.py is forbidden—not because tests may be omitted.
+You must modify the v11.1 frontend to provide:
 
-Required now:
+1. Upload control restricted to .csv and .xlsx.
+2. Parsed assumption review list before generation.
+3. Display assumption, time_horizon, and analyst_notes.
+4. Remove each individual uploaded assumption.
+5. Clear malformed/unsupported-file errors.
+6. Visible conflict warnings and explicit override/edit handling.
+7. Final provenance labels: “Analyst supplied” or “Model generated”.
+8. Blank and example template download controls.
 
-1. Delete demo_data.py from the output package.
-2. Fix llm_gateway.py so demo_data is lazily imported only inside the legacy mock method. Production R2D2/Step 2.1 imports must work without demo_data.
-3. Implement the actual production changes in step2_routes.py, step2_service.py, step2_uploads.py, relevant Step 2 prompts, and the v11.1 frontend.
-4. Run the scoped mocked unit/DOM tests after the fix.
-5. Do not claim readiness unless tests execute and pass.
-6. Then write validation documents and create the final ZIP.
+The current regex check is not a DOM behavior test. Update the frontend test to verify these controls, review/removal behavior, warnings, and provenance.
 
-Minimal narration. No more planning. Complete the implementation and package.
+Also prove that step2_service.py places analyst context and uploaded assumptions near the beginning of the prompt and returns structured provenance/conflict warnings. Existing tests passing unchanged code is insufficient.
+
+Make the required production diffs, rerun tests, then package. Minimal narration.
 
 
 111111
