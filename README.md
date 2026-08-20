@@ -1,18 +1,21 @@
-Stop. Do not include demo_data.py, DEMO_CLIENTS, DEMO_RF_SCORES, or any demo package in the output ZIP.
 
-Remove the copied demo_data.py from RPR_v11_2_Step21_Analyst_Context.
+STOP. Do not finalize docs or ZIP yet.
 
-The test exposed a real defect: llm_gateway.py hard-imports demo data at module load even though the Step 2.1 R2D2 path does not use it.
+I skipped because copying demo_data.py is forbidden—not because tests may be omitted.
 
-Fix this with the smallest production-safe change:
+Required now:
 
-1. Remove the module-level demo_data import.
-2. Lazy-import demo_data only inside the legacy MockLLMGateway method that actually needs it, or isolate it behind the explicit mock-provider path.
-3. The production R2D2 gateway and Step 2.1 imports must work without demo_data being present.
-4. Unit tests must monkeypatch the gateway/model call directly; do not package demo data.
-5. Do not start the application in mock mode.
-6. Add llm_gateway.py to the modified-file manifest and document this import-isolation fix.
-7. Rerun the scoped tests, then continue directly to the complete ZIP with minimal narration.
+1. Delete demo_data.py from the output package.
+2. Fix llm_gateway.py so demo_data is lazily imported only inside the legacy mock method. Production R2D2/Step 2.1 imports must work without demo_data.
+3. Implement the actual production changes in step2_routes.py, step2_service.py, step2_uploads.py, relevant Step 2 prompts, and the v11.1 frontend.
+4. Run the scoped mocked unit/DOM tests after the fix.
+5. Do not claim readiness unless tests execute and pass.
+6. Then write validation documents and create the final ZIP.
+
+Minimal narration. No more planning. Complete the implementation and package.
+
+
+111111
 
 No demo files or demo runtime fallbacks in the final package.
 
