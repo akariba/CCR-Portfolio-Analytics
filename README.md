@@ -1,18 +1,68 @@
-Both workspace roots are now visible:
+Do not apply edits directly to `Rapid Portfolio Review - Copy`, its backup folders, or the original `RPR_v11_1_Trigger1` folder.
 
-1. RPR_v11_1_Trigger1
-2. Rapid Portfolio Review - Copy
+Create a completely separate output folder named:
 
-First list and inspect both workspace roots.
+`RPR_v11_2_Step21_Analyst_Context`
 
-Use RPR_v11_1_Trigger1 as the source of truth for overlapping files. Use Rapid Portfolio Review - Copy only for the missing active files, especially:
+Source rules:
 
-- Rapid Portfolio Review - Copy/backend/step2_routes.py
-- Rapid Portfolio Review - Copy/backend/llm_gateway.py
-- Step 2 prompts and service dependencies
-- active company model configuration
+1. For every overlapping file, use `RPR_v11_1_Trigger1` as the source of truth.
+2. Use `Rapid Portfolio Review - Copy` only to obtain current files missing from v11.1, including:
 
-Do not edit anything yet. First confirm the files were found and report the exact files you intend to change and why.
+   * `backend/step2_routes.py`
+   * `backend/step2_service.py`
+   * `backend/step2_uploads.py`
+   * `backend/llm_gateway.py`
+   * required Step 2 prompts and direct dependencies
+3. Copy required files into the new output folder and edit only those copies.
+4. Do not merge or overwrite the live Copy repository.
+5. Do not modify files inside `_rpr_backup_*`.
+6. Use `RPR_v11_1_Trigger1/frontend/rpr-v8-consolidated-test.html` as the frontend baseline. You do not need to find an older frontend counterpart in the Copy repository.
+7. Preserve all v11.1 Trigger 1 files and behavior. Do not redesign or reimplement Trigger 1.
+
+The task remains Step 2.1 only. Do not implement Step 2.2 or change Trigger 1, Trigger 2, AI Assist, feedback separation, event limits, timeouts, or orchestration.
+
+Your inspected dependency chain indicates that Step 2.1 may require changes to:
+
+* `backend/step2_routes.py`
+* `backend/step2_service.py`
+* `backend/step2_uploads.py`
+* relevant Step 2 prompt files
+* `frontend/rpr-v8-consolidated-test.html`
+* `RUNTIME_ENV.ps1`
+* any active model-default file proven to contain Sonnet 4.6
+* scoped tests and assumption templates
+
+Do not automatically include or modify `demo_data.py`, `demo_routes.py`, `main.py`, `models.py`, Trigger 1 files, or unrelated services. First prove that a file participates in the active Step 2.1 runtime path.
+
+For `llm_gateway.py`, inspect whether Step 2.1 can reach any demo-data or demo-client fallback. The final Step 2.1 path must remain strict company-API-backed and must not return demo or fabricated results. Do not broadly redesign unrelated gateway behavior.
+
+Sonnet 5 identifier:
+
+The current repository only proves active Sonnet 4.6 defaults. The Claude chat UI showing “Sonnet 5” is not proof of the R2D2/API model identifier.
+
+Use only these verification methods:
+
+1. Search existing internal configuration, approved adapters, tests, and documentation in the active project.
+2. If the existing approved internal adapter exposes a read-only model-list or model-metadata method, use it without public internet access.
+3. Do not guess a value such as `claude-sonnet-5`, `claude-sonnet-5-4`, or any other identifier.
+4. If the identifier still cannot be verified, continue implementing and testing the model-independent Step 2.1 changes, but do not modify Sonnet identifiers or finalize the release ZIP. Report the exact model-identifier blocker clearly.
+
+Before editing, now provide the final scoped file-change list for `RPR_v11_2_Step21_Analyst_Context`. Then proceed with the authorized implementation in the separate output folder.
+
+Final delivery must be one ZIP containing complete replacement files with preserved paths, plus:
+
+* `INSTALL.txt`
+* `CHANGE_MANIFEST.md`
+* `VALIDATION_RESULTS.md`
+* blank CSV template
+* blank XLSX template
+* example CSV template
+* example XLSX template
+* scoped backend and frontend tests
+
+Clearly distinguish mocked tests from any real approved company-API smoke test.
+
 
 
 
