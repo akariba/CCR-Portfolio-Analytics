@@ -1,4 +1,24 @@
-& 'C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\UI Design\PATCH_WORKING_V8.ps1' -SourceHtml 'C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\UI Design\Archive\rpr-v8-consolidated-test.html' -OutputHtml 'C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\UI Design\rpr-v8-consolidated-test-SAFE-STEP22-STEP23.html'
+$srcPath = 'C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\UI Design\Archive\rpr-v8-consolidated-test.html'
+$outPath = 'C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\UI Design\rpr-v8-consolidated-test-SAFE-STEP22-STEP23.html'
+
+$src = [System.IO.File]::ReadAllText($srcPath)
+
+if (-not $src.Contains('id="t1-step-1"')) { throw 'SAFETY STOP: Step 2.2 marker missing' }
+if (-not $src.Contains('id="t1-step-2"')) { throw 'SAFETY STOP: Step 2.3 marker missing' }
+if (-not $src.Contains('</head>')) { throw 'SAFETY STOP: </head> missing' }
+if (-not $src.Contains('</body>')) { throw 'SAFETY STOP: </body> missing' }
+if ($src.Contains('rpr_step22_step23_append.js')) { throw 'SAFETY STOP: append already present' }
+
+$nl = [Environment]::NewLine
+$css = '  <link rel="stylesheet" href="rpr_step22_step23_append.css" data-rpr-safe-append="css">' + $nl
+$js  = '  <script src="rpr_step22_step23_append.js" data-rpr-safe-append="js"></script>' + $nl
+
+$out = $src.Replace('</head>', $css + '</head>').Replace('</body>', $js + '</body>')
+
+[System.IO.File]::WriteAllText($outPath, $out)
+
+Write-Host 'SAFE APPEND CREATED:' $outPath -ForegroundColor Green
+Write-Host 'ORIGINAL WORKING V8 WAS NOT MODIFIED.' -ForegroundColor Green
 
 
 ------------
