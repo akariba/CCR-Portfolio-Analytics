@@ -1,3 +1,8 @@
+
+$env:STEP23_REASONING_MODEL = $env:STEP2_OPUS_MODEL
+$env:STEP23_REVISION_MODEL = $approvedSonnet5
+$env:STEP23_REPAIR_MODEL = $approvedSonnet5
+
 You are working ONLY on RPR Step 2.2 — Portfolio Selection frontend HTML and JavaScript.
 
 Strict rule: the existing v31 visual design is immutable.
