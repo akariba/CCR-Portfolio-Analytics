@@ -1,4 +1,4 @@
-
+.\PATCH_WORKING_V8.ps1 -SourceHtml "C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\UI Design\rpr-v8-consolidated-test.html"
 $env:STEP23_REASONING_MODEL = $env:STEP2_OPUS_MODEL
 $env:STEP23_REVISION_MODEL = $approvedSonnet5
 $env:STEP23_REPAIR_MODEL = $approvedSonnet5
