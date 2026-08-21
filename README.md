@@ -1,964 +1,1004 @@
-The active destination project is C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review - Copy. The folder RPR_v11_2_Step21_Analyst_Context is the completed replacement overlay. Follow its INSTALL.txt: back up the active files, copy the replacements, find the exact approved Sonnet 5 identifier only from the active company configuration, run the included scoped tests, restart the backend, and perform the health check. Do not redesign, reimplement, modify Trigger 1, add demo data, or use the public internet. Minimal narration—execute now.
+TASK: FORENSIC EXTRACTION OF THE CURRENT RPR HTML FOR EXACT RECONSTRUCTION BY ANOTHER AI
 
+CONTEXT
 
+You have access to the current RPR HTML file.
 
-Use `RPR_v11_2_Step21_Analyst_Context.zip` as the completed Step 2.1 implementation package.
+Another AI (ChatGPT) does NOT have the full HTML because the file is too large to transfer conveniently.
 
-Your job is installation and minimal verification—not redesign, planning, or reimplementation. Keep narration extremely short to conserve tokens.
+Your job is NOT to modify the HTML.
 
-PACKAGE PURPOSE
+Your job is NOT to improve it.
 
-This package is built on `RPR_v11_1_Trigger1(1).zip` and implements Step 2.1 analyst-controlled Additional Context and Assumption Upload.
+Your job is NOT to redesign it.
 
-Implemented changes:
+Your job is NOT to refactor it.
 
-* Additional Context is treated as a controlling scenario instruction.
+Your job is NOT to generate a new HTML.
 
-* CSV/XLSX assumptions are parsed, reviewed, removable, and passed into generation.
+Your ONLY job is to inspect the current HTML deeply and produce a technical reconstruction report containing enough exact information for ChatGPT to recreate the SAME frontend later.
 
-* Required upload column: `assumption`.
+This is therefore a SOURCE-CAPTURE / FORENSIC-HANDOVER task.
 
-* Optional columns: `time_horizon`, `analyst_notes`.
+======================================================================
+IMMUTABLE RULES
+======================================================================
 
-* Conflicts with confirmed Step 1 facts return a visible validation warning.
+1. Treat the supplied HTML as the source of truth.
 
-* The analyst can edit the instruction or explicitly override identified conflicts.
+2. Do NOT:
+   - redesign
+   - optimize
+   - simplify
+   - refactor
+   - rename
+   - reorganize
+   - modernize
+   - clean up
+   - remove apparently unused code
+   - merge components
+   - invent missing functionality
+   - suggest a different architecture
 
-* Final assumptions show `Analyst supplied` or `Model generated`.
+3. Do not describe what you think the application SHOULD do.
 
-* Analyst instructions are positioned near the beginning of the model prompt in this order:
+Describe what the supplied HTML ACTUALLY DOES.
 
-  1. Confirmed Step 1 event and accepted overrides.
-  2. Additional Context.
-  3. Uploaded assumptions.
-  4. Selected horizon.
-  5. Model-generated supporting assumptions.
+4. Preserve exact:
+   - IDs
+   - class names
+   - function names
+   - variable names
+   - endpoint paths
+   - JSON property names
+   - labels
+   - button text
+   - CSS values
+   - state names
+   - status names
 
-* Active Sonnet 4.6 defaults were removed.
+5. If something is uncertain, explicitly write:
 
-* Gemini and Opus routing remain unchanged.
+   NOT DETERMINABLE FROM CURRENT HTML
 
-* Trigger 1, AI Assist, feedback panels, Step 2.2 onward, and the v31 visual design remain unchanged.
+Do NOT guess.
 
-The package includes complete replacement files, not patch fragments.
+6. If prose would lose implementation information, provide the exact source code.
 
-IMPORTANT RESTRICTIONS
+7. The resulting report will be used together with the existing backend files.
 
-* Do not use the public internet.
-* Do not introduce demo data, demo clients, public fallbacks, mocked runtime responses, model downgrades, or fabricated results.
-* Mocked model responses are allowed only inside the included isolated unit tests.
-* Use only the existing company APIs, R2D2 adapter, tokens, certificates, and endpoints.
-* Do not modify Trigger 1.
-* Preserve the Bible rule of up to three events per accepted theme.
-* Do not modify Step 2.2 or later steps.
-* Do not redesign the frontend.
-* Do not remove or alter AI Assist or separate feedback panels.
-* Do not attempt to fix `Discovery response did not contain an events array`; it is a recorded separate Trigger 1 issue.
-* Do not guess the Sonnet 5 API identifier.
+Do not invent frontend/backend contracts.
 
-EXECUTION
+======================================================================
+IMPORTANT EXISTING PROJECT CONSTRAINTS
+======================================================================
 
-1. Read these package files first:
+The frontend visual baseline must remain the existing v31-style design.
 
-   * `INSTALL.txt`
-   * `CHANGE_MANIFEST.md`
-   * `VALIDATION_RESULTS.md`
+Do not reinterpret the visual design.
 
-2. Identify the active full project root. It should contain:
+The workflow contains:
 
-   * `backend/server.py`
-   * `backend/llm_gateway.py`
-   * `frontend/rpr-v8-consolidated-test.html`
-   * the existing approved company adapters and environment configuration.
+STEP 1
+Market event discovery / Trigger workflow
 
-The extracted package is a replacement overlay, not the destination project.
+STEP 2.1
+Scenario and assumptions
 
-If exactly one active project root matches, use it. Ask me only if multiple possible active roots remain genuinely ambiguous.
+STEP 2.2
+Portfolio selection
 
-3. Create the recoverable backup specified in `INSTALL.txt`.
+STEP 2.3
+Event-driven risk factors
 
-4. Verify the exact organization-approved Sonnet 5 identifier from the active company configuration, model catalogue, or existing adapter conventions.
+and potentially later Step 2.x / Step 3 sections.
 
-Do not infer the identifier from the display name “Claude Sonnet 5”. Do not search the internet.
+Feedback is intentionally separate by step/page.
 
-Set:
+Do NOT propose replacing these with one global feedback component.
 
-`RPR_APPROVED_SONNET5_MODEL=<exact approved identifier>`
+The Step 1 frontend may contain progressive processing states such as:
 
-using the project’s existing environment mechanism.
+DISCOVERED
+ENRICHING
+ENRICHED
+REFINING
+REFINED
+FAILED
+CONFIRMED
 
-If the exact identifier is not available locally, stop only this configuration step and report the exact missing item. Do not replace it with a guessed value.
+Capture what actually exists.
+
+Do not normalize these names unless the source does.
+
+======================================================================
+PART A — FILE FINGERPRINT
+======================================================================
+
+Start with:
+
+A1. Exact filename.
+
+A2. Total line count.
+
+A3. Approximate character count.
+
+A4. Number of:
+- <style> blocks
+- <script> blocks
+- external scripts
+- external stylesheets
+
+A5. External libraries/fonts/resources.
+
+A6. Whether the file is:
+- standalone
+- dependent on backend assets
+- dependent on other local JS/CSS files
+
+A7. Any version/build comments appearing in the source.
+
+======================================================================
+PART B — FULL APPLICATION DOM MAP
+======================================================================
+
+Produce the complete major DOM hierarchy.
+
+For every important container give:
+
+ELEMENT
+ID
+CLASS
+PARENT
+PURPOSE
+DEFAULT VISIBILITY
+HOW IT BECOMES VISIBLE/HIDDEN
+
+Start from <body> and continue downward.
+
+I need enough information to reconstruct:
+
+- application shell
+- header
+- navigation
+- workflow/step navigation
+- Step 1
+- Step 2
+- Step 3
+- panels
+- cards
+- logs
+- status areas
+- modals
+- overlays
+- loading states
+- feedback panels
+- upload areas
+- hidden templates
+
+Do not only describe visually.
+
+Give the actual structural hierarchy.
+
+======================================================================
+PART C — EXACT VISUAL BASELINE
+======================================================================
+
+Extract the CSS design system actually used.
+
+Provide exact values for:
+
+BODY
+- background
+- font-family
+- font-size
+- text color
 
-5. Copy the complete replacement files according to `INSTALL.txt`.
+LAYOUT
+- widths
+- max-widths
+- grid definitions
+- flex definitions
+- gaps
+- padding
+- margins
 
-Changed production files:
+COLORS
+- page background
+- panel background
+- navy/dark colors
+- blue
+- light blue
+- green
+- yellow/orange
+- red
+- gray
+- borders
+- muted text
 
-* `RUNTIME_ENV.ps1`
-* `backend/step2_routes.py`
-* `backend/step2_uploads.py`
-* `backend/step2_service.py`
-* `backend/prompts/step2_context_assessor.txt`
-* `backend/prompts/step2_scenario.txt`
-* `backend/prompts/step2_scenario_revision.txt`
-* `backend/theme_assistant.py`
-* `backend/theme_assistant_batch.py`
-* `backend/rpr_feedback_service.py`
-* `frontend/rpr-v8-consolidated-test.html`
+TYPOGRAPHY
+- heading sizes
+- labels
+- body
+- captions
+- buttons
+- status text
 
-Also install the four files under `templates/`.
+COMPONENTS
+- cards
+- panels
+- buttons
+- inputs
+- selects
+- textarea
+- tables
+- tabs
+- pills
+- badges
+- trees
+- upload controls
+- feedback boxes
+- status indicators
+- loaders
 
-6. Run only the cost-effective verification:
+For important selectors provide the actual CSS declaration.
 
-* Static search proving no active Sonnet 4.6 references remain.
-* Python compile checks.
-* Included Step 2.1 unit and DOM tests.
-* Frontend JavaScript syntax check.
-* Confirm Trigger 1 files/prompts were not changed.
-* Confirm production code contains no demo/mock/public-web fallback.
+Do not translate:
 
-The package previously passed 12/12 scoped tests. Do not rewrite passing code.
+padding: 12px 16px;
 
-7. If a test fails solely because of a concrete active-project integration mismatch, make the smallest possible compatibility fix within the listed Step 2.1 files, rerun the affected tests, and document the exact change. Do not expand scope.
+into:
 
-8. Restart the backend using the active project’s existing Uvicorn command and run `/health`.
+"medium padding"
 
-9. Run one minimal live company-API Step 2.1 smoke test only if the approved identifier, credentials, certificates, and endpoint are already available.
+Give the exact value.
 
-Test:
+======================================================================
+PART D — WORKFLOW NAVIGATION
+======================================================================
 
-* No Additional Context.
-* Typed Additional Context.
-* Upload example XLSX.
-* Confirm parsed review/removal.
-* Generate and confirm provenance labels.
-* Test one conflict warning and explicit override.
+Map the complete navigation.
 
-Do not run Trigger 1 for this verification.
+Identify every visible workflow step and sub-step.
 
-FINAL RESPONSE
+For each provide:
 
-Return only:
+- displayed label
+- element ID
+- class
+- initial state
+- active class
+- completed class
+- disabled class
+- click handler
+- navigation function
+- target container
+- prerequisite checks
 
-* Exact active project root used.
-* Exact Sonnet 5 identifier source—not tokens or confidential values.
-* Files copied or minimally adjusted.
-* Test pass/fail totals.
-* Backend restart and health-check result.
-* Whether a real company-API smoke test was performed.
-* Any remaining blocker.
-* Rollback location.
+Then explain exactly how navigation works.
 
-Do not provide more planning or explanations. Execute the installation and verification now.
+Provide exact source for the primary navigation functions.
 
+======================================================================
+PART E — STEP 1 COMPLETE CAPTURE
+======================================================================
 
+This is critical.
 
-4444444444444444
+Inspect ALL Step 1 frontend implementation.
 
+Document:
 
+E1. Theme input/selection.
 
-STOP: “No frontend code change required” is incorrect.
+E2. Trigger selection.
 
-Endpoint wiring alone does not satisfy the requirement. The current frontend shows uploaded file names, not parsed assumption rows.
+E3. Trigger 1.
 
-You must modify the v11.1 frontend to provide:
+E4. Trigger 2 if present.
 
-1. Upload control restricted to .csv and .xlsx.
-2. Parsed assumption review list before generation.
-3. Display assumption, time_horizon, and analyst_notes.
-4. Remove each individual uploaded assumption.
-5. Clear malformed/unsupported-file errors.
-6. Visible conflict warnings and explicit override/edit handling.
-7. Final provenance labels: “Analyst supplied” or “Model generated”.
-8. Blank and example template download controls.
+E5. Run/scan controls.
 
-The current regex check is not a DOM behavior test. Update the frontend test to verify these controls, review/removal behavior, warnings, and provenance.
+E6. Theme status.
 
-Also prove that step2_service.py places analyst context and uploaded assumptions near the beginning of the prompt and returns structured provenance/conflict warnings. Existing tests passing unchanged code is insufficient.
+E7. Event rendering.
 
-Make the required production diffs, rerun tests, then package. Minimal narration.
+E8. Progressive rendering.
 
+E9. Event numbering.
 
-111111
+E10. Event expansion/collapse.
 
-No demo files or demo runtime fallbacks in the final package.
+E11. Eight-section event structure if present.
 
+E12. Evidence/source rendering.
 
+E13. confidence.
 
+E14. status badges.
 
-Token constraint: finish autonomously in one compact pass.
+E15. enrichment state.
 
-Do not provide further narration, plans, repeated inspections, or intermediate summaries. Do not ask nonessential questions.
+E16. refinement state.
 
-Complete the approved Step 2.1 backend and frontend implementation, run only the necessary compact validation suite, create all documentation, and generate the final ZIP.
+E17. retry behavior.
 
-Do not run the optional live API test unless the approved environment is already immediately available. Do not spend tokens trying to discover the unresolved Sonnet 5 identifier; leave it clearly documented as a blocker and do not guess.
+E18. cache behavior.
 
-Stop only for a required permission or a genuine blocking failure.
+E19. analyst editing.
 
-Final response only:
-1. ZIP location
-2. changed files
-3. tests passed/failed
-4. live test status
-5. unresolved Sonnet identifier
-6. exact installation/restart steps
+E20. AI Assist.
 
-No partial delivery. The ZIP must contain complete replacement files and be ready for installation.
+E21. feedback.
 
+E22. confirmation.
 
-Do not apply edits directly to `Rapid Portfolio Review - Copy`, its backup folders, or the original `RPR_v11_1_Trigger1` folder.
+E23. rescan/refinement.
 
-Create a completely separate output folder named:
+E24. logging.
 
-`RPR_v11_2_Step21_Analyst_Context`
+E25. error handling.
 
-Source rules:
+For EACH Step 1 function provide:
 
-1. For every overlapping file, use `RPR_v11_1_Trigger1` as the source of truth.
-2. Use `Rapid Portfolio Review - Copy` only to obtain current files missing from v11.1, including:
+FUNCTION NAME
+PARAMETERS
+PURPOSE
+GLOBAL STATE READ
+GLOBAL STATE MODIFIED
+DOM ELEMENTS TOUCHED
+API ENDPOINT
+REQUEST BODY
+EXPECTED RESPONSE
+ERROR BEHAVIOR
 
-   * `backend/step2_routes.py`
-   * `backend/step2_service.py`
-   * `backend/step2_uploads.py`
-   * `backend/llm_gateway.py`
-   * required Step 2 prompts and direct dependencies
-3. Copy required files into the new output folder and edit only those copies.
-4. Do not merge or overwrite the live Copy repository.
-5. Do not modify files inside `_rpr_backup_*`.
-6. Use `RPR_v11_1_Trigger1/frontend/rpr-v8-consolidated-test.html` as the frontend baseline. You do not need to find an older frontend counterpart in the Copy repository.
-7. Preserve all v11.1 Trigger 1 files and behavior. Do not redesign or reimplement Trigger 1.
+======================================================================
+PART F — STEP 1 PROGRESSIVE PIPELINE
+======================================================================
 
-The task remains Step 2.1 only. Do not implement Step 2.2 or change Trigger 1, Trigger 2, AI Assist, feedback separation, event limits, timeouts, or orchestration.
+I specifically need the frontend mechanics for progressive Step 1.
 
-Your inspected dependency chain indicates that Step 2.1 may require changes to:
+Find and document functions corresponding to concepts such as:
 
-* `backend/step2_routes.py`
-* `backend/step2_service.py`
-* `backend/step2_uploads.py`
-* relevant Step 2 prompt files
-* `frontend/rpr-v8-consolidated-test.html`
-* `RUNTIME_ENV.ps1`
-* any active model-default file proven to contain Sonnet 4.6
-* scoped tests and assumption templates
+runScan
+polling
+eventFromPayload
+applyProgressivePayload
+pollScanProgressive
+renderEvTree
 
-Do not automatically include or modify `demo_data.py`, `demo_routes.py`, `main.py`, `models.py`, Trigger 1 files, or unrelated services. First prove that a file participates in the active Step 2.1 runtime path.
+These names are examples.
 
-For `llm_gateway.py`, inspect whether Step 2.1 can reach any demo-data or demo-client fallback. The final Step 2.1 path must remain strict company-API-backed and must not return demo or fabricated results. Do not broadly redesign unrelated gateway behavior.
+Use the ACTUAL names from the HTML.
 
-Sonnet 5 identifier:
+Explain:
 
-The current repository only proves active Sonnet 4.6 defaults. The Claude chat UI showing “Sonnet 5” is not proof of the R2D2/API model identifier.
+1. How scan starts.
 
-Use only these verification methods:
+2. What endpoint is called.
 
-1. Search existing internal configuration, approved adapters, tests, and documentation in the active project.
-2. If the existing approved internal adapter exposes a read-only model-list or model-metadata method, use it without public internet access.
-3. Do not guess a value such as `claude-sonnet-5`, `claude-sonnet-5-4`, or any other identifier.
-4. If the identifier still cannot be verified, continue implementing and testing the model-independent Step 2.1 changes, but do not modify Sonnet identifiers or finalize the release ZIP. Report the exact model-identifier blocker clearly.
+3. How job ID is obtained.
 
-Before editing, now provide the final scoped file-change list for `RPR_v11_2_Step21_Analyst_Context`. Then proceed with the authorized implementation in the separate output folder.
+4. Poll interval.
 
-Final delivery must be one ZIP containing complete replacement files with preserved paths, plus:
+5. Poll endpoint.
 
-* `INSTALL.txt`
-* `CHANGE_MANIFEST.md`
-* `VALIDATION_RESULTS.md`
-* blank CSV template
-* blank XLSX template
-* example CSV template
-* example XLSX template
-* scoped backend and frontend tests
+6. How events are merged.
 
-Clearly distinguish mocked tests from any real approved company-API smoke test.
+7. How one event becomes visible before others finish.
 
+8. How event status changes.
 
+9. How confirmed events are protected.
 
+10. How analyst modifications are protected.
 
+11. What happens when enrichment fails.
 
+12. What happens when refinement fails.
 
+13. What happens when one theme fails.
 
+14. What happens when all themes fail.
 
+15. How retry works.
 
+16. How cache hits are handled.
 
-I have now added the full active project to the workspace.
+17. When polling stops.
 
-Use RPR_v11_1_Trigger1 as the source of truth for every file it contains. Use the full active project only to retrieve the missing current Step 2 files, llm_gateway.py, Step 2 prompts/services, and approved model configuration.
+18. What causes frontend timeout.
 
-Do not replace newer v11.1 Trigger 1 files with older copies from the full project.
+Provide the EXACT relevant JS source.
 
-Now:
+======================================================================
+PART G — STEP 1 EVENT NUMBERING
+======================================================================
 
-1. Inspect backend/step2_routes.py and all direct Step 2 dependencies.
-2. Inspect backend/llm_gateway.py and the active configuration to identify the exact organization-approved Sonnet 5 identifier.
-3. Search the full active project for all active Sonnet 4.6 references.
-4. Report the exact files you will modify and why before editing.
-5. Then proceed with the approved Step 2.1-only implementation.
-6. Preserve all RPR v11.1 Trigger 1 behavior, AI Assist, Trigger 2, separate feedback panels, and the complete v31 visual baseline.
-7. Do not implement Step 2.2 or modify Trigger 1.
-8. Deliver complete replacement files and one final ZIP with INSTALL.txt, CHANGE_MANIFEST.md, VALIDATION_RESULTS.md, tests, and the blank/example assumption templates.
+This is especially important.
 
-Do not use public internet, guess the Sonnet 5 identifier, fabricate results, or claim live verification unless a real approved company-API call succeeds.
+Explain exactly how the frontend derives:
 
+Event 1
+Event 2
+Event 3
 
+within EACH theme.
 
+Identify:
 
-Continue my RPR project using the attached ZIP as the current source of truth.
+- backend event ID
+- frontend local index
+- theme index
+- event_id
+- id
+- label
+- subtitle
 
-Another assistant already performed a read-only inspection of `RPR_v11_1_Trigger1.zip`. No code was changed and no new ZIP has been generated yet. Do not claim that Step 2.1 has already been implemented.
+Explain which property is used for display.
 
-What the inspection established:
+Provide exact code.
 
-1. The package is primarily a Trigger 1 replacement package.
-2. `backend/server.py` imports and registers `step2_router`.
-3. The ZIP does not contain the active `backend/step2_routes.py`.
-4. The ZIP does not contain `backend/llm_gateway.py`.
-5. The frontend already contains:
+Do not infer.
 
-   * an Additional Context textarea;
-   * a generic context-upload area;
-   * a call to `/api/v1/rpr/step2/context/extract`;
-   * a Step 2.1 generation request containing `confirmed_step1`, `horizon`, `typed_context`, and `uploaded_contexts`.
-6. The current implementation does not yet satisfy the required credit-analyst assumption-upload contract, row-level review/removal, conflict handling, or provenance labels.
-7. Active Sonnet 4.6 references were found in:
+======================================================================
+PART H — AI ASSIST
+======================================================================
 
-   * `RUNTIME_ENV.ps1`
+Capture the existing AI Assist implementation.
 
-     * `STEP2_SONNET_MODEL`
-     * `RPR_FEEDBACK_MODEL`
-     * `RPR_THEME_GATE_MODEL`
-   * `backend/theme_assistant_batch.py`
+For each AI Assist interaction provide:
 
-     * the fallback value for `RPR_THEME_GATE_MODEL`
-8. The attached files do not reveal the exact organization-approved Sonnet 5 identifier. Do not guess it.
+- location
+- visible button label
+- button ID/class
+- panel/container
+- input
+- current content passed to backend
+- selected event/theme passed
+- endpoint
+- request body
+- response structure
+- replacement/apply behavior
+- cancel behavior
+- error behavior
 
-What changed in the previous v11.1 version:
+Provide exact relevant JS.
 
-`RPR_v11_1_Trigger1.zip` addressed Trigger 1 release blockers, including:
+Do not merge AI Assist with feedback.
 
-* preserving the Bible-rule ceiling of up to three events per accepted theme;
-* live-safe discovery, enrichment, and refinement timeouts;
-* progressive per-theme and per-event processing;
-* correct semaphore ownership after timeout;
-* keeping Scan/Re-scan disabled for the full active job;
-* preserving confirmed analyst content when a later generated version arrives;
-* explicit Review & Compare/Keep Confirmed behavior;
-* stage-aware retry controls;
-* preventing fully failed jobs from being cached;
-* preserving `client_theme_id`;
-* local Event 1/2/3 numbering for each theme.
+======================================================================
+PART I — FEEDBACK
+======================================================================
 
-All those v11.1 behaviors must remain intact. The new work is not a Trigger 1 rewrite.
+Feedback MUST remain separate per workflow step.
 
-What the next ZIP must add:
+Create a table:
 
-Implement Step 2.1 analyst-controlled Additional Context and Assumption Upload only.
+STEP
+CONTAINER ID
+TEXTAREA/INPUT ID
+SEND BUTTON
+CLEAR BUTTON
+FUNCTION
+STEP KEY
+ENDPOINT
+REQUEST BODY
+RESPONSE HANDLING
 
-Business priority:
+Include Step 1 and every Step 2 page separately.
 
-1. Confirmed Step 1 event and accepted analyst override decisions.
-2. Analyst Additional Context.
-3. Analyst-uploaded assumptions.
-4. Selected scenario horizon.
-5. Model-generated supporting assumptions.
+If multiple panels use similar functions, still document them separately.
 
-Additional Context must be treated as a controlling scenario instruction. Preserve its intended meaning, incorporate it visibly, and reconcile it with the confirmed Step 1 event and horizon. Never silently ignore or replace it.
+======================================================================
+PART J — STEP 2.1 EXACT CAPTURE
+======================================================================
 
-If analyst context conflicts with a confirmed fact:
+This is one of the most important sections.
 
-* do not fabricate a reconciliation;
-* return a visible validation warning;
-* allow the analyst to edit the instruction or explicitly override the conflict.
+Capture the complete current Step 2.1 DOM and JavaScript.
 
-Assumption upload requirements:
+Document:
 
-* Accept only `.csv` and `.xlsx`.
-* Required column: `assumption`.
-* Optional columns:
+1. Confirmed Step 1 context displayed.
 
-  * `time_horizon`
-  * `analyst_notes`
-* Each nonblank row represents one analyst-supplied assumption.
-* Reject unsupported or malformed files clearly.
-* Never silently drop rows.
-* Parse and normalize all valid rows.
-* Display them for analyst review before generation.
-* Allow individual uploaded assumptions to be removed.
-* Pass the remaining reviewed assumptions into Step 2.1 generation.
-* Give uploaded assumptions the same priority as typed Additional Context.
-* Do not insert sample assumptions automatically.
+2. Assessment horizon.
 
-The final Step 2.1 response must preserve provenance. Every final assumption must be visibly labelled as either:
+3. Additional Context.
 
-* `Analyst supplied`
-* `Model generated`
+4. Additional Context textarea/input.
 
-Never represent an analyst-supplied assumption as a model discovery.
+5. Upload assumptions control.
 
-Templates required in the new ZIP:
+6. Accepted file types.
 
-Provide blank and example templates in both CSV and XLSX formats.
+7. uploaded-file display.
 
-The blank template must contain only:
+8. upload status.
 
-* `assumption`
-* `time_horizon`
-* `analyst_notes`
+9. assumptions preview.
 
-The example template should include:
+10. analyst-supplied assumption rendering.
 
-* Federal Reserve policy rates increase by 50 basis points during the scenario horizon.
-* Borrowing costs increase for leveraged borrowers.
-* Refinancing spreads widen for lower-rated issuers.
-* Credit demand weakens as funding costs rise.
-* Debt-service coverage deteriorates for rate-sensitive borrowers.
+11. model-generated assumption rendering.
 
-Frontend expectations:
+12. provenance labels.
 
-* Preserve the exact v31 design, layout, colours, typography, spacing, panels, and existing styling.
-* Reuse the existing Step 2.1 visual vocabulary.
-* Do not redesign the page.
-* Retain the current Additional Context area.
-* Convert or extend the existing generic upload control into the required “Upload Assumptions” control.
-* Show parsed assumptions in a review list before generation.
-* Allow removing each uploaded assumption.
-* Show validation/conflict warnings visibly.
-* Label final assumptions by provenance.
-* Preserve separate feedback controls for every step.
-* Do not modify unrelated pages.
+13. conflict warnings.
 
-Backend expectations:
+14. override controls.
 
-* Trace the current Step 2.1 route before editing.
-* Extend the existing request contract without breaking existing callers.
-* Preserve and validate analyst inputs.
-* Put analyst context and uploaded assumptions explicitly near the beginning of the model prompt—not as low-priority appended notes.
-* Return structured provenance and structured validation warnings.
-* Log counts and processing stages only.
-* Never log confidential assumption contents, tokens, credentials, or certificates.
-* Continue using the existing company-approved adapters and APIs.
-* No public-web access, demo data, mocked runtime output, fallback data, model downgrade, or fabricated response.
+15. scenario generation.
 
-Model routing:
+16. scenario narrative.
 
-* Gemini 3.5 Flash remains the enterprise evidence-search/retrieval model.
-* Claude Sonnet remains responsible for assessment, quality-gate, and context processing where currently applicable.
-* Claude Opus remains responsible for refinement/synthesis where currently applicable.
-* Replace Sonnet 4.6 with the exact organization-approved Sonnet 5 identifier.
-* Verify that identifier from the current company configuration or adapter convention.
-* Do not guess.
-* Do not change Gemini or Opus routing unless repairing a demonstrated integration defect.
+17. assumption table/cards.
 
-Expected active replacement files:
+18. structural headwinds.
 
-* `backend/step2_routes.py`
-* `frontend/rpr-v8-consolidated-test.html`
-* `RUNTIME_ENV.ps1`
-* `backend/theme_assistant_batch.py`
+19. adaptations.
 
-Additional files expected:
+20. resilient/beneficiary segments.
 
-* blank assumption template in CSV;
-* blank assumption template in XLSX;
-* example assumption template in CSV;
-* example assumption template in XLSX;
-* scoped Step 2.1 backend tests;
-* scoped frontend DOM/syntax tests;
-* `INSTALL.txt`;
-* `CHANGE_MANIFEST.md`;
-* `VALIDATION_RESULTS.md`.
+21. limitations.
 
-Do not change `backend/server.py` unless inspection proves a strictly necessary Step 2.1 integration change. Do not change Trigger 1 orchestration, limits, timeouts, prompts, AI Assist behavior, Trigger 2, Step 2.2, the CAGID/sector database, or Step 2.3 onward.
+22. AI Assist/feedback.
 
-Known separate open issue:
+23. revision.
 
-Some successful Trigger 1 model responses may use a different schema and cause:
+24. confirmation/finalization.
 
-`Discovery response did not contain an events array.`
+25. transition to Step 2.2/2.3.
 
-Record this in the validation documentation as an open issue. Do not modify Trigger 1 during this task.
+For every Step 2.1 control give exact:
 
-Validation required:
+ID
+CLASS
+LABEL
+PLACEHOLDER
+FUNCTION
+STATE VARIABLE
 
-1. Static search proving no active Sonnet 4.6 references remain.
-2. Python compile/import checks.
-3. Unit tests with mocked model responses for:
+======================================================================
+PART K — STEP 2.1 API CONTRACTS
+======================================================================
 
-   * no analyst context;
-   * typed Additional Context;
-   * CSV upload;
-   * XLSX upload;
-   * typed context plus uploaded assumptions;
-   * invalid file;
-   * conflicting assumption;
-   * provenance labels.
-4. Frontend JavaScript syntax tests.
-5. Frontend DOM tests for upload review, removal, warnings, and provenance.
-6. One minimal live company-API smoke test only if the approved environment is already available.
-7. Clearly distinguish mocked verification from live verification.
+Find every endpoint used by Step 2.1.
 
-Before editing, report the exact files you intend to change and why.
+For each:
 
-If `backend/step2_routes.py`, `backend/llm_gateway.py`, or the configuration containing the approved Sonnet 5 identifier is missing, stop and request only those specific current files. Do not reconstruct them from older versions and do not guess.
+METHOD
+PATH
+CALLING FUNCTION
+REQUEST JSON
+RESPONSE JSON FIELDS
+SUCCESS HANDLING
+WARNING HANDLING
+ERROR HANDLING
 
-Final delivery:
+Pay particular attention to fields related to:
 
-Produce one downloadable ZIP containing every complete modified or new file with its correct directory structure. Do not provide fragments or patch-only instructions.
+confirmed_step1
+horizon
+typed_context
+additional_context
+uploaded_contexts
+uploaded_assumptions
+accepted_conflict_overrides
+context_assessment
+assumptions
+scenario_narrative
+provenance
+state
+confirmed_for_downstream
 
-The final response must clearly state:
+Use exact names from source.
 
-* every changed file;
-* what changed compared with `RPR_v11_1_Trigger1.zip`;
-* what was tested;
-* whether any live company-API test was actually performed;
-* what still requires my workstation verification;
-* exact backup, replacement, runtime-loading, restart, health-check, and rollback instructions.
+======================================================================
+PART L — STEP 2.2 PORTFOLIO SELECTION
+======================================================================
 
+Capture the implementation EXACTLY as it currently exists.
 
+Do not design the future database.
 
+Document:
 
-## First required change: Sonnet 5 migration
+- page/container
+- headings
+- instructions
+- tabs
+- sector selection
+- L2
+- L3
+- hierarchical relationship
+- checkbox behavior
+- Select All
+- Clear All
+- company selection
+- CAGID
+- MLE
+- exposure fields
+- upload portfolio
+- upload preview
+- accepted file types
+- validation
+- confirm selection
+- downstream state
 
-The organization has switched from Claude Sonnet 4.6 to Claude Sonnet 5.
+Determine whether each data source is:
 
-Update the approved Sonnet model consistently across the whole package.
+HARDCODED FRONTEND
+BACKEND API
+CSV
+JSON
+OTHER
 
-Before editing, use `rg` or equivalent to find every reference to:
+Give evidence from the code.
 
-* `claude-sonnet-4-6`
-* Sonnet environment variables
-* hardcoded model defaults
-* fallback model names
-* health/runtime reporting
-* model logging
-* tests and fixtures
-* documentation and installation instructions
+List all related functions and endpoints.
 
-Relevant environment variables may include:
+======================================================================
+PART M — STEP 2.3 EVENT-DRIVEN RISK FACTORS
+======================================================================
 
-* `RPR_THEME_GATE_MODEL`
-* `RPR_STEP2_SONNET_MODEL`
-* `STEP2_SONNET_MODEL`
-* `RPR_FEEDBACK_MODEL`
-* any other Sonnet-specific variable actually used by the runtime
+Capture the complete Step 2.3 frontend.
 
-Use the exact Sonnet 5 identifier accepted by our approved R2D2 environment. Do not invent a model identifier. Resolve it from the organization’s approved configuration/model catalogue if available.
+Document:
 
-If the organization’s accepted identifier is literally `claude-sonnet-5`, use it consistently. If the adapter requires a different canonical identifier, use that exact identifier and document it clearly.
+- prerequisites
+- confirmed scenario requirement
+- selected sector requirement
+- portfolio context
+- Generate controls
+- loading state
+- result state
+- factor cards/rows
 
-Do not change Claude Opus, Gemini 3.5 Flash, providers, credentials, endpoints, token acquisition, or TLS configuration as part of this migration.
+For factor output determine exactly how frontend renders:
 
-There must be no silent fallback to Sonnet 4.6 if Sonnet 5 fails.
+factor_id
+factor
+importance
+weight
+rationale
+metric/formula
+unit
+threshold
+threshold conditions
+AND/OR logic
+industry sensitivity
+methodology limitations
+calibration information
 
-## What v12.4 added
+Capture confirmation behavior.
 
-The uploaded package extends v12.3; it does not replace the prior architecture.
+Capture feedback behavior.
 
-### 1. Step 2.1 additional-context priority
+Capture navigation afterward.
 
-In `backend/step2_service.py`, valid analyst-supplied context is now explicitly prioritized in this order:
+Provide exact JS for rendering and API calls.
 
-1. Accepted analyst-entered context and uploaded assumptions.
-2. Confirmed Step-1 evidence and the selected horizon.
-3. Bounded model inference used only to close material gaps.
+======================================================================
+PART N — LATER STEPS
+======================================================================
 
-The implementation marks valid analyst inputs with priority metadata such as:
+Inspect Step 2.4, 2.5, Step 3 and anything later.
 
-* `HIGHEST_ANALYST_INPUT`
-* `analyst_context`
-* `uploaded_context`
-* `assumption_upload`
+For each state whether it is:
 
-Accepted structured assumptions must be preserved for the Opus generation stage. They must not be silently discarded, downgraded, materially rewritten, or replaced with model-generated assumptions.
+FULLY IMPLEMENTED
+PARTIALLY IMPLEMENTED
+PLACEHOLDER
+NOT PRESENT
 
-Confirmed Step-1 event identity and the selected Step-2.1 horizon remain immutable.
+Give exact labels and IDs.
 
-### 2. Structured assumption uploads
+Do not invent missing functionality.
 
-`backend/step2_service.py` now parses assumption uploads from:
+======================================================================
+PART O — GLOBAL JAVASCRIPT STATE
+======================================================================
 
-* CSV
-* JSON
+Find ALL important global variables/constants.
 
-It normalizes fields such as:
+Create a table:
 
-* `code`
-* `type`
-* `quantified_or_bounded_value`
-* `rationale`
-* `direction`
-* `source_reference`
-* `confidence`
-* `origin`
-* `observed_vs_assumed`
+VARIABLE
+INITIAL VALUE
+TYPE
+PURPOSE
+READ BY
+MODIFIED BY
 
-Values beginning with `Edit:` are intentionally ignored. This prevents untouched sample-template placeholders from entering the scenario as genuine assumptions.
+Group into:
 
-Verify that:
+GLOBAL/API
 
-* edited rows are parsed;
-* unedited placeholders are ignored;
-* leading/trailing whitespace does not create false assumptions;
-* malformed structured uploads fail clearly or are rejected safely;
-* no assumption is fabricated when the file is empty or invalid;
-* accepted assumptions reach the Opus request payload.
+STEP 1
 
-### 3. Context suggestions endpoint
+TRIGGER 1
 
-`backend/step2_routes.py` includes:
+TRIGGER 2
 
-`GET /api/v1/rpr/step2/context/suggestions`
+STEP 2.1
 
-It returns generic suggestions covering:
+STEP 2.2
 
-* portfolio scope and concentrations;
-* affected CAGIDs, sectors, products, and regions;
-* stress variables and explicit bounds;
-* transmission channels;
-* mitigants, collateral, hedges, covenants, limits, and management actions;
-* evidence limitations;
-* explicit assumptions the analyst wants tested.
+STEP 2.3
 
-These are suggestions only. They must never become live assumptions unless the analyst explicitly enters or uploads them.
+FEEDBACK
 
-### 4. Step 2.1 prompt contract
+NAVIGATION
 
-The Step 2.1 context-assessment and scenario prompts were strengthened.
+LOGGING
 
-Verify that the prompts enforce:
+======================================================================
+PART P — COMPLETE CUSTOM FUNCTION INVENTORY
+======================================================================
 
-* confirmed Step-1 identity remains unchanged;
-* the selected horizon remains unchanged;
-* valid analyst context has highest priority;
-* analyst assumptions remain visible in the generated scenario;
-* context is rejected only when conflicting, unrelated, unsafe, or prompt-injection content;
-* valid context is not silently downgraded;
-* generated assumptions are added only when needed to close material gaps;
-* outputs stay within the existing strict JSON contracts.
+Scan the entire script.
 
-### 5. Frontend changes
+List EVERY custom function.
 
-The existing `frontend/rpr-v8-consolidated-test.html` was changed only inside the current v31 structure.
+Do not only list important ones.
 
-It now:
+For each:
 
-* displays default suggestions near Additional Context;
-* allows the relevant context/assumption upload formats;
-* tells the analyst that accepted context and uploaded assumptions are prioritized;
-* submits `typed_context` and `uploaded_contexts` through the existing Step 2.1 path.
+FUNCTION
+PARAMETERS
+ASYNC?
+PURPOSE
+CALLS
+CALLED BY
+DOM ELEMENTS
+GLOBAL STATE
+ENDPOINT
 
-Do not redesign the page.
+After the table, identify the functions that MUST be copied exactly to reproduce behavior.
 
-The v31 visual baseline is immutable:
+======================================================================
+PART Q — COMPLETE API MAP
+======================================================================
 
-* no layout redesign;
-* no color changes;
-* no typography changes;
-* no spacing redesign;
-* no panel-structure changes;
-* no new button style;
-* no feedback-panel consolidation.
+Scan the entire HTML for:
 
-### 6. Included sample files
+fetch(
+XMLHttpRequest
+axios
+API constants
+URL constants
+endpoint strings
 
-The package contains:
+Produce:
 
-* `samples/step2_1_assumptions_template.csv`
-* `samples/step2_1_assumptions_template.json`
-* `samples/step2_1_additional_context_checklist.txt`
+METHOD
+EXACT ENDPOINT
+FUNCTION
+STEP
+REQUEST
+EXPECTED RESPONSE
+UI EFFECT
 
-Verify that these are safe, editable templates and that unchanged `Edit:` placeholders never become generated assumptions.
+Do not omit health/preflight endpoints.
 
-### 7. Portfolio backend preservation
+======================================================================
+PART R — COMPLETE DOM ID INVENTORY
+======================================================================
 
-The existing strict portfolio backend must remain unchanged functionally.
+Extract EVERY id="..." from the HTML.
 
-It supports:
+Do not summarize.
 
-* CAGID as a string, including leading zeroes;
-* company name;
-* NAICS/sector Level 2;
-* NAICS/sector Level 3;
-* relationship OSUC/exposure;
-* approved JSON, CSV, TSV, TXT, and XLSX extracts;
-* deterministic portfolio selection and Step-2 portfolio context.
+Give the complete list.
 
-Do not weaken strict validation, deduplicate legitimate repeated exposure rows, or add fabricated portfolio data.
+For each important ID provide purpose.
 
-## Immutable RPR rules
+Then separately list important custom classes.
 
-These rules are mandatory:
+This section is intentionally exhaustive.
 
-1. Trigger 1 produces up to three events per accepted theme.
-2. Gemini 3.5 Flash with approved enterprise web search remains the Trigger-1 discovery/evidence path.
-3. Sonnet 5 is used for quality, relevance, and context gates where Sonnet is applicable.
-4. Claude Opus remains the refinement/scenario model where Opus is applicable.
-5. No demo data.
-6. No canned model outputs.
-7. No public-web fallback.
-8. No model downgrade or silent fallback.
-9. No credential, endpoint, certificate, or token-handling changes.
-10. Confirmed analyst content is never silently overwritten.
-11. Feedback remains separate per page and per step.
-12. The v31 frontend visual baseline remains immutable.
-13. Do not modify timeout, semaphore, worker, cache, polling, or retry architecture unless you identify a concrete defect. If you identify one, report it as a proposal and wait for approval before changing it.
+======================================================================
+PART S — EXACT USER-VISIBLE TEXT
+======================================================================
 
-## Verification approach: minimize cost
+Extract exact text for:
 
-Use the least expensive verification sequence possible.
+- application title
+- workflow steps
+- substeps
+- page headings
+- cards
+- tabs
+- buttons
+- status badges
+- placeholders
+- empty states
+- warnings
+- errors
+- upload instructions
+- AI Assist
+- feedback
+- confirmation
+- retry
+- loading messages
 
-### Phase A — free static inspection
+Preserve capitalization.
 
-1. Extract the ZIP into a clean working folder.
-2. Inventory all files.
-3. Run `rg` for all Sonnet 4.6/model-variable references.
-4. Produce a before-edit list of every file requiring the Sonnet 5 update.
-5. Confirm the v12.4 Step 2.1 changes described above actually exist.
-6. Confirm the existing portfolio, Trigger 1, Trigger 2, Step 2.1, Step 2.3, feedback, and frontend files are present.
+======================================================================
+PART T — PAGE INITIALIZATION
+======================================================================
 
-### Phase B — local mechanical tests
+Find page-load initialization.
 
-Run without live model calls:
+Document exact sequence from loading the HTML until the application is ready.
 
-* Python compile checks;
-* JavaScript syntax checks;
-* existing unit/contract tests;
-* tests for Sonnet 5 configuration propagation;
-* tests for typed-context priority;
-* tests for CSV and JSON assumption parsing;
-* tests that `Edit:` placeholders are ignored;
-* tests that accepted structured assumptions reach the Opus payload;
-* tests that confirmed Step 1 and horizon cannot be changed;
-* regression tests for Trigger-1 three-event rule;
-* portfolio-backend regression tests;
-* v31 baseline checks.
+Include:
 
-Mock only the external model boundary. Do not ship mocked or fake runtime results.
+DOMContentLoaded
 
-The uploaded v12.4 package previously passed 28/28 local tests. Your final package must pass those tests plus any Sonnet 5 configuration tests you add.
+or equivalent.
 
-### Phase C — minimum-cost live verification
+Explain:
 
-Do not repeatedly call Gemini, Sonnet, or Opus while debugging.
+1. variables initialized
+2. event listeners registered
+3. backend health check
+4. data/catalog loading
+5. default step
+6. default trigger
+7. hidden sections
+8. restored state
+9. default button states
 
-First make all static and mocked tests pass.
+Provide exact initialization source.
 
-Then, only if the approved corporate environment is available:
+======================================================================
+PART U — RESPONSIVE DESIGN
+======================================================================
 
-1. Run exactly one minimal Sonnet 5 connectivity smoke test through an existing Sonnet-backed gate with a small input and low output limit.
-2. Confirm logs show the exact Sonnet 5 model identifier and `status=SUCCESS`.
-3. Do not run Gemini discovery or Opus merely to verify the Sonnet model name.
-4. For the final Step 2.1 live test, provide one exact test case that I can run manually:
+Extract every @media rule.
 
-   * one already-confirmed Step-1 event;
-   * one selected horizon;
-   * one short typed analyst context;
-   * one edited assumption upload;
-   * one Step 2.1 Generate action.
-5. State the exact expected Sonnet and Opus log sequence and the expected UI evidence that analyst context was prioritized.
+Give:
 
-If you cannot access the company endpoints, say so. Do not imply that mocked tests prove live corporate connectivity.
+BREAKPOINT
+SELECTORS AFFECTED
+BEFORE
+AFTER
 
-## Required test case for Step 2.1
+Do not redesign mobile behavior.
 
-Use this as a manual example, not as canned runtime data:
+======================================================================
+PART V — SOURCE SNIPPETS REQUIRED FOR EXACT RECONSTRUCTION
+======================================================================
 
-Typed additional context:
+Now evaluate your own report.
 
-“Prioritize the portfolio’s European automotive and industrial names. Assume refinancing access remains available for investment-grade borrowers, but spreads widen materially for highly leveraged issuers. Management can reduce undrawn limits for weaker counterparties but cannot immediately exit funded exposures.”
+Ask:
 
-Example uploaded assumptions:
+"Could another AI reconstruct this HTML with high fidelity using only this report?"
 
-* `A01`, market variable, credit spreads widen by an analyst-defined bounded range, downside, with rationale and source.
-* `A02`, portfolio sensitivity, European automotive and industrial concentrations receive higher severity, downside.
-* `A03`, mitigant, undrawn limits may be reduced for weaker counterparties, risk-reducing.
-* `A04`, constraint, funded exposures cannot be exited immediately, downside.
+For anything where the answer is NO, paste the exact source.
 
-Do not insert numerical values unless the analyst supplies them.
+At minimum strongly consider giving exact source for:
 
-Expected behavior:
+1. main application shell markup
 
-* Sonnet 5 checks relevance and consistency.
-* Accepted context is marked as analyst input.
-* Opus receives the accepted context before model inference.
-* The generated scenario visibly incorporates the automotive/industrial focus, spread-widening assumption, limit-management mitigant, and funded-exposure constraint.
-* The assumptions section distinguishes analyst-supplied assumptions from model-added assumptions.
-* No unrelated event or different horizon is introduced.
+2. workflow navigation markup
 
-## Required deliverables
+3. Step 1 markup
 
-Do not give me scattered replacement files.
+4. Step 2.1 markup
 
-Produce one complete replacement ZIP containing:
+5. Step 2.2 markup
 
-* all runtime backend files required for a clean replacement;
-* all prompt files;
-* the unchanged v31-compatible frontend file;
-* `RUNTIME_ENV.ps1`;
-* sample assumption/context files;
-* updated tests;
-* `INSTALL.txt`;
-* `CHANGE_MANIFEST.md`;
-* `VALIDATION_RESULTS.md`;
-* line-by-line diff patches for every changed file.
+6. Step 2.3 markup
 
-Also provide:
+7. major CSS definitions
 
-1. Exact list of files changed for Sonnet 5.
-2. Exact canonical Sonnet 5 model identifier used.
-3. Confirmation that no Sonnet 4.6 references remain in active runtime configuration.
-4. Confirmation that Opus and Gemini routing were not changed.
-5. Confirmation that v12.4 Step 2.1 priority behavior was preserved.
-6. Confirmation that the Trigger-1 three-event rule remains unchanged.
-7. Test counts and results.
-8. Clear separation between mocked verification and actual live verification.
-9. SHA-256 checksum of the final ZIP.
-10. Short manual installation and rollback instructions.
+8. navigation JS
 
-Do not make unrelated improvements. If you find an unrelated defect, report it separately as a proposal and do not change it without approval.
+9. Step 1 progressive JS
 
+10. event rendering JS
 
+11. AI Assist JS
 
-# CCR Portfolio Analytics
+12. feedback JS
 
-A browser-based counterparty credit risk dashboard for monitoring
-derivatives exposure, CVA charges, and limit utilisation across
-a multi-counterparty portfolio.
+13. Step 2.1 JS
 
-Built as a portfolio project demonstrating practical CCR analytics
-skills — the kind of work done daily in risk teams at investment banks.
+14. Step 2.2 JS
 
-🔗 **Live demo:** https://akariba.github.io/CCR-Portfolio-Analytics/
+15. Step 2.3 JS
 
----
+16. API helper JS
 
-## What it does
+17. initialization JS
 
-The dashboard models a derivatives book across five major bank
-counterparties and answers the core questions a CCR desk deals
-with every day:
+Do NOT paste the entire HTML blindly.
 
-- How much are we exposed to each counterparty, and how does
-  that exposure change over the life of each trade?
-- What is the financial cost of that credit risk (CVA)?
-- How close are we to our credit limits?
-- What happens to the portfolio under stress?
-- How bad could a bad day actually get?
+Paste the exact critical blocks that cannot safely be reconstructed from prose.
 
-It combines exposure modeling, credit risk pricing, stress testing,
-and tail risk analysis into a single interface with plain-language
-interpretation of each output.
+======================================================================
+PART W — RECONSTRUCTION CHECKSUM
+======================================================================
 
----
+Finish with a reconstruction checklist.
 
-## Key features
+For each mark:
 
-**Counterparty exposure monitoring**
-Tracks current and potential future exposure for Deutsche Bank,
-Credit Suisse, Barclays, BNP Paribas, and JP Morgan. Shows limit
-utilisation with real-time breach flagging and recommended actions.
+CAPTURED EXACTLY
+CAPTURED FUNCTIONALLY
+INSUFFICIENT INFORMATION
 
-**Full XVA pricing**
-Computes CVA, DVA, FVA, and KVA — the complete set of valuation
-adjustments that determine the true economic value of a derivatives
-portfolio. Includes bilateral CVA adjusted for wrong-way risk.
+Items:
 
-**Exposure term structure**
-Shows how exposure evolves over the lifetime of the portfolio —
-not just a single number, but a curve across time. For a swap book,
-exposure typically peaks around year 3 and then declines as
-cashflows are exchanged. This profile is the core input to CVA.
+[ ] Overall layout
+[ ] CSS/design
+[ ] Navigation
+[ ] Step 1 DOM
+[ ] Step 1 progressive behavior
+[ ] Trigger 1
+[ ] Trigger 2
+[ ] Event rendering
+[ ] AI Assist
+[ ] Step 1 feedback
+[ ] Step 1 confirmation
+[ ] Step 2.1 DOM
+[ ] Additional Context
+[ ] Assumption upload
+[ ] Assumption provenance
+[ ] Conflict override
+[ ] Scenario generation
+[ ] Scenario revision
+[ ] Scenario confirmation
+[ ] Step 2.1 feedback
+[ ] Step 2.2 DOM
+[ ] Portfolio selection
+[ ] L2/L3 filtering
+[ ] Portfolio upload
+[ ] Step 2.2 feedback
+[ ] Step 2.3 DOM
+[ ] Event factors
+[ ] Threshold logic
+[ ] Factor weights
+[ ] Step 2.3 feedback
+[ ] API contracts
+[ ] Global state
+[ ] Initialization
+[ ] Responsive behavior
 
-**Wrong-way risk analysis**
-Identifies counterparties where exposure and default probability
-tend to rise together — a specific risk that standard models
-understate. Quantifies the amplification effect on CVA per name.
+For every INSUFFICIENT INFORMATION item, immediately provide the missing source code or explain why it cannot be obtained.
 
-**Stress testing**
-Five named scenarios calibrated to real market events: rate shock,
-FX move, volatility spike, and systemic crisis. Shows which
-scenarios breach credit limits and by how much.
+======================================================================
+FINAL OUTPUT REQUIREMENT
+======================================================================
 
-**Tail risk — VaR and Expected Shortfall**
-Value at Risk computed three ways: parametric, historical simulation,
-and EWMA-filtered historical. Compares results and explains the
-gap — credit portfolios have fat-tailed return distributions that
-make the standard normal approximation unreliable.
+The final report is being handed to ChatGPT, which already has detailed captures of backend files including step2_service.py and market_event_scout.py.
 
-**Regulatory alignment**
-Exposure computed under the SA-CCR framework (Basel III/IV),
-broken down by asset class. CVA sensitivities (CS01, IR01) mapped
-to FRTB SA-CVA capital inputs. Model backtesting results shown
-for regulatory transparency.
+Therefore concentrate on information that exists ONLY in the frontend HTML.
 
-**Model governance**
-Validation status, backtest accuracy, and next review date for
-each underlying model. 12-month backtest of PFE predictions
-against realised exposure.
+Do not waste output explaining generic HTML concepts.
 
----
+Do not provide recommendations.
 
-## How it works
+Do not propose changes.
 
-The dashboard runs entirely in the browser — no backend, no
-external data feeds. All market data (CDS spreads, interest rates,
-FX rates) is pre-loaded and representative of real market conditions.
+Do not generate replacement files.
 
-**Exposure modeling:** For each counterparty, the system estimates
-how large the exposure could grow at each point in time using a
-simulation-based approach. This produces the EE and PFE curves
-that drive all downstream calculations.
+Do not fix bugs.
 
-**Credit risk pricing:** CVA is computed by combining the exposure
-profile with each counterparty's credit quality (inferred from
-their CDS spread) and a recovery rate that reflects the legal
-framework governing their debt (EU bail-in rules vs US bankruptcy law).
+Do not alter architecture.
 
-**Stress testing:** Scenarios are applied as shocks to the
-underlying market variables. The resulting change in CVA and
-exposure is computed and compared against credit limits.
+Do not tell ChatGPT what would be "better."
 
-**Tail risk:** The portfolio's daily P&L distribution is estimated
-three ways. The comparison reveals how much the normal-distribution
-assumption understates tail risk for credit portfolios — a
-consistent finding in the literature and in practice.
+Your objective is:
 
----
+MAXIMUM FIDELITY + MINIMUM AMBIGUITY.
 
-## Tech stack
+I need ChatGPT to be able to reconstruct the CURRENT HTML as closely as possible without having the original huge file.
 
-- Vanilla JavaScript (ES2022)
-- Chart.js 4.x for visualisation
-- CSS Grid / Flexbox for layout
-- Fully responsive — works on mobile and tablet
-- No build step — single HTML file, deployable anywhere
+If exact reconstruction requires an exact source block, INCLUDE THAT SOURCE BLOCK.
 
----
-
-## Purpose
-
-This project was built to demonstrate practical CCR analytics
-skills in a transparent, reviewable format. The methodology
-behind every metric is documented in the Methodology tab,
-including the assumptions made and where each model has known
-limitations.
-
-It is not production software. It is a demonstration of how
-a CCR risk professional thinks about and communicates
-counterparty credit risk.
-
----
-
-## What I would add next
-
-- Live market data integration (CDS spreads from a public API)
-- Interactive trade input — enter your own portfolio and
-  recompute all metrics in real time
-- Monte Carlo simulation running in the browser (Web Worker)
-- SA-CCR calculator: input any trade, get the EAD breakdown
-- Export to PDF for use in risk committee presentations
-
----
-
-## Author
-
-Armand Alaglo
+Begin the forensic extraction now.
