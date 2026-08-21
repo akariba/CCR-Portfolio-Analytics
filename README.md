@@ -1,116 +1,99 @@
-Read the original `rpr-v8-consolidated-test (2).html` directly.
+You are working ONLY on RPR Step 2.2 — Portfolio Selection frontend HTML and JavaScript.
 
-I already have the CSS exactly, including the complete `<style>...</style>` block.
+Strict rule: the existing v31 visual design is immutable.
+Do NOT redesign anything.
+Do NOT change CSS, colors, typography, spacing, panel structure, tabs, cards, buttons, workflow bar, feedback panel, or general layout.
+Do NOT modify Step 1, Step 2.1, Step 2.3, Step 2.4, Step 2.5, or Step 3.
+Do NOT modify backend Python files.
 
-I now need ONLY the exact static HTML body markup, from the literal opening:
+Your task is to inspect the current HTML/JS and implement the minimum Step 2.2 frontend logic necessary to connect the existing v31 controls to a future backend portfolio-selection API.
 
-<body>
+Step 2.2 business behavior:
 
-through the last line immediately BEFORE the opening:
+The existing filters are:
+Geography
+Country
+MLE
+Sector hierarchy
+Portfolio/company selection
+Sector hierarchy is backend-driven.
+Example:
+User selects L2 = Technology
+frontend requests valid L3 values from backend
+frontend displays only Technology-related L3 sectors such as:
+Communications Equipment,
+Computer & Computer Hardware,
+Electronic Manufacturing Services,
+Internet Software & Services,
+IT SERVICES,
+Semiconductors & Semiconductor Equipment,
+Software,
+Technology,
+Technology - SPV,
+Technology Distributors.
+Geography must similarly restrict Country.
+Geography, Country, MLE, L1/L2/L3/L4 selections must be combinable.
+The frontend must NOT contain the company master or hard-code the taxonomy.
+All hierarchy/company data comes from backend API responses.
+When filters change, frontend requests the matching company universe from backend and displays:
+CAGID
+company name
+applicable sector classification
+country
+MLE where available
+Existing v31 sector cards/check boxes must remain visually identical.
+Populate those same components dynamically rather than creating a new UI.
+Preserve multi-selection where the current UI supports it.
+If L2 is selected but no L3 is selected, treat that as all valid L3 sectors underneath the selected L2.
+The analyst must be able to confirm the resulting portfolio using the existing Confirm Selection & Proceed interaction.
+Preserve the existing Select Portfolio / Upload Portfolio tabs.
+Do not redesign the upload tab.
+Do not use mock companies or hard-coded fallback sectors inside JavaScript.
+If backend data is unavailable, show a controlled empty/error state using the existing visual components.
 
-<script>
+Proposed frontend API contract to wire against:
 
-Do NOT include the JavaScript yet.
+GET /api/v1/rpr/step2/portfolio/catalog
+Returns filter/hierarchy information.
+POST /api/v1/rpr/step2/portfolio/search
+Request body may contain:
+geography, countries, mle_codes, l1, l2, l3, l4
+and returns matching companies plus valid dependent filter values.
+POST /api/v1/rpr/step2/portfolio/finalize
+Sends the analyst-confirmed portfolio.
 
-OBJECTIVE:
-Recover the original body markup verbatim so another engineer can reconstruct the same frontend without guessing.
+Important implementation rule:
+Do not invent endpoint shapes if the current HTML already uses another Step 2.2 contract. First inspect the current JavaScript and report what exists.
 
-INCLUDE EVERYTHING INSIDE `<body>` BEFORE `<script>`, including:
+Work in this order:
 
-- loading overlay
-- modal overlay and modal contents
-- global header
-- Citi/logo area
-- connectivity chip
-- app shell
-- chevron navigation
-- Step 1 pane
-- Trigger 1
-- Trigger 2
-- theme table structure
-- AI Assist area
-- scan controls
-- event summary area
-- pre-scan state
-- event tree/sidebar
-- event detail container
-- Trigger 2 narrative area
-- Step 2 panel
-- Step 2.1
-- Step 2.2
-- Step 2.3
-- Step 2.4
-- Step 2.5
-- Step 3
-- all feedback panels
-- Workflow Status panel
-- all 7 workflow rows
-- system log container
-- every static input
-- every textarea
-- every select
-- every button
-- every anchor/download link
-- every id
-- every class
-- every `data-*` attribute
-- every `onclick`
-- every `onchange`
-- every `oninput`
-- every drag/drop handler
-- every inline `style`
-- every `aria-*` attribute
-- every visible label
-- every placeholder
-- every static empty-state message
+Inspect the current Step 2.2 HTML markup and JavaScript.
+Identify every existing Step 2.2 DOM ID, function, listener, hard-coded sector array, and dead/incomplete handler.
+Tell me exactly what should be preserved.
+Tell me the minimal JavaScript changes required.
+Only then implement the changes.
 
-STRICT EXTRACTION RULES:
+Known current issues to specifically inspect:
 
-1. VERBATIM SOURCE ONLY.
-2. Start with the exact original `<body>` line.
-3. Stop immediately before the first `<script>` line.
-4. Do NOT include `<script>`.
-5. Do NOT include CSS.
-6. Do NOT summarize.
-7. Do NOT explain any element.
-8. Do NOT reformat or pretty-print the HTML.
-9. Do NOT normalize whitespace or indentation.
-10. Do NOT fix invalid HTML.
-11. Do NOT remove apparently unused elements.
-12. Do NOT add missing elements.
-13. Do NOT modify text.
-14. Do NOT rename IDs/classes.
-15. Do NOT replace content with `...`, `[snip]`, “same as above”, or comments.
-16. Preserve duplicate markup and dead controls exactly as they exist.
-17. Preserve known incomplete Step 2.2 / Step 2.4 / Step 2.5 / Step 3 markup exactly as-is.
-18. Preserve the current v31 visual structure exactly.
+existing Step 2.2 appears to contain hard-coded sector data;
+rebuildSectorDropdowns() may currently be a no-op;
+getSelectedSector() may only return the first selected sector;
+onSectorChange / onPlaSectorChange may be referenced but undefined;
+Upload Portfolio may currently be visual/decorative rather than functional.
 
-If the body is too large for one response, split it into sequential artifacts:
+Do NOT “clean up” unrelated code.
+Do NOT refactor the whole HTML.
+Do NOT create a new design.
+Do NOT rename existing IDs unless absolutely necessary.
 
-RPR_BODY_RECOVERY_01.html
-RPR_BODY_RECOVERY_02.html
-RPR_BODY_RECOVERY_03.html
-...
+Output required:
 
-Rules for splitting:
-- Part 2 must continue exactly where Part 1 stopped.
-- No omitted lines.
-- No overlap unless explicitly marked.
-- Do not restart from `<body>` in every part.
-- Continue until the line immediately before `<script>`.
+Short diagnosis of the current Step 2.2 HTML/JS.
+Exact list of functions/sections you will change.
+Exact list of things you will NOT change.
+Then provide the complete updated HTML file, not fragments.
+Clearly mark any assumed backend API field names so they can be aligned with the Python backend later.
 
-If any source character genuinely cannot be recovered, do not guess.
-Insert exactly:
+The objective is:
 
-[[UNCERTAIN_SOURCE]]
-
-at that location.
-
-At the end, after all body source has been emitted, give ONLY:
-
-BODY START `<body>`: CONFIRMED
-BODY END BEFORE `<script>`: CONFIRMED
-BODY MARKUP COMPLETE: YES / NO
-UNCERTAIN_SOURCE COUNT: <number>
-
-Do not provide any other explanation.
+keep v31 visually identical + replace hard-coded Step 2.2 frontend data logic with backend-driven cascading filters and company selection.
