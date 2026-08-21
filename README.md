@@ -1,4 +1,6 @@
-.\PATCH_WORKING_V8.ps1 -SourceHtml 'C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\UI Design\rpr-v8-consolidated-test.html'
+.\PATCH_WORKING_V8.ps1 `
+-SourceHtml 'C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\UI Design\Archive\rpr-v8-consolidated-test.html' `
+-OutputHtml 'C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\UI Design\rpr-v8-consolidated-test-SAFE-STEP22-STEP23.html'
 
 
 
