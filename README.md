@@ -1,7 +1,8 @@
-.\PATCH_WORKING_V8.ps1 `
--SourceHtml 'C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\UI Design\Archive\rpr-v8-consolidated-test.html' `
--OutputHtml 'C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\UI Design\rpr-v8-consolidated-test-SAFE-STEP22-STEP23.html'
+& 'C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\UI Design\PATCH_WORKING_V8.ps1' -SourceHtml 'C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\UI Design\Archive\rpr-v8-consolidated-test.html' -OutputHtml 'C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\UI Design\rpr-v8-consolidated-test-SAFE-STEP22-STEP23.html'
 
+
+------------
+powershell -ExecutionPolicy Bypass -File 'C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\UI Design\PATCH_WORKING_V8.ps1' -SourceHtml 'C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\UI Design\Archive\rpr-v8-consolidated-test.html' -OutputHtml 'C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\UI Design\rpr-v8-consolidated-test-SAFE-STEP22-STEP23.html'
 
 
 $env:STEP23_REASONING_MODEL = $env:STEP2_OPUS_MODEL
