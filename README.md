@@ -1,154 +1,202 @@
-READ-ONLY FORENSIC EXTRACTION — DO NOT MODIFY ANY FILE.
-https://akariba.github.io/CCR-Portfolio-Analytics/curve-reference.html
+READ-ONLY FORENSIC HANDOFF FOR CHATGPT — DO NOT MODIFY ANY FILE
 
-I cannot transfer the current working HTML outside this environment. Another implementation agent will make the changes, so I need you to act only as an exact reader of the CURRENT working HTML and the original v31 HTML.
+I need you to inspect the exact current RPR source so another implementation agent can make a safe patch.
+You are NOT implementing anything. Do not edit, regenerate, refactor, or “improve” any file.
 
-Produce one detailed Markdown/TXT artifact called:
+BONE RULE: current working code is functional truth. icm-pm-rapid-portfolio-review-v31.html is visual truth only.
 
-RPR_CURRENT_HTML_STEP22_23_24_FORENSIC_EXTRACT.md
+Scope is strictly Step 2.2, Step 2.3 and Step 2.4.
 
-Do NOT propose patches and do NOT edit anything.
+Create one Markdown artifact named:
 
-1. Current file identity
+RPR_EXACT_IMPLEMENTATION_HANDOFF_22_23_24.md
+
+A — File identity
+
+For every supplied file report:
+exact filename | size/line count | role
+
+Identify the exact current working HTML and original v31 HTML.
+
+B — Step 2.2: exact current implementation
+
+From rpr_step22_step23_append.js, reproduce VERBATIM and untruncated:
+
+complete STEP22_TEMPLATE
+complete buildPortfolioSelectionUI()
+complete refreshSelectionUI()
+complete toggleSector()
+complete selectAllSectors()
+complete clearAllSectors()
+complete runStep22Search()
+complete confirmPortfolioSelection()
+complete rebuildSectorDropdowns()
+complete step23PortfolioContext()
+
+For every snippet give its exact start/end line numbers.
+
+Then answer only:
+
+How are L1/L2/L3 currently represented in ALL_SECTORS?
+Does buildPortfolioSelectionUI() currently group by L1, L2, or both?
+Which functions/state objects must remain completely unchanged to preserve current portfolio behavior?
+
+Do not propose new Select-All-by-L2 functionality.
+
+C — Step 2.2 v31 visual target
+
+From v31 extract the exact relevant visual structure/classes for its sector hierarchy.
 
 State:
 
-exact current working HTML filename
-exact v31 filename
-all <link rel="stylesheet"> files loaded by the current HTML, in order
-all external <script src=...> files loaded by the current HTML, in order
-whether each script is before or after the main inline script
-2. Exact Step 2.2 HTML contract
+v31 visual element → current equivalent → exact visual difference
 
-Extract the complete current HTML markup for the Step 2.2 pane, from its outer step container opening tag to its closing tag.
+We need visual parity only. Dynamic backend behavior must remain current.
 
-Include exact:
+D — Step 2.3: exact current implementation
 
-IDs
-classes
-onclick
-onchange
-data-*
-buttons
-filters
-placeholders
-company table containers
-confirmation controls
-feedback panel
+From rpr_step22_step23_append.js, reproduce VERBATIM and untruncated:
 
-Then state which parts are placeholders that are replaced at runtime by rpr_step22_step23_append.js.
+complete STEP23_TEMPLATE
+complete generateEventFactors()
+complete renderEventFactors()
+complete buildRFCard()
+complete saveEventFactorChanges()
+complete confirmEventFactors()
+bottom Object.assign(window, ...) / export section
 
-Also identify the exact runtime target IDs used by:
+Give exact line numbers.
 
-installStep22Dom()
-buildPortfolioSelectionUI()
-renderStep22Companies()
-confirmation
-downstream state handoff
-3. Exact Step 2.3 HTML contract
+Very important: separately print the exact literal source line containing the Step 2.3 Scoring Logic label. Do not normalize punctuation. Immediately below it report the Unicode code point of every dash character appearing in that label, if any.
 
-Extract the complete current Step 2.3 pane markup.
+Separately print the exact current Step 2.3 action-row source containing:
 
-Include exact:
+Add Factor
+Generate Event Factors
+Save All Changes
+Confirm All Risk Factors
 
+State the current order exactly.
+
+Separately show exactly where the summary <tbody id="ed-summary-body"> is generated and whether there is currently a Total Weight footer.
+
+E — Step 2.3 v31 visual target
+
+Extract from v31 the exact relevant visual structure for:
+
+summary table/footer
+RF cards
+Scoring Logic area
+Net Score formula/caption
+action-row/button order
+
+Report:
+
+v31 → current → difference → visual-only change required
+
+Do not alter model/API/scoring behavior.
+
+F — Step 2.4 exact working contract
+
+This Step 2.4 is currently proven working. Treat it as immutable.
+
+Reproduce VERBATIM and untruncated from current HTML:
+
+entire Step 2.4 container
 sector selector
+factor count
 summary table
-factor-count element
-summary tbody
 factor-card host
 action row
-Generate / Add / Save / Confirm controls
 feedback panel
-all IDs/classes/handlers
 
-State explicitly which markup is replaced/generated by STEP23_TEMPLATE, installStep23Dom(), renderEventFactors() and buildRFCard().
+From rpr_step24_append.js, reproduce only the exact functions that read/write those DOM elements:
 
-4. Exact Step 2.4 HTML contract
+selectedSector()
+portfolio/confirmed-sector reader
+enterStep24()
+generateStep24()
+renderStep24()
+confirmStep24()
 
-Extract the complete current Step 2.4 pane markup.
+Give exact line numbers.
 
-Include exact:
+Do NOT propose any Step 2.4 JavaScript change.
 
-sector-select
-s3-factor-count
-s3-summary-body
-s3-rf-cards
-action row
-Save / Generate / Confirm buttons
+G — Step 2.4 v31 visual differences
+
+Compare current Step 2.4 with v31 and report only safe visual differences in:
+
+sector bar
+title/header
+methodology/formula banner
+summary table
+factor cards
+action-row placement
 feedback panel
-all IDs/classes/handlers
 
-State exactly what the current proven-working rpr_step24_append.js expects from this markup.
+Mark every item:
+SAFE HTML/CSS ONLY or WOULD TOUCH FUNCTIONAL BONE.
 
-5. CSS affecting these three steps
+H — CSS exact extraction
 
-Identify all inline/current HTML CSS selectors that materially affect Step 2.2, 2.3 or 2.4.
+From both append CSS files and the current HTML/v31 styles, reproduce the exact definitions affecting:
 
-For each selector report:
+ps-sector-grid
+ps-sector-card
+ps-group if present
+ps-l2-* if present
+metric-tbl
+rf-card
+rf-card-hdr
+rf-card-body
+rf-subsection
+action-row
+s23-sector-bar
+Step 2.2/2.3/2.4 feedback components
 
-selector | current definition | source location | also exists in v31? | difference
+Do not truncate definitions.
 
-Do not omit selectors inherited from shared v31 components such as:
+I — Final implementation map
 
-.action-row
-.metric-tbl
-.rf-card
-.rf-card-hdr
-.rf-card-body
-.rf-subsection
-.card
-.card-hdr
-.s23-sector-bar
-feedback components
-6. v31 comparison
+End with one concise table:
 
-For Step 2.2, 2.3 and 2.4 separately, give:
+Desired visual change | exact file | exact function/HTML/CSS selector | functional dependency | safe implementation method
 
-v31 element → current equivalent → exact visual/structural difference → whether safe to restore without changing JS behavior
+The target changes are:
 
-Do NOT suggest new functionality.
+Step 2.2
 
-Specifically distinguish:
+reproduce v31 L1 → L2 → L3 visual hierarchy
+preserve all existing selection/filter/search/upload/confirmation logic
+NO new functionality
 
-pure visual difference
-runtime-generated DOM difference
-functional difference that must remain
-7. Critical JS/DOM dependency map
+Step 2.3
 
-Build a table:
+v31 summary presentation
+Total Weight display if v31 contains it
+v31 Net Score explanation
+v31 action-button ordering
+preserve current factor generation/edit/save/confirm/API/model behavior
 
-Element ID/Class | Step | Read by function | Written/replaced by function | Safe to restyle? | Safe to move? | Safe to rename?
+Step 2.4
 
-Include every element touched by rpr_step22_step23_append.js and rpr_step24_append.js.
-
-8. Exact current snippets needed for implementation
-
-At the end, reproduce verbatim the smallest complete source snippets needed to safely modify:
-
-Step 2.2 container
-Step 2.3 container
-Step 2.4 container
-the relevant HTML action rows
-relevant inline CSS if any
-external <link> / <script> tags
-
-Do not truncate these snippets.
-
+visual parity with v31 only
+absolutely no change to proven-working rpr_step24_append.js
 ABSOLUTE RULES
-READ ONLY
-NO FILE EDITS
-NO PATCHES
+NO EDITS
+NO GENERATED REPLACEMENT FILES
+NO PATCH CODE
 NO REFACTORING
-NO NEW DESIGN
-NO FUNCTIONAL RECOMMENDATIONS
-Preserve the distinction that CURRENT HTML is functional truth and v31 is visual truth.
+NO NEW BEHAVIOR
+NO BACKEND CHANGES
+NO PROMPT/MODEL CHANGES
+NO STEP 1 / STEP 2.1 CHANGES
+Never abbreviate code with ...
+Never normalize punctuation inside verbatim source
 
-End with:
+If the report becomes long, continue it in the same artifact rather than omitting code.
 
-FORENSIC EXTRACTION COMPLETE — NO FILES MODIFIED
+End exactly:
 
-Then give me that Stylus report plus these 3 files you can transfer:
-
-rpr_step22_step23_append.js
-rpr_step22_step23_append.css
-rpr_step24_append.css
+FORENSIC HANDOFF COMPLETE — ZERO FILES MODIFIED
