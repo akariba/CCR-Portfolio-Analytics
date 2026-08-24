@@ -1,11 +1,22 @@
-Run exactly this now:
+From exactly this project root:
 
-& ".\portfolio-agent\.venv\Scripts\python.exe" -m pip show anthropic
+C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI
 
-Do not install anything yet.
+run these three lines exactly:
 
-If it shows the anthropic package, immediately run:
+$py = (Resolve-Path ".\portfolio-agent\.venv\Scripts\python.exe").Path
+$py
+& $py --version
 
-& ".\portfolio-agent\.venv\Scripts\python.exe" -c "import anthropic; print('ANTHROPIC OK', anthropic.__version__)"
+The second command should print something like:
 
-Send me the result. If it says ANTHROPIC OK, we'll restart the backend using this existing project environment instead of Citi's bare Python, which should restore the R2D2/Sonnet/Opus calls without changing the RPR code.
+C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\portfolio-agent\.venv\Scripts\python.exe
+
+Then, only if & $py --version works, run:
+
+& $py -m pip show anthropic
+Important
+
+Do not run:
+
+python -m pip install anthropic
