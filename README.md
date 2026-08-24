@@ -1,22 +1,19 @@
-From exactly this project root:
+Also, you accidentally pasted several commands onto the same PowerShell line afterward. Run these one at a time, pressing Enter after every line:
 
-C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI
+$py = "C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\portfolio-agent\.venv\Scripts\python.exe"
 
-run these three lines exactly:
+Then:
 
-$py = (Resolve-Path ".\portfolio-agent\.venv\Scripts\python.exe").Path
-$py
+Test-Path $py
+
+I expect:
+
+True
+
+Then:
+
 & $py --version
 
-The second command should print something like:
-
-C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\portfolio-agent\.venv\Scripts\python.exe
-
-Then, only if & $py --version works, run:
+Then:
 
 & $py -m pip show anthropic
-Important
-
-Do not run:
-
-python -m pip install anthropic
