@@ -1,53 +1,9 @@
-We already found the real Python location in your earlier screen:
+Inspect the current workspace as source of truth and fix only the minimum blocker preventing the RPR backend from running. Strict bone rule: do NOT refactor, rewrite, replace, delete, rename, redesign, or “improve” any working code. Preserve Step 1, Step 2.1, Step 2.2, Step 2.3, v31 UI, model routing, prompts, APIs, and all accepted behavior exactly. Step 2.4 must remain purely additive.
 
-C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\portfolio-agent\.venv\Scripts\python.exe
+Current symptoms: FastAPI previously failed on python-multipart; we changed upload routes to avoid that dependency, then runtime exposed missing anthropic in the active Python. Do not install packages, use public internet, add mocks/fallbacks, downgrade models, or change approved enterprise adapters.
 
-Notice the important part:
+First inspect the actual workspace, Python/runtime configuration, server.py, step2_routes.py, step22_portfolio_routes.py, llm_gateway.py, and existing approved environment. Find the already-working approved Python/runtime or adapter path used by this project before these changes. Make the smallest safe fix necessary.
 
-portfolio-agent\.venv
+Then run only minimal verification: backend import/start, /health, existing Step1 theme-assist call, and confirm Step2.2/2.3/2.4 routers load.
 
-not:
-
-portfolio-agent.venv
-
-Run these exactly, one line at a time:
-
-$py = "C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\portfolio-agent\.venv\Scripts\python.exe"
-
-Then:
-
-Test-Path $py
-
-We expect:
-
-True
-
-Then:
-
-& $py --version
-
-Then:
-
-& $py -m pip show anthropic
-If anthropic is found
-
-Do not install anything. Then run:
-
-cd "C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI"
-Get-Content ".\RUNTIME_ENV.ps1" -Raw | Invoke-Expression
-
-Then:
-
-cd ".\backend"
-
-Then start RPR using the correct environment:
-
-& $py -m uvicorn server:app --reload --host 127.0.0.1 --port 8000
-
-The key point: do not use plain python -m uvicorn now. Your plain Citi Python is the one missing anthropic; we want to run through the project's .venv.
-
-Send me the result immediately after:
-
-& $py -m pip show anthropic
-
-and I will tell you the next exact command.
+Before editing anything, tell me in maximum 5 lines: root cause, exact file(s) you propose changing, and why. If fixing requires changing any working bone behavior, STOP and ask approval. Minimize token use.
