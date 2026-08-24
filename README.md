@@ -1,3 +1,16 @@
+In the same PowerShell window where you set the Step 2.4 variables, run:
+
+cd "C:\Users\ak547743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\backend"
+
+Then start the real backend entry point:
+
+python -m uvicorn server:app --host 127.0.0.1 --port 8000
+
+You want to see something like:
+
+Uvicorn running on http://127.0.0.1:8000
+Application startup complete.
+
 We can test Step 2.4 without touching any file or policy. In the same PowerShell window that will launch the backend, run only:
 
 $env:STEP2_OPUS_MODEL = "claude-opus-4-6"
