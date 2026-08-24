@@ -1,4 +1,5 @@
 READ-ONLY FORENSIC EXTRACTION — DO NOT MODIFY ANY FILE.
+https://akariba.github.io/CCR-Portfolio-Analytics/curve-reference.html
 
 I cannot transfer the current working HTML outside this environment. Another implementation agent will make the changes, so I need you to act only as an exact reader of the CURRENT working HTML and the original v31 HTML.
 
