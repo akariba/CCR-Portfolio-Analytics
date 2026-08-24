@@ -1,3 +1,16 @@
+We can test Step 2.4 without touching any file or policy. In the same PowerShell window that will launch the backend, run only:
+
+$env:STEP2_OPUS_MODEL = "claude-opus-4-6"
+$env:STEP24_REASONING_MODEL = "claude-opus-4-6"
+
+Then verify:
+
+echo $env:STEP24_REASONING_MODEL
+
+It must print:
+
+claude-opus-4-6
+
 Run exactly:
 
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
