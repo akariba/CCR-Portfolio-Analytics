@@ -16,6 +16,9 @@ cd ".\backend"
 
 0000000
 
+
+python -m uvicorn server:app --reload --host 127.0.0.1 --port 8000
+
 Delete this exact block shown in your screenshot:
 
 @router.post("/upload")
