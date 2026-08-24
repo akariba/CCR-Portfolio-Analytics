@@ -10,6 +10,9 @@ Get-Content ".\RUNTIME_ENV.ps1" -Raw | Invoke-Expression
 cd ".\backend"
 
 & "..\portfolio-agent\.venv\Scripts\python.exe" -m uvicorn server:app --reload --host 127.0.0.1 --port 8000
+
+
+777777777777777777777777
 @router.post("/upload")
 async def portfolio_upload(request: Request) -> Dict[str, Any]:
     try:
