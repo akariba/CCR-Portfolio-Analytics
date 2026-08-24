@@ -1,3 +1,45 @@
+The problem is now very simple: you are not in the project folder. uvicorn itself works; it fails only because PowerShell is currently at:
+
+C:\Users\ak547743
+
+and therefore cannot see server.py.
+
+Do not guess the path again. Run this exact command first:
+
+Get-ChildItem "$HOME\Downloads" -Filter server.py -File -Recurse -ErrorAction SilentlyContinue |
+Where-Object { $_.FullName -like "*Rapid Portfolio Review*" } |
+Select-Object -ExpandProperty FullName
+
+It should print the real exact location of server.py.
+
+Then run this, which automatically moves into the folder containing that file:
+
+$server = Get-ChildItem "$HOME\Downloads" -Filter server.py -File -Recurse -ErrorAction SilentlyContinue |
+Where-Object { $_.FullName -like "*Rapid Portfolio Review*" } |
+Select-Object -First 1
+
+Set-Location $server.Directory.FullName
+pwd
+
+You should now see a path ending in something like:
+
+...\Rapid Portfolio Review_AI\backend
+
+Then set only the Step 2.4 test model:
+
+$env:STEP24_REASONING_MODEL="claude-opus-4-6"
+$env:STEP2_OPUS_MODEL="claude-opus-4-6"
+
+Then start:
+
+python -m uvicorn server:app --host 127.0.0.1 --port 8000
+
+Do not run RUNTIME_ENV.ps1, do not change execution policy, and do not use the old .venv path.
+
+The important thing from your screenshot is that python -m uvicorn already launches successfully; the only current error is:
+
+Could not import module "server"
+
 In the same PowerShell window where you set the Step 2.4 variables, run:
 
 cd "C:\Users\ak547743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\backend"
