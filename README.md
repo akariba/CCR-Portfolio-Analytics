@@ -1,4 +1,6 @@
-Diagnose Step 2.4 only. Do not modify anything yet. Working bone is immutable. There are two defects:
-(1) Step 2.3 completes and is confirmed; Step 2.4 can become “confirmed”, but the Step 2.4 view does not actually generate/display the Sector-Inherent Risk Factors.
-(2) Step 2.4 visual/layout differs from the original icm-pm-rapid-portfolio-review-v31.html.
-Inspect step24_sector_factors_routes.py, step24_sector_factors_service.py, Step2.4 prompts, rpr_step24_append.js/css, the current working HTML, and the original v31 Step2.4 DOM/CSS. Trace API → response → render → confirm. For visuals, identify only the exact Step2.4 DOM/CSS differences and how to restore the original v31 appearance without touching shared/global styles. Report root cause + exact files/lines + smallest additive fix in max 10 lines. Preserve Step1/2.1/2.2/2.3, all working behavior, models, prompts, scoring, and the rest of the v31 UI unchanged.
+Approved. Implement ONLY the two diagnosed Step 2.4 fixes.
+
+In the current working HTML, change only the Step 2.4 Confirm button binding so it calls confirmStep24() directly. Preserve the existing confirmStep24() generate-before-confirm behavior; do not rewrite it.
+Restore only the identified Step 2.4 v31 table header classes/widths and action-row alignment from the original v31 HTML. No shared/global CSS changes.
+Do not touch Step1, 2.1, 2.2, 2.3, models, prompts, backend services, scoring, or any other UI.
+Then run ONE real Step 2.4 test from confirmed Step 2.3 and verify: backend generation called → sector-inherent factors rendered → user confirms → Step2.4 becomes confirmed. Report PASS/FAIL and changed lines only. Stop afterward.
