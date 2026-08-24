@@ -1,44 +1,153 @@
-Here’s the short but detailed pre → post → impact summary for Step 2.4.
+READ-ONLY FORENSIC EXTRACTION — DO NOT MODIFY ANY FILE.
 
-Area	Pre – current implementation	Post – V6.0 prompt	Impact
-Purpose	Expand a predefined/approved sector factor list into metrics/scoring	Research and identify the sector’s inherent factors itself, then build full framework	Step 2.4 becomes a real sector-risk discovery step, not just an expansion step
-Input	L1/L2/L3 plus existing factor names/details from CSV	Only L1/L2/L3 + optional as-of date; factor names are explicitly no longer required inputs	Current CSV dependency for factor discovery becomes obsolete
-Factor identification	Factors already exist before model call	Model researches and identifies 4–5 structural sector-inherent factors	Works for any sector without manually creating factor rows first
-Sector test	Implicit/static taxonomy	Explicit Structural Persistence Test: would factor exist ~1 year ago and ~1 year from now independent of a dated event?	Strong separation between 2.3 event risks and 2.4 structural risks
-Research	Limited; mostly reasoning over provided taxonomy	Must research current sector conditions using rating agencies, regulators, industry sources, sector disclosures, etc.	Step 2.4 needs a proper retrieval/research stage before Opus synthesis
-Event-driven contamination	Possible if static factor set is poorly designed	Explicitly excludes one-off M&A, specific policy events, geopolitical shocks, quarterly macro events, etc.	Cleaner separation between Step 2.3 and 2.4
-Factor output	Factor name + generated metrics/rationale	Factor name + structural rationale + source basis + complete methodology	Richer, more auditable framework
-Number of factors	Current implementation may accept governed list size	Minimum 4, maximum 5	Backend validator should enforce 4–5 for Step 2.4
-Vulnerability metrics	Generated from predefined factors	Minimum 3 quantitative metrics per factor, with formulas and VH/H/M/L bands	Existing UI can mostly render this already
-Buffer metrics	Generated	Directly correspond to vulnerability metrics; Strong/Moderate/Weak/Negligible thresholds	Existing metric-card architecture remains useful
-Scoring	Net score concept already implemented	Raw Vulnerability – Buffer Credit, floor 1, ceiling 5	Current deterministic backend logic largely aligns
-Buffer credit	Strong −2 / Moderate −1 / Weak 0	Same	No major change
-Score 5	Current logic has critical-condition concept	Explicitly reserved for simultaneous breach of all critical conditions	Backend should enforce this deterministically
-Importance	HIGH=2, MEDIUM=1	Same	No change
-Weights	Deterministic weights from importance	Same: score / total scores × 100%	Keep Python calculation exactly as-is
-Composite score	Existing framework has reference/composite score	Explicit weighted composite: Σ(weight × net score)	Can stay deterministic in Python
-CSV role	Source of governed factor names/details	Should become cache/version/history of researched + analyst-confirmed frameworks, not mandatory factor input	Major backend/data-model change
-Analyst confirmation	Generate → review/edit → confirm	Same concept remains	Working UI workflow can stay
-Current working UI	Sector handoff, rendering, save/confirm now works	Still suitable	Do not rebuild UI; change generation logic behind it
-Step 2.3 relationship	2.3 event-driven, 2.4 static sector taxonomy	2.3 = event-contingent; 2.4 = structural/persistent independent research	Much clearer methodology boundary
-Architecture impact
+I cannot transfer the current working HTML outside this environment. Another implementation agent will make the changes, so I need you to act only as an exact reader of the CURRENT working HTML and the original v31 HTML.
 
-The old flow is essentially:
+Produce one detailed Markdown/TXT artifact called:
 
-Step 2.2 sector → CSV factor taxonomy → Opus expands metrics → deterministic scoring → analyst confirms
+RPR_CURRENT_HTML_STEP22_23_24_FORENSIC_EXTRACT.md
 
-The V6.0 flow should become:
+Do NOT propose patches and do NOT edit anything.
 
-Step 2.2 confirmed L1/L2/L3 → approved sector research/retrieval → Opus V6 identifies 4–5 inherent factors + methodology → deterministic validation/scoring/weights → analyst review → confirmation/versioning
+1. Current file identity
 
-What we should preserve
+State:
 
-The good news is that we do not need to rebuild Step 2.4 from scratch. The current sector handoff, API structure, rendering, factor cards, metric tables, HIGH=2/MEDIUM=1 weighting, Save/Confirm, and feedback workflow can remain.
+exact current working HTML filename
+exact v31 filename
+all <link rel="stylesheet"> files loaded by the current HTML, in order
+all external <script src=...> files loaded by the current HTML, in order
+whether each script is before or after the main inline script
+2. Exact Step 2.2 HTML contract
 
-The main change is upstream of rendering: stop requiring a preloaded factor taxonomy and make the V6.0 research prompt generate the factor set from L1/L2/L3.
+Extract the complete current HTML markup for the Step 2.2 pane, from its outer step container opening tag to its closing tag.
 
-Overall impact
+Include exact:
 
-Functional impact: high. Visual impact: very low.
+IDs
+classes
+onclick
+onchange
+data-*
+buttons
+filters
+placeholders
+company table containers
+confirmation controls
+feedback panel
 
-The current UI can stay almost entirely intact. The significant correction is the business-generation architecture and data role behind Step 2.4. This also removes the current limitation where only sectors already present in sector_inherent_factors.csv can work.
+Then state which parts are placeholders that are replaced at runtime by rpr_step22_step23_append.js.
+
+Also identify the exact runtime target IDs used by:
+
+installStep22Dom()
+buildPortfolioSelectionUI()
+renderStep22Companies()
+confirmation
+downstream state handoff
+3. Exact Step 2.3 HTML contract
+
+Extract the complete current Step 2.3 pane markup.
+
+Include exact:
+
+sector selector
+summary table
+factor-count element
+summary tbody
+factor-card host
+action row
+Generate / Add / Save / Confirm controls
+feedback panel
+all IDs/classes/handlers
+
+State explicitly which markup is replaced/generated by STEP23_TEMPLATE, installStep23Dom(), renderEventFactors() and buildRFCard().
+
+4. Exact Step 2.4 HTML contract
+
+Extract the complete current Step 2.4 pane markup.
+
+Include exact:
+
+sector-select
+s3-factor-count
+s3-summary-body
+s3-rf-cards
+action row
+Save / Generate / Confirm buttons
+feedback panel
+all IDs/classes/handlers
+
+State exactly what the current proven-working rpr_step24_append.js expects from this markup.
+
+5. CSS affecting these three steps
+
+Identify all inline/current HTML CSS selectors that materially affect Step 2.2, 2.3 or 2.4.
+
+For each selector report:
+
+selector | current definition | source location | also exists in v31? | difference
+
+Do not omit selectors inherited from shared v31 components such as:
+
+.action-row
+.metric-tbl
+.rf-card
+.rf-card-hdr
+.rf-card-body
+.rf-subsection
+.card
+.card-hdr
+.s23-sector-bar
+feedback components
+6. v31 comparison
+
+For Step 2.2, 2.3 and 2.4 separately, give:
+
+v31 element → current equivalent → exact visual/structural difference → whether safe to restore without changing JS behavior
+
+Do NOT suggest new functionality.
+
+Specifically distinguish:
+
+pure visual difference
+runtime-generated DOM difference
+functional difference that must remain
+7. Critical JS/DOM dependency map
+
+Build a table:
+
+Element ID/Class | Step | Read by function | Written/replaced by function | Safe to restyle? | Safe to move? | Safe to rename?
+
+Include every element touched by rpr_step22_step23_append.js and rpr_step24_append.js.
+
+8. Exact current snippets needed for implementation
+
+At the end, reproduce verbatim the smallest complete source snippets needed to safely modify:
+
+Step 2.2 container
+Step 2.3 container
+Step 2.4 container
+the relevant HTML action rows
+relevant inline CSS if any
+external <link> / <script> tags
+
+Do not truncate these snippets.
+
+ABSOLUTE RULES
+READ ONLY
+NO FILE EDITS
+NO PATCHES
+NO REFACTORING
+NO NEW DESIGN
+NO FUNCTIONAL RECOMMENDATIONS
+Preserve the distinction that CURRENT HTML is functional truth and v31 is visual truth.
+
+End with:
+
+FORENSIC EXTRACTION COMPLETE — NO FILES MODIFIED
+
+Then give me that Stylus report plus these 3 files you can transfer:
+
+rpr_step22_step23_append.js
+rpr_step22_step23_append.css
+rpr_step24_append.css
