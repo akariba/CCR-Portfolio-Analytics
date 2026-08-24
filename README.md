@@ -15,7 +15,7 @@ cd ".\backend"
 
 
 0000000
-
+Get-ChildItem -Recurse -Filter *.py | Select-String -Pattern "UploadFile|File\(|Form\("
 
 python -m uvicorn server:app --reload --host 127.0.0.1 --port 8000
 
