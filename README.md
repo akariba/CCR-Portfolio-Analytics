@@ -1,1 +1,1 @@
-python -m uvicorn server:app --host 127.0.0.1 --port 8000
+Get-ChildItem .. -Filter python.exe -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match '\\.venv\\Scripts\\python\.exe$' } | Select-Object -ExpandProperty FullName
