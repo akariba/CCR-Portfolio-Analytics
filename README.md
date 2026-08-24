@@ -1,5 +1,11 @@
-STOP before further changes. There are 4 changed files shown. First list the 4 files and their diffs in max 6 lines. Preserve all accepted working bone and do not revert any previously explicitly approved fix, but remove any unapproved diagnostic/temp changes.
+Good. Do NOT invent Bank/BrokerDealer factors and do NOT alter Step2.2 taxonomy or any working bone.
 
-For Step 2.4, root cause is confirmed missing backend/data/step24/sector_inherent_factors.csv. Do NOT change the existing Step2.4 service/routes/prompts or the two approved HTML fixes. Inspect step24_sector_factors_service.py to derive the exact required CSV schema, then search existing project/demo/prompt/reference files for the governed sector-factor source.
+Read these existing approved source files:
 
-If the source/schema is sufficient, create ONLY the missing CSV as an additive file using existing approved business definitions — no invented factors. If information is insufficient, STOP and tell me exactly what is missing. Then run one live Step2.4 generate → render → finalize test. Max tokens.
+Prompt\Use Case 1 - RPR\V2-Bottom-Up Approach\Prompt - Step 2b - Sector_Inherent_Factor_Metrics_Weighting_Avoid Pessimism*.docx
+Prompt\Use Case 1 - RPR\V2-Bottom-Up Approach\Demo\Step 2b Input - Risk Factor Taxonomy - Software.docx
+Prompt\Use Case 1 - RPR\V2-Bottom-Up Approach\Demo\Step 2b Output_Step 3a 3b Input - Sector_Inherent_Risk_Factors_Software*.docx
+
+Determine exactly how Step2.4 is intended to generate sector-inherent factors: what is governed/static taxonomy vs what the LLM generates, required fields, weighting rules, and output structure. Compare this with current step24_sector_factors_service.py.
+
+NO CHANGES. Report only: (1) intended architecture, (2) why current CSV design is wrong/right, (3) smallest bone-preserving implementation needed. Max 12 lines.
