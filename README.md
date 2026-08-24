@@ -1,232 +1,44 @@
-Compare these TWO HTML files:
+Here’s the short but detailed pre → post → impact summary for Step 2.4.
 
-A. ORIGINAL VISUAL BIBLE: icm-pm-rapid-portfolio-review-v31.html
-B. CURRENT WORKING APPLICATION: the latest RPR HTML I have attached.
+Area	Pre – current implementation	Post – V6.0 prompt	Impact
+Purpose	Expand a predefined/approved sector factor list into metrics/scoring	Research and identify the sector’s inherent factors itself, then build full framework	Step 2.4 becomes a real sector-risk discovery step, not just an expansion step
+Input	L1/L2/L3 plus existing factor names/details from CSV	Only L1/L2/L3 + optional as-of date; factor names are explicitly no longer required inputs	Current CSV dependency for factor discovery becomes obsolete
+Factor identification	Factors already exist before model call	Model researches and identifies 4–5 structural sector-inherent factors	Works for any sector without manually creating factor rows first
+Sector test	Implicit/static taxonomy	Explicit Structural Persistence Test: would factor exist ~1 year ago and ~1 year from now independent of a dated event?	Strong separation between 2.3 event risks and 2.4 structural risks
+Research	Limited; mostly reasoning over provided taxonomy	Must research current sector conditions using rating agencies, regulators, industry sources, sector disclosures, etc.	Step 2.4 needs a proper retrieval/research stage before Opus synthesis
+Event-driven contamination	Possible if static factor set is poorly designed	Explicitly excludes one-off M&A, specific policy events, geopolitical shocks, quarterly macro events, etc.	Cleaner separation between Step 2.3 and 2.4
+Factor output	Factor name + generated metrics/rationale	Factor name + structural rationale + source basis + complete methodology	Richer, more auditable framework
+Number of factors	Current implementation may accept governed list size	Minimum 4, maximum 5	Backend validator should enforce 4–5 for Step 2.4
+Vulnerability metrics	Generated from predefined factors	Minimum 3 quantitative metrics per factor, with formulas and VH/H/M/L bands	Existing UI can mostly render this already
+Buffer metrics	Generated	Directly correspond to vulnerability metrics; Strong/Moderate/Weak/Negligible thresholds	Existing metric-card architecture remains useful
+Scoring	Net score concept already implemented	Raw Vulnerability – Buffer Credit, floor 1, ceiling 5	Current deterministic backend logic largely aligns
+Buffer credit	Strong −2 / Moderate −1 / Weak 0	Same	No major change
+Score 5	Current logic has critical-condition concept	Explicitly reserved for simultaneous breach of all critical conditions	Backend should enforce this deterministically
+Importance	HIGH=2, MEDIUM=1	Same	No change
+Weights	Deterministic weights from importance	Same: score / total scores × 100%	Keep Python calculation exactly as-is
+Composite score	Existing framework has reference/composite score	Explicit weighted composite: Σ(weight × net score)	Can stay deterministic in Python
+CSV role	Source of governed factor names/details	Should become cache/version/history of researched + analyst-confirmed frameworks, not mandatory factor input	Major backend/data-model change
+Analyst confirmation	Generate → review/edit → confirm	Same concept remains	Working UI workflow can stay
+Current working UI	Sector handoff, rendering, save/confirm now works	Still suitable	Do not rebuild UI; change generation logic behind it
+Step 2.3 relationship	2.3 event-driven, 2.4 static sector taxonomy	2.3 = event-contingent; 2.4 = structural/persistent independent research	Much clearer methodology boundary
+Architecture impact
 
-I need a VISUAL-ONLY restoration of Step 2.2, Step 2.3 and Step 2.4 so the current application reproduces the original v31 HTML layout as closely and exactly as possible.
+The old flow is essentially:
 
-ABSOLUTE BONE RULE
+Step 2.2 sector → CSV factor taxonomy → Opus expands metrics → deterministic scoring → analyst confirms
 
-The CURRENT file contains working backend/API/state functionality. DO NOT rewrite, refactor, simplify, remove, rename or replace any working functionality.
+The V6.0 flow should become:
 
-The v31 file is the visual source of truth only.
+Step 2.2 confirmed L1/L2/L3 → approved sector research/retrieval → Opus V6 identifies 4–5 inherent factors + methodology → deterministic validation/scoring/weights → analyst review → confirmation/versioning
 
-The CURRENT file is the functional source of truth.
+What we should preserve
 
-SCOPE — ONLY THESE THREE PAGES
-Step 2.2 — Portfolio Selection
+The good news is that we do not need to rebuild Step 2.4 from scratch. The current sector handoff, API structure, rendering, factor cards, metric tables, HIGH=2/MEDIUM=1 weighting, Save/Confirm, and feedback workflow can remain.
 
-Compare current Step 2.2 against original v31 Step 2.2 and restore the original:
+The main change is upstream of rendering: stop requiring a preloaded factor taxonomy and make the V6.0 research prompt generate the factor set from L1/L2/L3.
 
-page structure
-panels/cards
-header hierarchy
-spacing/padding
-typography
-borders
-table presentation
-filter positioning
-sector-selection area positioning
-company/portfolio table layout
-action-row positioning
-button appearance/placement
-feedback-panel positioning
+Overall impact
 
-BUT KEEP all current Step 2.2 functionality, including:
+Functional impact: high. Visual impact: very low.
 
-backend-driven portfolio catalog
-Geography/Country/MLE filters
-L2/L3 dynamic cascade
-multi-select behavior
-company search/results
-confirmed portfolio
-CAGIDs/company data
-current state variables
-API calls
-downstream Step 2.3/2.4 handoff
-
-Do not replace dynamic data with v31 hardcoded/demo companies.
-
-Step 2.3 — Event-Driven Risk Factors
-
-Make its visual structure match v31 exactly:
-
-sector selector/header
-risk-factor summary table
-RF cards
-RF number badges
-factor title/weight/importance presentation
-narrative area
-Vulnerability Metrics table
-Buffer/Mitigant Metrics table
-threshold/critical-condition presentation
-scoring/rationale areas
-action buttons
-feedback panel
-margins, widths, fonts and spacing
-
-KEEP the current live Step 2.3 engine completely intact.
-
-Do NOT change:
-
-generateEventFactors()
-Step 2.3 API endpoints
-Step 2.3 state
-generated factor JSON
-HIGH=2 / MEDIUM=1 deterministic scoring
-deterministic weights
-revision/feedback logic
-confirmed-state logic
-model routing
-prompts
-
-The generated factors must still populate the restored v31 HTML dynamically.
-
-Step 2.4 — Sector-Inherent Risk Factors
-
-The CURRENT FUNCTIONAL BEHAVIOR IS NOW WORKING and must be protected.
-
-Current proven behavior includes:
-
-confirmed Step 2.2 sector flows into Step 2.4
-example: Technology Media Telecom → Technology → Software
-Step 2.4 generates the governed sector framework
-five Software factors render
-HIGH importance = 2
-MEDIUM importance = 1
-weights are deterministic
-detailed vulnerability/buffer/scoring cards render
-save / feedback / confirmation behavior exists
-
-DO NOT CHANGE THIS LOGIC.
-
-Restore only the original v31 visual presentation:
-
-selector/header location
-Sector-Inherent Risk Factors header
-information/methodology strip
-summary table dimensions and styling
-Importance / Imp. Score / Weight columns
-factor cards
-narrative textarea layout
-factor-importance controls
-vulnerability metric table
-buffer metric table
-scoring section
-threshold notes
-action-row placement
-Save / Generate / Confirm button placement
-Step 2.4 feedback panel
-
-Do not reintroduce v31 demo/static factor data.
-Current backend-generated factors must populate the v31 visual containers.
-
-CRITICAL TECHNICAL PRESERVATION RULES
-
-DO NOT change or rename any existing:
-
-element id
-JavaScript function
-API endpoint
-state variable
-onclick
-onchange
-data-* attribute used by JS
-event listener
-script import
-external JS file reference
-backend integration
-request/response structure
-
-In particular, do not touch rpr_step24_append.js or its integration contract.
-
-Do not change Step 1 or Step 2.1.
-
-Do not change Step 2.5 or Step 3.
-
-Do not globally redesign CSS.
-
-Do not replace the whole current HTML with v31.
-
-HOW TO PERFORM THE RESTORATION
-
-Use the original v31 as a DOM/CSS visual reference.
-
-Where v31 contains old hardcoded/demo values, preserve only its:
-
-containers
-classes
-sizing
-layout
-styling
-visual hierarchy
-
-Connect those containers to the existing current dynamic IDs/data/render functions.
-
-If the current implementation needs an extra dynamic container that did not exist in v31, place it inside the closest original v31 structure without redesigning the page.
-
-Prefer existing v31 CSS classes rather than creating new global CSS.
-
-If a tiny additional CSS rule is unavoidable, scope it specifically to Step 2.2/2.3/2.4 and explain why.
-
-FIRST: FORENSIC COMPARISON
-
-Before editing, compare Step 2.2, Step 2.3 and Step 2.4 separately.
-
-For each step identify:
-
-v31 structure → current structure → visual difference → exact restoration required
-
-Specifically detect:
-
-missing wrappers
-changed classes
-altered widths
-changed flex/grid structures
-changed table classes
-altered panel placement
-missing v31 headers
-changed action rows
-changed button placement
-feedback-panel differences
-additional CSS overriding v31
-
-Do not treat functional/dynamic differences as visual defects.
-
-THEN IMPLEMENT
-
-After comparison, produce ONE final corrected copy of the CURRENT HTML.
-
-Do not give me fragments.
-
-Do not give me a replacement backend.
-
-Do not create another architecture.
-
-Do not remove current functionality.
-
-The result must be:
-
-current working RPR functionality + original v31 Step 2.2/2.3/2.4 visual design.
-
-REQUIRED VALIDATION
-
-Before handing back the file, statically verify:
-
-All IDs referenced by current JavaScript still exist.
-No duplicate IDs were introduced.
-Step 2.2 handlers/API wiring remain present.
-Step 2.3 generation/revision/confirmation wiring remains present.
-Step 2.4 external append JS reference remains present.
-Step 2.4 Generate Sector Factors, Save and Confirm hooks remain functional.
-Step 2.2 → 2.3 → 2.4 navigation remains unchanged.
-No Step 1/2.1 code was altered.
-No hardcoded v31 company/factor demo data replaced backend-generated data.
-No global CSS changes unintentionally alter Step 1 or other tabs.
-
-Return:
-
-1. One corrected complete HTML file
-2. A very short list of what visually changed in 2.2 / 2.3 / 2.4
-3. Explicit confirmation: FUNCTIONAL JS/API CONTRACTS PRESERVED
-
+The current UI can stay almost entirely intact. The significant correction is the business-generation architecture and data role behind Step 2.4. This also removes the current limitation where only sectors already present in sector_inherent_factors.csv can work.
