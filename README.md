@@ -12,7 +12,26 @@ cd ".\backend"
 & "..\portfolio-agent\.venv\Scripts\python.exe" -m uvicorn server:app --reload --host 127.0.0.1 --port 8000
 
 
-777777777777777777777777
+
+
+0000000
+
+Delete this exact block shown in your screenshot:
+
+@router.post("/upload")
+async def portfolio_upload(file: UploadFile = File(...)) -> Dict[str, Any]:
+    try:
+        payload = await file.read()
+        return get_step22_service().ingest_upload(
+            file_name=file.filename or "portfolio_upload",
+            content_type=file.content_type or "",
+            payload=payload,
+        )
+    except Step22DataError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+Replace it with:
+
 @router.post("/upload")
 async def portfolio_upload(request: Request) -> Dict[str, Any]:
     try:
