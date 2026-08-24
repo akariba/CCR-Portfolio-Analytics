@@ -1,19 +1,27 @@
-Also, you accidentally pasted several commands onto the same PowerShell line afterward. Run these one at a time, pressing Enter after every line:
+Rather than typing the path again, let PowerShell find it automatically. Run these one line at a time:
 
-$py = "C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\portfolio-agent\.venv\Scripts\python.exe"
+$py = (Get-ChildItem -Path . -Recurse -Filter python.exe -File -ErrorAction SilentlyContinue | Where-Object { $_.FullName -like "*portfolio-agent*\.venv\Scripts\python.exe" } | Select-Object -First 1).FullName
+
+Then:
+
+$py
+
+It should print a path ending exactly like:
+
+\portfolio-agent\.venv\Scripts\python.exe
 
 Then:
 
 Test-Path $py
 
-I expect:
+We need this to say:
 
 True
 
-Then:
+Only after it says True, run:
 
 & $py --version
 
-Then:
+and:
 
 & $py -m pip show anthropic
