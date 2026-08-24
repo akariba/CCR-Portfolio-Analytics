@@ -8,3 +8,5 @@ $_.FullName -match '\\.venv\\Scripts\\python\.exe$' } | Select-Object -ExpandPro
 
 
 "$_.FullName -match '\\.venv\\Scripts\\python\.exe$' } "
+
+Get-ChildItem .. -Filter python.exe -File -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.FullName -like "*\.venv\Scripts\python.exe" } | Select-Object -ExpandProperty FullName
