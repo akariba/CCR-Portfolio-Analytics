@@ -1,1 +1,15 @@
-Step 2.4 backend TestClient generation already PASSES with 5 Software factors, 100% weights and finalize 200. But in the actual browser Step 2.4 generates/renders nothing. DO NOT touch the working backend service, CSV, prompt, model routing, Steps 1–2.3, or v31 bone. Diagnose the real browser path only: Generate button → JS handler → request payload → /api/v1/rpr/step24/sector-factors/generate → response → state → render. Also compare Step 2.4 markup against original icm-pm-rapid-portfolio-review-v31.html. Report root cause, exact file/lines, and smallest additive fix. NO EDITS until I approve. Max 8 lines.
+Do NOT edit yet. The diagnosis is not sufficient. You stated the missing onSectorChange does not prevent the separately registered listener, so do not add a no-op merely to suppress an error.
+
+Prove the actual Step2.4 browser failure using the current working HTML. Trace ONE real click on Generate Sector Factors:
+
+Does generateStep24() execute?
+What does selectedSector0() return?
+Is the confirmed Step2.2 portfolio/sector actually present in Step2.4 state?
+Is POST /api/v1/rpr/step24/sector-factors/generate sent?
+Give HTTP status + response top-level keys only.
+Does the response reach the Step2.4 state variable?
+Is the render function called, and if yes why does it render zero factors?
+
+Use browser console/network or equivalent real browser instrumentation. No edits, no backend changes, no prompt/model/CSV changes, no v31 changes.
+
+Report the first broken link in that chain, exact file/function/line, and the smallest additive fix. Max 10 lines.
