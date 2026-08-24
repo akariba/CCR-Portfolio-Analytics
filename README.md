@@ -1,7 +1,1 @@
-Now run only this one line:
-
-$env:STEP24_REASONING_MODEL="claude-opus-4-6"; Write-Host "STEP24_REASONING_MODEL=$env:STEP24_REASONING_MODEL"
-
-It should print:
-
-STEP24_REASONING_MODEL=claude-opus-4-6
+python -m uvicorn server:app --host 127.0.0.1 --port 8000
