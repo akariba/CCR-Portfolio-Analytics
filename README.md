@@ -1,19 +1,12 @@
-From the exact backend> prompt you are already in, paste only this single line:
+You are already in the correct backend folder, so stop using the long path. Copy only this exact line:
 
-& "C:\Users\ak547743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\portfolio-agent\.venv\Scripts\python.exe" -m uvicorn server:app --host 127.0.0.1 --port 8000
+& "..\portfolio-agent\.venv\Scripts\python.exe" -m uvicorn server:app --host 127.0.0.1 --port 8000
 
-The critical part is:
+Nothing before it. Nothing after it.
 
-portfolio-agent\.venv
-               ^
+The relative path is correct from your current location:
 
-Your screenshot shows the failed command used:
+Rapid Portfolio Review_AI\backend
+                         ↑ current folder
 
-portfolio-agent.venv
-
-That was the error.
-
-Once you press Enter, we want to see:
-
-Application startup complete.
-Uvicorn running on http://127.0.0.1:8000
+..\portfolio-agent\.venv\Scripts\python.exe
