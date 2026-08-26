@@ -1,167 +1,329 @@
-IMPLEMENT THIS DIRECTLY. Do not redesign RPR, do not refactor working code, do not change the v31 bone, and do not modify Step 2.1/2.2/2.3/2.4 business logic unless explicitly required below.
+STOP ALL NEW DEVELOPMENT.
 
-There are TWO specific Step 1 defects visible in the latest real browser run.
+This is a STABILIZATION / RECOVERY PASS ONLY.
 
-==================================================
-FIX 1 — DISCOVERY PARSER IS REJECTING VALID GEMINI JSON
-==================================================
+Do not redesign anything.
+Do not refactor.
+Do not introduce another architecture.
+Do not optimize unrelated code.
+Do not work on Step 2.5.
+Do not change prompts unless a prompt itself is proven to be the direct cause of a failing acceptance test.
+Do not create experimental files.
+Do not create another cache.
+Do not use subagents.
+Do not perform broad repository archaeology.
+Do not repeatedly ask me for permission.
+Do not repeatedly run expensive LLM calls.
 
-This is the priority defect.
+WORK DIRECTLY AND FINISH THE PASS END-TO-END.
 
-The live terminal shows Gemini returning a root structure containing:
+PROJECT ROOT:
+C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI
 
-{
-  "theme": "...",
-  "events": [
-    {
-      "title": "...",
-      "event_date": "...",
-      ...
-    }
-  ]
-}
+LIVE BACKEND:
+backend\server.py
 
-BUT immediately afterwards the application logs:
+APPROVED PYTHON:
+..\portfolio-agent\.venv\Scripts\python.exe
 
-"response parsed but had no usable events array"
-and
-"Discovery response did not contain an events array"
+LIVE FRONTEND:
+UI Design\rpr-v8-consolidated-test-SAFE-STEP22-STEP23.html
 
-One diagnostic even reports top_level_keys:
-['name','published_at','supports','url']
+v31 GOLD VISUAL REFERENCE:
+UI Design\icm-pm-rapid-portfolio-review-v31.html
 
-Those look like a nested citation/source object, NOT the actual root object.
+BONE RULE:
+Anything already working is immutable.
+Make only minimal surgical changes necessary to solve the failures below.
 
-Therefore inspect the CURRENT market_event_scout.py parsing path carefully.
+============================================================
+OBJECTIVE
+============================================================
 
-Do NOT solve this by weakening validation blindly.
+Get ONE STABLE demonstrable flow through:
 
-Required behavior:
+Step 1
+→ Step 2.1
+→ Step 2.2
+→ Step 2.3
+→ Step 2.4 V6
 
-1. Parse the COMPLETE Gemini structured response/root object first.
-2. If the root object contains `events` and it is a list, use that list.
-3. Never accidentally select a nested source/citation/support object as the root result.
-4. Correctly handle:
-   - clean JSON object
-   - fenced ```json ... ```
-   - leading/trailing prose around one valid JSON payload
-   - already-decoded dict
-   - top-level event array
-   - legitimate single-event object if already supported
-5. Preserve current accepted aliases where appropriate.
-6. Normalize event fields only AFTER the correct root/events array has been located.
-7. Do not convert a genuine valid Gemini event response into zero events because an optional field is absent.
-8. Required fields must remain genuinely required, but report WHICH event and WHICH required field caused rejection.
-9. Add concise diagnostics:
-   root_type
-   root_keys
-   events_found
-   events_accepted
-   events_rejected
-   rejection_reasons
-10. Do not dump large raw model responses into logs.
+Do NOT begin Step 2.5.
 
-Use the exact real response shape visible in the latest logs as a regression case.
+There are FOUR blockers only.
 
-Acceptance criterion:
-A Gemini response with:
-{"theme":"x","events":[{"title":"...", ...}]}
-must resolve the outer `events` list and must NOT report
-"did not contain an events array".
+============================================================
+BLOCKER 1 — STEP 2.4 V6 RETURNS 502
+============================================================
 
-Do not change the event-per-theme architecture or the 3-event maximum.
+This is the highest priority.
 
-==================================================
-FIX 2 — RE-SCAN / SEARCH REFINEMENT TEXT IS BAD
-==================================================
+Latest real run shows:
 
-The browser currently exposes analyst-facing text such as:
+step24_v6 T3 evidence search end (+44s)
+step24_v6 T4 Opus start (+44s)
 
-"Tier 2: Narrative Scope: ... Hang Seng, DAX/Nikkei and equity volatility measures ..."
+then:
 
-This is unacceptable product copy.
+POST /api/v1/rpr/step24/sector-factors/generate-v6
+502 Bad Gateway
 
-It exposes internal search-planning language, introduces arbitrary market indices, is overly broad, and does not read like a credit analyst workflow.
+Therefore STOP treating this as a frontend timeout problem.
 
-FIRST trace where this text is generated.
+The request is reaching the backend and Gemini research succeeds.
+The failure occurs at or immediately after the Opus/R2D2 reasoning stage.
 
-Separate two concepts:
+DO THIS:
 
-A. INTERNAL SEARCH INSTRUCTION
-May contain detailed search planning required by Gemini.
+1. Reproduce ONCE using a small controlled Step 2.4 V6 request.
+2. Capture the COMPLETE backend exception/traceback behind the 502.
+3. Identify the exact failing function and exact model/auth/gateway configuration.
+4. Inspect only the directly relevant files:
+   - step24_sector_factors_v6_service.py
+   - step24 sector V6 routes file
+   - llm_gateway.py
+   - RUNTIME_ENV.ps1
+   - server.py only if necessary for route/config loading
 
-B. ANALYST-FACING UI COPY
-Must be concise, professional and credit-risk oriented.
+5. Determine whether Step 2.4 is correctly using the approved R2D2/Vertex
+   Claude path or is accidentally depending on ANTHROPIC_API_KEY/direct
+   Anthropic configuration.
 
-Do NOT show raw generated search queries/search-planning text in the UI.
+6. Use the EXISTING approved model-routing mechanism.
+   Do NOT add another provider or fallback.
 
-Replace the analyst-facing refinement panel with this semantic contract:
+7. If an environment variable is missing/wrong, fix the application's
+   normal startup/config path so the expected approved identifier is used.
+   Do not hardcode secrets.
 
-TITLE:
-Additional Evidence Recommended
+8. Return a controlled useful error instead of a generic 502 if the model
+   gateway is unavailable.
 
-BODY:
-Re-scan the incomplete sections using recent authoritative sources, focusing on the confirmed event, affected geographies, credit transmission, market impact and assumptions.
+ACCEPTANCE:
 
-BUTTON:
-Re-scan Missing Evidence
+One real Step 2.4 V6 request must return HTTP 200 and 4–5 factors.
 
-Optional secondary line:
-Only incomplete or weakly evidenced sections will be targeted.
+Do not run another expensive Step 2.4 call until the exact 502 root cause
+has been found from logs/code.
 
-Do NOT hardcode event-specific content such as Hang Seng, DAX, Nikkei, VIX, S&P 500, etc.
+============================================================
+BLOCKER 2 — STEP 2.3 IS TAKING ~5 MINUTES
+============================================================
 
-The INTERNAL re-scan instruction should instead be constructed dynamically from:
-- confirmed event/theme
-- sections currently NO DATA / LIMITED
-- existing evidence gaps
-- report as-of date
+The real browser currently shows approximately:
 
-Internal search policy:
-- prioritize authoritative and recent sources
-- primary/official source first where available
-- central banks/regulators/governments/rating agencies/company filings
-- then high-quality financial/news sources
-- search only for evidence needed for the missing/weak sections
-- do not broaden into unrelated markets
-- do not invent benchmark/index requirements
-- preserve the existing event identity/Bible rule
-- re-scan must enrich the SAME event, not create a new event
+Elapsed 04:56
 
-==================================================
-DO NOT CHANGE
-==================================================
+for:
+"Generating event-driven risk factors..."
+
+This is not acceptable for the demo.
+
+DO NOT rewrite the Step 2.3 business prompt.
+
+First instrument the EXISTING call with concise stage timings:
+
+T0 request received
+T1 payload/context preparation complete
+T2 LLM request started
+T3 LLM response received
+T4 JSON parse/validation complete
+T5 response returned
+
+Then run ONE real Step 2.3 generation.
+
+Report exactly where the time is spent.
+
+If almost all latency is the Opus call:
+- verify only ONE Opus call is happening;
+- verify there is no accidental retry;
+- verify no duplicate generation from frontend;
+- verify no unnecessary full portfolio payload is being sent;
+- verify only the information required by the Step 2a/V7 business prompt
+  is sent;
+- do not remove required credit-analysis content.
+
+If duplicate HTTP calls or duplicate LLM calls exist, eliminate only the
+duplicate.
+
+Do NOT shorten the business output merely to make the timer look better.
+
+TARGET:
+Normal Step 2.3 should preferably complete <=120 seconds.
+If the approved Opus service itself requires longer, report the measured
+provider latency honestly rather than redesigning the application.
+
+============================================================
+BLOCKER 3 — THEME QUALITY GATE CONFIGURATION ERROR
+============================================================
+
+The browser still displays:
+
+RPR_THEME_GATE_MODEL must be set to the exact
+organization-approved Sonnet 5 identifier.
+
+This must not remain in the demo.
+
+Inspect the existing approved Sonnet-5 identifier already used elsewhere
+in the application / RUNTIME_ENV.ps1.
+
+Make the Theme Quality Gate use that SAME approved configured identifier.
+
+Do NOT guess a new model name.
+Do NOT downgrade to Sonnet 4.x.
+Do NOT hardcode a secret.
+
+Then run ONE theme-quality call.
+
+Acceptance:
+No RuntimeError regarding RPR_THEME_GATE_MODEL.
+
+============================================================
+BLOCKER 4 — DO NOT REGRESS STEP 1 PARSER
+============================================================
+
+A parser fix was just implemented in market_event_scout.py.
+
+Do NOT rewrite it again.
+
+Run the existing deterministic parser regression tests only.
+
+Required:
+root {"theme": ..., "events":[...]} resolves the OUTER events array
+and does not accidentally select nested citation objects.
+
+Only if this deterministic regression still fails may you touch
+market_event_scout.py again.
+
+Do NOT spend another live Gemini discovery cycle solely to test parsing
+until the deterministic test passes.
+
+============================================================
+PROCESS CONTROL — VERY IMPORTANT
+============================================================
+
+Before testing:
+
+1. Stop every backend python/uvicorn process for this app.
+2. Start exactly ONE normal reloader/worker pair using the approved venv.
+3. Confirm ONE listener on port 8000.
+4. Confirm GET /health = 200.
+
+Do not run multiple uvicorn instances.
+
+Do not leave diagnostic clients/background tests running.
+
+No temporary .py files should remain when finished.
+
+============================================================
+DO NOT TOUCH IN THIS PASS
+============================================================
 
 Do not change:
-- v31 layout/style
-- progressive discovery → enrichment → Opus refinement architecture
-- Gemini 3.5 Flash routing
-- Opus refinement routing
-- max 3 events/theme
-- Step 2.1
-- Step 2.2
-- Step 2.3
-- Step 2.4
-- existing working elapsed timers
-- current evidence-quality improvements
-- current URL cleaning
-- current caching
-- current High/Medium behavior
 
-Use minimal surgical edits.
+- v31 visual design
+- Step 2.2 SQLite cache
+- Step 2.2 XLSX source-of-truth logic
+- Step 2.2 portfolio taxonomy
+- Step 2.3 High/Medium weighting mathematics
+- Step 2.4 High/Medium weighting mathematics
+- Step 2.4 V5.2 rollback path
+- evidence_quality.py unless directly causing one of the four failures
+- Step 1 business prompt
+- Step 2.1 business prompt
+- Step 2.3 V7 business requirements
+- Step 2.4 V6 business requirements
+- Step 2.5
+- CSS/layout
+- data-folder cleanup
+- additional performance architecture
+- parallel-search redesign
+- early-stop redesign
 
-Do not repeatedly ask me for permission.
-Inspect → implement → restart if required → test.
+No "while I'm here" changes.
 
-==================================================
-MANDATORY TEST
-==================================================
+============================================================
+LIVE TEST ORDER
+============================================================
 
-Run at least these parser tests locally:
+Do exactly this order:
 
-A.
-{"theme":"Test","events":[{"title":"Event A","event_date":"2026-08-20","why_material":"test"}]}
+A. health
+B. deterministic Step 1 parser regression
+C. Theme Quality Gate — one call
+D. Step 2.2 catalog/search — deterministic only
+E. Step 2.3 — ONE live generation
+F. Step 2.4 V6 — ONE live generation
 
-B.
-```json
-{"theme":"Test","events":[{"title":"Event A","event_date":"2026-08-20","why_material":"test"}]}
+If E or F fails:
+STOP.
+Diagnose that exact failure.
+Do not continue making unrelated modifications.
+
+============================================================
+DEFINITION OF DONE
+============================================================
+
+Do not tell me "implemented" merely because code imports.
+
+DONE means:
+
+- one backend instance
+- health 200
+- Theme Quality Gate works
+- Step 1 parser deterministic regression passes
+- Step 2.2 warm catalog/search passes
+- Step 2.3 returns populated factors
+- Step 2.4 V6 returns populated factors
+- no 502
+- no empty Step 2.3/2.4 result caused by backend failure
+- no new frontend redesign
+- no regression to v31 bone
+
+============================================================
+FINAL REPORT — MANDATORY AND SHORT
+============================================================
+
+After implementation/testing, give me ONE report containing:
+
+1. FINAL STATUS
+   Step 1:
+   Theme Gate:
+   Step 2.1:
+   Step 2.2:
+   Step 2.3:
+   Step 2.4 V6:
+
+2. ROOT CAUSE OF STEP 2.4 502
+   exact exception
+   exact function
+   exact fix
+
+3. STEP 2.3 TIMINGS
+   T0→T1
+   T1→T2
+   T2→T3
+   T3→T4
+   total
+   number of LLM calls
+
+4. STEP 2.4 TIMINGS
+   Gemini research
+   Opus
+   validation/repair
+   total
+
+5. EXACT FILES MODIFIED
+   file → function → reason
+
+6. EXACT LIVE HTTP RESULTS
+
+7. REMAINING ISSUES
+   ONLY real unresolved issues.
+
+8. REGRESSION CONFIRMATION
+   Confirm v31, Step 2.2, Step 2.3 scoring and V5.2 were preserved.
+
+Do not give me your chain of thought.
+Do not give me a long narrative.
+Do the work first, test it, then provide the factual report.
