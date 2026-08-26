@@ -1,468 +1,167 @@
-IMPLEMENT NOW. DO NOT GIVE ME A PLAN FIRST.
+IMPLEMENT THIS DIRECTLY. Do not redesign RPR, do not refactor working code, do not change the v31 bone, and do not modify Step 2.1/2.2/2.3/2.4 business logic unless explicitly required below.
 
-Work autonomously through this entire task from inspection → implementation → restart → live validation → final report.
-
-Do NOT stop after every command to ask me what to do next.
-Do NOT ask conversational confirmation for normal read/edit/test/restart operations.
-Batch safe operations together.
-Use the existing workspace and current source directly.
-
-If the IDE itself requires a security/command approval that you cannot bypass, request only that unavoidable approval. Otherwise continue automatically.
-
-Do not spend tokens narrating your reasoning while working.
-Do not repeatedly tell me "I will now check X."
-Inspect, fix, test, then report.
+There are TWO specific Step 1 defects visible in the latest real browser run.
 
 ==================================================
-NON-NEGOTIABLE RPR RULE
+FIX 1 — DISCOVERY PARSER IS REJECTING VALID GEMINI JSON
 ==================================================
 
-Preserve the existing working application as the bone.
+This is the priority defect.
 
-Do NOT:
-- redesign
-- refactor working architecture
-- rewrite working files unnecessarily
-- replace v31 visual language
-- change models
-- implement Step 2.5
-- delete source-of-truth XLSX files
-- remove working functionality
-- create speculative abstractions
+The live terminal shows Gemini returning a root structure containing:
 
-Make the SMALLEST production changes required.
+{
+  "theme": "...",
+  "events": [
+    {
+      "title": "...",
+      "event_date": "...",
+      ...
+    }
+  ]
+}
 
-Inspect the CURRENT files before editing. Do not rely on previous summaries if current source disagrees.
+BUT immediately afterwards the application logs:
 
-==================================================
-FIX 1 — ELAPSED TIMER
-==================================================
+"response parsed but had no usable events array"
+and
+"Discovery response did not contain an events array"
 
-The elapsed timer already works for Trigger 2 / R2D2.
+One diagnostic even reports top_level_keys:
+['name','published_at','supports','url']
 
-Extend the SAME timer mechanism to:
+Those look like a nested citation/source object, NOT the actual root object.
 
-1. Trigger 1 Market Scanner
-   - start when Scan Events starts
-   - continue for the ENTIRE asynchronous job, including polling
-   - not merely until initial POST returns
-   - show:
-       Elapsed 00:01
-       Elapsed 00:02
-       ...
-   - stop on success/error/timeout
+Therefore inspect the CURRENT market_event_scout.py parsing path carefully.
 
-2. AI Assist operations that involve an actual AI wait.
-
-Do not create separate timer implementations if the shared existing helper can be reused.
-
-Validate with real execution.
-
-==================================================
-FIX 2 — STEP 2.2 DATA CORRECTNESS
-==================================================
-
-Current browser output is wrong.
-
-Observed:
-- Company Name sometimes equals CAGID
-- Country shows ZZ
-- MLE count shows only 20 and must be verified
-- cached output must not differ from source XLSX output
-
-DATA CORRECTNESS IS MORE IMPORTANT THAN SPEED.
-
-Inspect the actual Step 2.2 source files currently used by the backend.
-
-Trace the real mapping for:
-
-CAGID
-CAGID Name / Company Name
-Country code
-Country name
-Geography
-MLE
-L1
-L2
-L3
-RRR
-Credit Classification
-OSUC
-
-Find the exact cause of:
-- Company Name = CAGID
-- Country = ZZ
-- questionable MLE count
-
-Do not guess.
-
-Trace at least 3 real CAGIDs end-to-end:
-
-XLSX
-→ loader
-→ canonical row
-→ SQLite cache
-→ search API
-→ frontend
-
-Correct the mapping at the proper layer.
-
-Do NOT use CAGID as a fallback company name where the actual source contains the company name.
-
-Do NOT use ZZ when a valid country mapping exists.
-
-If data really is absent, display it honestly rather than inventing it.
-
-==================================================
-STEP 2.2 CACHE
-==================================================
-
-Keep the SQLite cache because the performance improvement is useful.
-
-But the cache must be DERIVED ONLY from the real XLSX source of truth.
-
-Cached and uncached canonical records must be identical.
-
-Add/retain robust automatic invalidation using:
-- source fingerprint
-- stable hash
-- cache/schema version if needed
-
-If the current cache contains old/wrong fields, rebuild it automatically.
-
-Do not require manual deletion by the user.
-
-Validate:
-
-cold source count == cached count
-
-and sampled values match for:
-- CAGID
-- Company Name
-- Country
-- Geography
-- MLE
-- L1/L2/L3
-- RRR
-- Classification
-- OSUC
-
-Also calculate the TRUE counts directly from source:
-
-- unique CAGIDs
-- companies
-- countries
-- MLEs
-- L1
-- L2
-- L3
-- CAGID/MLE fanout
-- unmatched country mappings
-- unmatched CAGID joins
-- duplicate CAGIDs
-
-Do not assume the previous 84,051 / 171 / 20 values are correct. Recalculate.
-
-==================================================
-FIX 3 — STEP 2.3 HIGH/MEDIUM COLLAPSE
-==================================================
-
-Current bug:
-
-When RF2/RF3/etc. is expanded and I click High or Medium, the entire RF card collapses.
-
-Fix it.
-
-Clicking High/Medium must ONLY:
-
-- update importance
-- HIGH = 2
-- MEDIUM = 1
-- recompute normalized weights to exactly 100%
-- update the visible importance/weight
-
-It must NOT:
-- collapse the card
-- open another RF
-- jump the page
-- lose scroll position
-- lose edits
-- unnecessarily rerender the whole factor list
-
-Inspect event propagation/accordion handlers first.
-
-If propagation is the cause, use the smallest event-handling fix.
-
-Test RF1, RF2, RF3 and the final RF.
-
-==================================================
-FIX 4 — STEP 2.4 V6 STALL
-==================================================
-
-Step 2.4 V6 has run for approximately 5+ minutes and returned nothing.
-
-Do not solve this by simply increasing the frontend timeout.
-
-Inspect the ACTIVE production path only:
-
-served Step 2.4 JS
-→ generate-v6 endpoint
-→ V6 route
-→ V6 service
-→ evidence/web call
-→ Opus
-→ parser
-→ response
-
-Verify V6 is really the active frontend path.
-Keep V5.2 untouched as rollback.
-
-Instrument one real V6 request with timings:
-
-T0 HTTP received
-T1 context ready
-T2 evidence search start
-T3 evidence search end
-T4 Opus start
-T5 Opus end
-T6 parse/validation complete
-T7 HTTP response
-
-Find where it actually stalls.
-
-Add bounded timeout/error handling around the REAL blocking external call if missing.
+Do NOT solve this by weakening validation blindly.
 
 Required behavior:
 
-- successful V6 output, OR
-- explicit controlled error/timeout
+1. Parse the COMPLETE Gemini structured response/root object first.
+2. If the root object contains `events` and it is a list, use that list.
+3. Never accidentally select a nested source/citation/support object as the root result.
+4. Correctly handle:
+   - clean JSON object
+   - fenced ```json ... ```
+   - leading/trailing prose around one valid JSON payload
+   - already-decoded dict
+   - top-level event array
+   - legitimate single-event object if already supported
+5. Preserve current accepted aliases where appropriate.
+6. Normalize event fields only AFTER the correct root/events array has been located.
+7. Do not convert a genuine valid Gemini event response into zero events because an optional field is absent.
+8. Required fields must remain genuinely required, but report WHICH event and WHICH required field caused rejection.
+9. Add concise diagnostics:
+   root_type
+   root_keys
+   events_found
+   events_accepted
+   events_rejected
+   rejection_reasons
+10. Do not dump large raw model responses into logs.
 
-Never:
-- infinite wait
-- empty silent result
-- invented fallback output
+Use the exact real response shape visible in the latest logs as a regression case.
 
-Do not downgrade models.
-Do not replace V6 with V5.2.
+Acceptance criterion:
+A Gemini response with:
+{"theme":"x","events":[{"title":"...", ...}]}
+must resolve the outer `events` list and must NOT report
+"did not contain an events array".
 
-==================================================
-FIX 5 — STEP 1 GEMINI RESPONSE PARSING
-==================================================
-
-Observed production error:
-
-GEMINI DISCOVERY FAILED
-ValueError: Discovery response did not contain an events array
-
-Yet Gemini itself returned SUCCESS with substantial output.
-
-Inspect the ACTUAL returned response shape.
-
-Support legitimate shapes actually observed, for example only if present:
-- top-level array
-- {"events": [...]}
-- valid known alias
-- fenced JSON
-- one wrapper level around the event object
-
-Do NOT blindly accept arbitrary malformed text.
-
-Log enough information to identify the schema without dumping huge model outputs.
-
-Preserve:
-theme → up to 3 events
-and per-event independent processing.
-
-One bad theme/event must not destroy valid events from other themes.
+Do not change the event-per-theme architecture or the 3-event maximum.
 
 ==================================================
-PRESERVE EVIDENCE QUALITY
+FIX 2 — RE-SCAN / SEARCH REFINEMENT TEXT IS BAD
 ==================================================
 
-Do not undo the recent evidence-quality improvements.
+The browser currently exposes analyst-facing text such as:
 
-Keep:
+"Tier 2: Narrative Scope: ... Hang Seng, DAX/Nikkei and equity volatility measures ..."
 
-- authoritative/recent sources prioritized
-- primary/regulator/official/rating-agency sources preferred where relevant
-- strong secondary sources when useful
-- grounding metadata capture
-- source deduplication
-- publication/date evidence
-- removal of internal Vertex grounding redirect URLs from analyst-facing text
-- no invented URLs
+This is unacceptable product copy.
 
-==================================================
-PERFORMANCE TARGET
-==================================================
+It exposes internal search-planning language, introduces arbitrary market indices, is overly broad, and does not read like a credit analyst workflow.
 
-Do not over-optimize prematurely.
+FIRST trace where this text is generated.
 
-For Step 2.2 the existing approximate target is acceptable:
+Separate two concepts:
 
-backend/cache initialization: a few seconds
-catalog: < 1 second where practical
-filtered search: < 1 second where practical
+A. INTERNAL SEARCH INSTRUCTION
+May contain detailed search planning required by Gemini.
 
-Correct data comes first.
+B. ANALYST-FACING UI COPY
+Must be concise, professional and credit-risk oriented.
 
-For AI stages:
-focus on:
-1. reliable completion
-2. source quality
-3. useful output
-4. reasonable latency
+Do NOT show raw generated search queries/search-planning text in the UI.
 
-Do not make architecture-heavy parallel-search changes in this pass unless they are REQUIRED to correct the current defect.
+Replace the analyst-facing refinement panel with this semantic contract:
 
-==================================================
-END-TO-END VALIDATION — DO IT YOURSELF
-==================================================
+TITLE:
+Additional Evidence Recommended
 
-After implementation, restart the backend with the approved application interpreter and test the actual endpoints.
+BODY:
+Re-scan the incomplete sections using recent authoritative sources, focusing on the confirmed event, affected geographies, credit transmission, market impact and assumptions.
 
-Do not stop and ask me to test each item for you.
+BUTTON:
+Re-scan Missing Evidence
 
-Run everything you can directly.
+Optional secondary line:
+Only incomplete or weakly evidenced sections will be targeted.
 
-Validate:
+Do NOT hardcode event-specific content such as Hang Seng, DAX, Nikkei, VIX, S&P 500, etc.
 
-STEP 1 TRIGGER 1
-- real scan request
-- async polling
-- elapsed timer lifecycle in frontend code
-- discovery parsing
-- events returned
-- enrichment/refinement does not break
-- no internal redirect URL in analyst-facing answer
+The INTERNAL re-scan instruction should instead be constructed dynamically from:
+- confirmed event/theme
+- sections currently NO DATA / LIMITED
+- existing evidence gaps
+- report as-of date
 
-STEP 1 TRIGGER 2
-- enrichment still works
-- elapsed timer remains working
-
-AI ASSIST
-- existing Assist route works
-- elapsed timer is correctly wired
-
-STEP 2.1
-- no regression
-
-STEP 2.2
-- cache warm load
-- catalog
-- search
-- filtered search
-- finalize
-- upload
-- real company names
-- real country mapping
-- correct MLEs
-- source/cache parity
-- correct counts
-
-STEP 2.3
-- module/routes work
-- High/Medium interaction no longer collapses factor
-- weights remain exactly 100%
-
-STEP 2.4
-- V6 active route confirmed
-- real generate-v6 call
-- T0–T7 timing captured
-- successful response OR controlled explicit timeout/error
-
-Do not claim browser PASS if you cannot actually drive a browser.
-Use:
-PASS
-FAIL
-NOT BROWSER-TESTED
-accurately.
+Internal search policy:
+- prioritize authoritative and recent sources
+- primary/official source first where available
+- central banks/regulators/governments/rating agencies/company filings
+- then high-quality financial/news sources
+- search only for evidence needed for the missing/weak sections
+- do not broaden into unrelated markets
+- do not invent benchmark/index requirements
+- preserve the existing event identity/Bible rule
+- re-scan must enrich the SAME event, not create a new event
 
 ==================================================
-CLEAN WORKSPACE
+DO NOT CHANGE
 ==================================================
 
-Do not create unnecessary diagnostic files.
+Do not change:
+- v31 layout/style
+- progressive discovery → enrichment → Opus refinement architecture
+- Gemini 3.5 Flash routing
+- Opus refinement routing
+- max 3 events/theme
+- Step 2.1
+- Step 2.2
+- Step 2.3
+- Step 2.4
+- existing working elapsed timers
+- current evidence-quality improvements
+- current URL cleaning
+- current caching
+- current High/Medium behavior
 
-Prefer inline commands/tests.
+Use minimal surgical edits.
 
-Any temporary diagnostic files you create must be deleted before finishing.
-
-Do not touch legitimate backups.
-
-Do not delete the disposable SQLite cache; it is intentionally retained for fast demo startup.
-
-Do not clean unrelated files in this pass.
+Do not repeatedly ask me for permission.
+Inspect → implement → restart if required → test.
 
 ==================================================
-FINAL RESPONSE — MANDATORY IMPLEMENTATION REPORT
+MANDATORY TEST
 ==================================================
 
-AFTER doing the work, give me a concise implementation report.
+Run at least these parser tests locally:
 
-Do not give me a long narrative.
+A.
+{"theme":"Test","events":[{"title":"Event A","event_date":"2026-08-20","why_material":"test"}]}
 
-Use exactly:
-
-1. IMPLEMENTED
-- each fix actually completed
-
-2. ROOT CAUSES
-- Trigger 1 timer
-- Step 2.2 company/country/MLE problem
-- Step 2.3 collapse
-- Step 2.4 stall
-- Gemini events-array parsing
-
-3. FILES CHANGED
-For every production file:
-FILE
-WHY
-EXACT CHANGE
-
-Also list:
-CREATED
-DELETED
-UNCHANGED BUT INSPECTED
-
-4. DATA VALIDATION
-Report actual source-derived:
-- companies
-- unique CAGIDs
-- countries
-- MLEs
-- sectors
-- fanout
-- duplicates
-- unmatched joins
-- cold/cache parity
-
-5. PERFORMANCE
-Give measured elapsed time for:
-- backend/cache initialization
-- catalog
-- no-filter search
-- filtered search
-- Step 1 Trigger 1
-- Trigger 2 if tested
-- Step 2.3 if tested
-- Step 2.4 T0–T7
-
-6. TEST RESULTS
-Use:
-PASS / FAIL / NOT TESTED
-
-for every relevant workflow.
-
-7. REMAINING ISSUES
-Only real unresolved issues.
-
-8. EXACT NEXT RECOMMENDED STEP
-Maximum 3 bullets.
-
-IMPORTANT:
-Do not just tell me what should be implemented.
-IMPLEMENT IT FIRST.
-
-Do not ask me repeatedly for permission.
-Continue until this complete stabilization pass is finished or you hit a genuine external blocker that cannot be resolved from the workspace.
+B.
+```json
+{"theme":"Test","events":[{"title":"Event A","event_date":"2026-08-20","why_material":"test"}]}
