@@ -1,146 +1,199 @@
-RPR STABILIZATION PASS — DO NOT START STEP 2.5 YET
+RPR GLOBAL QUALITY + LATENCY STABILIZATION PASS
 
-Use the forensic report you just produced as the authoritative current-state description.
+Do not redesign the application and do not change the business/credit objectives of any existing prompt.
 
-Do NOT refactor the working architecture and do NOT redesign the frontend. Preserve the v31 visual/behavioral bone and make only minimal targeted fixes.
+Preserve the current v31 UI, Step 1 progressive architecture, Step 2.1, real Step 2.2 portfolio logic, Step 2.3, Step 2.4 V6, AI Assist, feedback controls, model routing and all accepted working behaviour.
 
-A. STEP 2.2 — PROVE AND STABILIZE PERFORMANCE
+The objectives of this pass are:
 
-The forensic report identified that an old /search path returned ~84,051 companies / ~112.7 MB and that overlapping Uvicorn reload processes caused stale behavior.
+A. MAXIMIZE EVIDENCE QUALITY
 
-Reassess the current Step 2.2 implementation from the actual files:
+Inspect every current enterprise-web research path used by Step 1, Step 2.3 and Step 2.4.
+
+Introduce a common evidence-quality policy, preferably through a small reusable helper rather than duplicating instructions everywhere.
+
+Rank evidence in this order:
+
+Primary/authoritative sources: SEC/regulatory filings, official company IR/financial releases, central banks, governments/regulators, rating agencies where accessible.
+Reuters/Bloomberg/FT/WSJ and equivalent approved high-quality financial sources.
+Credible institutional/industry research.
+Lower-quality web sources only if stronger sources cannot evidence the claim.
+
+Prefer recent evidence for current-event claims:
+
+latest available source first;
+generally favor last 30–90 days;
+older sources allowed for historical context/methodology only.
+
+Never fabricate missing quantitative evidence.
+
+Preserve contradictory credible evidence rather than silently choosing one.
+
+B. REMOVE INTERNAL/API URLs FROM ANALYST OUTPUT
+
+Inspect the Gemini/ADK enterprise-search response and current evidence extraction.
+
+URLs such as:
+
+vertexaisearch.cloud.google.com/grounding-api-redirect/...
+
+or any equivalent internal grounding/API/search infrastructure URL must never be rendered as analyst-facing citations.
+
+Extract and retain where available:
+
+source title
+publisher
+publication date
+canonical original/public source URL
+
+If only an internal redirect is available, do not expose it. Preserve publisher/title/date and mark canonical URL unavailable.
+
+Do not remove evidence simply because URL normalization failed.
+
+C. REDUCE RESEARCH LATENCY WITHOUT REDUCING QUALITY
+
+For each event use a small parallel search plan rather than uncontrolled broad searching:
+
+latest/event facts
+quantitative financial/credit/market implications
+disconfirming/alternative evidence
+
+Run independent searches concurrently where current architecture permits.
+
+Rank retrieved evidence by:
+
+authority × recency × direct relevance × quantitative usefulness
+
+Use approximately 4–6 genuinely useful high-quality sources per event rather than accumulating many redundant sources.
+
+Implement an evidence-sufficiency early-stop condition once the required business sections have strong support.
+
+Gemini remains the enterprise retrieval/evidence model.
+
+Opus remains the refinement/synthesis model.
+
+Do not downgrade models.
+
+Pass Opus a compact structured evidence bundle rather than unnecessary raw search text wherever safely possible.
+
+D. STRUCTURED EVIDENCE CONTRACT
+
+Without changing the existing analyst-facing business sections, normalize retrieved evidence internally to fields such as:
+
+claim
+metric/value/unit where applicable
+measurement period/date
+publisher
+publication date
+canonical URL
+source tier
+evidence class: REPORTED / DERIVED / NOT_EVIDENCED
+confidence
+
+Existing business output remains the primary rendered output.
+
+Do not introduce invented estimates merely to populate fields.
+
+E. STEP 2.2 PERFORMANCE — PRIORITY DEFECT
+
+The Step 2.2 screen repeatedly shows blank filters / Loading portfolio catalog... for too long even though the real source contains ~84k companies.
+
+Investigate the exact live files and execution path before modifying anything:
 
 step22_real_data_loader.py
 step22_portfolio_service.py
 step22_portfolio_routes.py
-rpr_step22_step23_append.js
-current live HTML
+live Step 2.2 frontend JS
+the three approved real XLSX source files
 
-Verify the exact current contract:
+Determine whether XLSX parsing, joins, index construction or redundant service instantiation are occurring on every catalog/search request.
 
-catalog
-→ lightweight metadata only
+Target architecture:
 
-search
-→ bounded preview only + exact total_count
+Load and normalize the real source data once per backend process.
+Build reusable in-memory indexes for geography, country, MLE, L1/L2/L3 and CAGID.
+/catalog returns metadata/filter values only — never the 84k company population.
+/search returns a limited preview (for example first 100) plus the exact total_count.
+/finalize independently resolves the complete matching population server-side.
+Never send the entire company universe to the browser merely to populate Step 2.2.
+Do not silently truncate the final portfolio to the preview count.
 
-finalize
-→ backend independently resolves the FULL matching population, irrespective of preview limit
+Preserve the real-data files as source of truth.
 
-The browser must NEVER receive the full 84k-company universe merely to render Step 2.2.
+If current repeated XLSX parsing is the bottleneck, first implement safe process-level caching. Do not introduce a new persistent datastore unless measurements prove that process caching is insufficient.
 
-Measure and report:
+Add invalidation based on source file modification/fingerprint so a changed real-data file is reloaded.
 
-/catalog response size and elapsed time
-empty-filter /search response size, number of preview rows and total_count
-filtered /search timing
-/finalize count versus independently calculated matching count
-first-load browser timing
+Provide measured timings for:
 
-Verify counts against the underlying real XLSX files rather than assuming the API is correct.
+cold data initialization
+warm /catalog
+warm no-filter /search
+filtered /search
+/finalize
 
-Check the authoritative sources and joins again and report:
+Report source row counts and reconciled distinct CAGID counts to prove no records were silently dropped.
 
-relationship master row count
-unique CAGIDs
-duplicate CAGIDs if any
-L1/L2/L3 counts
-geography count
-country count
-MLE count
-unmatched country mappings
-unmatched MLE CAGIDs
-relationship OSUC treatment
-whether any aggregation or deduplication alters the intended population
+F. FRONTEND EXPERIENCE
 
-Do NOT silently drop unmapped rows.
+Preserve v31 styling.
 
-Keep the upload sample contract user-facing as exactly:
+Add the small reusable elapsed-time indicator already requested:
 
-CAGID
-CAGID Name
+Loading portfolio data… Elapsed 00:04
 
-No OSUC/L1/L2/L3/RRR/etc. should be required from the user. Backend resolves those fields.
+and after completion:
 
-B. STEP 2.4 — V6 FRONTEND WIRING
+Loaded in 00:04
 
-Your forensic report says:
+Use the same timer behaviour for long-running research/model operations.
 
-V6 backend endpoints exist but no frontend caller exists; the frontend currently calls V5.2.
+Country selection must remain searchable/typeable rather than forcing users to scroll a list.
 
-Verify this first from source.
+G. DO NOT CHANGE
 
-Then minimally wire the existing Step 2.4 UI to the existing V6 endpoints so V6 is the active generation/revision/finalization path.
+Do not change scoring methodology.
 
-Do NOT delete or alter V5.2. Preserve it as rollback.
+Do not change factor definitions/business objectives.
 
-Do NOT rewrite the V6 service or prompt.
+Do not modify Step 2.5 in this pass.
 
-Preserve:
+Do not merge NSE into RPR.
 
-Structural Persistence Test
-independently generated factors
-vulnerability/buffer logic
-deterministic High/Medium weighting
-score calculations
-feedback/revision/finalize
+Do not change the v31 global layout/style.
 
-Restore/preserve the original v31 Factor Importance High/Medium control and recalculate normalized weights after analyst changes.
+Do not create mock data or public-web fallbacks.
 
-C. V31 VISUAL RECONCILIATION
+Do not expose internal API/search URLs.
 
-Compare Step 2.3 and Step 2.4 against:
+Do not refactor unrelated working bone.
 
-UI Design\icm-pm-rapid-portfolio-review-v31.html
+VALIDATION REQUIRED BEFORE CLAIMING SUCCESS
 
-Correct only demonstrated visual differences.
+Test with the live backend and real data, not mocks.
 
-In particular check the table/header area I identified: v31 uses the dark/black treatment whereas the current implementation shows grey.
+Demonstrate:
 
-Do not approximate the CSS. Reuse the exact v31 classes/rules where possible.
+Step 2.2 cold load and warm load times
+filters populate correctly
+country can be typed/searched
+preview count vs total count
+finalize preserves the full matching universe
+no missing/duplicate CAGID introduced
+one real Step 1 event produces recent, authoritative evidence
+rendered output contains no grounding/API redirect URLs
+publication/source dates are present where available
+Step 2.3 still imports/works
+Step 2.4 V6 remains active and intact
 
-Remove no functionality.
+At the end give me a concise report containing:
 
-D. REGRESSION TEST BEFORE STEP 2.5
-
-Perform:
-
-Step 2.1 live scenario-generation API test
-single-column assumption upload test
-dynamic assumption-example generation test
-Step 2.2 catalog/search/finalize/upload tests
-Step 2.3 live generation test
-Step 2.4 V6 live generation test through the frontend path
-
-Distinguish:
-
-IMPORT TEST
-API TEST
-LIVE MODEL TEST
-BROWSER END-TO-END TEST
-
-Never call an item “working” based only on import success.
-
-E. PROCESS STABILITY
-
-Before testing, ensure exactly one intended backend server instance is servicing port 8000.
-
-Do not leave diagnostic .py files inside a WatchFiles-observed directory while using --reload.
-
-Report process/PID state before and after testing.
-
-Do not modify startup architecture beyond what is necessary unless you find a concrete blocker.
-
-FINAL RESPONSE
-
-Give me:
-
-exact files changed;
-Step 2.2 before/after timings and payload sizes;
-verified source-data/count reconciliation;
-exact V6 frontend route wiring;
-v31 visual differences corrected;
-browser-tested status for 2.1–2.4;
-anything still blocking Step 2.5.
-
-Do not start implementing Step 2.5 in this pass.
+root cause(s)
+exact files changed
+before/after timings
+evidence-quality changes
+source-ranking logic
+URL-cleaning behaviour
+data/count reconciliation for Step 2.2
+regression-test results
+anything still unresolved.
