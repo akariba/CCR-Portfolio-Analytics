@@ -1,266 +1,431 @@
-RPR FRONTEND VISUAL RECONCILIATION — STEP 2.3 & STEP 2.4 ONLY
+RPR URGENT STABILITY FIX — STEP 1 + STEP 2.2 PERFORMANCE
 
 Work only in:
 
 C:\Users\ak547743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI
 
-The purpose of this task is only to reconcile frontend/HTML/CSS differences between the current working application and the original v31 design, especially in Event-Driven Risk Factors and Sector-Inherent Risk Factors.
+This is a stability/performance repair only. The application is being demonstrated, so startup and Step 2.2 availability must be reliable.
 
-Do not modify business logic, prompts, models, backend services, data, API contracts, scoring, or assessment methodology.
+Treat the current working code and original v31 frontend as immutable bone.
 
-The original visual authority is:
+Do not broadly refactor, redesign the UI, change prompts, change credit methodology, change model routing, add mock results, or replace real data with demo data.
 
-UI Design\icm-pm-rapid-portfolio-review-v31.html
+A. INSPECT / PROFILE FIRST
 
-Compare it against the current working frontend, including as applicable:
+Before changing code, reproduce and measure the actual problems.
 
-current consolidated HTML
-rpr_step22_step23_append.js
-corresponding Step 2.3 CSS
-rpr_step24_append.js
-rpr_step24_append.css
+Inspect:
 
-Do not assume the append implementation is visually correct simply because functionality works.
+start_backend.ps1
+Step 1 theme-quality / AI Assist service
+rpr_search_agent.py
+Step 1 discovery response parser
+step22_real_data_loader.py
+step22_portfolio_service.py
+step22_portfolio_routes.py
+Step 2.2 frontend JS
+current HTML
 
-1. INSPECT BEFORE CHANGING
+Capture timings for:
 
-Perform a DOM/CSS comparison specifically for the original v31 sections corresponding to:
+backend startup;
+loading relationship_master / current relationship XLSX;
+loading MLE XLSX;
+country mapping load;
+/portfolio/catalog;
+/portfolio/search with empty filters;
+/portfolio/search with one country/L2 filter;
+browser rendering of returned companies.
 
-Event-Driven Risk Factors
-Sector-Inherent Risk Factors
+Do not optimize by guessing. Identify whether the delay is Excel parsing, joins, API payload size, repeated loading, or frontend DOM rendering.
 
-Compare:
+B. STEP 1 — FIX THE CURRENT THEME QUALITY ERROR
 
-section headers
-table headers
-table body
-cards
-borders
-backgrounds
-badges
-spacing
-typography
-expandable sections
-importance controls
-buttons
-feedback panels
+Current observed error:
 
-Identify the exact local selectors/classes responsible for each visible mismatch.
+TimeoutExpired: Command ['helix', 'auth', 'access-token', 'print', '-a'] timed out after 15 seconds
 
-Do not globally restyle tables or cards.
+This happens inside the Sonnet 5 Theme Quality / AI Assist path.
 
-2. KNOWN MISMATCH TO FIX
+Find exactly where the application executes:
 
-One clear mismatch already observed:
+helix auth access-token print -a
 
-In original v31, a table/header area at the top of the factor content uses a dark/black treatment.
+Determine why the token call hangs or exceeds 15 seconds.
 
-In the current implementation, the equivalent area appears grey.
+Check whether:
 
-Restore the exact v31 treatment for the corresponding Step 2.3 / Step 2.4 element.
+the Helix CLI requires interactive authentication;
+an existing session/token can be reused;
+the application is unnecessarily spawning the CLI on every theme assessment;
+an approved token/session provider already exists in this project/environment.
 
-Do not guess a new color.
+Do not bypass authentication and do not substitute another model.
 
-Read the original v31 CSS/DOM and reuse the original class/style behavior.
+If token caching/reuse is already an approved pattern, use it so every Theme Quality request does not need a fresh blocking CLI invocation.
 
-3. STEP 2.3 — EVENT-DRIVEN RISK FACTORS
+Do not merely increase the timeout unless the actual investigation proves that is necessary.
 
-Preserve all current working Step 2.3 functionality:
+After repair, run a real Sonnet 5 Theme Quality request.
 
-generated event-driven factors
-factor metrics
-vulnerability/buffer content
-High/Medium importance
-deterministic weights
-revision/feedback functionality
-current backend calls
+C. STEP 1 — FIX DISCOVERY RESPONSE PARSING
 
-Only reconcile the frontend presentation with v31.
+Another observed failure was:
 
-Check especially:
+Discovery response did not contain an events array
 
-factor table/header styling
-dark header bands
-section hierarchy
-factor cards
-importance display/control
-metric tables
-spacing between factor blocks
-selected/active states
-typography
-bottom action/feedback controls
+Inspect the actual Gemini 3.5 Flash / ADK response before changing the parser.
 
-Do not alter any generated content structure unless required solely to reproduce the original v31 DOM presentation.
+Determine whether the response is:
 
-4. STEP 2.4 — SECTOR-INHERENT RISK FACTORS
+valid JSON with a different wrapper;
+markdown-fenced JSON;
+model text preceding JSON;
+a different ADK response envelope;
+malformed output;
+genuinely missing events.
 
-Preserve the current working V6 implementation completely.
+Make the parser robust to the actual approved response shapes while preserving the canonical internal contract:
 
-Do not modify:
+events[]
 
-V6 prompt
-factor identification
-structural persistence methodology
-vulnerability/buffer logic
-scoring
-backend weighting
-generate/revise/finalize APIs
-V5.2 rollback path
-backend\data\step24
+Do not fabricate an empty events array just to avoid an exception.
 
-Only restore v31 frontend styling/interaction.
+Preserve:
 
-Confirm the original v31 Factor Importance control is present and visually correct:
+max 3 events per theme;
+per-theme independent pipelines;
+discovery → enrichment → Opus refinement;
+existing Step 1 prompts.
 
-HIGH | MEDIUM
+Test at least one real theme end-to-end.
 
-Generated value should remain preselected.
+D. STEP 2.2 — CURRENT PROBLEM
 
-Existing behavior must remain:
+Step 2.2 eventually works and displays the real portfolio universe, but sometimes it takes too long to become available during a demo.
 
-High = score 2
-Medium = score 1
-changing importance recalculates normalized weights
-weights total exactly 100%
+Current universe is approximately:
 
-Restore the v31 control visually if the current V6 card differs.
+84k relationships/companies;
+231 sectors;
+171 countries;
+large MLE enrichment file.
 
-Also inspect:
+The current screenshot shows the intended v31 selection UI working once loaded:
 
-top table/header color
-factor title area
-risk metric tables
-vulnerability/buffer blocks
-scoring rows
-borders/backgrounds
-spacing
-badges
-buttons
-expanded/collapsed behavior
-5. DO NOT MAKE GLOBAL CSS CHANGES
+Geography
+Country
+MLE
+L2
+L3 cards/check boxes
 
-This is critical.
+Do not change this UI design.
 
-Do not solve a Step 2.3/2.4 mismatch by changing generic selectors such as:
+The problem is availability/performance.
 
-table
-th
-td
-.card
-.section
-button
+E. STEP 2.2 — DO NOT RE-READ XLSX FILES ON EVERY REQUEST
 
-unless the original v31 itself uses that exact global rule and the change is proven safe.
+Inspect whether the real XLSX files are being parsed repeatedly by:
 
-Prefer narrowly scoped selectors such as:
+/catalog
+/search
+/finalize
+every frontend filter action.
 
-#step23 ...
-#step24 ...
-.step23-...
-.step24-...
+If so, fix this.
 
-or the exact existing v31 selectors.
+Preferred architecture:
 
-Steps 1, 2.1 and 2.2 must remain visually unchanged.
+backend startup / first Step2.2 access
+       ↓
+load + normalize real source files once
+       ↓
+build in-memory indexed portfolio representation
+       ↓
+catalog/search/finalize reuse that representation
 
-6. REMOVE DEVELOPMENT-ONLY FRONTEND TEXT
+Use a process-level/singleton cache or equivalent existing project pattern.
 
-Ensure no implementation commentary is visible in Steps 2.3 or 2.4, such as:
+Cache invalidation should be based on source-file modification time or an explicit reload mechanism if practical.
 
+Do not introduce a database or large new framework merely for this.
+
+If the source XLSX changes, the next restart/reload must pick up the new data.
+
+F. SEPARATE CATALOG FROM COMPANY SEARCH
+
+/portfolio/catalog should return only the information needed to build controls:
+
+geographies
+countries
+MLE choices
+L1/L2/L3 hierarchy
+counts where useful
+
+It should not return the 84,000-company universe merely to populate dropdowns.
+
+Catalog should be lightweight and fast.
+
+G. DO NOT RETURN / RENDER 84,000 COMPANIES ON INITIAL PAGE LOAD
+
+Investigate whether the current frontend automatically sends an empty-filter search and receives approximately 84,051 companies.
+
+If yes, this is likely a major source of the delay and should be corrected.
+
+Initial Step 2.2 behavior should be:
+
+open Step 2.2
+→ load catalog/filter options
+→ DO NOT render 84k companies
+
+Then:
+
+user chooses geography/country/MLE/L2/L3
+→ backend search
+→ matching-company preview
+
+Preserve the ability for the backend to represent all matches, but do not transmit/render tens of thousands of company rows just for an initial preview.
+
+H. ADD SAFE RESULT PREVIEW / PAGINATION WITHOUT CHANGING SELECTION SEMANTICS
+
+For large searches, return:
+
+total_count
+companies = preview/page only
+
+For example, render the first reasonable number of companies (use the existing project convention if one exists; otherwise choose a conservative preview such as 100).
+
+Do not interpret this preview limit as the selected portfolio limit.
+
+Example:
+
+total_count = 4,823
+displayed companies = first 100
+finalize → all 4,823 matching CAGIDs
+
+This distinction is critical.
+
+Portfolio business semantics must remain unchanged.
+
+I. OPTIMIZE FILTERING
+
+Do not repeatedly perform expensive dataframe scans/joins if a normalized in-memory structure can answer the filters efficiently.
+
+Build reusable normalized/indexed fields for:
+
+Geography
+Country
+MLE
+L1
+L2
+L3
+CAGID
+
+Preserve:
+
+OR within the same filter dimension;
+AND across dimensions;
+no explicit L3 → all valid L3 beneath selected L2.
+
+Do not change the underlying selection results.
+
+J. MLE DATA SHOULD NOT BLOCK BASIC STEP 2.2 AVAILABILITY
+
+Inspect whether parsing the ~22 MB MLE workbook is delaying the entire catalog.
+
+If the basic catalog can be created from the relationship master + geography mapping, consider lazy-loading MLE enrichment in a safe way:
+
+relationship master + geography
+→ basic Step 2.2 catalog immediately available
+
+MLE enrichment
+→ loaded/cached for MLE filtering and downstream details
+
+Only do this if it preserves correct MLE filtering.
+
+Do not return incomplete/incorrect MLE results.
+
+The goal is to prevent a large enrichment file from unnecessarily blocking the entire Step 2.2 screen.
+
+K. FRONTEND LOADING / ERROR STATES
+
+Preserve v31 styling.
+
+Give the user a clean existing-style loading state while catalog is loading.
+
+Do not expose technical messages like:
+
+Python filenames
+stack traces
+XLSX parsing details
 APPEND
-V6 addon
-backend-driven
-implementation/debug notes
 
-Internal filenames/classes may keep these names.
+If catalog genuinely fails, show a concise functional error rather than an indefinitely spinning screen.
 
-Only remove such wording from the user-facing page.
+Example:
 
-7. DO NOT REWRITE THE HTML
+Portfolio data could not be loaded. Retry.
 
-Do not create a new consolidated frontend.
+Do not silently substitute demo data.
 
-Do not copy/rebuild all of v31.
+L. COUNTRY TYPE-AHEAD
 
-Keep the current working frontend and apply small local patches to restore the visual bone.
+Preserve the existing country control visually but make it searchable.
 
-If the append JS generates DOM that differs from v31, adjust only the generated markup/classes required for visual equivalence.
+User should be able to type:
 
-8. VALIDATE SIDE BY SIDE
+Pol
 
-Compare:
+and quickly reach:
 
-Original v31
+Poland
 
-vs.
+or:
 
-Current working RPR after patch
+Uni
 
-for both Step 2.3 and Step 2.4.
+→ United Kingdom / United States.
 
-Validate:
+Use valid backend values only.
 
-dark/black header treatment matches;
-tables match v31;
-cards match v31;
-borders/backgrounds match;
-typography matches;
-spacing/padding matches;
-High/Medium importance controls match;
-buttons/actions match;
-feedback panels remain intact;
-no new horizontal overflow/layout break;
-Step 2.3 functionality still works;
-Step 2.4 V6 functionality still works;
-Steps 1, 2.1 and 2.2 are unchanged.
+No new UI framework.
 
-Do a browser render check, not just source inspection.
+M. LIVE API VERIFICATION
 
-9. STRICT SCOPE
+From the actual browser, verify:
 
-Do not touch:
+opening Step 2.2 calls /portfolio/catalog;
+changing Country generates /portfolio/search;
+changing L2/L3 generates /portfolio/search;
+matching-company table uses the returned preview;
+finalize resolves the full selected population server-side;
+upload continues to work.
 
-backend Python unless absolutely required to fix a frontend contract regression;
-prompts;
-model configuration;
-real portfolio data;
-Step 1;
-Scenario Development;
-Portfolio Selection;
-Name-Level Assessment;
-scoring methodology.
+Keep standard Uvicorn/API access logs enabled so this is observable during demos.
 
-This task is frontend visual reconciliation only.
+N. PERFORMANCE TARGETS
 
+Do not fake these with hardcoded responses, but aim for:
+
+Warm backend
+
+Step 2.2 catalog: ideally <1 second, acceptable around 1–2 seconds;
+normal filtered search: ideally <1 second;
+browser should not freeze rendering massive result sets.
+
+Cold initial real-data normalization may take longer, but after it completes, subsequent catalog/search actions should reuse the loaded data.
+
+Report actual measured timings rather than claiming these targets if they are not reached.
+
+O. DO NOT BREAK THE CURRENT REAL-DATA CONTRACT
+
+Preserve:
+
+relationship_master.xlsx or current authoritative renamed equivalent;
+country mapping;
+MLE enrichment;
+real OSUC;
+CAGID identity;
+real RRR/classification;
+no silent demo fallback.
+
+Portfolio upload remains:
+
+CAGID
+CAGID Name
+
+only.
+
+P. STRICT NON-REGRESSION
+
+Do not change:
+
+Step 1 business prompts;
+Step 2.1 methodology;
+Step 2.3 prompt/methodology;
+Step 2.4 V6 prompt/methodology;
+original v31 visual styling;
+portfolio selection semantics.
+Q. VALIDATION
+
+Before declaring done:
+
+Step 1
+
+/health PASS
+correct portfolio-agent interpreter PASS
+Theme Quality Sonnet call PASS
+no Helix timeout PASS
+Gemini discovery PASS
+valid events parsed PASS
+
+Step 2.2
+
+cold data-load time measured
+warm /catalog time measured
+filtered /search time measured
+catalog does not send whole company universe
+initial screen does not render 84k companies
+large searches return total_count + limited preview
+finalize still represents all matches
+Country type-ahead works
+MLE works
+L2/L3 checkboxes work
+real data only
+upload still matches 20/20 test CAGIDs
+
+Regression
+
+Step 2.1 intact
+Step 2.3 intact
+Step 2.4 V6 intact
+v31 frontend intact
 FINAL RESPONSE
 
-Give me:
+Report only:
 
-MISMATCHES FOUND
+ROOT CAUSE — STEP 1 THEME QUALITY
 
-Step 2.3
-Step 2.4
+ROOT CAUSE — STEP 1 DISCOVERY
+
+ROOT CAUSE — STEP 2.2 DELAY
+
+Break Step 2.2 timing into:
+
+XLSX reading
+normalization/join
+catalog generation
+search
+API transfer
+frontend rendering
+
+FIXES IMPLEMENTED
 
 FILES CHANGED
 
-One line per file.
+PERFORMANCE BEFORE / AFTER
 
-VISUAL FIXES
+Include measured timings.
 
-Short description of each targeted fix.
+STEP 1
 
-FUNCTIONAL REGRESSION
+Theme Quality: PASS/FAIL
+Market Scanner: PASS/FAIL
 
-Step 2.3: PASS/FAIL
-Step 2.4 V6: PASS/FAIL
-Steps 1/2.1/2.2 unchanged: PASS/FAIL
+STEP 2.2
 
-V31 MATCH
+catalog: PASS/FAIL + timing
+search: PASS/FAIL + timing
+no 84k initial render: PASS/FAIL
+country search: PASS/FAIL
+finalize-all-matches semantics preserved: PASS/FAIL
+upload 20/20: PASS/FAIL
 
-header/table styling: PASS/FAIL
-importance controls: PASS/FAIL
-cards/spacing: PASS/FAIL
+REGRESSION
 
-Do not make any additional improvements outside this scope.
+Step 2.1 PASS/FAIL
+Step 2.3 PASS/FAIL
+Step 2.4 PASS/FAIL
+v31 PASS/FAIL
 
-I would do this before starting 2.5, so once 2.3 and 2.4 visually match v31 we freeze their frontend as well.
+Do not make unrelated changes.
