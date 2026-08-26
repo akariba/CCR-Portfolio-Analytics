@@ -1,329 +1,590 @@
-STOP ALL NEW DEVELOPMENT.
+TRIGGER 1 ONLY — FINAL ROOT-CAUSE + PERFORMANCE STABILIZATION.
 
-This is a STABILIZATION / RECOVERY PASS ONLY.
-
-Do not redesign anything.
-Do not refactor.
-Do not introduce another architecture.
-Do not optimize unrelated code.
+Do not touch Step 2.x.
+Do not redesign the frontend.
+Do not change v31 styling.
 Do not work on Step 2.5.
-Do not change prompts unless a prompt itself is proven to be the direct cause of a failing acceptance test.
-Do not create experimental files.
-Do not create another cache.
+Do not clean unrelated files.
 Do not use subagents.
-Do not perform broad repository archaeology.
-Do not repeatedly ask me for permission.
-Do not repeatedly run expensive LLM calls.
+Do not repeatedly ask me for approval.
+Do not make broad speculative changes.
 
-WORK DIRECTLY AND FINISH THE PASS END-TO-END.
+Work directly, test end-to-end, and return the mandatory implementation report at the end.
 
-PROJECT ROOT:
-C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI
+PROJECT:
+Rapid Portfolio Review_AI
 
-LIVE BACKEND:
-backend\server.py
+TRIGGER 1 FLOW MUST REMAIN:
 
-APPROVED PYTHON:
-..\portfolio-agent\.venv\Scripts\python.exe
+Gemini enterprise web discovery
+→ Gemini evidence enrichment
+→ Claude Opus refinement
 
-LIVE FRONTEND:
-UI Design\rpr-v8-consolidated-test-SAFE-STEP22-STEP23.html
+Maximum 3 events per theme.
 
-v31 GOLD VISUAL REFERENCE:
-UI Design\icm-pm-rapid-portfolio-review-v31.html
+========================================================
+OBSERVED FAILURE — IMPORTANT
+========================================================
 
-BONE RULE:
-Anything already working is immutable.
-Make only minimal surgical changes necessary to solve the failures below.
+The latest real run proves the Gemini API itself is often SUCCESSFUL.
 
-============================================================
-OBJECTIVE
-============================================================
+Example failure:
 
-Get ONE STABLE demonstrable flow through:
+Global Monetary Policy:
 
-Step 1
-→ Step 2.1
-→ Step 2.2
-→ Step 2.3
-→ Step 2.4 V6
+Gemini discovery:
+status=SUCCESS
+duration_ms≈121821
+output_chars≈20042
 
-Do NOT begin Step 2.5.
+Parser then reports approximately:
 
-There are FOUR blockers only.
+root_type=dict
+events_found=1
+events_accepted=0
+events_rejected=1
 
-============================================================
-BLOCKER 1 — STEP 2.4 V6 RETURNS 502
-============================================================
+and the event is rejected for missing required event field(s).
 
-This is the highest priority.
+Application then incorrectly surfaces:
 
-Latest real run shows:
+GEMINI DISCOVERY FAILED
+"No usable event..."
 
-step24_v6 T3 evidence search end (+44s)
-step24_v6 T4 Opus start (+44s)
+Meanwhile:
 
-then:
+US Trade Policy & Tariffs:
 
-POST /api/v1/rpr/step24/sector-factors/generate-v6
-502 Bad Gateway
+Gemini discovery:
+status=SUCCESS
+duration≈126s
+output_chars≈36,499
+events_found=3
+events_accepted=3
 
-Therefore STOP treating this as a frontend timeout problem.
+and works correctly.
 
-The request is reaching the backend and Gemini research succeeds.
-The failure occurs at or immediately after the Opus/R2D2 reasoning stage.
+Therefore DO NOT start by changing networking, TLS, certificates,
+timeouts or retry counts.
 
-DO THIS:
+The first task is to establish EXACTLY why semantically valid Gemini
+responses sometimes fail our event contract.
 
-1. Reproduce ONCE using a small controlled Step 2.4 V6 request.
-2. Capture the COMPLETE backend exception/traceback behind the 502.
-3. Identify the exact failing function and exact model/auth/gateway configuration.
-4. Inspect only the directly relevant files:
-   - step24_sector_factors_v6_service.py
-   - step24 sector V6 routes file
-   - llm_gateway.py
-   - RUNTIME_ENV.ps1
-   - server.py only if necessary for route/config loading
+========================================================
+PART 1 — CAPTURE THE REAL FAILURE
+========================================================
 
-5. Determine whether Step 2.4 is correctly using the approved R2D2/Vertex
-   Claude path or is accidentally depending on ANTHROPIC_API_KEY/direct
-   Anthropic configuration.
+Inspect:
 
-6. Use the EXISTING approved model-routing mechanism.
-   Do NOT add another provider or fallback.
+market_event_scout.py
+rpr_search_agent.py
+the actual Trigger-1 discovery prompt
+all event Pydantic/dataclass/schema definitions used by discovery.
 
-7. If an environment variable is missing/wrong, fix the application's
-   normal startup/config path so the expected approved identifier is used.
-   Do not hardcode secrets.
+Run ONE failing-theme discovery only if needed.
 
-8. Return a controlled useful error instead of a generic 502 if the model
-   gateway is unavailable.
+For that run preserve the raw Gemini answer in memory/logging long enough
+to compare it to the expected schema.
 
-ACCEPTANCE:
+Do NOT dump sensitive/raw evidence into permanent files.
 
-One real Step 2.4 V6 request must return HTTP 200 and 4–5 factors.
+For every rejected candidate log only:
 
-Do not run another expensive Step 2.4 call until the exact 502 root cause
-has been found from logs/code.
+candidate index
+candidate top-level keys
+expected required keys
+missing keys
+recognized aliases
+rejection reason
 
-============================================================
-BLOCKER 2 — STEP 2.3 IS TAKING ~5 MINUTES
-============================================================
+Then answer:
 
-The real browser currently shows approximately:
+WHY was Gemini's Global Monetary Policy result detected as one event but
+rejected?
 
-Elapsed 04:56
+I need the exact schema mismatch, not "the model returned bad JSON."
 
-for:
-"Generating event-driven risk factors..."
+Examples of what to check:
 
-This is not acceptable for the demo.
+event title field mismatch
+event date field mismatch
+why_material/materiality mismatch
+nested event object
+section-style object returned instead of event object
+different capitalization
+different property aliases
+markdown/prose wrapper
+Gemini using the business prompt's human-readable headings instead of
+the machine contract
 
-DO NOT rewrite the Step 2.3 business prompt.
+========================================================
+PART 2 — FIX THE DISCOVERY CONTRACT AT THE SOURCE
+========================================================
 
-First instrument the EXISTING call with concise stage timings:
+Discovery is currently producing 20k–36k characters and taking about
+2 minutes.
 
-T0 request received
-T1 payload/context preparation complete
-T2 LLM request started
-T3 LLM response received
-T4 JSON parse/validation complete
-T5 response returned
+This is too large for EVENT DISCOVERY.
 
-Then run ONE real Step 2.3 generation.
+Redesign ONLY THE DISCOVERY CONTRACT, while preserving its business
+purpose.
 
-Report exactly where the time is spent.
+Discovery should NOT generate the eight final risk-report sections.
 
-If almost all latency is the Opus call:
-- verify only ONE Opus call is happening;
-- verify there is no accidental retry;
-- verify no duplicate generation from frontend;
-- verify no unnecessary full portfolio payload is being sent;
-- verify only the information required by the Step 2a/V7 business prompt
-  is sent;
-- do not remove required credit-analysis content.
+Discovery should return ONLY a compact manifest of up to 3 events:
 
-If duplicate HTTP calls or duplicate LLM calls exist, eliminate only the
-duplicate.
+{
+  "theme": "...",
+  "events": [
+    {
+      "event_id": "...",
+      "title": "...",
+      "event_date": "...",
+      "why_material": "...",
+      "primary_geography": ["..."],
+      "evidence_refs": [...]
+    }
+  ]
+}
 
-Do NOT shorten the business output merely to make the timer look better.
+Use the application's actual field names if they differ.
 
-TARGET:
-Normal Step 2.3 should preferably complete <=120 seconds.
-If the approved Opus service itself requires longer, report the measured
-provider latency honestly rather than redesigning the application.
+Each candidate needs only enough evidence to establish:
+WHAT happened,
+WHEN,
+WHERE,
+WHY it is credit/market-risk material,
+and the authoritative sources supporting its existence.
 
-============================================================
-BLOCKER 3 — THEME QUALITY GATE CONFIGURATION ERROR
-============================================================
+TARGET discovery output:
+preferably <= 8,000 characters for 3 events.
 
-The browser still displays:
+Do not ask discovery to write:
+Event History,
+Direct Impact,
+Contagious Impact,
+Equity Impact,
+Credit Impact,
+Commodity Impact,
+Assumptions.
 
-RPR_THEME_GATE_MODEL must be set to the exact
-organization-approved Sonnet 5 identifier.
+Those belong to ENRICHMENT.
 
-This must not remain in the demo.
+========================================================
+PART 3 — USE REAL STRUCTURED OUTPUT IF SUPPORTED
+========================================================
 
-Inspect the existing approved Sonnet-5 identifier already used elsewhere
-in the application / RUNTIME_ENV.ps1.
+Inspect the exact google.adk.models.Gemini / enterprise_web_search path
+used by this project.
 
-Make the Theme Quality Gate use that SAME approved configured identifier.
+Determine whether this approved ADK configuration supports an actual
+response_schema / structured JSON output while enterprise web search is
+active.
 
-Do NOT guess a new model name.
-Do NOT downgrade to Sonnet 4.x.
-Do NOT hardcode a secret.
+IF YES:
+use a real schema for the discovery manifest.
 
-Then run ONE theme-quality call.
+IF NO:
+do NOT invent unsupported parameters.
+
+Instead require exactly one JSON root object and validate it against the
+canonical event schema.
+
+The canonical schema must live in ONE place in code.
+
+The prompt, parser and validator must not each maintain slightly
+different definitions.
+
+========================================================
+PART 4 — BOUNDED NORMALIZATION, NOT HEURISTIC CHAOS
+========================================================
+
+Before rejecting an otherwise valid candidate, support a SMALL explicit
+alias map.
+
+Examples only where genuinely observed:
+
+title:
+title
+event_title
+name
+
+event_date:
+event_date
+date
+published_at
+
+why_material:
+why_material
+materiality
+why_it_matters
+
+Do NOT recursively scan arbitrary nested citation/source objects and
+mistake them for events.
+
+Do NOT accept an object merely because it contains "name" or "url".
+
+A valid event candidate must satisfy a distinctive event signature.
+
+Prefer:
+
+required event fields + candidate being located inside the canonical
+events container.
+
+========================================================
+PART 5 — SCHEMA-REPAIR WITHOUT REPEATING WEB SEARCH
+========================================================
+
+This is important for latency.
+
+If the Gemini web search succeeds but the response is structurally
+invalid:
+
+DO NOT immediately repeat the expensive enterprise web search.
+
+Attempt:
+
+1. deterministic normalization;
+2. deterministic JSON extraction;
+3. bounded alias mapping.
+
+If the content is clearly the intended event data but still fails only
+because of formatting/schema shape, use ONE cheap schema-repair pass
+WITHOUT web search.
+
+The repair input is the already-returned Gemini text.
+
+Its only job:
+
+"Transform this existing discovery response into the canonical event
+manifest. Do not add facts."
+
+It must not research again.
+
+Only if the original Gemini result contains genuinely no usable event
+information may a discovery web-search retry occur.
+
+Maximum full discovery web-search attempts per theme = 2.
+
+========================================================
+PART 6 — FIX MISLEADING FAILURE STATES
+========================================================
+
+Currently this:
+
+Gemini status=SUCCESS
+→ schema rejected
+→ "GEMINI DISCOVERY FAILED"
+
+is misleading.
+
+Separate these statuses:
+
+DISCOVERY_API_FAILED
+DISCOVERY_SCHEMA_INVALID
+DISCOVERY_NO_MATERIAL_EVENTS
+DISCOVERY_SUCCESS
+
+The UI should not claim the web search failed when the web search
+actually succeeded.
+
+========================================================
+PART 7 — ENRICHMENT OWNS THE EIGHT SECTIONS
+========================================================
+
+After the compact manifest is accepted, enrichment generates:
+
+1 Event Overview
+2 Event History
+3 Direct Impact Geographies
+4 Contagious Impact Geographies
+5 Equity Market Impact
+6 Credit Market Impact
+7 Commodity Market Impact
+8 Assumptions
+
+This stage should use the authoritative evidence framework already added.
+
+Prioritize:
+
+Tier 1:
+official government / regulators / central banks / statistical bodies /
+SEC or equivalent / rating agencies where accessible / issuer filings
+
+Tier 2:
+Reuters, Bloomberg-quality institutional reporting, major financial
+press, recognized market-data/research providers
+
+Tier 3:
+other credible sources only when Tier 1/2 cannot establish the claim.
+
+Prefer recent evidence relevant to the event.
+
+Never expose:
+
+vertexaisearch.cloud.google.com
+grounding-api-redirect
+Google internal redirect URLs
+internal API paths
+
+Analyst-facing text should show publisher/domain or canonical public URL
+only.
+
+========================================================
+PART 8 — FAILURE IS PER EVENT, NOT PER THEME
+========================================================
+
+Do not discard an entire theme because one candidate is malformed.
+
+If three candidates are returned and:
+
+2 validate
+1 fails
+
+continue with the 2 valid events.
+
+Attempt repair only for the failed candidate.
+
+The theme should fail only when zero usable events remain after bounded
+repair/retry.
+
+Likewise enrichment failure of one event must not erase successful
+events from the same theme.
+
+========================================================
+PART 9 — PARALLELISM / LATENCY
+========================================================
+
+Inspect the current execution model before changing it.
+
+Desired structure:
+
+themes can discover independently;
+
+once an event manifest exists, event enrichment should run concurrently
+with a SMALL bounded concurrency;
+
+Opus refinement should not block already-discovered events from being
+shown in the UI.
+
+Do NOT launch unbounded LLM calls.
+
+Suggested maximum:
+3 concurrent event enrichments.
+
+Do not implement parallelism if it already exists correctly.
+
+First verify.
+
+Add stage timing:
+
+THEME:
+D0 discovery start
+D1 Gemini returned
+D2 parse/validation complete
+
+EVENT:
+E0 enrichment start
+E1 Gemini returned
+E2 parse complete
+O0 Opus start
+O1 Opus returned
+DONE
+
+Log milliseconds.
+
+========================================================
+PART 10 — OPUS REFINEMENT CONTRACT
+========================================================
+
+We previously saw Opus responses fail because the application expected an
+events array.
+
+Inspect this contract too.
+
+If Opus is refining ONE event, do not require it to return an array unless
+there is a real architectural reason.
+
+Use the smallest schema matching the operation:
+
+single-event refinement → single event object
+theme batch refinement → events array
+
+Do not force incompatible response shapes.
+
+Again, prefer a real structured response schema if supported by the
+approved gateway.
+
+========================================================
+PART 11 — QUALITY GATE
+========================================================
+
+For each discovered event before enrichment require:
+
+material event title
+specific event/date
+clear relationship to selected theme
+at least one credible retrievable source
+no duplicate of another selected event
+
+Rank candidates using:
+
+materiality
+recency
+source authority
+credit relevance
+distinctiveness
+
+Select the best maximum 3.
+
+Do not select three versions of the same underlying event.
+
+========================================================
+PART 12 — TESTS
+========================================================
+
+Do not spend the session repeatedly making live searches.
+
+First build deterministic regression fixtures using sanitized examples of
+the shapes ALREADY observed:
+
+1 canonical JSON
+2 fenced JSON
+3 JSON preceded/followed by prose
+4 alias field names
+5 nested source/citation metadata
+6 human-readable section headings
+7 single event object
+8 canonical events array
+9 one invalid + two valid events
+10 malformed/truncated response
+
+Verify parser/validator behavior locally.
+
+Then perform only:
+
+ONE live discovery:
+US Trade Policy & Tariffs
+
+ONE live discovery:
+Global Monetary Policy
 
 Acceptance:
-No RuntimeError regarding RPR_THEME_GATE_MODEL.
 
-============================================================
-BLOCKER 4 — DO NOT REGRESS STEP 1 PARSER
-============================================================
+US Trade:
+up to 3 accepted events.
 
-A parser fix was just implemented in market_event_scout.py.
+Global Monetary Policy:
+must no longer fail merely because Gemini selected a different JSON
+shape if the required information exists.
 
-Do NOT rewrite it again.
+========================================================
+PERFORMANCE TARGET
+========================================================
 
-Run the existing deterministic parser regression tests only.
+Measure, do not fake.
 
-Required:
-root {"theme": ..., "events":[...]} resolves the OUTER events array
-and does not accidentally select nested citation objects.
+Discovery should become materially faster because the requested output is
+small.
 
-Only if this deterministic regression still fails may you touch
-market_event_scout.py again.
+Target:
+<=60 seconds/theme where provider/search latency permits.
 
-Do NOT spend another live Gemini discovery cycle solely to test parsing
-until the deterministic test passes.
+More important:
+discovery payload should be compact, ideally <=8k chars.
 
-============================================================
-PROCESS CONTROL — VERY IMPORTANT
-============================================================
+Do not sacrifice authoritative evidence merely to hit a timer.
 
-Before testing:
+The key optimization is:
+SEARCH LESS OUTPUT, NOT LOWER QUALITY.
 
-1. Stop every backend python/uvicorn process for this app.
-2. Start exactly ONE normal reloader/worker pair using the approved venv.
-3. Confirm ONE listener on port 8000.
-4. Confirm GET /health = 200.
+========================================================
+DO NOT DO
+========================================================
 
-Do not run multiple uvicorn instances.
+Do not rewrite the whole Trigger 1 service.
 
-Do not leave diagnostic clients/background tests running.
+Do not replace the progressive pipeline.
 
-No temporary .py files should remain when finished.
+Do not remove enterprise web search.
 
-============================================================
-DO NOT TOUCH IN THIS PASS
-============================================================
+Do not replace Gemini 3.5 Flash.
 
-Do not change:
+Do not replace Opus 4.6.
 
-- v31 visual design
-- Step 2.2 SQLite cache
-- Step 2.2 XLSX source-of-truth logic
-- Step 2.2 portfolio taxonomy
-- Step 2.3 High/Medium weighting mathematics
-- Step 2.4 High/Medium weighting mathematics
-- Step 2.4 V5.2 rollback path
-- evidence_quality.py unless directly causing one of the four failures
-- Step 1 business prompt
-- Step 2.1 business prompt
-- Step 2.3 V7 business requirements
-- Step 2.4 V6 business requirements
-- Step 2.5
-- CSS/layout
-- data-folder cleanup
-- additional performance architecture
-- parallel-search redesign
-- early-stop redesign
+Do not touch Step 2.
 
-No "while I'm here" changes.
+Do not change v31.
 
-============================================================
-LIVE TEST ORDER
-============================================================
+Do not create speculative fallbacks.
 
-Do exactly this order:
+Do not silently fill missing evidence.
 
-A. health
-B. deterministic Step 1 parser regression
-C. Theme Quality Gate — one call
-D. Step 2.2 catalog/search — deterministic only
-E. Step 2.3 — ONE live generation
-F. Step 2.4 V6 — ONE live generation
+Do not repeatedly rerun Gemini while debugging parsing.
 
-If E or F fails:
-STOP.
-Diagnose that exact failure.
-Do not continue making unrelated modifications.
+========================================================
+MANDATORY IMPLEMENTATION REPORT
+========================================================
 
-============================================================
-DEFINITION OF DONE
-============================================================
+After completing the work, report exactly:
 
-Do not tell me "implemented" merely because code imports.
+1. ROOT CAUSE
+For each failure shape observed:
+raw top-level shape
+expected shape
+why it failed
 
-DONE means:
+2. OLD DISCOVERY CONTRACT
+required fields
+typical chars
+observed latency
 
-- one backend instance
-- health 200
-- Theme Quality Gate works
-- Step 1 parser deterministic regression passes
-- Step 2.2 warm catalog/search passes
-- Step 2.3 returns populated factors
-- Step 2.4 V6 returns populated factors
-- no 502
-- no empty Step 2.3/2.4 result caused by backend failure
-- no new frontend redesign
-- no regression to v31 bone
+3. NEW DISCOVERY CONTRACT
+exact schema
+target size
 
-============================================================
-FINAL REPORT — MANDATORY AND SHORT
-============================================================
+4. PARSER / VALIDATOR
+exact normalization/alias rules
+exact rejection rules
 
-After implementation/testing, give me ONE report containing:
+5. RETRY / REPAIR POLICY
+when deterministic repair occurs
+when no-web schema repair occurs
+when full web retry occurs
 
-1. FINAL STATUS
-   Step 1:
-   Theme Gate:
-   Step 2.1:
-   Step 2.2:
-   Step 2.3:
-   Step 2.4 V6:
+6. CONCURRENCY
+what is parallel
+maximum concurrency
 
-2. ROOT CAUSE OF STEP 2.4 502
-   exact exception
-   exact function
-   exact fix
+7. FILES CHANGED
+file
+function
+specific reason
 
-3. STEP 2.3 TIMINGS
-   T0→T1
-   T1→T2
-   T2→T3
-   T3→T4
-   total
-   number of LLM calls
+8. TEST RESULTS
+all deterministic fixtures
+US Trade live result
+Global Monetary Policy live result
 
-4. STEP 2.4 TIMINGS
-   Gemini research
-   Opus
-   validation/repair
-   total
+9. LATENCY
+D0→D1
+D1→D2
+enrichment
+Opus
+total
 
-5. EXACT FILES MODIFIED
-   file → function → reason
+10. OUTPUT QUALITY
+source tiers used
+duplicate handling
+freshness treatment
 
-6. EXACT LIVE HTTP RESULTS
+11. REGRESSION
+confirm Trigger 2, Step 2.x and v31 were not modified.
 
-7. REMAINING ISSUES
-   ONLY real unresolved issues.
+12. REMAINING ISSUES
+only actual unresolved defects.
 
-8. REGRESSION CONFIRMATION
-   Confirm v31, Step 2.2, Step 2.3 scoring and V5.2 were preserved.
-
-Do not give me your chain of thought.
-Do not give me a long narrative.
-Do the work first, test it, then provide the factual report.
+Do the implementation first.
+Do not give me a speculative essay before modifying/testing.
+Do not give me internal chain-of-thought.
+Give me the factual engineering report when finished.
