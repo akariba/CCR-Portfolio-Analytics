@@ -1,431 +1,489 @@
-RPR URGENT STABILITY FIX — STEP 1 + STEP 2.2 PERFORMANCE
+RPR FULL FORENSIC HANDOFF / STATE-OF-WORK REPORT
 
-Work only in:
+Before making any further changes, stop implementation and give me a complete technical handoff of everything you have done in this RPR project during this session and the immediately preceding related work.
 
-C:\Users\ak547743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI
+I need this so another engineer/AI can continue safely without repeating mistakes or damaging working functionality.
 
-This is a stability/performance repair only. The application is being demonstrated, so startup and Step 2.2 availability must be reliable.
+Do not modify any files while producing this report. Do not run cleanup or fixes unless needed only to inspect current state.
 
-Treat the current working code and original v31 frontend as immutable bone.
+I want facts from the actual current repository, terminal history, code, tests and runtime — not assumptions.
 
-Do not broadly refactor, redesign the UI, change prompts, change credit methodology, change model routing, add mock results, or replace real data with demo data.
+1. CURRENT APPLICATION STATE
 
-A. INSPECT / PROFILE FIRST
+Start with a concise status:
 
-Before changing code, reproduce and measure the actual problems.
+Backend: WORKING / PARTIAL / BROKEN
+Frontend: WORKING / PARTIAL / BROKEN
+Step 1: ...
+Step 2.1: ...
+Step 2.2: ...
+Step 2.3: ...
+Step 2.4: ...
+Step 2.5: not started / partial / ...
 
-Inspect:
+For every status, explain what was actually tested versus what is merely inferred.
+
+2. EXACT ARCHITECTURE YOU NOW UNDERSTAND
+
+Explain your current understanding of the RPR architecture.
+
+Cover:
+
+frontend entry HTML;
+append JS/CSS architecture;
+FastAPI entry point;
+backend routes;
+services;
+model routing;
+prompt loading;
+Step 1 discovery → enrichment → refinement;
+Step 2.1 scenario generation;
+Step 2.2 portfolio selection;
+Step 2.3 event-driven factors;
+Step 2.4 sector-inherent factors;
+how state flows between steps;
+real-data sources;
+upload flows.
+
+Explicitly identify which components you consider working bone that should not be refactored.
+
+3. ALL FILES YOU CHANGED
+
+Give me a complete table:
+
+File
+Created / Modified / Renamed / Deleted
+What changed
+Why it changed
+Which feature depends on it
+Risk of reverting it
+
+Include every Python, JS, CSS, HTML, prompt, PowerShell, requirements and data/template file touched.
+
+Do not omit diagnostic/helper scripts you created temporarily.
+
+For temporary diagnostic files, state whether they still exist.
+
+4. ALL FILES RENAMED / MOVED / REMOVED
+
+Show exact paths:
+
+OLD PATH → NEW PATH
+
+Explain why each move/rename was made and all code references that were updated.
+
+Also tell me whether any stale duplicate files remain.
+
+5. ALL ERRORS ENCOUNTERED
+
+Give me a chronological error log.
+
+For every meaningful error include:
+
+Error/message
+Where it occurred
+User-visible symptom
+Root cause
+Evidence supporting the root cause
+Fix applied
+Whether the fix was verified
+Risk of recurrence
+
+Include at minimum everything encountered around:
+
+wrong Python .venv;
+Python 3.8 vs approved portfolio-agent\.venv;
+google-adk / google-genai;
+openpyxl;
+ANTHROPIC_API_KEY;
+Theme Quality Gate / Sonnet;
+helix auth access-token print -a timeout;
+RPR_THEME_GATE_MODEL;
+Gemini discovery response missing events;
+raise_http / _raise_http;
+Step 2.1 assumptions extraction;
+Step 2.2 unavailable / slow loading;
+portfolio catalog/search/finalize;
+duplicate or overlapping Uvicorn processes;
+WatchFiles reloads;
+diagnostic scripts triggering reload;
+port 8000 process cleanup;
+any frontend/API mismatch;
+any other error not listed here.
+
+Do not hide errors that were later fixed.
+
+6. UVICORN / BACKEND PROCESS ISSUE
+
+Explain in detail what happened with the multiple backend processes.
+
+I saw your observation that:
+
+a diagnostic script triggered another reload;
+multiple overlapping Uvicorn instances appeared bound to 127.0.0.1:8000;
+there were lingering TIME_WAIT / CLOSE_WAIT connections.
+
+Explain:
+
+exactly how the duplicate/reload condition occurred;
+whether multiple actual listeners existed or only stale connections;
+whether --reload contributed;
+whether files created inside watched directories triggered reloads;
+how you cleaned it up;
+what the safe startup procedure is now;
+what should never be done during a demo.
+7. CURRENT BACKEND STARTUP CONTRACT
+
+Give the exact approved Python executable.
+
+Show the exact current contents/behavior of:
 
 start_backend.ps1
-Step 1 theme-quality / AI Assist service
-rpr_search_agent.py
-Step 1 discovery response parser
-step22_real_data_loader.py
-step22_portfolio_service.py
-step22_portfolio_routes.py
-Step 2.2 frontend JS
-current HTML
 
-Capture timings for:
+Confirm whether it launches:
 
-backend startup;
-loading relationship_master / current relationship XLSX;
-loading MLE XLSX;
-country mapping load;
-/portfolio/catalog;
-/portfolio/search with empty filters;
-/portfolio/search with one country/L2 filter;
-browser rendering of returned companies.
+portfolio-agent\.venv\Scripts\python.exe
 
-Do not optimize by guessing. Identify whether the delay is Excel parsing, joins, API payload size, repeated loading, or frontend DOM rendering.
+and not another .venv.
 
-B. STEP 1 — FIX THE CURRENT THEME QUALITY ERROR
+Give the exact manual equivalent command.
 
-Current observed error:
+Also explain whether --reload should remain enabled for:
 
-TimeoutExpired: Command ['helix', 'auth', 'access-token', 'print', '-a'] timed out after 15 seconds
+development;
+a client demo.
 
-This happens inside the Sonnet 5 Theme Quality / AI Assist path.
+If you recommend different behavior for demo stability, state it clearly but do not change it yet.
 
-Find exactly where the application executes:
+8. STEP 1 — CURRENT STATE
 
-helix auth access-token print -a
+Document separately:
 
-Determine why the token call hangs or exceeds 15 seconds.
+AI Assist / Theme Quality
+endpoint;
+model;
+authentication mechanism;
+Helix dependency;
+current status;
+exact unresolved error if any.
+Market Scanner
+Gemini model;
+ADK/web-search mechanism;
+prompt files;
+response schema;
+expected events[] contract;
+current parser;
+whether actual discovery currently works.
+Enrichment
 
-Check whether:
+Explain evidence enrichment.
 
-the Helix CLI requires interactive authentication;
-an existing session/token can be reused;
-the application is unnecessarily spawning the CLI on every theme assessment;
-an approved token/session provider already exists in this project/environment.
+Opus refinement
 
-Do not bypass authentication and do not substitute another model.
+Explain refinement.
 
-If token caching/reuse is already an approved pattern, use it so every Theme Quality request does not need a fresh blocking CLI invocation.
+Trigger 2 / R2D2
 
-Do not merely increase the timeout unless the actual investigation proves that is necessary.
+Explain whether the missing Anthropic API key affects only Trigger 2 or anything else.
 
-After repair, run a real Sonnet 5 Theme Quality request.
+Clearly distinguish:
 
-C. STEP 1 — FIX DISCOVERY RESPONSE PARSING
+WORKING
 
-Another observed failure was:
+BROKEN
 
-Discovery response did not contain an events array
+NOT TESTED
 
-Inspect the actual Gemini 3.5 Flash / ADK response before changing the parser.
+9. STEP 2.1 — CURRENT STATE
 
-Determine whether the response is:
+Explain:
 
-valid JSON with a different wrapper;
-markdown-fenced JSON;
-model text preceding JSON;
-a different ADK response envelope;
-malformed output;
-genuinely missing events.
+scenario-generation route;
+prompt file;
+model;
+input contract;
+output contract;
+assumptions upload;
+assumptions extraction;
+assumptions example download.
 
-Make the parser robust to the actual approved response shapes while preserving the canonical internal contract:
+Confirm current assumptions template schema.
 
-events[]
+It should now be:
 
-Do not fabricate an empty events array just to avoid an exception.
+assumption
 
-Preserve:
+only.
 
-max 3 events per theme;
-per-theme independent pipelines;
-discovery → enrichment → Opus refinement;
-existing Step 1 prompts.
+State whether the dynamic example is actually generated from the current scenario or whether static fallback is being used.
 
-Test at least one real theme end-to-end.
+10. STEP 2.2 — REAL DATA ARCHITECTURE
 
-D. STEP 2.2 — CURRENT PROBLEM
+Explain precisely how the real portfolio data now works.
 
-Step 2.2 eventually works and displays the real portfolio universe, but sometimes it takes too long to become available during a demo.
+Document:
 
-Current universe is approximately:
+authoritative relationship master;
+geography mapping;
+MLE data;
+CAGID mapping;
+company-name mapping;
+L1/L2/L3;
+country;
+geography;
+RRR;
+classification;
+relationship OSUC;
+MLE/GFCID one-to-many behavior.
 
-84k relationships/companies;
-231 sectors;
-171 countries;
-large MLE enrichment file.
+Give actual row counts currently observed.
 
-The current screenshot shows the intended v31 selection UI working once loaded:
+Explain the difference between:
 
-Geography
-Country
-MLE
-L2
-L3 cards/check boxes
+catalog
+search
+finalize
+upload
 
-Do not change this UI design.
+and what each endpoint returns.
 
-The problem is availability/performance.
+11. STEP 2.2 PERFORMANCE
 
-E. STEP 2.2 — DO NOT RE-READ XLSX FILES ON EVERY REQUEST
+Tell me exactly what you currently believe is making Step 2.2 slow or unavailable during startup/demo.
 
-Inspect whether the real XLSX files are being parsed repeatedly by:
+Separate measured facts from hypotheses.
 
-/catalog
-/search
-/finalize
-every frontend filter action.
+Address:
 
-If so, fix this.
+XLSX parsing;
+relationship master load;
+~large MLE workbook;
+joins/normalization;
+repeated loading;
+caching;
+empty-filter search;
+whether 84k companies are returned;
+payload transfer;
+frontend DOM rendering;
+backend reloads.
 
-Preferred architecture:
+If timings have been measured, give them.
 
-backend startup / first Step2.2 access
-       ↓
-load + normalize real source files once
-       ↓
-build in-memory indexed portfolio representation
-       ↓
-catalog/search/finalize reuse that representation
+If not, say NOT MEASURED.
 
-Use a process-level/singleton cache or equivalent existing project pattern.
+Do not invent timings.
 
-Cache invalidation should be based on source-file modification time or an explicit reload mechanism if practical.
+Then give your recommended architecture for making Step 2.2 demo-stable.
 
-Do not introduce a database or large new framework merely for this.
+12. PORTFOLIO UPLOAD
 
-If the source XLSX changes, the next restart/reload must pick up the new data.
+State the final intended user upload contract.
 
-F. SEPARATE CATALOG FROM COMPANY SEARCH
-
-/portfolio/catalog should return only the information needed to build controls:
-
-geographies
-countries
-MLE choices
-L1/L2/L3 hierarchy
-counts where useful
-
-It should not return the 84,000-company universe merely to populate dropdowns.
-
-Catalog should be lightweight and fast.
-
-G. DO NOT RETURN / RENDER 84,000 COMPANIES ON INITIAL PAGE LOAD
-
-Investigate whether the current frontend automatically sends an empty-filter search and receives approximately 84,051 companies.
-
-If yes, this is likely a major source of the delay and should be corrected.
-
-Initial Step 2.2 behavior should be:
-
-open Step 2.2
-→ load catalog/filter options
-→ DO NOT render 84k companies
-
-Then:
-
-user chooses geography/country/MLE/L2/L3
-→ backend search
-→ matching-company preview
-
-Preserve the ability for the backend to represent all matches, but do not transmit/render tens of thousands of company rows just for an initial preview.
-
-H. ADD SAFE RESULT PREVIEW / PAGINATION WITHOUT CHANGING SELECTION SEMANTICS
-
-For large searches, return:
-
-total_count
-companies = preview/page only
-
-For example, render the first reasonable number of companies (use the existing project convention if one exists; otherwise choose a conservative preview such as 100).
-
-Do not interpret this preview limit as the selected portfolio limit.
-
-Example:
-
-total_count = 4,823
-displayed companies = first 100
-finalize → all 4,823 matching CAGIDs
-
-This distinction is critical.
-
-Portfolio business semantics must remain unchanged.
-
-I. OPTIMIZE FILTERING
-
-Do not repeatedly perform expensive dataframe scans/joins if a normalized in-memory structure can answer the filters efficiently.
-
-Build reusable normalized/indexed fields for:
-
-Geography
-Country
-MLE
-L1
-L2
-L3
-CAGID
-
-Preserve:
-
-OR within the same filter dimension;
-AND across dimensions;
-no explicit L3 → all valid L3 beneath selected L2.
-
-Do not change the underlying selection results.
-
-J. MLE DATA SHOULD NOT BLOCK BASIC STEP 2.2 AVAILABILITY
-
-Inspect whether parsing the ~22 MB MLE workbook is delaying the entire catalog.
-
-If the basic catalog can be created from the relationship master + geography mapping, consider lazy-loading MLE enrichment in a safe way:
-
-relationship master + geography
-→ basic Step 2.2 catalog immediately available
-
-MLE enrichment
-→ loaded/cached for MLE filtering and downstream details
-
-Only do this if it preserves correct MLE filtering.
-
-Do not return incomplete/incorrect MLE results.
-
-The goal is to prevent a large enrichment file from unnecessarily blocking the entire Step 2.2 screen.
-
-K. FRONTEND LOADING / ERROR STATES
-
-Preserve v31 styling.
-
-Give the user a clean existing-style loading state while catalog is loading.
-
-Do not expose technical messages like:
-
-Python filenames
-stack traces
-XLSX parsing details
-APPEND
-
-If catalog genuinely fails, show a concise functional error rather than an indefinitely spinning screen.
-
-Example:
-
-Portfolio data could not be loaded. Retry.
-
-Do not silently substitute demo data.
-
-L. COUNTRY TYPE-AHEAD
-
-Preserve the existing country control visually but make it searchable.
-
-User should be able to type:
-
-Pol
-
-and quickly reach:
-
-Poland
-
-or:
-
-Uni
-
-→ United Kingdom / United States.
-
-Use valid backend values only.
-
-No new UI framework.
-
-M. LIVE API VERIFICATION
-
-From the actual browser, verify:
-
-opening Step 2.2 calls /portfolio/catalog;
-changing Country generates /portfolio/search;
-changing L2/L3 generates /portfolio/search;
-matching-company table uses the returned preview;
-finalize resolves the full selected population server-side;
-upload continues to work.
-
-Keep standard Uvicorn/API access logs enabled so this is observable during demos.
-
-N. PERFORMANCE TARGETS
-
-Do not fake these with hardcoded responses, but aim for:
-
-Warm backend
-
-Step 2.2 catalog: ideally <1 second, acceptable around 1–2 seconds;
-normal filtered search: ideally <1 second;
-browser should not freeze rendering massive result sets.
-
-Cold initial real-data normalization may take longer, but after it completes, subsequent catalog/search actions should reuse the loaded data.
-
-Report actual measured timings rather than claiming these targets if they are not reached.
-
-O. DO NOT BREAK THE CURRENT REAL-DATA CONTRACT
-
-Preserve:
-
-relationship_master.xlsx or current authoritative renamed equivalent;
-country mapping;
-MLE enrichment;
-real OSUC;
-CAGID identity;
-real RRR/classification;
-no silent demo fallback.
-
-Portfolio upload remains:
+It should be:
 
 CAGID
 CAGID Name
 
 only.
 
-P. STRICT NON-REGRESSION
+Explain:
 
-Do not change:
+how matching works;
+what backend fields are resolved;
+whether CAGID is treated as text;
+top-20 sample generation;
+whether actual XLSX upload was tested;
+matched/unmatched/duplicate results.
 
-Step 1 business prompts;
-Step 2.1 methodology;
-Step 2.3 prompt/methodology;
-Step 2.4 V6 prompt/methodology;
-original v31 visual styling;
-portfolio selection semantics.
-Q. VALIDATION
+Give the current exact sample filename and path.
 
-Before declaring done:
+13. STEP 2.3
 
-Step 1
+Explain:
 
-/health PASS
-correct portfolio-agent interpreter PASS
-Theme Quality Sonnet call PASS
-no Helix timeout PASS
-Gemini discovery PASS
-valid events parsed PASS
+prompt;
+model;
+routes/services;
+factor generation;
+High/Medium importance;
+deterministic weighting;
+feedback/revision;
+current working status.
 
-Step 2.2
+Also list known frontend mismatches against v31.
 
-cold data-load time measured
-warm /catalog time measured
-filtered /search time measured
-catalog does not send whole company universe
-initial screen does not render 84k companies
-large searches return total_count + limited preview
-finalize still represents all matches
-Country type-ahead works
-MLE works
-L2/L3 checkboxes work
-real data only
-upload still matches 20/20 test CAGIDs
+Do not say it matches v31 unless you performed a side-by-side comparison.
 
-Regression
+14. STEP 2.4
 
-Step 2.1 intact
-Step 2.3 intact
-Step 2.4 V6 intact
-v31 frontend intact
-FINAL RESPONSE
+Explain both:
 
-Report only:
+V5.2
+purpose;
+CSV taxonomy dependency;
+why it remains;
+V6
+prompt;
+independent factor identification;
+structural persistence rule;
+scoring;
+buffer logic;
+importance;
+weighting;
+current API flow.
 
-ROOT CAUSE — STEP 1 THEME QUALITY
+Explain all frontend differences still known against v31, particularly:
 
-ROOT CAUSE — STEP 1 DISCOVERY
+dark/black table header versus grey;
+Factor Importance High/Medium control;
+cards/tables/spacing.
+15. FRONTEND / V31 DIFFERENCES
 
-ROOT CAUSE — STEP 2.2 DELAY
+Perform a source comparison, without modifying anything.
 
-Break Step 2.2 timing into:
+Compare current frontend against:
 
-XLSX reading
-normalization/join
-catalog generation
-search
-API transfer
-frontend rendering
+UI Design\icm-pm-rapid-portfolio-review-v31.html
 
-FIXES IMPLEMENTED
+Give me:
 
-FILES CHANGED
+Area
+v31 behavior/style
+Current behavior/style
+Difference
+File/selectors responsible
+Recommended minimal correction
 
-PERFORMANCE BEFORE / AFTER
+Focus especially on Steps 2.3 and 2.4.
 
-Include measured timings.
+16. CURRENT PROMPT ARCHITECTURE
 
-STEP 1
+List every prompt currently used at runtime.
 
-Theme Quality: PASS/FAIL
-Market Scanner: PASS/FAIL
+For each:
 
-STEP 2.2
+Prompt filename
+Business purpose
+Source/original prompt it comes from
+Model
+Calling service
+Inputs
+Output
 
-catalog: PASS/FAIL + timing
-search: PASS/FAIL + timing
-no 84k initial render: PASS/FAIL
-country search: PASS/FAIL
-finalize-all-matches semantics preserved: PASS/FAIL
-upload 20/20: PASS/FAIL
+Distinguish:
 
-REGRESSION
+original business prompts;
+runtime splits derived from them;
+implementation helper prompts;
+proposed prompts not yet approved.
+17. WHAT YOU LEARNED / DECISION RATIONALE
 
-Step 2.1 PASS/FAIL
-Step 2.3 PASS/FAIL
-Step 2.4 PASS/FAIL
-v31 PASS/FAIL
+I do not need private hidden chain-of-thought.
 
-Do not make unrelated changes.
+Give me the useful engineering rationale and conclusions you reached, including:
+
+what assumptions you initially made that were wrong;
+what repository facts changed your understanding;
+why specific fixes were chosen;
+alternatives considered and rejected;
+what architecture you now believe is safest;
+areas where you are still uncertain.
+
+This section should be sufficient for another senior engineer to understand the direction without seeing your internal reasoning.
+
+18. WHAT MUST NOT BE CHANGED
+
+Based on your current understanding, explicitly list the working bone.
+
+Example:
+
+File / feature
+Why it must be preserved
+What would break if refactored
+
+Include original v31 design, working APIs, prompts, scoring, real-data mappings, etc.
+
+19. OPEN ISSUES
+
+Give one table:
+
+Priority
+Issue
+Current symptom
+Root cause known? YES/NO
+Proposed next action
+Risk
+Blocks Step 2.5? YES/NO
+
+Do not mark something solved merely because the backend imports.
+
+Distinguish:
+
+code import test;
+API test;
+live model call;
+browser end-to-end test.
+20. STEP 2.5 READINESS
+
+Do not implement Step 2.5 yet.
+
+Based on the code and existing Step 3a/Step 3b business prompts, state what is still required to implement:
+
+SEC + Web;
+CAM + Web;
+CAM + SEC + Web.
+
+Identify:
+
+existing UI placeholders/functions;
+missing backend routes/services;
+SEC/Stylus integration requirement;
+CAM retrieval/input requirement;
+Web evidence service that can be reused;
+deterministic scoring/calculation components that can be reused;
+missing information that must be obtained before coding.
+21. RECOMMENDED NEXT ORDER OF WORK
+
+Give a prioritized sequence.
+
+I expect something broadly like:
+
+1. stabilize runtime/process/authentication
+2. verify Step 1
+3. make Step 2.2 demo-stable
+4. reconcile Step 2.3/2.4 with v31
+5. freeze Steps 1–2.4
+6. implement Step 2.5
+
+But derive the final order from the actual repository state.
+
+Explain why each task should come before the next.
+
+22. SAFE ROLLBACK / RECOVERY
+
+Tell me:
+
+which backups exist;
+which known-working files exist;
+how to recover if the current branch breaks;
+which files constitute the latest stable baseline.
+
+Do not create new backups during this report unless absolutely necessary.
+
+23. FINAL EXECUTIVE SUMMARY
+
+Finish with no more than ~15 bullets covering:
+
+what works;
+what was fixed;
+what is still broken;
+largest technical risk;
+largest demo risk;
+current architecture direction;
+what should happen next.
+
+Be critical. Do not tell me “everything works” unless it has actually been validated end-to-end.
+
+Use exact filenames, routes, errors, models and observed counts wherever available.
+
+Do not make any code changes while preparing this report.
