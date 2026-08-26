@@ -1,218 +1,79 @@
+No — the previous wording said “up to 3 events/theme”, which is not strict enough. That would legally allow 1 or 2 events. For your RPR rule, it should be EXACTLY 3 valid events for every accepted theme.
 
-Do not work on Step 2.1, 2.2, 2.3, 2.4, 2.5, deployment, cleanup, visual changes, or refactoring. Do not redesign the working architecture. Preserve the current v31 UI and the existing progressive per-event pipeline:
+Replace every reference to “up to 3” with this hard rule:
 
-Gemini discovery → Gemini evidence enrichment → Opus refinement.
+NON-NEGOTIABLE EVENT COUNT RULE
 
-We have spent too much time patching symptoms. I want you to identify and eliminate the ROOT CAUSES of Trigger 1 instability end-to-end.
+For every theme accepted for scanning, Trigger 1 must return EXACTLY 3 distinct, valid, evidence-supported market events.
 
-Current observable defect:
+Accepted theme → exactly 3 events
 
-A scan can discover events successfully but individual events later become RETAINED with “Enrichment Incomplete”.
-Example current run: 4 events detected but 21 sections missing.
-Some events become READY while others fail enrichment/refinement in the same scan.
-We have previously observed Gemini responses that visibly contain an events array but the backend still raises Discovery response did not contain an events array.
-We have observed discovery events rejected because required-field parsing did not accept the model's returned shape.
-We have observed Gemini enrichment return output that could not populate the required 8 sections.
-We have observed Opus refinement fail with Opus batch response did not contain an events array.
-Re-scan therefore behaves nondeterministically.
+Not 1.
+Not 2.
+Not “up to 3.”
+Exactly 3.
 
-YOUR TASK IS IMPLEMENTATION, NOT ANOTHER LONG ANALYSIS.
+A theme must NOT be marked discovery-complete or READY with fewer than 3 valid events.
 
-First inspect the exact live code paths used by server.py for Trigger 1. Trace one event from theme submission all the way through discovery, enrichment, Opus refinement and UI-ready result.
+If the first Gemini discovery call produces fewer than 3 valid events after normalization/validation:
 
-Then implement a robust normalization boundary after every LLM call.
+Keep every valid event already found.
+Calculate missing_event_count = 3 - valid_event_count.
+Run a targeted gap-fill discovery only for the missing number of events.
+Explicitly instruct Gemini not to repeat already accepted events.
+Normalize and validate the additional results.
+Deduplicate semantically, not merely by exact title.
+Continue until exactly 3 valid distinct events exist or the bounded recovery policy is exhausted.
 
-The model must NOT be trusted to return one exact JSON envelope. Build one canonical internal schema and normalize all legitimate variants into it before the rest of the pipeline sees them.
+Never fabricate an event simply to reach three.
 
-For discovery, accept legitimate variants including:
+If three evidence-supported events genuinely cannot be obtained after the bounded recovery attempt, the theme must return:
 
-{"events":[...]}
-{"identified_events":[...]}
-{"market_events":[...]}
-nested one-level wrapper objects
-fenced JSON
-prose followed by JSON
-bare event arrays
-one valid event object
+DISCOVERY_INCOMPLETE
+valid_events: <0|1|2>
+required_events: 3
+reason: <explicit technical/evidence reason>
 
-Do NOT silently accept malformed/incomplete content. Normalize aliases first, then validate.
+It must not silently proceed as a successful 1-event or 2-event theme.
 
-Separate these two concepts:
+Once exactly 3 events have been accepted, enrichment and Opus refinement must run independently for all three events.
 
-MODEL OUTPUT SHAPE DIFFERENCE
+A later enrichment/refinement failure on one event must not delete the event or reduce the theme's event count. Preserve its strongest successful upstream representation and expose Retry for only the failed stage.
 
-versus
+Therefore the invariant throughout Trigger 1 is:
 
-GENUINELY MISSING REQUIRED BUSINESS CONTENT
-
-A model response must never be rejected merely because the wrapper/key name differs when the underlying event is valid.
-
-Apply the same principle independently to:
-
-A. Discovery
-
-Canonical internal output:
-
-{
-  "events": [...]
-}
-
-B. Evidence enrichment
-
-Normalize directly to the canonical eight Step-1 sections:
-
-Event Overview
-Event History
-Direct Impact Geographies
-Contagious Impact Geographies
-Equity Market Impact
-Credit Market Impact
-Commodity Market Impact
-Assumptions
-
-Accept sensible aliases/casing/markdown/JSON variations but never invent missing evidence.
-
-C. Opus refinement
-
-Opus is refining ONE event. Do not require an events[] wrapper unless the business contract genuinely requires it.
-
-Normalize any legitimate:
-
-event object
-{"event": {...}}
-{"events": [{...}]}
-{"refined_event": {...}}
-8-section object
-
-into one canonical refined-event representation.
-
-This is especially important: inspect why a single-event Opus refinement call is currently able to fail because an events array is absent. If the call semantically processes one event, the parser should not irrationally require a batch envelope.
-
-RETRY POLICY
-
-Do not blindly repeat expensive full calls.
-
-Use at most:
-
-original call
-→ local normalization/repair
-→ ONE lightweight model-format repair only if structurally necessary
-
-Never redo enterprise web research simply because JSON formatting was imperfect.
-
-PARTIAL RESULT POLICY
-
-Progressive results must remain.
-
-If discovery succeeds and enrichment fails:
-
-retain discovery;
-clearly mark enrichment failure;
-Retry should retry only the failed event/stage, not the entire theme.
-
-If enrichment succeeds and Opus refinement fails:
-
-retain the enriched eight-section result;
-Retry should retry only refinement;
-never downgrade the event back to discovery-only content.
-
-In other words:
-
-discovery success
+accepted theme
      ↓
-enrichment success
+EXACTLY 3 event identities
      ↓
-refinement success
+Event 1: discovery → enrichment → refinement
+Event 2: discovery → enrichment → refinement
+Event 3: discovery → enrichment → refinement
 
+Event identity/count is frozen once the three valid discovery events are accepted. Downstream failures cannot reduce 3 → 2 or replace one event with another.
 
-is monotonic. A downstream failure must never destroy an upstream successful artifact.
+Add an explicit backend invariant/assertion:
 
-TIMEOUTS
+EXPECTED_EVENTS_PER_THEME = 3
 
-Inspect the actual timeout on every stage:
+and ensure the frontend also treats:
 
-discovery
-enrichment
-refinement
-repair
+events_found < 3
 
-Do not simply increase all timeouts. Determine which calls genuinely time out versus which finish but fail parsing.
+as incomplete, never successful.
 
-Log separately:
+The acceptance test is therefore:
 
-MODEL_TIMEOUT
-MODEL_ERROR
-PARSE_NORMALIZED
-VALIDATION_FAILURE
-FORMAT_REPAIR
-SUCCESS
-REQUIRED DIAGNOSTICS
+Theme A = exactly 3 events
+Theme B = exactly 3 events
+Theme C = exactly 3 events
 
-For every event log:
+If three themes are scanned, the expected event identity count is 9, regardless of whether some individual events later display RETAINED because enrichment/refinement failed.
 
-theme_id
-event_id
-stage
-model
-elapsed_ms
-raw_output_chars
-parsed_root_type
-detected_keys
-normalization_path
-validation_result
-retry_count
-final_status
+And I would change the earlier prompt line from:
 
-Never log confidential full model content unnecessarily.
+“Preserve max 3 events/theme.”
 
-ACCEPTANCE TEST
+to:
 
-After implementation, run a real Trigger-1 test with at least:
-
-US Trade Policy & Tariffs
-Global Monetary Policy
-
-Target up to 3 events/theme.
-
-A test is not considered successful merely because HTTP = 200.
-
-Report for every event:
-
-DISCOVERY       PASS/FAIL + seconds
-ENRICHMENT      PASS/FAIL + seconds
-OPUS REFINEMENT PASS/FAIL + seconds
-SECTIONS        x/8
-FINAL STATUS    READY / RETAINED / FAILED
-
-Also report total scan elapsed time.
-
-Test parser normalization independently against all known output shapes so we are not waiting several minutes for live calls merely to test JSON parsing.
-
-HARD CONSTRAINTS
-Do not change the business prompt merely to hide parser defects.
-Do not reduce evidence quality.
-Do not remove Gemini enterprise web search.
-Do not remove Opus refinement.
-Do not merge themes.
-Preserve max 3 events/theme.
-Preserve independent per-theme/per-event processing.
-Preserve current fallback/retained behavior.
-Preserve v31 UI.
-No broad refactoring.
-Do not touch Step 2.x.
-Do not ask me repeatedly for permission for normal inspection/edit/test commands. Execute the complete stabilization pass.
-Do not spend tokens narrating every command while working.
-
-At the end give me one concise implementation report containing:
-
-exact root causes found;
-exact files modified;
-exact code behavior changed;
-before/after failure behavior;
-real test results and elapsed times;
-any remaining failure mode;
-whether Trigger 1 is now safe enough for a live demo.
-
-If something is not actually tested, label it NOT TESTED. Do not call code inspection a successful end-to-end test.
-
-One thing I would not let Claude do again is simply raise timeouts or keep adding parser regex patches one by one. Trigger 1 needs one canonical normalization layer at every model boundary. That is the architectural fix that should make these repeated "events array" / missing-section / refinement-envelope problems stop recurring.
+“Preserve the strict business rule: EXACTLY 3 distinct validated events per accepted theme. Three is both the minimum and maximum. Never mark a theme successful with fewer than 3.”
