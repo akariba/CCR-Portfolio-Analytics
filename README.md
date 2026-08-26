@@ -1,590 +1,800 @@
-TRIGGER 1 ONLY — FINAL ROOT-CAUSE + PERFORMANCE STABILIZATION.
+CONTEXT
 
-Do not touch Step 2.x.
-Do not redesign the frontend.
-Do not change v31 styling.
-Do not work on Step 2.5.
-Do not clean unrelated files.
-Do not use subagents.
-Do not repeatedly ask me for approval.
-Do not make broad speculative changes.
+You are working on my existing Rapid Portfolio Review AI application.
 
-Work directly, test end-to-end, and return the mandatory implementation report at the end.
+CURRENT WINDOWS PROJECT ROOT:
+C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI
 
-PROJECT:
-Rapid Portfolio Review_AI
+IMPORTANT:
+This project is currently WORKING on my Windows/client environment.
 
-TRIGGER 1 FLOW MUST REMAIN:
+I am preparing to migrate the application to a Market Dev UNIX server so that the app can eventually be accessible to other users.
 
-Gemini enterprise web discovery
-→ Gemini evidence enrichment
-→ Claude Opus refinement
+DO NOT migrate it yet.
+DO NOT redesign it.
+DO NOT refactor working code.
+DO NOT "clean up" code stylistically.
 
-Maximum 3 events per theme.
+Your task in this phase is ONLY:
 
-========================================================
-OBSERVED FAILURE — IMPORTANT
-========================================================
+1. inspect the complete project,
+2. determine exactly which files are truly required for the working application,
+3. identify files that are definitely unnecessary for runtime/deployment,
+4. safely clean the project without breaking anything,
+5. leave me with a clean, portable deployment baseline ready to copy to UNIX.
 
-The latest real run proves the Gemini API itself is often SUCCESSFUL.
+==================================================
+ABSOLUTE RPR SAFETY RULE / BIBLE RULE
+==================================================
 
-Example failure:
+The current known-working application is the immutable baseline.
 
-Global Monetary Policy:
+Any code, frontend behaviour, prompt, endpoint, workflow, or feature that currently works is part of the permanent backbone.
 
-Gemini discovery:
-status=SUCCESS
-duration_ms≈121821
-output_chars≈20042
+DO NOT:
+- rewrite working modules,
+- refactor working modules,
+- reorganize code simply for aesthetics,
+- rename runtime files,
+- change API routes,
+- change frontend IDs,
+- change frontend behaviour,
+- alter model routing,
+- alter Step 1 / Step 2 logic,
+- remove prompts because they "look old",
+- remove Python files because they "look unused",
+- remove templates based only on filename,
+- remove helper files unless you have proven they are not required,
+- change the frozen visual/UI baseline,
+- change the working RPR workflow.
 
-Parser then reports approximately:
+If there is ANY uncertainty about whether a file is required:
+KEEP IT.
 
-root_type=dict
-events_found=1
-events_accepted=0
-events_rejected=1
+False positives are unacceptable.
 
-and the event is rejected for missing required event field(s).
+==================================================
+CURRENT RPR ARCHITECTURE / WORKING BASELINE
+==================================================
 
-Application then incorrectly surfaces:
+The application is a FastAPI-based RPR application.
 
-GEMINI DISCOVERY FAILED
-"No usable event..."
+Important known project components include, but are not limited to:
 
-Meanwhile:
+backend/
+templates/
+RUNTIME_ENV.ps1
 
-US Trade Policy & Tariffs:
+Known backend/runtime files from the working project include things such as:
 
-Gemini discovery:
-status=SUCCESS
-duration≈126s
-output_chars≈36,499
-events_found=3
-events_accepted=3
-
-and works correctly.
-
-Therefore DO NOT start by changing networking, TLS, certificates,
-timeouts or retry counts.
-
-The first task is to establish EXACTLY why semantically valid Gemini
-responses sometimes fail our event contract.
-
-========================================================
-PART 1 — CAPTURE THE REAL FAILURE
-========================================================
-
-Inspect:
-
+server.py
 market_event_scout.py
 rpr_search_agent.py
-the actual Trigger-1 discovery prompt
-all event Pydantic/dataclass/schema definitions used by discovery.
-
-Run ONE failing-theme discovery only if needed.
+narrative_enricher.py
+rpr_enhancement_routes.py
+main.py
+llm_gateway.py
+models.py
+scoring.py
+prompt_loader.py
+r2d2_prompt.py
 
-For that run preserve the raw Gemini answer in memory/logging long enough
-to compare it to the expected schema.
+There may be additional newer Step 2.x modules added since this list was created.
+You MUST discover those from the actual source tree rather than assuming this list is complete.
 
-Do NOT dump sensitive/raw evidence into permanent files.
+Known functional areas include:
 
-For every rejected candidate log only:
+Step 1
+- Trigger 1 Market Scanner
+- up to 3 events per theme
+- discovery
+- evidence enrichment
+- refinement
+- per-event pipelines
+- AI Assist replacement-theme functionality
+- feedback functionality
 
-candidate index
-candidate top-level keys
-expected required keys
-missing keys
-recognized aliases
-rejection reason
+Step 1 Trigger 2
+- User Narrative functionality remains present
 
-Then answer:
+Step 2.1
+- Scenario & Assumptions
+- additional context
+- assumptions files/templates
 
-WHY was Gemini's Global Monetary Policy result detected as one event but
-rejected?
+Step 2.2
+- Portfolio Selection
+- portfolio / sector / CAGID related backend logic where implemented
 
-I need the exact schema mismatch, not "the model returned bad JSON."
+Step 2.3 / Step 2.4
+- Event Driven Risk Factors / Sector Inherent Risk Factors where implemented
+
+There may also be new code implemented after this summary.
+The FILESYSTEM and SOURCE CODE are authoritative.
+
+The frontend currently uses the accepted v31-derived working visual baseline.
+Do NOT alter its layout or behaviour.
 
-Examples of what to check:
+==================================================
+MODEL / ENTERPRISE ENVIRONMENT CONTEXT
+==================================================
+
+This is a company-controlled environment.
+
+Do NOT introduce:
+- public internet APIs,
+- pip libraries purely for convenience unless already required,
+- new external services,
+- consumer API keys,
+- hardcoded secrets.
+
+Current application may use enterprise model/API configuration via environment variables.
+
+Likely routing includes:
+- Gemini enterprise search/retrieval
+- Claude models
+- organization-approved endpoints/tokens/certs
+
+Do NOT expose secrets.
+
+Do NOT print token values.
+
+==================================================
+WHY WE ARE CLEANING
+==================================================
+
+The Windows project root has accumulated development artifacts.
+
+Examples visible in the root currently include things such as:
+
+server_stdout.log
+server_stderr.log
+
+.rpr_v31_visual_upgrade_state.json
+
+apply_rpr_v31_full_visual_upgrade.py
+rollback_rpr_v31_full_visual_upgrade.py
+validate_rpr_v31_full_visual_upgrade.py
+
+apply_rpr_v31_visual_patch.py
+apply_rpr_v31_visual_patch_v2.py
+apply_rpr_v31_visual_patch_v3.py
+
+PROJECT_STATE_HANDOFF.md
+PROJECT_KNOWLEDGE_TRANSFER.md
+RESTART_GUIDE.md
+KNOWN_ISSUES.md
+
+extract_resp.json
+
+outputs/
+Testing/
+tests/
+docs/
+UI Design/
+portfolio-agent/
+
+There may be many other files.
+
+IMPORTANT:
+The names above DO NOT mean they should automatically be deleted.
+
+You must determine whether each is:
+A. runtime critical
+B. deployment critical
+C. development-only but useful
+D. generated/transient
+E. obsolete and safe to exclude
 
-event title field mismatch
-event date field mismatch
-why_material/materiality mismatch
-nested event object
-section-style object returned instead of event object
-different capitalization
-different property aliases
-markdown/prose wrapper
-Gemini using the business prompt's human-readable headings instead of
-the machine contract
+==================================================
+PHASE 1 — COMPLETE INVENTORY
+==================================================
 
-========================================================
-PART 2 — FIX THE DISCOVERY CONTRACT AT THE SOURCE
-========================================================
+First recursively inspect the full project tree.
+
+Do not modify anything yet.
+
+Produce an inventory grouped by:
+
+1. Runtime application code
+2. Frontend/runtime templates
+3. Prompt files
+4. Configuration/environment files
+5. Data files required by runtime
+6. Static resources
+7. Tests
+8. Documentation
+9. Logs
+10. Generated output
+11. Temporary/cache files
+12. Migration/patch/helper scripts
+13. Duplicate files
+14. Unknown files requiring further investigation
+
+For every file considered for removal, determine:
+
+- Is it imported by Python?
+- Is it dynamically imported?
+- Is it referenced by another file?
+- Is its filename constructed dynamically?
+- Is it loaded by PromptLoader?
+- Is it opened/read via Path/open/json/csv/pandas/etc.?
+- Is it referenced by FastAPI routes?
+- Is it referenced by HTML/JS?
+- Is it referenced by environment/configuration?
+- Is it referenced by a startup script?
+- Is it used by Step 1?
+- Is it used by Step 2.x?
+- Is it used as a runtime template?
+- Is it required by a download/template endpoint?
+- Is it required by tests that validate runtime behaviour?
+- Is it the only copy of some required resource?
+- Is it a migration/rollback artifact only?
+- Is it simply generated output/log/cache?
 
-Discovery is currently producing 20k–36k characters and taking about
-2 minutes.
+Do NOT infer this from filenames alone.
 
-This is too large for EVENT DISCOVERY.
+==================================================
+PHASE 2 — DEPENDENCY AND REFERENCE ANALYSIS
+==================================================
+
+Perform repository-wide searches for references before classifying anything as removable.
+
+At minimum inspect:
+
+Python imports:
+import ...
+from ... import ...
+
+Dynamic imports
+
+Path operations:
+open(
+Path(
+read_text
+read_bytes
+json.load
+json.loads
+pandas.read_csv
+pandas.read_excel
+csv
+glob
+rglob
+
+Template loading
+
+Prompt loading
+
+HTML fetch calls
+
+JavaScript API routes
+
+Static file references
+
+FastAPI include_router calls
+
+FastAPI route registrations
+
+startup scripts
+
+environment variable names
+
+subprocess calls
+
+filesystem-relative paths
+
+absolute Windows paths
+
+references to:
+backend
+templates
+prompts
+UI Design
+outputs
+Testing
+tests
+docs
+portfolio-agent
+
+Also inspect whether modules are referenced indirectly by:
+server.py
+main.py
+FastAPI router registration
+PromptLoader
+frontend JavaScript
+
+==================================================
+PHASE 3 — DETERMINE REAL STARTUP PATH
+==================================================
+
+Establish the CURRENT working application startup chain.
+
+Determine exactly:
+
+1. Which Python module creates the FastAPI app.
+2. Which command currently starts it.
+3. Whether the app is currently run as something like:
+
+uvicorn server:app
+or
+uvicorn backend.server:app
+or
+another target.
+
+Do not guess.
 
-Redesign ONLY THE DISCOVERY CONTRACT, while preserving its business
-purpose.
+Inspect the actual code and the current startup documentation/logs.
 
-Discovery should NOT generate the eight final risk-report sections.
+Determine which Python modules become reachable from startup.
 
-Discovery should return ONLY a compact manifest of up to 3 events:
+Create a dependency map:
 
-{
-  "theme": "...",
-  "events": [
-    {
-      "event_id": "...",
-      "title": "...",
-      "event_date": "...",
-      "why_material": "...",
-      "primary_geography": ["..."],
-      "evidence_refs": [...]
-    }
-  ]
-}
+STARTUP
+  ->
+FastAPI app
+  ->
+routers
+  ->
+services
+  ->
+model gateways
+  ->
+prompt loaders
+  ->
+prompt files
+  ->
+templates/data
 
-Use the application's actual field names if they differ.
+This map will be used to prove which files are deployable runtime dependencies.
 
-Each candidate needs only enough evidence to establish:
-WHAT happened,
-WHEN,
-WHERE,
-WHY it is credit/market-risk material,
-and the authoritative sources supporting its existence.
+==================================================
+PHASE 4 — PROMPTS ARE HIGH RISK: DO NOT CASUALLY DELETE
+==================================================
 
-TARGET discovery output:
-preferably <= 8,000 characters for 3 events.
+Prompt files require special handling.
 
-Do not ask discovery to write:
-Event History,
-Direct Impact,
-Contagious Impact,
-Equity Impact,
-Credit Impact,
-Commodity Impact,
-Assumptions.
+Search the complete repository for every prompt-loading mechanism.
 
-Those belong to ENRICHMENT.
+Determine:
 
-========================================================
-PART 3 — USE REAL STRUCTURED OUTPUT IF SUPPORTED
-========================================================
+- exact prompt directories
+- prompt_loader mappings
+- hardcoded prompt names
+- dynamically generated prompt names
+- Step 1 prompts
+- Step 2 prompts
+- R2D2 prompts
+- assessment prompts
+- refinement prompts
+- discovery prompts
+- enrichment prompts
+- quality-gate prompts
 
-Inspect the exact google.adk.models.Gemini / enterprise_web_search path
-used by this project.
+A prompt may look unused but still be loaded dynamically.
 
-Determine whether this approved ADK configuration supports an actual
-response_schema / structured JSON output while enterprise web search is
-active.
+DO NOT delete any prompt unless you can prove there is no runtime or planned current UI/backend path to it.
 
-IF YES:
-use a real schema for the discovery manifest.
+If uncertain:
+KEEP IT.
 
-IF NO:
-do NOT invent unsupported parameters.
+==================================================
+PHASE 5 — WINDOWS → UNIX PORTABILITY AUDIT
+==================================================
 
-Instead require exactly one JSON root object and validate it against the
-canonical event schema.
+We will later run this application on UNIX.
 
-The canonical schema must live in ONE place in code.
+DO NOT change behaviour yet.
 
-The prompt, parser and validator must not each maintain slightly
-different definitions.
+But identify portability issues.
 
-========================================================
-PART 4 — BOUNDED NORMALIZATION, NOT HEURISTIC CHAOS
-========================================================
+Search for:
 
-Before rejecting an otherwise valid candidate, support a SMALL explicit
-alias map.
+C:\
+backslashes in constructed paths
+Windows-only commands
+PowerShell-only runtime dependencies
+.ps1 startup assumptions
+case-insensitive filename assumptions
+drive letters
+OneDrive paths
+localhost assumptions
+127.0.0.1 assumptions
+hard-coded usernames
+hard-coded project roots
+Windows certificate paths
+Windows temporary directories
+os.system calls
+subprocess calls using Windows utilities
 
-Examples only where genuinely observed:
+Also identify:
 
-title:
-title
-event_title
-name
+case-sensitive import problems that would work on Windows but fail on UNIX.
 
-event_date:
-event_date
-date
-published_at
+Example:
+file:
+Market_Event_Scout.py
 
-why_material:
-why_material
-materiality
-why_it_matters
+import:
+market_event_scout
 
-Do NOT recursively scan arbitrary nested citation/source objects and
-mistake them for events.
+That could behave differently on UNIX.
 
-Do NOT accept an object merely because it contains "name" or "url".
+DO NOT fix these yet unless the change is completely mechanical and risk-free.
 
-A valid event candidate must satisfy a distinctive event signature.
+Report them first.
 
-Prefer:
+==================================================
+PHASE 6 — PYTHON DEPENDENCY AUDIT
+==================================================
 
-required event fields + candidate being located inside the canonical
-events container.
+Determine the actual Python packages required by runtime.
 
-========================================================
-PART 5 — SCHEMA-REPAIR WITHOUT REPEATING WEB SEARCH
-========================================================
+Inspect all Python imports.
 
-This is important for latency.
+Separate imports into:
 
-If the Gemini web search succeeds but the response is structurally
-invalid:
+A. Python standard library
+B. third-party runtime dependencies
+C. development/test-only dependencies
 
-DO NOT immediately repeat the expensive enterprise web search.
+Check whether the repository already has:
 
-Attempt:
+requirements.txt
+requirements-dev.txt
+pyproject.toml
+poetry.lock
+Pipfile
+environment.yml
+setup.py
+setup.cfg
 
-1. deterministic normalization;
-2. deterministic JSON extraction;
-3. bounded alias mapping.
+Do NOT generate a huge requirements file from `pip freeze`.
 
-If the content is clearly the intended event data but still fails only
-because of formatting/schema shape, use ONE cheap schema-repair pass
-WITHOUT web search.
+We need only packages actually required by this application.
 
-The repair input is the already-returned Gemini text.
+Prepare a proposed minimal runtime dependency list.
 
-Its only job:
+DO NOT uninstall anything from my Windows machine.
 
-"Transform this existing discovery response into the canonical event
-manifest. Do not add facts."
+==================================================
+PHASE 7 — CLASSIFICATION
+==================================================
 
-It must not research again.
+Classify every candidate cleanup item into one of these categories:
 
-Only if the original Gemini result contains genuinely no usable event
-information may a discovery web-search retry occur.
+KEEP_RUNTIME
+KEEP_DEPLOYMENT
+KEEP_REFERENCE
+ARCHIVE_ONLY
+SAFE_TO_DELETE
+UNKNOWN_KEEP
 
-Maximum full discovery web-search attempts per theme = 2.
+Use a conservative standard.
 
-========================================================
-PART 6 — FIX MISLEADING FAILURE STATES
-========================================================
+SAFE_TO_DELETE must mean:
+you have strong evidence that removing it cannot affect the current working application.
 
-Currently this:
+Examples that are usually candidates but still need verification:
 
-Gemini status=SUCCESS
-→ schema rejected
-→ "GEMINI DISCOVERY FAILED"
+__pycache__/
+*.pyc
+.pytest_cache/
+temporary files
+old server logs
+generated stdout/stderr logs
+temporary JSON responses
+generated outputs
+old patch installers
+old visual migration scripts
+rollback scripts for already-frozen versions
 
-is misleading.
+But even these require repository verification.
 
-Separate these statuses:
+==================================================
+PHASE 8 — DO NOT DELETE UNIQUE SAFETY MATERIAL
+==================================================
 
-DISCOVERY_API_FAILED
-DISCOVERY_SCHEMA_INVALID
-DISCOVERY_NO_MATERIAL_EVENTS
-DISCOVERY_SUCCESS
+Files such as these may not be runtime dependencies but can still be valuable:
 
-The UI should not claim the web search failed when the web search
-actually succeeded.
+PROJECT_STATE_HANDOFF.md
+PROJECT_KNOWLEDGE_TRANSFER.md
+RESTART_GUIDE.md
+KNOWN_ISSUES.md
+docs/
+tests/
 
-========================================================
-PART 7 — ENRICHMENT OWNS THE EIGHT SECTIONS
-========================================================
+Do NOT simply delete useful documentation or tests.
 
-After the compact manifest is accepted, enrichment generates:
+Instead distinguish between:
 
-1 Event Overview
-2 Event History
-3 Direct Impact Geographies
-4 Contagious Impact Geographies
-5 Equity Market Impact
-6 Credit Market Impact
-7 Commodity Market Impact
-8 Assumptions
+runtime deployment bundle
+and
+development/reference repository.
 
-This stage should use the authoritative evidence framework already added.
+For deployment preparation, we may exclude development-only artifacts from the UNIX transfer while still preserving them locally.
 
-Prioritize:
+==================================================
+PHASE 9 — SAFE CLEANING APPROACH
+==================================================
 
-Tier 1:
-official government / regulators / central banks / statistical bodies /
-SEC or equivalent / rating agencies where accessible / issuer filings
+I want a clean deployable directory.
 
-Tier 2:
-Reuters, Bloomberg-quality institutional reporting, major financial
-press, recognized market-data/research providers
+However, do NOT permanently destroy questionable files.
 
-Tier 3:
-other credible sources only when Tier 1/2 cannot establish the claim.
+Preferred strategy:
 
-Prefer recent evidence relevant to the event.
+1. Keep the current working project untouched as much as possible.
+2. Identify SAFE_TO_DELETE transient artifacts.
+3. Remove only clearly generated/cache/log files.
+4. For obsolete but potentially useful development artifacts, place them outside the deployable baseline or classify them as ARCHIVE_ONLY.
+5. Do not move files that existing runtime code expects at a particular path.
 
-Never expose:
+If changing paths would be required:
+DO NOT MOVE THE FILE.
 
-vertexaisearch.cloud.google.com
-grounding-api-redirect
-Google internal redirect URLs
-internal API paths
+The application working state is more important than cosmetic folder cleanliness.
 
-Analyst-facing text should show publisher/domain or canonical public URL
-only.
+==================================================
+PHASE 10 — VERIFY CLEANUP DOES NOT BREAK RPR
+==================================================
 
-========================================================
-PART 8 — FAILURE IS PER EVENT, NOT PER THEME
-========================================================
+After cleanup, run the application's existing validation/tests.
 
-Do not discard an entire theme because one candidate is malformed.
+At minimum verify:
 
-If three candidates are returned and:
+1. Python modules import successfully.
+2. FastAPI app starts.
+3. No ModuleNotFoundError.
+4. No FileNotFoundError.
+5. No missing prompt.
+6. No missing template.
+7. No missing CSV/XLSX template.
+8. No broken frontend asset.
+9. No broken API route registration.
+10. Main frontend loads.
+11. Existing key API endpoints still respond.
 
-2 validate
-1 fails
+Where practical, verify the currently working RPR endpoints.
 
-continue with the 2 valid events.
+DO NOT trigger expensive external model calls unnecessarily.
 
-Attempt repair only for the failed candidate.
+Use health/startup/basic local endpoint validation first.
 
-The theme should fail only when zero usable events remain after bounded
-repair/retry.
+If existing tests exist, run the relevant non-destructive tests.
 
-Likewise enrichment failure of one event must not erase successful
-events from the same theme.
+==================================================
+PHASE 11 — CREATE DEPLOYMENT MANIFEST
+==================================================
 
-========================================================
-PART 9 — PARALLELISM / LATENCY
-========================================================
+Create:
 
-Inspect the current execution model before changing it.
+MARKETDEV_DEPLOYMENT_MANIFEST.md
 
-Desired structure:
+It must contain:
 
-themes can discover independently;
+SECTION 1 — Startup
+Exact Windows startup command currently used.
 
-once an event manifest exists, event enrichment should run concurrently
-with a SMALL bounded concurrency;
+SECTION 2 — Application entrypoint
+Exact FastAPI module and app variable.
 
-Opus refinement should not block already-discovered events from being
-shown in the UI.
+SECTION 3 — Required runtime directories
+Example:
+backend/
+templates/
+prompts/
+etc.
 
-Do NOT launch unbounded LLM calls.
+Use actual discovered paths.
 
-Suggested maximum:
-3 concurrent event enrichments.
+SECTION 4 — Required runtime files
+List the important files.
 
-Do not implement parallelism if it already exists correctly.
+SECTION 5 — Required Python packages
+Only actual runtime dependencies.
 
-First verify.
+SECTION 6 — Required environment variables
+NAMES ONLY.
 
-Add stage timing:
+Example:
+MODEL_ENDPOINT
+API_TOKEN
+CERT_PATH
 
-THEME:
-D0 discovery start
-D1 Gemini returned
-D2 parse/validation complete
+NEVER include secret values.
 
-EVENT:
-E0 enrichment start
-E1 Gemini returned
-E2 parse complete
-O0 Opus start
-O1 Opus returned
-DONE
+SECTION 7 — Required external enterprise services
+Describe them generically.
 
-Log milliseconds.
+SECTION 8 — Required filesystem resources
+CSV files
+Excel templates
+prompts
+etc.
 
-========================================================
-PART 10 — OPUS REFINEMENT CONTRACT
-========================================================
+SECTION 9 — Windows-specific dependencies
+Anything that must be replaced on UNIX.
 
-We previously saw Opus responses fail because the application expected an
-events array.
+SECTION 10 — Known UNIX migration risks
+Case sensitivity
+paths
+permissions
+certificates
+ports
+proxy
+environment variables
+etc.
 
-Inspect this contract too.
+SECTION 11 — Files excluded from deployment
+Explain why each excluded category is unnecessary.
 
-If Opus is refining ONE event, do not require it to return an array unless
-there is a real architectural reason.
+==================================================
+PHASE 12 — CREATE A DEPLOYMENT FILE LIST
+==================================================
 
-Use the smallest schema matching the operation:
+Create:
 
-single-event refinement → single event object
-theme batch refinement → events array
+MARKETDEV_FILELIST.txt
 
-Do not force incompatible response shapes.
+This must list exactly which files/directories should be transferred to Market Dev.
 
-Again, prefer a real structured response schema if supported by the
-approved gateway.
+Do not include logs/cache/transient output.
 
-========================================================
-PART 11 — QUALITY GATE
-========================================================
+But include all runtime dependencies.
 
-For each discovered event before enrichment require:
+==================================================
+PHASE 13 — CREATE CLEANUP REPORT
+==================================================
 
-material event title
-specific event/date
-clear relationship to selected theme
-at least one credible retrievable source
-no duplicate of another selected event
+Create:
 
-Rank candidates using:
+MARKETDEV_CLEANUP_REPORT.md
 
-materiality
-recency
-source authority
-credit relevance
-distinctiveness
+Show:
 
-Select the best maximum 3.
+A. Files removed
+B. Files archived/excluded
+C. Files retained despite looking obsolete
+D. Why they were retained
+E. Dependency evidence supporting each significant decision
+F. Runtime validation performed
+G. Result of validation
+H. Anything uncertain
 
-Do not select three versions of the same underlying event.
+==================================================
+PHASE 14 — GIT / RECOVERY SAFETY
+==================================================
 
-========================================================
-PART 12 — TESTS
-========================================================
+Before modifying anything:
 
-Do not spend the session repeatedly making live searches.
+Check whether this directory is a Git repository.
 
-First build deterministic regression fixtures using sanitized examples of
-the shapes ALREADY observed:
+Run:
+git status
 
-1 canonical JSON
-2 fenced JSON
-3 JSON preceded/followed by prose
-4 alias field names
-5 nested source/citation metadata
-6 human-readable section headings
-7 single event object
-8 canonical events array
-9 one invalid + two valid events
-10 malformed/truncated response
+Do not discard existing uncommitted work.
 
-Verify parser/validator behavior locally.
+Do not reset the repository.
 
-Then perform only:
+Do not checkout older versions.
 
-ONE live discovery:
-US Trade Policy & Tariffs
+Do not use:
+git reset --hard
+git clean -fd
+git restore .
+or anything destructive.
 
-ONE live discovery:
-Global Monetary Policy
+If Git is available, record the starting state in the cleanup report.
 
-Acceptance:
+==================================================
+PHASE 15 — IMPORTANT FILES VISIBLE IN ROOT
+==================================================
 
-US Trade:
-up to 3 accepted events.
+I can currently see files including:
 
-Global Monetary Policy:
-must no longer fail merely because Gemini selected a different JSON
-shape if the required information exists.
+.gitignore
+server_stdout.log
+server_stderr.log
+RUNTIME_ENV.ps1
 
-========================================================
-PERFORMANCE TARGET
-========================================================
+backend/
+templates/
+UI Design/
 
-Measure, do not fake.
+.rpr_v31_visual_upgrade_state.json
 
-Discovery should become materially faster because the requested output is
-small.
+apply_rpr_v31_full_visual_upgrade.py
+rollback_rpr_v31_full_visual_upgrade.py
+validate_rpr_v31_full_visual_upgrade.py
 
-Target:
-<=60 seconds/theme where provider/search latency permits.
+apply_rpr_v31_visual_patch.py
+apply_rpr_v31_visual_patch_v2.py
+apply_rpr_v31_visual_patch_v3.py
 
-More important:
-discovery payload should be compact, ideally <=8k chars.
+PROJECT_STATE_HANDOFF.md
+RESTART_GUIDE.md
+KNOWN_ISSUES.md
+PROJECT_KNOWLEDGE_TRANSFER.md
 
-Do not sacrifice authoritative evidence merely to hit a timer.
+extract_resp.json
 
-The key optimization is:
-SEARCH LESS OUTPUT, NOT LOWER QUALITY.
+portfolio-agent/
+tests/
+docs/
+outputs/
+Testing/
 
-========================================================
-DO NOT DO
-========================================================
+Again:
 
-Do not rewrite the whole Trigger 1 service.
+DO NOT DELETE THESE BASED ON NAME.
 
-Do not replace the progressive pipeline.
+Trace them first.
 
-Do not remove enterprise web search.
+Some patch scripts may now only be historical artifacts because the current v31 frontend is already the accepted baseline.
 
-Do not replace Gemini 3.5 Flash.
+If they are proven historical only:
+they can be excluded from the Market Dev deployment.
 
-Do not replace Opus 4.6.
+But do not change the resulting v31 frontend.
 
-Do not touch Step 2.
+==================================================
+PHASE 16 — DO NOT TOUCH SECRETS
+==================================================
 
-Do not change v31.
+Inspect configuration STRUCTURE but do not print secret values.
 
-Do not create speculative fallbacks.
+If RUNTIME_ENV.ps1 contains sensitive values:
 
-Do not silently fill missing evidence.
+Do not reproduce them in reports.
 
-Do not repeatedly rerun Gemini while debugging parsing.
+Instead list variable names only.
 
-========================================================
-MANDATORY IMPLEMENTATION REPORT
-========================================================
+We will create the UNIX equivalent separately after the cleanup.
 
-After completing the work, report exactly:
+==================================================
+FINAL EXECUTION RULE
+==================================================
 
-1. ROOT CAUSE
-For each failure shape observed:
-raw top-level shape
-expected shape
-why it failed
+Proceed conservatively.
 
-2. OLD DISCOVERY CONTRACT
-required fields
-typical chars
-observed latency
+You are authorized to remove ONLY files that are clearly:
 
-3. NEW DISCOVERY CONTRACT
-exact schema
-target size
+- generated logs
+- caches
+- temporary outputs
+- proven obsolete helper artifacts
 
-4. PARSER / VALIDATOR
-exact normalization/alias rules
-exact rejection rules
+AND whose removal has been demonstrated not to affect runtime.
 
-5. RETRY / REPAIR POLICY
-when deterministic repair occurs
-when no-web schema repair occurs
-when full web retry occurs
+For anything else:
+retain it and report it.
 
-6. CONCURRENCY
-what is parallel
-maximum concurrency
+The objective is NOT to make the directory as small as possible.
 
-7. FILES CHANGED
-file
-function
-specific reason
+The objective is:
 
-8. TEST RESULTS
-all deterministic fixtures
-US Trade live result
-Global Monetary Policy live result
+"A clean, auditable, minimal-enough, known-working RPR deployment baseline that can safely be moved from Windows to Market Dev UNIX."
 
-9. LATENCY
-D0→D1
-D1→D2
-enrichment
-Opus
-total
+==================================================
+FINAL RESPONSE TO ME
+==================================================
 
-10. OUTPUT QUALITY
-source tiers used
-duplicate handling
-freshness treatment
+When complete, report ONLY:
 
-11. REGRESSION
-confirm Trigger 2, Step 2.x and v31 were not modified.
+1. CLEANUP RESULT
+2. FILES REMOVED
+3. FILES EXCLUDED FROM MARKET DEV
+4. FILES RETAINED BECAUSE THEY MAY MATTER
+5. CURRENT VERIFIED STARTUP COMMAND
+6. FASTAPI ENTRYPOINT
+7. REQUIRED RUNTIME DIRECTORIES
+8. REQUIRED PYTHON PACKAGES
+9. WINDOWS-SPECIFIC ITEMS TO REPLACE ON UNIX
+10. VALIDATION RESULTS
+11. MARKETDEV_FILELIST.txt location
+12. MARKETDEV_DEPLOYMENT_MANIFEST.md location
+13. MARKETDEV_CLEANUP_REPORT.md location
+14. ANY BLOCKER BEFORE COPYING TO UNIX
 
-12. REMAINING ISSUES
-only actual unresolved defects.
-
-Do the implementation first.
-Do not give me a speculative essay before modifying/testing.
-Do not give me internal chain-of-thought.
-Give me the factual engineering report when finished.
+Do not start the UNIX migration yet.
+Stop after the clean Windows deployment baseline has been validated.
