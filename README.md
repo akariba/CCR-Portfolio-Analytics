@@ -1,587 +1,266 @@
-RPR FINAL STABILIZATION + REAL-DATA STEP 2 + CLEANUP
+RPR FRONTEND VISUAL RECONCILIATION — STEP 2.3 & STEP 2.4 ONLY
 
-Work only in the current project:
+Work only in:
 
 C:\Users\ak547743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI
 
-The application already has working functionality. Treat the current working implementation and original v31 UI as immutable bone.
+The purpose of this task is only to reconcile frontend/HTML/CSS differences between the current working application and the original v31 design, especially in Event-Driven Risk Factors and Sector-Inherent Risk Factors.
 
-Do not redesign, refactor broadly, replace prompts, change credit methodology, change model routing, remove working features, introduce mock/demo runtime results, or use public-web fallbacks.
+Do not modify business logic, prompts, models, backend services, data, API contracts, scoring, or assessment methodology.
 
-Make only the minimum targeted changes necessary to stabilize Steps 1–2.4, complete real-data Step 2.2, improve usability, and clean the data structure.
-
-1. INSPECT FIRST
-
-Before changing anything, inspect the actual current code and runtime.
-
-Check at minimum:
-
-server.py
-start_backend.ps1
-rpr_search_agent.py
-theme-assist / theme-quality files
-Step 1 discovery/enrichment/refinement code
-step2_routes.py
-step2_service.py
-step2_uploads.py
-step22_portfolio_service.py
-step22_portfolio_routes.py
-step22_real_data_loader.py
-Step 2.2 append JS/CSS
-current working HTML
-original UI Design\icm-pm-rapid-portfolio-review-v31.html
-all prompt/data filename references across the project
-
-Do not guess filenames, schemas, environment variables, or column names.
-
-2. BACKEND PYTHON ENVIRONMENT
-
-The backend must use exactly:
-
-portfolio-agent\.venv\Scripts\python.exe
-
-Confirm start_backend.ps1 launches this interpreter directly.
-
-Do not recreate/use the old Python 3.8 .venv.
-
-The equivalent direct command should be:
-
-& "..\portfolio-agent\.venv\Scripts\python.exe" -m uvicorn server:app --host 127.0.0.1 --port 8000
-
-Preserve the normal approved environment and dependencies.
-
-3. STEP 1 — RESTORE AND STABILIZE AI ASSIST / MARKET SCANNER
-
-AI Assist and Market Scanner must work again.
-
-Current browser errors include:
-
-RPR_THEME_GATE_MODEL must be set to the exact organization-approved Sonnet 5 identifier
-Discovery response did not contain an events array
-
-Diagnose both separately.
-
-For the theme-gate problem:
-
-inspect the approved environment/model configuration;
-use the exact organization-approved Sonnet 5 identifier already intended by the project;
-do not invent or downgrade the model;
-do not hardcode an unapproved identifier.
-
-For the discovery parsing problem:
-
-inspect the actual Gemini/ADK response;
-determine whether the issue is prompt output, adapter normalization, JSON extraction, or response parser;
-preserve the existing business rule of up to 3 events per theme;
-do not fabricate an empty or synthetic events array merely to suppress the error.
-
-Preserve:
-
-Gemini 3.5 Flash discovery/evidence;
-Claude Opus refinement;
-per-theme independent pipeline;
-current Step 1 business prompt;
-AI Assist replacement-theme functionality;
-feedback controls.
-
-Also note:
-
-ANTHROPIC_API_KEY is not set
-
-If this is only required for Trigger 2/R2D2, do not let it break Trigger 1. Report clearly which functionality requires it.
-
-4. STEP 2.1 — SCENARIO & ASSUMPTIONS
-
-Preserve the current Step 2.1 prompt/business objective.
-
-Do not rewrite its methodology.
-
-Ensure end-to-end flow works:
-
-selected Step 1 event
-→ Opus
-→ scenario narrative
-→ critical assumptions
-
-Fix only actual runtime/API issues.
-
-The previously identified raise_http / _raise_http exception-handler bug should remain fixed.
-
-Assumptions upload/download contract
-
-User-facing assumptions files must contain one column only:
-
-assumption
-
-Remove user-facing requirements for:
-
-time_horizon
-analyst_notes
-
-One assumption per row.
-
-Prefer generating the example assumptions CSV from the current Step 2.1 generated scenario assumptions, without another LLM call.
-
-If no scenario exists yet, use the static generic example as fallback.
-
-The scenario itself must remain:
-
-forward-looking;
-aligned with the stated scenario time horizon.
-5. MOVE STEP 2.1 ASSUMPTION FILES TO THE CORRECT DATA LOCATION
-
-They currently do not belong under step22.
-
-Preferred structure:
-
-backend\data\step21\
-    assumptions_blank.csv
-    assumptions_example.csv
-
-Both contain only:
-
-assumption
-
-Update all download/code references safely.
-
-6. STEP 2.2 — REAL DATA IS THE AUTHORITATIVE PORTFOLIO SOURCE
-
-Real files currently exist under:
-
-backend\data\step22\
-
-Their roles are:
-
-Relationship master
-
-Current temporary name:
-
-relationship_meta_data (1) (version 1).xlsx
-
-Authoritative relationship/CAGID/company universe.
-
-It contains the equivalents of:
-
-CAGID
-sector L1/L2/L3/L4
-RRR
-credit classification
-country/risk code
-relationship-level OSUC
-MLE enrichment
-
-mle_data_20260731.xlsx
-
-Enrichment source containing CAGID/GFCID/MLE/exposure fields.
-
-Preserve one-to-many CAGID→MLE/GFCID rows under mle_rows.
-
-Do not duplicate or re-sum relationship OSUC if OSUC is already relationship/CAGID granular.
-
-Country/geography mapping
-
-new_mapping_code_20231204 5.xlsx
-
-Reference/enrichment table for:
-
-country code
-country name
-region
-cluster
-
-Never drop a relationship only because the geography mapping is unavailable.
-
-7. STEP 2.2 LIVE API COMMUNICATION
-
-Verify actual browser/runtime communication, not just Python unit logic.
-
-Confirm live calls to:
-
-/api/v1/rpr/step2/portfolio/catalog
-/api/v1/rpr/step2/portfolio/search
-/api/v1/rpr/step2/portfolio/finalize
-portfolio upload endpoint
-
-Confirm that changing filters sends a new backend request.
-
-Report:
-
-HTTP status
-filter payload
-number of matching companies
-real-data source
-response time where practical
-
-Keep technical logging in backend/terminal only.
-
-Do not add API/debug text to the product UI.
-
-8. STEP 2.2 UI — ORIGINAL V31 IS THE VISUAL AUTHORITY
-
-Compare the current Step 2.2 rendering to:
+The original visual authority is:
 
 UI Design\icm-pm-rapid-portfolio-review-v31.html
 
-Preserve the original v31 appearance and interactions.
+Compare it against the current working frontend, including as applicable:
 
-Expected functionality:
+current consolidated HTML
+rpr_step22_step23_append.js
+corresponding Step 2.3 CSS
+rpr_step24_append.js
+rpr_step24_append.css
 
-Select Geography
-Select Country
-Select MLE
-L2 sector/category selection
-L3/sector cards
-checkable sector options
-selected-sector pills/summary
-Matching Companies table
-Select Portfolio tab
-Upload Portfolio tab
+Do not assume the append implementation is visually correct simply because functionality works.
 
-Do not replace dropdowns with blank text inputs.
+1. INSPECT BEFORE CHANGING
 
-Remove any visible engineering text such as:
+Perform a DOM/CSS comparison specifically for the original v31 sections corresponding to:
 
-STEP 2.2 APPEND...
-same v31 visual language...
-real portfolio upload...
+Event-Driven Risk Factors
+Sector-Inherent Risk Factors
 
-The internal append JS architecture can remain.
+Compare:
 
-Only remove development commentary from the browser.
+section headers
+table headers
+table body
+cards
+borders
+backgrounds
+badges
+spacing
+typography
+expandable sections
+importance controls
+buttons
+feedback panels
 
-9. COUNTRY FILTER — ADD TYPE-TO-SEARCH
+Identify the exact local selectors/classes responsible for each visible mismatch.
 
-Keep the existing v31 visual appearance.
+Do not globally restyle tables or cards.
 
-Make Select Country searchable/type-ahead.
+2. KNOWN MISMATCH TO FIX
 
-Expected behavior:
+One clear mismatch already observed:
 
-click → list appears;
-type Uni → filter to United Kingdom / United States etc.;
-keyboard navigation supported;
-only valid backend country values may be selected;
-clear/reset back to All;
-remains compatible with Geography, MLE and sectors.
+In original v31, a table/header area at the top of the factor content uses a dark/black treatment.
 
-Do not introduce a new UI framework.
+In the current implementation, the equivalent area appears grey.
 
-Country is priority.
+Restore the exact v31 treatment for the corresponding Step 2.3 / Step 2.4 element.
 
-10. SECTOR FILTER BEHAVIOR
+Do not guess a new color.
 
-Preserve deterministic logic:
+Read the original v31 CSS/DOM and reuse the original class/style behavior.
 
-OR within one dimension;
-AND across dimensions.
+3. STEP 2.3 — EVENT-DRIVEN RISK FACTORS
 
-If L2 is selected and no explicit L3 is selected:
+Preserve all current working Step 2.3 functionality:
 
-→ include all valid L3 values under that L2.
+generated event-driven factors
+factor metrics
+vulnerability/buffer content
+High/Medium importance
+deterministic weights
+revision/feedback functionality
+current backend calls
 
-If L3 values are explicitly checked:
+Only reconcile the frontend presentation with v31.
 
-→ restrict to those L3 values.
+Check especially:
 
-Matching companies must update using the backend real-data search.
+factor table/header styling
+dark header bands
+section hierarchy
+factor cards
+importance display/control
+metric tables
+spacing between factor blocks
+selected/active states
+typography
+bottom action/feedback controls
 
-No LLM is involved in Step 2.2.
+Do not alter any generated content structure unless required solely to reproduce the original v31 DOM presentation.
 
-11. MATCHING COMPANY DATA
+4. STEP 2.4 — SECTOR-INHERENT RISK FACTORS
 
-Step 2.2 backend should resolve and make available:
+Preserve the current working V6 implementation completely.
 
-CAGID
-CAGID Name / Company Name
-L1
-L2
-L3
-Country
-RRR
-Credit Classification
-relationship-level OSUC
-MLE enrichment
+Do not modify:
 
-UI may remain concise; richer fields can stay in backend state for downstream steps.
+V6 prompt
+factor identification
+structural persistence methodology
+vulnerability/buffer logic
+scoring
+backend weighting
+generate/revise/finalize APIs
+V5.2 rollback path
+backend\data\step24
 
-12. PORTFOLIO UPLOAD CONTRACT — ONLY TWO USER COLUMNS
+Only restore v31 frontend styling/interaction.
 
-Regenerate the real upload sample.
+Confirm the original v31 Factor Importance control is present and visually correct:
 
-Final professional filename:
+HIGH | MEDIUM
 
-portfolio_upload_sample_top20.xlsx
+Generated value should remain preselected.
 
-The workbook must contain exactly two columns:
+Existing behavior must remain:
 
-CAGID
-CAGID Name
+High = score 2
+Medium = score 1
+changing importance recalculates normalized weights
+weights total exactly 100%
 
-Nothing else.
+Restore the v31 control visually if the current V6 card differs.
 
-Use the real top 20 unique CAGIDs ranked by non-zero relationship-level OSUC descending to select the sample names.
+Also inspect:
 
-OSUC is only the internal ranking criterion and must not appear in the file.
+top table/header color
+factor title area
+risk metric tables
+vulnerability/buffer blocks
+scoring rows
+borders/backgrounds
+spacing
+badges
+buttons
+expanded/collapsed behavior
+5. DO NOT MAKE GLOBAL CSS CHANGES
 
-Do not include:
+This is critical.
 
-OSUC
-L1/L2/L3
-Country
-RRR
-Classification
-MLE
+Do not solve a Step 2.3/2.4 mismatch by changing generic selectors such as:
 
-The backend must resolve these after CAGID matching.
+table
+th
+td
+.card
+.section
+button
 
-Preserve CAGID as text.
+unless the original v31 itself uses that exact global rule and the change is proven safe.
 
-Test the actual XLSX upload endpoint.
+Prefer narrowly scoped selectors such as:
 
-Required result:
+#step23 ...
+#step24 ...
+.step23-...
+.step24-...
 
-matched = 20
-unmatched = 0
-duplicates = 0
-finalize = success
-13. CLEAN AND RENAME STEP 2.2 DATA FILES
+or the exact existing v31 selectors.
 
-First search the entire repository for every reference before renaming anything.
+Steps 1, 2.1 and 2.2 must remain visually unchanged.
 
-Rename:
+6. REMOVE DEVELOPMENT-ONLY FRONTEND TEXT
 
-relationship_meta_data (1) (version 1).xlsx
-→ relationship_master.xlsx
+Ensure no implementation commentary is visible in Steps 2.3 or 2.4, such as:
 
-new_mapping_code_20231204 5.xlsx
-→ country_geography_mapping.xlsx
+APPEND
+V6 addon
+backend-driven
+implementation/debug notes
 
-mle_data_20260731.xlsx
-→ mle_exposure_20260731.xlsx
+Internal filenames/classes may keep these names.
 
-step22_real_upload_test.xlsx
-→ portfolio_upload_sample_top20.xlsx
+Only remove such wording from the user-facing page.
 
-Update all code references atomically.
+7. DO NOT REWRITE THE HTML
 
-Do not leave duplicate old and new copies.
+Do not create a new consolidated frontend.
 
-14. SYNTHETIC/DEMO STEP 2.2 CSVs
+Do not copy/rebuild all of v31.
 
-Existing files:
+Keep the current working frontend and apply small local patches to restore the visual bone.
 
-rpr_company_master.csv
-rpr_country_geography.csv
-rpr_mle_reference.csv
-rpr_sector_hierarchy.csv
+If the append JS generates DOM that differs from v31, adjust only the generated markup/classes required for visual equivalence.
 
-Determine whether anything still uses them.
+8. VALIDATE SIDE BY SIDE
 
-If explicitly required for development/test mode:
+Compare:
 
-move them to:
+Original v31
 
-backend\data\step22\demo\
+vs.
 
-If completely unused:
+Current working RPR after patch
 
-remove them.
+for both Step 2.3 and Step 2.4.
 
-Real-data mode must never silently fall back to demo data.
+Validate:
 
-Desired behavior:
+dark/black header treatment matches;
+tables match v31;
+cards match v31;
+borders/backgrounds match;
+typography matches;
+spacing/padding matches;
+High/Medium importance controls match;
+buttons/actions match;
+feedback panels remain intact;
+no new horizontal overflow/layout break;
+Step 2.3 functionality still works;
+Step 2.4 V6 functionality still works;
+Steps 1, 2.1 and 2.2 are unchanged.
 
-real source valid
-→ real data
+Do a browser render check, not just source inspection.
 
-real source missing/corrupt/schema-invalid
-→ clear error
+9. STRICT SCOPE
 
-explicit demo mode
-→ demo CSVs
-15. STEP 2.4 DATA
+Do not touch:
 
-Current:
+backend Python unless absolutely required to fix a frontend contract regression;
+prompts;
+model configuration;
+real portfolio data;
+Step 1;
+Scenario Development;
+Portfolio Selection;
+Name-Level Assessment;
+scoring methodology.
 
-backend\data\step24\sector_inherent_factors.csv
+This task is frontend visual reconciliation only.
 
-Leave it untouched if V5.2 still uses it as the governed rollback taxonomy.
+FINAL RESPONSE
 
-Do not rename/delete it simply for cosmetic cleanup.
+Give me:
 
-V6 remains the current source-aligned sector-inherent methodology.
+MISMATCHES FOUND
 
-16. TARGET DATA STRUCTURE
-
-Aim for:
-
-backend\data\
-├─ step21\
-│  ├─ assumptions_blank.csv
-│  └─ assumptions_example.csv
-│
-├─ step22\
-│  ├─ relationship_master.xlsx
-│  ├─ country_geography_mapping.xlsx
-│  ├─ mle_exposure_20260731.xlsx
-│  ├─ portfolio_upload_sample_top20.xlsx
-│  └─ demo\
-│     └─ [legacy CSVs only if explicitly still required]
-│
-└─ step24\
-   └─ sector_inherent_factors.csv
-
-Do not create unnecessary extra folders/files.
-
-17. DO NOT MODIFY STEP 2.3 / STEP 2.4 CREDIT METHODOLOGY
-
-Step 2.3 Event-Driven Risk Factors and Step 2.4 Sector-Inherent Risk Factors should only be regression-tested.
-
-Do not:
-
-rewrite prompts;
-change factor scoring;
-change High/Medium importance logic;
-change V6 methodology;
-alter Step 2.4 data unless required for an actual bug.
-18. NO BROAD UI CHANGES
-
-Preserve:
-
-v31 fonts
-colors
-navigation
-card layout
-assessment journey
-feedback controls
-tabs
-Step 1 layout
-Step 2 layout
-
-Only targeted fixes are allowed.
-
-19. VALIDATION — DO NOT DECLARE DONE UNTIL THESE PASS
-Backend
-/health = PASS
-backend interpreter = portfolio-agent\.venv\Scripts\python.exe
-AI Assist = PASS
-theme quality = PASS
-Market Scanner discovery = PASS
-actual event array parsed correctly
-Scenario Development
-real Opus scenario generation = PASS
-scenario narrative renders
-assumptions render
-assumptions upload parser accepts one-column file
-assumptions download contains only assumption
-current scenario assumptions are used when available
-Portfolio Selection
-catalog live API = PASS
-search live API = PASS
-finalize live API = PASS
-real company universe loaded
-Geography populated
-Country populated
-Country type-to-search works
-MLE populated
-L2 populated
-L3/checkable sector cards populated
-changing filters generates a new backend request
-matching companies update correctly
-no visible STEP 2.2 APPEND text
-Portfolio Upload
-sample file contains exactly:
-
-CAGID | CAGID Name
-
-actual XLSX endpoint tested
-20/20 matched
-0 unmatched
-0 duplicates
-finalize = PASS
-Regression
-Step 2.3 imports/runs
-Step 2.4 V6 imports/runs
-v31 visual design intact
-20. IMPORTANT: DO NOT OVERCOMPLICATE
-
-Repair what exists.
-
-Prefer:
-
-small targeted patches;
-existing services/routes;
-existing API contracts;
-existing real-data loader;
-existing UI IDs/components;
-existing model routing;
-existing prompts.
-
-Do not create a replacement application.
-
-FINAL RESPONSE FORMAT
-
-When finished, respond only with:
-
-ROOT CAUSES
-
-Step 1 AI Assist/theme gate
-Step 1 discovery parser
-Step 2.1
-Step 2.2 if any
+Step 2.3
+Step 2.4
 
 FILES CHANGED
 
-One line per file and why.
+One line per file.
 
-FILES RENAMED
+VISUAL FIXES
 
-Old → new.
+Short description of each targeted fix.
 
-FILES MOVED
-
-FILES REMOVED
-
-FINAL DATA FOLDER STRUCTURE
-
-STEP 1
-
-AI Assist: PASS/FAIL
-Market Scanner: PASS/FAIL
-events parsed: PASS/FAIL
-
-SCENARIO DEVELOPMENT
-
-real Opus call: PASS/FAIL
-scenario: PASS/FAIL
-assumptions: PASS/FAIL
-one-column upload/download: PASS/FAIL
-
-PORTFOLIO SELECTION
-
-real source: PASS/FAIL
-catalog: PASS/FAIL
-search: PASS/FAIL
-finalize: PASS/FAIL
-country type-ahead: PASS/FAIL
-sector checkboxes: PASS/FAIL
-
-PORTFOLIO UPLOAD
-
-exactly CAGID | CAGID Name: PASS/FAIL
-actual XLSX test: PASS/FAIL
-matched:
-unmatched:
-duplicates:
-
-REGRESSION
+FUNCTIONAL REGRESSION
 
 Step 2.3: PASS/FAIL
 Step 2.4 V6: PASS/FAIL
-v31 design: PASS/FAIL
+Steps 1/2.1/2.2 unchanged: PASS/FAIL
 
-RESTART COMMAND
+V31 MATCH
 
-Give the exact command using the approved portfolio-agent interpreter.
+header/table styling: PASS/FAIL
+importance controls: PASS/FAIL
+cards/spacing: PASS/FAIL
 
-Do not proceed to the Name-Level Assessment until all of the above is stable.
+Do not make any additional improvements outside this scope.
+
+I would do this before starting 2.5, so once 2.3 and 2.4 visually match v31 we freeze their frontend as well.
