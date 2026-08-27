@@ -1,126 +1,181 @@
-3. MarketDev Terminal 2 — confirm Helix is actually listening
+RPR MARKETDEV / HELIX / TECTIA AUTHENTICATION — FULL FORENSIC DIAGNOSIS
 
-Immediately run:
+I need you to diagnose an authentication/tunneling problem. Do not change application code, do not modify RPR files, do not reinstall anything, do not change Tectia configuration, do not kill processes, do not restart services, and do not expose any credentials or tokens.
+
+Your job in this pass is READ-ONLY FORENSICS ONLY.
+
+I have spent several hours on this and I do not want another trial-and-error sequence. Investigate systematically and give me a technically defensible root cause.
+
+1. OBJECTIVE
+
+I have migrated my RPR FastAPI application from a working Windows development environment to a MarketDev UNIX host.
+
+The application itself now starts successfully on MarketDev.
+
+The remaining blocker is Helix H2M authentication.
+
+On Windows, Helix authentication works persistently because a prior successful browser OAuth/PKCE login created a persisted credential under the user's .helix directory. Subsequently:
+
+helix auth access-token print -a
+
+works without launching a browser and Helix can auto-renew the token.
+
+On MarketDev, Helix CLI and the auth plugin are installed, but MarketDev does not yet have the equivalent persisted OAuth credential.
+
+Therefore I am attempting the one-time supported flow:
+
+export BROWSER=echo
+helix auth access-token set --scope <RPR COIN SCOPE>
+
+Helix prints a browser authorization URL containing:
+
+redirect_uri=http://localhost:8822/callback
+
+I open that URL in the Windows browser and complete Citi authentication.
+
+The browser is then redirected to:
+
+http://localhost:8822/callback?code=...&state=...
+
+but Edge shows:
+
+ERR_CONNECTION_RESET
+
+Eventually the MarketDev Helix command reports:
+
+failed to acquire token; session timed out
+
+No MarketDev persisted *-oidc.cred appears.
+
+I need you to determine why the callback never reaches the waiting Helix process.
+
+2. ARCHITECTURE
+Windows workstation
+
+Windows browser runs here.
+
+Tectia SSH Client is used to connect to MarketDev.
+
+Tectia profile:
+
+Profile: Market Dev
+Remote host: sd-f34e-972f.nam.nsroot.net
+SSH port: 22
+
+Tectia has a configured LOCAL TCP tunnel:
+
+Windows listen port: 8822
+Destination host: 127.0.0.1
+Destination port: 8822
+Allow local connections only: YES
+Type: TCP
+
+Intended topology:
+
+Windows Edge
+      |
+      | http://localhost:8822/callback
+      v
+Windows TCP 8822
+      |
+      | Tectia LOCAL SSH forward
+      v
+MarketDev 127.0.0.1:8822
+      |
+      v
+Helix OAuth callback listener
+
+This is intentionally a LOCAL tunnel, not a remote tunnel, because the browser is on Windows and Helix is on MarketDev.
+
+3. FACTS ALREADY OBSERVED
+
+Do not assume these facts prove more than they actually prove.
+
+MarketDev
+
+Helix version:
+
+helix --version
+version 1.1.4
+
+Auth plugin:
+
+helix plugins ls
+
+shows auth installed around:
+
+auth v1.6.0
+
+The command:
+
+helix auth access-token set --scope <scope>
+
+starts the OAuth flow.
+
+While that command is actively waiting, a separate MarketDev terminal shows:
 
 ss -ltnp 2>/dev/null | grep 8822
 
-You need to see something resembling:
+producing a LISTEN entry on port 8822, with the process identified as the Helix/auth process.
 
-LISTEN ... 127.0.0.1:8822 ... auth
+Example shape:
 
-or at minimum:
+LISTEN ... *:8822 ... users:(("auth",pid=...,fd=3))
 
-LISTEN ... :8822 ...
+Therefore Helix appears to have an active listener while OAuth is pending.
 
-This check is critical.
+Do not reveal OAuth authorization URLs, codes, state values, JWTs, credentials, or token material in your report.
 
-If you do not see 8822, do not paste the OAuth URL yet. Send me the Terminal 1 + Terminal 2 output.
+Windows
 
-If you do see LISTEN, continue immediately.
+While the MarketDev OAuth command is waiting:
 
-4. Windows — confirm Tectia tunnel while Helix is listening
+netstat -ano | findstr :8822
 
-In PowerShell:
+shows:
+
+TCP 127.0.0.1:8822 ... LISTENING
+
+The owning Windows process is:
+
+ssh-broker-g3
+
+which appears to be Tectia.
+
+Also:
 
 Test-NetConnection 127.0.0.1 -Port 8822
 
-It must say:
+returns:
 
 TcpTestSucceeded : True
 
-Now both sides are proven simultaneously:
+Therefore the Windows side of the local tunnel is listening.
 
-Windows :8822       ✓ Tectia listening
-MarketDev :8822     ✓ Helix listening
+Important: This only establishes that Windows can connect to the local Tectia listener. It does NOT necessarily prove that Tectia successfully opens the remote forwarded connection to MarketDev.
 
-That simultaneous state is what was missing in the previous attempts.
+Browser
 
-5. Immediately perform the browser login
+After successful Citi SSO, browser redirects to:
 
-Copy the fresh authorization URL from MarketDev Terminal 1.
+http://localhost:8822/callback?...REDACTED...
 
-Paste it into Edge/Chrome on Windows.
+Edge then reports:
 
-Complete Citi SSO/MFA.
+ERR_CONNECTION_RESET
 
-Do not manually construct the callback URL. Let the authentication system redirect the browser naturally to:
+This has happened repeatedly.
 
-http://localhost:8822/callback?code=...
+Helix later times out.
 
-Because Tectia is already listening on Windows 8822, it should forward that callback into the still-running Helix process on MarketDev.
+4. IMPORTANT WINDOWS REFERENCE
 
-The browser page itself may not look sophisticated. What matters is what happens in MarketDev Terminal 1.
+Windows has a previously persisted Helix credential in:
 
-6. Terminal 1 must finish successfully
+%USERPROFILE%\.helix\
 
-After successful callback, helix auth access-token set should return to the $ prompt without:
+The persisted file is client-specific and has an *-oidc.cred form.
 
-session timed out
-signal: interrupt
-exit status 1
+DO NOT read, copy, print, parse, hash, base64, inspect the content,
 
-Then check only credential metadata:
-
-ls -la ~/.helix/
-
-You are looking for a new file approximately like:
-
-<client-id>-oidc.cred
-
-Do not cat it.
-
-7. Prove MarketDev can obtain a token independently
-
-Do this without displaying the token:
-
-TOKEN_OUTPUT="$(helix auth access-token print -a 2>/dev/null)"
-RC=$?
-
-echo "EXIT_CODE=$RC"
-echo "TOKEN_PRESENT=$([ -n "$TOKEN_OUTPUT" ] && echo yes || echo no)"
-echo "TOKEN_LENGTH=${#TOKEN_OUTPUT}"
-
-Success looks roughly like:
-
-EXIT_CODE=0
-TOKEN_PRESENT=yes
-TOKEN_LENGTH=...
-
-Do not paste the token itself here.
-
-At this point Helix authentication is solved.
-
-And this is the important architectural milestone:
-
-MarketDev now has its own persisted Helix credential. Windows is no longer providing the token to RPR. Tectia was merely the temporary bridge for the one-time browser callback.
-
-8. Fix the four frontend 404s
-
-Before copying anything, locate the files on MarketDev:
-
-cd /home/ak54743/Rapid_Portfolio_Review_AI_UNIX_PACKAGE
-
-find . -type f \( \
--name 'rpr_step24_append.js' -o \
--name 'rpr_step24_append.css' -o \
--name 'rpr_step22_step23_append.js' -o \
--name 'rpr_step22_step23_append.css' \
-\) -print
-
-You previously had these failing:
-
-/ui/rpr_step24_append.js
-/ui/rpr_step22_step23_append.js
-/ui/rpr_step22_step23_append.css
-/ui/rpr_step24_append.css
-
-And /ui is served from:
-
-app/backend/public/
-
-Therefore each required file ultimately needs to exist here:
-
-app/backend/public/rpr_step24_append.js
-app/backend/public/rpr_step24_append.css
-app/backend/public/rpr_step22_step23_append.js
-app/backend/public/rpr_step22_step23_append.css
+Connection interrupted. Waiting for the complete answer
