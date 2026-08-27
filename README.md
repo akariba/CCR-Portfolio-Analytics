@@ -1,23 +1,23 @@
-cd /home/ak54743
+Do this next. These are deliberately simple commands that work in your shell — no parentheses-heavy find, no complicated chaining.
 
-ls -l /usr/bin/python3.9
+cd /home/ak54743/Rapid_Portfolio_Review_AI_UNIX_PACKAGE
 
-/usr/bin/python3.9 --version
+First test whether the actual RPR source is even syntactically compatible with Python 3.9:
 
-PYTHONPATH=/home/ak54743/.local/lib/python3.9/site-packages /usr/bin/python3.9 -c 'import fastapi; print("fastapi", fastapi.__version__)'
+PYTHONPATH=/home/ak54743/.local/lib/python3.9/site-packages /usr/bin/python3.9 -m py_compile app/backend/server.py
 
-PYTHONPATH=/home/ak54743/.local/lib/python3.9/site-packages /usr/bin/python3.9 -c 'import uvicorn; print("uvicorn", uvicorn.__version__)'
+Then obtain the real installed versions correctly:
 
-PYTHONPATH=/home/ak54743/.local/lib/python3.9/site-packages /usr/bin/python3.9 -c 'import pydantic; print("pydantic", pydantic.__version__)'
+PYTHONPATH=/home/ak54743/.local/lib/python3.9/site-packages /usr/bin/python3.9 -c 'import importlib.metadata as m; print("fastapi",m.version("fastapi")); print("uvicorn",m.version("uvicorn")); print("pydantic",m.version("pydantic")); print("starlette",m.version("starlette")); print("httpx",m.version("httpx")); print("anthropic",m.version("anthropic"))'
 
-PYTHONPATH=/home/ak54743/.local/lib/python3.9/site-packages /usr/bin/python3.9 -c 'import starlette; print("starlette", starlette.__version__)'
+Then check the remaining critical RPR dependencies one by one:
 
-PYTHONPATH=/home/ak54743/.local/lib/python3.9/site-packages /usr/bin/python3.9 -c 'import httpx; print("httpx", httpx.__version__)'
+PYTHONPATH=/home/ak54743/.local/lib/python3.9/site-packages /usr/bin/python3.9 -c 'import pandas; print("PANDAS OK")'
+PYTHONPATH=/home/ak54743/.local/lib/python3.9/site-packages /usr/bin/python3.9 -c 'import openpyxl; print("OPENPYXL OK")'
+PYTHONPATH=/home/ak54743/.local/lib/python3.9/site-packages /usr/bin/python3.9 -c 'import google.adk; print("GOOGLE ADK OK")'
+PYTHONPATH=/home/ak54743/.local/lib/python3.9/site-packages /usr/bin/python3.9 -c 'import google.genai; print("GOOGLE GENAI OK")'
 
-PYTHONPATH=/home/ak54743/.local/lib/python3.9/site-packages /usr/bin/python3.9 -c 'import openpyxl; print("openpyxl", openpyxl.__version__)'
+And finally test the actual RPR backend import, which is much more valuable than testing random packages:
 
-PYTHONPATH=/home/ak54743/.local/lib/python3.9/site-packages /usr/bin/python3.9 -c 'import pandas; print("pandas", pandas.__version__)'
-
-Then also run this single simple inventory command:
-
-ls -1 /home/ak54743/.local/lib/python3.9/site-packages | head -100
+cd /home/ak54743/Rapid_Portfolio_Review_AI_UNIX_PACKAGE/app/backend
+PYTHONPATH=/home/ak54743/.local/lib/python3.9/site-packages /usr/bin/python3.9 -c 'import server; print("RPR SERVER IMPORT OK")'
