@@ -1,124 +1,147 @@
-MarketDev Terminal — run this entire block first. It only checks configuration; it does not print credentials.
-cd /home/ak54743/Rapid_Portfolio_Review_AI_UNIX_PACKAGE || exit 1
+STOP. READ-ONLY FORENSIC CHECK ONLY.
 
-echo "=== 1. M2M CODE SUPPORT ==="
-grep -nE 'R2D2_AUTH_MODE|COIN_CLIENT_ID|COIN_CLIENT_SECRET|R2D2_CLIENT_ID|R2D2_CLIENT_SECRET|_get_m2m_token|client_credentials' \
-  app/backend/llm_gateway.py | head -80
+We now have definitive evidence from MarketDev that marketdev_start.sh currently
+hardcodes:
 
-echo
-echo "=== 2. CREDENTIAL PRESENCE — VALUES WILL NOT BE PRINTED ==="
+    export R2D2_AUTH_MODE="h2m"
 
-[ -n "${COIN_CLIENT_ID:-}" ] && echo "COIN_CLIENT_ID=SET" || echo "COIN_CLIENT_ID=MISSING"
-[ -n "${COIN_CLIENT_SECRET:-}" ] && echo "COIN_CLIENT_SECRET=SET" || echo "COIN_CLIENT_SECRET=MISSING"
-[ -n "${R2D2_CLIENT_ID:-}" ] && echo "R2D2_CLIENT_ID=SET" || echo "R2D2_CLIENT_ID=MISSING"
-[ -n "${R2D2_CLIENT_SECRET:-}" ] && echo "R2D2_CLIENT_SECRET=SET" || echo "R2D2_CLIENT_SECRET=MISSING"
+and that the script explicitly requires the Helix CLI for that mode.
 
-echo
-echo "R2D2_AUTH_MODE=${R2D2_AUTH_MODE:-NOT_SET}"
+The H2M browser callback through Tectia/port 8822 is not appropriate as the
+long-term authentication architecture for a shared MarketDev RPR deployment.
 
-echo
-echo "=== 3. STATIC FILES ==="
-for f in \
- rpr_step22_step23_append.js \
- rpr_step22_step23_append.css \
- rpr_step24_append.js \
- rpr_step24_append.css
-do
-    echo "--- $f"
-    find app -type f -name "$f" -print 2>/dev/null
-done
+I want you to inspect the EXISTING RPR source and determine whether M2M is
+already fully implemented.
 
-echo
-echo "=== 4. PUBLIC DIRECTORY ==="
-ls -l app/backend/public/ | head -80
+DO NOT MODIFY ANY FILE.
+DO NOT CREATE OR READ SECRET VALUES.
+DO NOT REFACTOR ANYTHING.
+DO NOT propose new authentication code unless the current implementation truly
+does not support M2M.
 
-echo
-echo "=== 5. START SCRIPT AUTH SETTINGS ==="
-grep -nE 'R2D2_AUTH_MODE|COIN_CLIENT|R2D2_CLIENT|RUN_MODE|RPR_PORT|RPR_HOST|8010|8822' \
-  marketdev_start.sh 2>/dev/null
+Inspect:
 
-Send me a photo of that output immediately. Do not show any secret values.
+- backend/llm_gateway.py
+- backend/rpr_search_agent.py
+- backend/market_event_scout.py
+- backend/narrative_enricher.py
+- backend/server.py
+- RUNTIME_ENV.ps1
+- marketdev_start.sh
+- every imported auth/R2D2/COIN helper involved in these call paths
 
-If the output shows either COIN_CLIENT_ID + COIN_CLIENT_SECRET = SET or the equivalent R2D2_CLIENT_* = SET, we can switch immediately to M2M.
+TRACE THE ACTUAL CODE.
 
-If M2M credentials are already present, run:
+I need exact answers:
 
-cd /home/ak54743/Rapid_Portfolio_Review_AI_UNIX_PACKAGE || exit 1
+1. Find every occurrence of:
+   R2D2_AUTH_MODE
+   COIN_CLIENT_ID
+   COIN_CLIENT_SECRET
+   CLIENT_ID
+   CLIENT_SECRET
+   RUN_MODE
+   get_h2m_token
+   m2m
+   h2m
+   access-token
+   token_url
 
-export R2D2_AUTH_MODE=m2m
+2. Show the exact accepted values for R2D2_AUTH_MODE.
 
-./marketdev_start.sh
+3. Trace:
 
-Do not set RUN_MODE, change ports, or modify Python yet. Keep:
+   RPR Claude request
+       ->
+   gateway
+       ->
+   auth-mode decision
+       ->
+   H2M branch
 
-server:app
-port 8010
+   and separately:
 
-Then in another MarketDev terminal:
+   RPR Claude request
+       ->
+   gateway
+       ->
+   auth-mode decision
+       ->
+   M2M branch
 
-curl -sS -i http://127.0.0.1:8010/health | head -20
+4. For M2M specifically:
+   - exact function used
+   - exact environment-variable NAMES required
+   - token endpoint/config source
+   - certificate handling
+   - whether Helix CLI is invoked at all
+   - whether ~/.helix is used
+   - whether browser OAuth is used
+   - whether port 8822 is involved
 
-You want:
+5. Confirm whether setting:
 
-HTTP/... 200
+       R2D2_AUTH_MODE=m2m
 
-Then open:
+   is sufficient to select the M2M implementation or whether another variable
+   such as RUN_MODE is required.
 
+6. Determine whether the existing names are:
 
+       COIN_CLIENT_ID
+       COIN_CLIENT_SECRET
 
-http://sd-f34e-972f.nam.nsroot.net:8010/ui/index.html
+   or:
 
+       CLIENT_ID
+       CLIENT_SECRET
 
+   or something else.
 
-Static files — fix them now if they exist elsewhere in the package
+   DO NOT GUESS. Cite file + line for each.
 
-If the first command shows the four files somewhere under app/ but not under app/backend/public/, use this safe copy script:
+7. Determine whether Gemini/ADK authentication is independent of R2D2 M2M.
+   Trace Gemini separately.
 
-cd /home/ak54743/Rapid_Portfolio_Review_AI_UNIX_PACKAGE || exit 1
+8. Confirm whether changing H2M -> M2M affects any:
+   - prompts
+   - model identifiers
+   - Step 1 logic
+   - Step 2 logic
+   - scoring
+   - frontend
+   - portfolio data
+   - business logic
 
-PUB="app/backend/public"
+   Expected answer should be configuration/auth only, but verify it.
 
-for f in \
- rpr_step22_step23_append.js \
- rpr_step22_step23_append.css \
- rpr_step24_append.js \
- rpr_step24_append.css
-do
-    if [ -f "$PUB/$f" ]; then
-        echo "PASS already deployed: $f"
-        continue
-    fi
+9. Inspect marketdev_start.sh specifically.
 
-    SRC=$(find app -type f -name "$f" ! -path "$PUB/*" -print 2>/dev/null | head -1)
+   Current observed lines include:
 
-    if [ -z "$SRC" ]; then
-        echo "MISSING FROM PACKAGE: $f"
-    else
-        echo "COPY: $SRC -> $PUB/$f"
-        cp "$SRC" "$PUB/$f" || exit 1
-    fi
-done
+       export R2D2_AUTH_MODE="h2m"
 
-echo
-echo "FINAL:"
-ls -l "$PUB"/rpr_step*.js "$PUB"/rpr_step*.css 2>/dev/null
+   and a Helix-presence validation tied to H2M.
 
-Restart:
+   Show the MINIMUM patch necessary for M2M deployment.
 
-./marketdev_start.sh
+   DO NOT APPLY IT.
 
-Then verify all four over HTTP:
+10. Check whether startup validation already supports m2m.
+    If it does not, identify exactly which checks need conditionalization.
 
-for f in \
- rpr_step22_step23_append.js \
- rpr_step22_step23_append.css \
- rpr_step24_append.js \
- rpr_step24_append.css
-do
-    printf "%-35s " "$f"
-    curl -s -o /dev/null -w '%{http_code}\n' "http://127.0.0.1:8010/ui/$f"
-done
+11. Produce the final result as:
 
-All four must say:
+    A. H2M CURRENT PATH
+    B. M2M EXISTING PATH
+    C. REQUIRED M2M ENV VARIABLE NAMES
+    D. MARKETDEV_START.SH MINIMUM PATCH
+    E. HELIX/Tectia/8822 COMPONENTS THAT BECOME UNNECESSARY
+    F. GEMINI AUTH PATH
+    G. FILES THAT REQUIRE CONFIGURATION CHANGE
+    H. FILES THAT MUST REMAIN UNCHANGED
+    I. GO/NO-GO: CAN EXISTING RPR RUN M2M WITHOUT APPLICATION-CODE CHANGES?
 
-200
+Preservation rule:
+The existing RPR application is immutable working bone. Authentication migration
+must be configuration-only if the source already supports it.
