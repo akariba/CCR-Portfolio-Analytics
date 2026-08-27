@@ -1,19 +1,21 @@
-echo "=== PIP CONFIG ==="
+Run these one at a time, exactly as written:
+
 python -m pip config debug
 
-echo "=== PIP ENV NAMES ==="
-env | grep -Ei '^(PIP_|PYPI|ARTIFACT|ARTIFACTORY)' | sed 's/=.*$/=<set>/'
+Then:
 
-echo "=== POSSIBLE PIP CONFIG FILES ==="
-find "$HOME" -maxdepth 4 \( -name "pip.conf" -o -name ".pypirc" \) -print 2>/dev/null
+env | grep PIP
 
-echo "=== GLOBAL PYTHON PACKAGE CHECK ==="
-/usr/bin/python - <<'PY'
-mods = ["fastapi","uvicorn","pydantic","httpx","pandas","openpyxl"]
-for m in mods:
-    try:
-        x=__import__(m)
-        print("OK ", m, getattr(x,"__version__",""))
-    except Exception as e:
-        print("MISS", m, type(e).__name__, str(e))
-PY
+Then:
+
+find "$HOME" -name pip.conf -print
+
+Then:
+
+find "$HOME" -name .pypirc -print
+
+Then check whether the server already has the packages globally:
+
+/usr/bin/python -c 'import fastapi; print("fastapi",fastapi.__version__)'
+/usr/bin/python -c 'import uvicorn; print("uvicorn",uvicorn.__version__)'
+/usr/bin/python -c 'import pandas; print("pandas",pandas.__version__)'
