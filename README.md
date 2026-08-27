@@ -1,46 +1,87 @@
-2. On Windows, open PowerShell or Command Prompt and run:
+MarketDev Terminal 1 — OAuth command
 
-netstat -ano | findstr :8822
+Run:
 
-We want to see a line similar to:
+export BROWSER=echo
+helix auth access-token set --scope coinscope0aaa6ae8-6e52-4dce-bd57-71ca19c63d12
 
-TCP    127.0.0.1:8822    ...    LISTENING
+The long authorization URL should appear.
 
-That confirms the Tectia LOCAL tunnel is listening on Windows and forwarding Windows localhost:8822 → MarketDev 127.0.0.1:8822.
+Important: leave this terminal completely untouched after the URL appears. Do not press Enter, Ctrl+C, or type another command there.
 
-3. If Windows shows LISTENING, immediately copy the authorization URL currently printed in Terminal 1 and paste it into your normal Windows Edge browser.
+MarketDev Terminal 2 — listener verification
 
-Complete the normal Citi SSO/MFA flow.
+Immediately after Terminal 1 displays the URL, run:
 
-Do not manually alter the callback URL. The browser should eventually redirect itself to something like:
+ss -ltnp 2>/dev/null | grep 8822
 
-http://localhost:8822/callback?code=...
+You must see a listening entry for 8822.
 
-This time, because Helix is visibly listening on MarketDev at the same time, the callback should travel:
+If you do not, stop there and show me the output.
 
-Windows browser
-    ↓
-Windows localhost:8822
-    ↓
-Tectia LOCAL tunnel
-    ↓
-MarketDev 127.0.0.1:8822
-    ↓
-Helix auth process
-What success should look like
+If you do see it, leave Terminal 1 running.
 
-After completing SSO, look at Terminal 1.
+Before pasting the OAuth URL, test the Windows end of the tunnel
 
-The helix auth access-token set ... command should finish instead of showing signal: interrupt, and you should get your $ prompt back.
+Open Windows PowerShell, not MarketDev, and run:
 
-Then do not print any token. Run:
+Test-NetConnection 127.0.0.1 -Port 8822
+
+Look specifically for:
+
+TcpTestSucceeded : True
+
+This check is crucial.
+
+There are now only two branches:
+
+True → Tectia tunnel + MarketDev Helix listener are connected correctly. Immediately paste the fresh authorization URL into Edge and complete SSO.
+False → do not continue OAuth. The Tectia local tunnel is not active even though its profile contains the configuration. We fix Tectia first.
+If Windows reports True
+
+Paste the fresh URL from this exact Helix run into Edge. Do not reuse the callback URL currently visible in your screenshot; each OAuth attempt has a new PKCE challenge/state.
+
+Complete SSO promptly.
+
+Then watch Terminal 1, not the browser.
+
+A browser page after callback is secondary. What matters is that Terminal 1 finishes without:
+
+session timed out
+signal: interrupt
+exit status 1
+
+Once it returns naturally to $, run:
 
 ls -la ~/.helix/
 
-We should see a new file ending approximately in:
+We want a newly created file ending in:
 
 -oidc.cred
 
-If that appears, the difficult authentication problem is essentially solved.
+Do not display its contents.
 
-For the moment, only run the Windows netstat -ano | findstr :8822 check and show me the result before opening the OAuth URL.
+Then verify authentication safely:
+
+TOKEN_OUTPUT=$(helix auth access-token print -a 2>/tmp/helix_err)
+RC=$?
+
+echo "EXIT_CODE=$RC"
+echo "TOKEN_LENGTH=${#TOKEN_OUTPUT}"
+
+if [ -s /tmp/helix_err ]; then
+    echo "HELIX_ERROR_PRESENT"
+    cat /tmp/helix_err
+else
+    echo "NO_HELIX_ERROR"
+fi
+
+unset TOKEN_OUTPUT
+rm -f /tmp/helix_err
+Most important next action
+
+For now, don't redo everything.
+
+Run the OAuth command again in Terminal 1, verify 8822 in Terminal 2, and before opening the URL run this on Windows:
+
+Test-NetConnection 127.0.0.1 -Port 8822
