@@ -64,4 +64,61 @@ HTTP/... 200
 
 Then open:
 
+
+
 http://sd-f34e-972f.nam.nsroot.net:8010/ui/index.html
+
+
+
+Static files — fix them now if they exist elsewhere in the package
+
+If the first command shows the four files somewhere under app/ but not under app/backend/public/, use this safe copy script:
+
+cd /home/ak54743/Rapid_Portfolio_Review_AI_UNIX_PACKAGE || exit 1
+
+PUB="app/backend/public"
+
+for f in \
+ rpr_step22_step23_append.js \
+ rpr_step22_step23_append.css \
+ rpr_step24_append.js \
+ rpr_step24_append.css
+do
+    if [ -f "$PUB/$f" ]; then
+        echo "PASS already deployed: $f"
+        continue
+    fi
+
+    SRC=$(find app -type f -name "$f" ! -path "$PUB/*" -print 2>/dev/null | head -1)
+
+    if [ -z "$SRC" ]; then
+        echo "MISSING FROM PACKAGE: $f"
+    else
+        echo "COPY: $SRC -> $PUB/$f"
+        cp "$SRC" "$PUB/$f" || exit 1
+    fi
+done
+
+echo
+echo "FINAL:"
+ls -l "$PUB"/rpr_step*.js "$PUB"/rpr_step*.css 2>/dev/null
+
+Restart:
+
+./marketdev_start.sh
+
+Then verify all four over HTTP:
+
+for f in \
+ rpr_step22_step23_append.js \
+ rpr_step22_step23_append.css \
+ rpr_step24_append.js \
+ rpr_step24_append.css
+do
+    printf "%-35s " "$f"
+    curl -s -o /dev/null -w '%{http_code}\n' "http://127.0.0.1:8010/ui/$f"
+done
+
+All four must say:
+
+200
