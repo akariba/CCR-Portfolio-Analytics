@@ -1,19 +1,32 @@
-Now search only for existing Citi-approved helpers. These commands are simple and ksh-safe. Run them one at a time:
+You were referring to checks like these:
 
-find /home/ak54743/Application -type f -name '*token*' -print 2>/dev/null
+head -1 .venv/bin/fastapi
 
-then:
+and:
 
-find /home/ak54743/Application -type f -name '*artif*' -print 2>/dev/null
+.venv/bin/fastapi --version
 
-then:
+plus the same idea for Uvicorn/Python.
 
-find /home/ak54743/.local -type f -name '*token*' -print 2>/dev/null
+They were meant to verify which interpreter the executable scripts inside your UNIX venv are tied to.
 
-then:
+Use these now, one at a time:
 
-find /home/ak54743/.local -type f -name '*artif*' -print 2>/dev/null
+cd /home/ak54743/Rapid_Portfolio_Review_AI_UNIX_PACKAGE
+head -1 .venv/bin/fastapi
+head -1 .venv/bin/uvicorn
+.venv/bin/fastapi --version
+.venv/bin/uvicorn --version
+.venv/bin/python --version
 
-If those show nothing, run:
+and:
 
-ls -la /home/ak54743/.local/bin 2>/dev/null
+.venv/bin/python -c 'import fastapi,uvicorn; print(fastapi.__version__, uvicorn.__version__)'
+
+What we want to see is that the shebang on fastapi/uvicorn points into:
+
+/home/ak54743/Rapid_Portfolio_Review_AI_UNIX_PACKAGE/.venv/bin/python
+
+and that this Python is:
+
+Python 3.11.5
