@@ -1,45 +1,46 @@
-I need help with one very specific MarketDev UNIX environment problem. Please do not troubleshoot or modify my application code.
+Do only this now. These commands are deliberately compatible with your ksh shell and avoid the syntax problems we had earlier:
 
-I have deployed a FastAPI/Python application to:
-/home/ak54743/Rapid_Portfolio_Review_AI_UNIX_PACKAGE
+cd /home/ak54743/Rapid_Portfolio_Review_AI_UNIX_PACKAGE
 
-Python 3.11.5 is available and I successfully created a .venv.
+if [ -r /env ]; then
+  . /env
+  echo "ENV LOADED"
+else
+  echo "BLOCKER: /env does not exist or is not readable"
+fi
 
-The blocker is dependency installation. Running:
+for v in ARTIFACTORY_USERNAME ARTIFACTORY_API_KEY ARTIFACTORY_IDENTITY_TOKEN PIP_INDEX_URL
+do
+  if printenv "$v" >/dev/null 2>&1; then
+    echo "$v=SET"
+  else
+    echo "$v=MISSING"
+  fi
+done
+What I want to see
 
+Ideally:
+
+ENV LOADED
+ARTIFACTORY_USERNAME=SET
+ARTIFACTORY_API_KEY=SET
+ARTIFACTORY_IDENTITY_TOKEN=SET
+PIP_INDEX_URL=SET
+
+It is possible only one of ARTIFACTORY_API_KEY / ARTIFACTORY_IDENTITY_TOKEN is used; that's fine. Do not show me the actual values.
+
+If /env loads and PIP_INDEX_URL plus authentication are set, continue immediately:
+
+. .venv/bin/activate
 python -m pip install -r deploy/requirements-unix.txt
+Then there are only two outcomes
 
-reaches Citi Artifactory but returns:
+If installation starts downloading/installing packages: excellent. Let it finish. Then run:
 
-401 Error: Credentials not correct
+python -c 'import fastapi, uvicorn, pandas, openpyxl, httpx; import google.adk; print("RPR CORE DEPENDENCIES OK")'
 
-against:
-www.artifactrepository.citigroup.net/artifactory/api/pypi/pypi-dev/simple
+If you still get 401 Credentials not correct: stop there. Do not search directories, reinstall Python, alter pip files, modify RPR, or create another venv. It means the server/account is missing the Citi-supported Artifactory/FID provisioning described in the screenshots. That becomes a MarketDev platform-support issue.
 
-Therefore pip reports no matching versions even though the real issue appears to be repository authentication.
+Also, Citi Assist confirmed an important point: /env is probably session-scoped. So after a new SSH login you may need:
 
-Please tell me the official supported MarketDev method to authenticate pip/Artifactory and install Python packages for this account/server.
-
-I specifically need packages including FastAPI, Uvicorn, pandas, openpyxl, httpx, Google ADK / Google GenAI and the existing application dependencies.
-
-Please check whether MarketDev requires:
-
-an approved pip configuration/bootstrap command,
-refreshed Artifactory credentials/token,
-a module/environment already provisioned on the server,
-a service account,
-or another Citi-supported package repository.
-
-Do not change application source, model configuration, prompts, ports, or deployment architecture.
-
-Please execute/verify the correct setup end-to-end if you have access rather than sending me a sequence of speculative commands.
-
-At the end give me a short report containing:
-
-root cause,
-exact authentication/setup performed,
-Python environment used,
-packages successfully installed,
-exact command to activate/start the application,
-anything I must repeat after logout/reboot,
-remaining blocker, if any.
+. /env
