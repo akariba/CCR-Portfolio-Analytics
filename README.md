@@ -1,577 +1,161 @@
-I need you to perform a STRICT READ-ONLY FORENSIC INVENTORY of my currently WORKING Windows RPR application so I can reproduce the same runtime configuration on UNIX MarketDev.
+We are finishing the RPR Windows → MarketDev UNIX migration.
 
-IMPORTANT:
-- DO NOT modify any file.
-- DO NOT refactor anything.
-- DO NOT create patches.
-- DO NOT restart the backend.
-- DO NOT change environment variables.
-- DO NOT install/uninstall packages.
-- DO NOT touch prompts, Trigger 1 logic, frontend, model routing, or application behavior.
-- DO NOT infer or guess values.
-- Inspect the ACTUAL working source/config/runtime and PRINT the exact information requested below.
-- If a secret/token/password is encountered, DO NOT print its value. Print only:
-  SET / NOT SET, source/location, mechanism, variable name, and whether it is static or refreshed.
-- Exact model identifiers are NOT secrets and MUST be printed verbatim.
-- Ignore __pycache__, .pyc, backup files, obsolete copies, old project folders, and unrelated tests unless they are actually imported by the live app.
+DO NOT MODIFY ANY FILE.
+DO NOT CREATE PATCHES.
+DO NOT RESTART ANY SERVICE.
+DO NOT PRINT TOKENS, API KEYS, CLIENT SECRETS, PASSWORDS OR OTHER SECRET VALUES.
 
-WORKING PROJECT ROOT:
+The previous forensic report established:
+- live app = backend/server.py, FastAPI object server:app
+- main.py is NOT part of the live production path
+- Trigger 1 Gemini models = gemini-3.5-flash
+- Trigger 1 Opus refinement = claude-opus-4-6
+- RUNTIME_ENV.ps1 resolves the approved Sonnet 5 model dynamically
+- frontend currently contains a hardcoded http://127.0.0.1:8000 API value
+- R2D2 supports h2m and m2m
+- MarketDev Python/package installation is already complete
 
-C:\Users\ak547743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI
+I now need the FINAL runtime configuration evidence from the ACTUAL WORKING WINDOWS RPR session/code.
 
-WORKING BACKEND:
+Perform a READ-ONLY inspection and print one compact report.
 
-C:\Users\ak547743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\backend
+1. APPROVED SONNET 5
+Determine the exact effective value used by the working Windows RPR for:
+- RPR_APPROVED_SONNET5_MODEL
+- STEP2_SONNET_MODEL
+- RPR_THEME_GATE_MODEL
+- STEP23_REVISION_MODEL
+- STEP23_REPAIR_MODEL
+- RPR_FEEDBACK_MODEL
 
-KNOWN WORKING PYTHON:
-
-C:\Users\ak547743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\portfolio-agent\.venv\Scripts\python.exe
-
-KNOWN LIVE ENTRYPOINT:
-
-backend\server.py
-FastAPI object: server:app
-
-The goal is to give me ONE COMPLETE REPORT that I can hand to another engineer/AI to configure the UNIX deployment without further archaeology.
-
-============================================================
-1. LIVE PROCESS / STARTUP
-============================================================
-
-Determine and print:
-
-- exact command currently used to start the working backend
-- working directory required before starting it
-- Python executable path
-- uvicorn module/app
-- host
-- port
-- reload yes/no
-- whether any .ps1 script is actually required
-- exact health endpoint
-- exact frontend URL/path currently used
-- whether frontend is:
-  a) opened directly as file://
-  b) served by FastAPI StaticFiles
-  c) served some other way
-- exact HTML file currently considered the live UI
-- any external JS/CSS files loaded by that HTML that are required at runtime
-
-Do not assume. Trace server.py and the actual HTML references.
-
-============================================================
-2. EXACT ENVIRONMENT VARIABLES USED BY LIVE CODE
-============================================================
-
-Search live Python source for:
-
-os.getenv(
-os.environ[
-os.environ.get(
-setdefault(
-environment wrappers/config loaders
-
-For EVERY environment variable actually read by runtime code, print a table:
-
-VARIABLE
-REQUIRED / OPTIONAL
-CURRENT PROCESS VALUE if non-secret
-SET / NOT SET if secret
-DEFAULT IN CODE
-SOURCE FILE + LINE
-PURPOSE
-USED BY WHICH STEP
-WINDOWS-SPECIFIC? yes/no
-EXPECTED UNIX VALUE/source if obvious from existing code only
-
-Pay special attention to:
-
-RPR_APPROVED_SONNET5_MODEL
-STEP2_SONNET_MODEL
-RPR_THEME_GATE_MODEL
-RPR_STEP1_REFINEMENT_MODEL
-STEP2_OPUS_MODEL
-STEP23_REASONING_MODEL
-STEP23_REVISION_MODEL
-STEP23_REPAIR_MODEL
-RPR_FEEDBACK_MODEL
-
-RPR_GEMINI_MODEL
-RPR_GEMINI_DISCOVERY_MODEL
-RPR_GEMINI_EVIDENCE_MODEL
-RPR_GEMINI_THEME_MODEL
-RPR_GEMINI_LOCATION
-RPR_VERTEX_BASE_URL
-VERTEX_PROJECT
-VERTEX_PROJECT_ID
-VERTEX_LOCATION
-
-LLM_PROVIDER
-R2D2_AUTH_MODE
-R2D2_UAT_URL
-R2D2_TOKEN_URL
-R2D2_SCOPE
-R2D2_MODEL
-R2D2_GCP_PROJECT
-
-CITI_CERT_PATH
-COIN_CLIENT_ID
-COIN_CLIENT_SECRET
-
-RPR_HOST
-RPR_PORT
-
-RPR_T1_THEME_WORKERS
-RPR_T1_OPUS_WORKERS
-RPR_T1_MAX_EVENTS_PER_THEME
-RPR_T1_DISCOVERY_TIMEOUT
-RPR_T1_ENRICHMENT_TIMEOUT
-RPR_T1_REFINEMENT_TIMEOUT
-RPR_T1_TARGETED_TIMEOUT
-RPR_T2_SEARCH_TIMEOUT
-RPR_T2_OPUS_TIMEOUT
-RPR_T1_THEME_GATE_TIMEOUT
-RPR_T1_OPUS_MAX_TOKENS
-RPR_T1_GEMINI_MAX_CHARS
-RPR_T1_CACHE_SECONDS
-RPR_T1_JOB_TTL_SECONDS
-RPR_HELIX_TOKEN_CACHE_SECONDS
-
-RPR_STEP22_DATA_DIR
-
-But do not limit your search to this list.
-
-============================================================
-3. EXACT MODEL ROUTING
-============================================================
-
-I need the REAL live model mapping, not comments and not guesses.
-
+If these come from the currently running PowerShell environment, you MAY print these NON-SECRET MODEL IDENTIFIERS.
+Do not infer.
 Print:
+VARIABLE=value
+for each.
+Then say whether all six resolve to the same model identifier.
 
-FUNCTION / STEP / PURPOSE -> PROVIDER -> EXACT MODEL IDENTIFIER -> ENV VARIABLE OR HARDCODED SOURCE
+2. R2D2 AUTH MODE
+Determine the actual effective value of R2D2_AUTH_MODE in the working Windows environment.
 
-At minimum cover:
+Print only:
+R2D2_AUTH_MODE=h2m
+or
+R2D2_AUTH_MODE=m2m
 
-Trigger 1:
-- theme quality/gate
-- Gemini discovery
-- Gemini evidence/enrichment
-- Opus refinement
-- retries/repair/fallbacks
+If h2m:
+- confirm whether helix CLI is the path actually used
+- print the exact non-secret command/code path used to obtain the token
+- DO NOT print the token
 
-Trigger 2:
-- narrative processing
-- search
-- refinement
+If m2m:
+- confirm whether COIN_CLIENT_ID exists: SET / NOT SET
+- confirm whether COIN_CLIENT_SECRET exists: SET / NOT SET
+- DO NOT print either value.
 
-Step 2.1
-Step 2.3
-Step 2.4 V5.2
-Step 2.4 V6
-feedback/revision services
+3. R2D2 NON-SECRET ENDPOINT CONFIG
+Print the effective values, if present, for:
+- R2D2_UAT_URL
+- R2D2_TOKEN_URL
+- R2D2_SCOPE
+- R2D2_GCP_PROJECT
+- R2D2_MODEL
 
-VERY IMPORTANT:
+These are configuration identifiers/endpoints, not credentials.
+If a value is absent and the code uses a literal default, print the literal default and source file:line.
 
-Find and print the EXACT organization-approved Sonnet 5 identifier used successfully on Windows.
+4. GEMINI / VERTEX NON-SECRET CONFIG
+Print effective values for:
+- RPR_GEMINI_MODEL
+- RPR_GEMINI_DISCOVERY_MODEL
+- RPR_GEMINI_EVIDENCE_MODEL
+- RPR_GEMINI_THEME_MODEL
+- RPR_GEMINI_LOCATION
+- VERTEX_PROJECT
+- VERTEX_PROJECT_ID
+- R2D2_GCP_PROJECT
+- RPR_VERTEX_BASE_URL
+- R2D2_BASE_URL
+- VERTEX_ENDPOINT
+- BASE_VERTEX_URL
 
-Do not print simply "Sonnet 5".
-I need the literal identifier expected by the gateway.
+For each state EFFECTIVE, FALLBACK, or NOT SET.
+Do not invent missing values.
 
-Also confirm explicitly whether:
-
-RPR_APPROVED_SONNET5_MODEL
-STEP2_SONNET_MODEL
-RPR_THEME_GATE_MODEL
-
-resolve to the same value or different values.
-
-============================================================
-4. RUNTIME_ENV.ps1
-============================================================
-
-Locate the actual:
-
-RUNTIME_ENV.ps1
-
+5. CERTIFICATE
 Print:
+CITI_CERT_PATH=<effective path>
+R2D2_CERT_FILE=<effective path or NOT SET>
+REQUESTS_CA_BUNDLE=<effective path or NOT SET>
+SSL_CERT_FILE=<effective path or NOT SET>
 
-- exact full path
-- all NON-SECRET variable assignments verbatim
-- secret variable names only, with values REDACTED
-- whether backend startup actually loads this file automatically
-- whether it is only manually loaded
-- whether equivalent values are already present elsewhere
-
-Do NOT modify it.
-
-Also distinguish:
-
-ACTIVE CONFIG
-vs
-WINDOWS REFERENCE / historical config.
-
-============================================================
-5. AUTHENTICATION DESIGN
-============================================================
-
-Trace the actual Python auth code.
-
-I need exact factual answers for:
-
-A. R2D2 / Claude authentication
-
-- auth modes supported
-- currently used Windows auth mode
-- h2m behavior
-- m2m behavior
-- exact Python function that obtains the token
-- source file + function name
-- token lifetime assumption
-- token cache TTL
-- whether token automatically refreshes
-- whether restart is required after token expiry
-- whether token is fetched per request or cached
-- what external CLI/tool h2m relies on
-- what environment variables m2m requires
-
-DO NOT print tokens or secrets.
-
-B. Gemini / ADK / Vertex authentication
-
-- exact library/path used
-- credential mechanism used on Windows
-- whether it depends on enterprise ADK
-- whether it calls Vertex directly
-- required project/location/base URL variables
-- certificate behavior
-- whether UNIX requires any change according to CURRENT CODE
-
-Again: facts only.
-
-============================================================
-6. TLS / CERTIFICATE HANDLING
-============================================================
-
-Trace certificate handling in:
-
-rpr_search_agent.py
-llm_gateway.py
-and any other live modules.
+Paths are fine to print; do not print certificate content.
 
-Print:
+6. FRONTEND API
+Find every active occurrence in the LIVE frontend HTML/JS of:
+- 127.0.0.1
+- localhost
+- :8000
+- const API
+- API_BASE
+- fetch(
 
-- Windows certificate path currently used
-- whether Windows certificate store is used
-- any local PEM path
-- exact variable controlling UNIX certificate path
-- whether /etc/pki/citi/CitiInternalCAChain_PROD.pem is compatible with current code
-- requests/httpx verify configuration
-- SSL_CERT_FILE / REQUESTS_CA_BUNDLE usage if any
-- anything Windows-specific that will fail on UNIX
+For each active API base definition, print exact file:line and code.
+Ignore backups, generated package copies and historical files.
 
-No code modifications.
+Then answer this precisely:
 
-============================================================
-7. TRIGGER 1 — EXACT PRODUCTION PATH
-============================================================
-
-This is critical.
-
-Trace Trigger 1 from:
+Can we replace the single hardcoded frontend API base with a same-origin relative base (for example empty string / window.location.origin) while preserving EVERY route suffix and all current UI behavior?
 
-browser click
--> frontend function
--> HTTP route
--> background job
--> theme processing
--> Gemini discovery
--> parsing
--> event validation
--> enrichment
--> Opus refinement
--> job state
--> UI rendering.
+YES/NO with evidence.
 
-Print the exact files/functions in sequence.
+7. STATIC FRONTEND SERVING
+Inspect live server.py and report whether it currently serves:
+- /
+- /index.html
+- /static
+- app/backend/public
+or equivalent.
 
-Also print the exact current rules for:
-
-- required events per theme
-- MAX_EVENTS_PER_THEME
-- whether EXACTLY 3 events are required
-- behavior when Gemini produces 0 events
-- behavior when Gemini produces 1 event
-- behavior when Gemini produces 2 events
-- behavior when 3 events are produced
-- discovery_incomplete handling
-- retry behavior
-- parser rejection rules
-- missing required fields
-- enrichment failure behavior
-- refinement failure behavior
-- whether partial discovery is retained
-- whether a theme can ever be marked SUCCESS with fewer than 3 valid events
-
-I want a clear YES/NO at the end:
+Print exact route/mount code with source lines.
 
-"Can Trigger 1 currently return SUCCESS with fewer than 3 valid events?"
-
-If yes, explain exact code path.
+8. STARTUP
+Print the exact current Windows start command from start_backend.ps1.
+Then provide the mechanically equivalent UNIX command only, assuming:
+- project root /home/ak54743/Rapid_Portfolio_Review_AI_UNIX_PACKAGE
+- backend app under app/backend
+- Python at .venv/bin/python
+- host 0.0.0.0
+- port 8010
+- NO reload
 
-============================================================
-8. REQUIRED PROMPTS / DATA / FILE DEPENDENCIES
-============================================================
+Do not execute it.
 
-Identify every file opened/read at runtime.
-
-Print path and consumer for:
-
-- prompts
-- Step 2.1 data
-- Step 2.2 data
-- Step 2.3
-- Step 2.4
-- CAM files
-- Excel/CSV runtime files
-- templates
-- frontend append JS/CSS
-- cache directories
+9. FINAL UNIX ENV TABLE
+Based ONLY on verified code/current Windows values, produce:
 
-Distinguish:
+VARIABLE | UNIX VALUE | REQUIRED/OPTIONAL | SECRET? | SOURCE
 
-REQUIRED AT RUNTIME
-OPTIONAL
-DEVELOPMENT ONLY
-OBSOLETE/UNUSED
+Include every variable needed for server.py + Trigger1 + Step2.1 + Step2.2 + Step2.3 + Step2.4.
 
-Do not delete anything.
+For secret variables print only:
+<SET EXTERNALLY>
 
-============================================================
-9. PYTHON PACKAGE INVENTORY
-============================================================
+Never print a secret.
 
-Using the APPROVED WORKING Windows venv, print:
+10. FINAL BLOCKERS
+End with only:
+BLOCKER 1:
+BLOCKER 2:
+...
 
-python --version
-
-and:
-
-python -m pip freeze
-
-Then additionally identify packages actually imported by the live backend.
-
-I especially need exact versions of:
-
-fastapi
-uvicorn
-pydantic
-starlette
-httpx
-pandas
-openpyxl
-python-multipart
-google-adk
-google-genai
-google-auth
-anthropic
-
-Print:
-
-PACKAGE
-WINDOWS VERSION
-DIRECT IMPORTED? yes/no
-REQUIRED FOR UNIX? yes/no
-IMPORTING FILES
-
-Do not upgrade anything.
-
-============================================================
-10. WINDOWS-SPECIFIC DEPENDENCIES
-============================================================
-
-Search live runtime source for:
-
-C:\
-backslashes in absolute paths
-.ps1
-PowerShell
-Windows certificate APIs
-os.name
-sys.platform
-win32
-USERPROFILE
-OneDrive paths
-
-Print every ACTUAL runtime blocker for UNIX.
-
-Ignore comments/dead files unless imported.
-
-Classify each:
-
-BLOCKER
-NEEDS CONFIG ONLY
-HARMLESS
-DEAD/UNUSED
-
-============================================================
-11. PORT 8000 / SERVICE COLLISION
-============================================================
-
-Determine:
-
-- what application is currently listening on Windows port 8000
-- whether RPR assumes 8000 internally
-- all frontend references to 127.0.0.1:8000
-- whether backend API URL is hardcoded
-- whether UNIX package uses 8010 instead
-- what would need to change for multi-user MarketDev deployment
-
-DO NOT change anything.
-
-Just report facts.
-
-============================================================
-12. FRONTEND MULTI-USER DEPLOYMENT
-============================================================
-
-Inspect the actual live frontend.
-
-Tell me whether:
-
-http://UNIX_HOST:PORT/ui/
-
-can call the backend correctly from another user's browser.
-
-Specifically inspect for:
-
-127.0.0.1
-localhost
-file:// assumptions
-hardcoded API_BASE
-absolute paths
-
-Print exact file + line for each.
-
-============================================================
-13. ROOT ENTRYPOINT CONFUSION
-============================================================
-
-We have both server.py and main.py.
-
-Determine conclusively:
-
-- which one is the actual RPR app
-- whether main.py is imported anywhere by server.py
-- whether main.py creates a second FastAPI app
-- whether main.py is needed in deployment
-- why importing main.py reports more routes than server.py if applicable
-
-Do not delete it.
-
-============================================================
-14. DUPLICATE PROJECT / AGENT TREES
-============================================================
-
-Inspect only enough to determine runtime relevance of:
-
-portfolio-agent
-rapid-portfolio
-backend/rapid-portfolio
-other similarly named agent folders
-
-For each say:
-
-LIVE DEPENDENCY
-DEVELOPMENT TOOL
-DUPLICATE
-UNKNOWN
-
-Do not remove anything.
-
-============================================================
-15. UNIX DEPLOYMENT OUTPUT I NEED
-============================================================
-
-At the end produce one concise section titled:
-
-UNIX VALUES TO SET
-
-Format exactly:
-
-RPR_HOST=
-RPR_PORT=
-LLM_PROVIDER=
-R2D2_AUTH_MODE=
-CITI_CERT_PATH=
-
-RPR_GEMINI_MODEL=
-RPR_GEMINI_DISCOVERY_MODEL=
-RPR_GEMINI_EVIDENCE_MODEL=
-RPR_GEMINI_THEME_MODEL=
-RPR_GEMINI_LOCATION=
-
-RPR_STEP1_REFINEMENT_MODEL=
-RPR_APPROVED_SONNET5_MODEL=
-STEP2_SONNET_MODEL=
-STEP2_OPUS_MODEL=
-STEP23_REASONING_MODEL=
-STEP23_REVISION_MODEL=
-STEP23_REPAIR_MODEL=
-RPR_FEEDBACK_MODEL=
-RPR_THEME_GATE_MODEL=
-
-RPR_T1_THEME_WORKERS=
-RPR_T1_OPUS_WORKERS=
-RPR_T1_MAX_EVENTS_PER_THEME=
-RPR_T1_DISCOVERY_TIMEOUT=
-RPR_T1_ENRICHMENT_TIMEOUT=
-RPR_T1_REFINEMENT_TIMEOUT=
-RPR_T1_OPUS_MAX_TOKENS=
-RPR_T1_GEMINI_MAX_CHARS=
-RPR_HELIX_TOKEN_CACHE_SECONDS=
-
-For anything genuinely secret print:
-
-<SECRET - SUPPLY EXTERNALLY>
-
-For anything unknown print:
-
-<UNKNOWN - NOT FOUND>
-
-Do not invent anything.
-
-============================================================
-16. FINAL GO/NO-GO REPORT
-============================================================
-
-Finish with exactly these headings:
-
-A. CONFIRMED WORKING WINDOWS ARCHITECTURE
-B. EXACT MODEL IDENTIFIERS
-C. EXACT AUTH MECHANISMS
-D. EXACT TLS/CERT REQUIREMENTS
-E. EXACT PYTHON DEPENDENCIES
-F. UNIX CONFIGURATION VALUES
-G. WINDOWS-SPECIFIC BLOCKERS
-H. TRIGGER 1 EXACTLY-3-EVENT GUARANTEE
-I. FRONTEND NETWORK ACCESS BLOCKERS
-J. REMAINING UNKNOWNS
-
-For every important claim include:
-FILE
-LINE NUMBER
-FUNCTION
-OBSERVED VALUE
-
-Do not give me recommendations until after the forensic inventory.
+Include only things that truly prevent us from starting and testing the application on MarketDev now.
 
 Again:
 READ ONLY.
-NO MODIFICATIONS.
-NO RESTART.
-NO PACKAGE CHANGES.
-NO GUESSING.
+NO FILE CHANGES.
+NO PATCHES.
+NO PACKAGE INSTALLATION.
+NO SERVICE RESTARTS.
 NO SECRET VALUES.
-
-I want the evidence, not a proposed implementation.
+Evidence, not proposals.
