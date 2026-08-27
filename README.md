@@ -1,21 +1,14 @@
-Run these one at a time, exactly as written:
+Do not run another pip install yet. Run only these simple commands, one by one:
 
-python -m pip config debug
+cd /home/ak54743
+ls -l refresh_token.sh
+ls -l update_token.sh
+ls -l token_refresh.log
 
-Then:
+Then inspect the scripts without executing them:
 
-env | grep PIP
+sed -n '1,200p' refresh_token.sh
 
-Then:
+and:
 
-find "$HOME" -name pip.conf -print
-
-Then:
-
-find "$HOME" -name .pypirc -print
-
-Then check whether the server already has the packages globally:
-
-/usr/bin/python -c 'import fastapi; print("fastapi",fastapi.__version__)'
-/usr/bin/python -c 'import uvicorn; print("uvicorn",uvicorn.__version__)'
-/usr/bin/python -c 'import pandas; print("pandas",pandas.__version__)'
+sed -n '1,200p' update_token.sh
