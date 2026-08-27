@@ -1,1 +1,26 @@
-cd /home/ak54743/Rapid_Portfolio_Review_AI_UNIX_PACKAGE; printf '\n===== 1 EXISTING SERVICE ON 8000 =====\n'; curl -sS --max-time 3 http://127.0.0.1:8000/openapi.json 2>&1 | head -c 1200; printf '\n\n===== 2 PORT 8000 OWNER =====\n'; ss -ltnp 2>&1 | grep ':8000 ' || true; command -v fuser >/dev/null 2>&1 && fuser -v 8000/tcp 2>&1 || true; printf '\n===== 3 PYTHON 3.11 =====\n'; /usr/bin/python --version; /usr/bin/python -c 'import sys; print(sys.executable); print(sys.version)'; printf '\n===== 4 VENV SUPPORT =====\n'; /usr/bin/python -m venv --help >/dev/null 2>&1; printf 'venv_rc=%s\n' "$?"; printf '\n===== 5 PIP =====\n'; /usr/bin/python -m pip --version 2>&1 || true; printf '\n===== 6 ENV TEMPLATE =====\n'; sed -n '1,220p' deploy/env.example; printf '\n===== 7 AUTH/CERT/MODEL REFERENCES =====\n'; grep -RniE 'CITI_CERT_PATH|SONNET5_MODEL|R2D2_AUTH|COIN|HELIX|certificate|token|refresh' deploy app/backend 2>/dev/null | head -120
+cd /home/ak54743/Rapid_Portfolio_Review_AI_UNIX_PACKAGE
+
+echo "=== BUILD UNIX VENV ==="
+/usr/bin/python -m venv .venv
+. .venv/bin/activate
+
+echo "=== PYTHON ==="
+python --version
+which python
+
+echo "=== INSTALL RPR DEPENDENCIES ==="
+python -m pip install -r deploy/requirements-unix.txt
+
+echo "=== VERIFY CERTIFICATE ==="
+ls -l /etc/pki/citi/CitiInternalCAChain_PROD.pem 2>&1 || true
+
+echo "=== CREATE LOCAL ENV CONFIG ==="
+cp -n deploy/env.example deploy/env.sh.local
+
+echo "=== MOVE RPR OFF OCCUPIED PORT 8000 ==="
+sed -i 's/^RPR_PORT=.*/RPR_PORT=8010/' deploy/env.sh.local
+
+echo "=== SHOW IMPORTANT NON-SECRET CONFIG ==="
+grep -E '^(RPR_HOST|RPR_PORT|R2D2_AUTH_MODE|CITI_CERT_PATH|RPR_APPROVED_SONNET5_MODEL|STEP2_SONNET_MODEL|RPR_STEP1_REFINEMENT_MODEL|STEP23_REASONING_MODEL|RPR_GEMINI_MODEL)' deploy/env.sh.local
+
+echo "=== INSTALL PHASE COMPLETE ==="
