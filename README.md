@@ -1,65 +1,70 @@
-The new forensic report is useful, but do not apply any of its proposed fixes yet. There is one important inconsistency in it: saying Helix listens on *:8822 while Tectia forwards to 127.0.0.1:8822 is not itself a bind mismatch. *:8822 normally means a wildcard listener. The report itself later correctly says that this should work.
+MarketDev Terminal 1 — start Helix and leave it waiting
 
-The most valuable thing it identified is the IPv4 vs IPv6 localhost question. Your browser callback is always:
+export BROWSER=echo
 
-http://localhost:8822/callback
+helix auth access-token set --scope coinscope0aaa6ae8-6e52-4dce-bd57-71ca19c63d12
 
-but your Tectia listener we have actually confirmed as:
+It should print the authorization URL. Do not paste it into Edge yet. Leave Terminal 1 untouched.
 
-127.0.0.1:8822
+MarketDev Terminal 2 — while Terminal 1 is still waiting
 
-So check that first. It takes about 30 seconds and requires no configuration changes.
+Run:
 
-In Windows PowerShell, with Tectia connected, run exactly:
+ss -ltnp 2>/dev/null | grep 8822
 
-[System.Net.Dns]::GetHostAddresses("localhost") | ForEach-Object { $_.ToString() }
+We want to see the auth process still listening.
 
-Test-NetConnection 127.0.0.1 -Port 8822
+Then run:
 
-Test-NetConnection ::1 -Port 8822
+curl -4 -v --max-time 5 http://127.0.0.1:8822/ 2>&1 | head -30
 
-netstat -ano | findstr ":8822"
+Do not worry if you get 404, 400, or another HTTP error. What matters is whether you see something like:
 
-I expect one of two outcomes.
+Connected to 127.0.0.1 ... port 8822
 
-If you get something like:
+or instead:
 
-localhost:
-::1
-127.0.0.1
+Connection refused
+Connection reset
 
-127.0.0.1:8822  -> True
-::1:8822         -> False
+Then, while Helix is still waiting, go to Windows PowerShell and run:
 
-netstat:
-127.0.0.1:8822 LISTENING
+try {
+    Invoke-WebRequest `
+      -Uri "http://127.0.0.1:8822/" `
+      -UseBasicParsing `
+      -TimeoutSec 5
+} catch {
+    $_.Exception.Message
+}
 
-then we have probably found the problem: Tectia exposes the tunnel only on IPv4 while Edge's localhost callback is attempting IPv6.
+This request goes through the Tectia tunnel.
 
-If both 127.0.0.1 and ::1 succeed, IPv6 is eliminated and we move immediately to the SSH-forwarding path.
+How we interpret it
 
-Do not edit the Windows hosts file, /etc/ssh/sshd_config, firewall rules, Tectia settings, or the RPR code yet.
+If MarketDev curl connects successfully but the Windows request gets connection reset, we have essentially isolated the problem to:
 
-Also, don't start another Helix OAuth attempt for this test. These four commands can be run now.
+Tectia local forwarding / SSH server forwarding policy, not Helix, not RPR, not OAuth, and not IPv6.
 
-One more correction to Claude's report: this statement:
+Then run this read-only command on MarketDev:
 
-*:8822 vs 127.0.0.1:8822 = root cause
+grep -RniE '^[[:space:]]*(AllowTcpForwarding|PermitOpen|GatewayPorts)' \
+  /etc/ssh/sshd_config /etc/ssh/sshd_config.d 2>/dev/null
 
-is not established. What we actually know is:
+Do not edit anything.
 
-Windows browser
-     ↓
-localhost:8822
-     ↓
-Tectia local listener
-     ↓
-SSH forwarding channel
-     ↓
-MarketDev
-     ↓
-Helix callback listener :8822
+If both MarketDev and Windows requests connect, then the tunnel itself works and the remaining issue is specifically the OAuth callback request/timing, which is a much narrower problem.
 
-We have confirmed the two listeners individually. We have not yet proved which hop resets the actual callback.
+If even MarketDev's own curl cannot connect while ss shows Helix listening, then we investigate the Helix listener itself.
 
-Send me the output of those four commands. From that single result I can tell you whether to investigate IPv6 or the SSH forwarding channel next.
+Important
+
+Don't run another full OAuth login yet.
+
+First give me only these three outputs:
+
+1. MarketDev: ss -ltnp | grep 8822
+2. MarketDev: curl -4 -v ...
+3. Windows: Invoke-WebRequest result
+
+We are now testing the exact failing hop instead of changing configurations blindly.
