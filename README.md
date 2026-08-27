@@ -1,17 +1,19 @@
-Run exactly these two commands
+Now search only for existing Citi-approved helpers. These commands are simple and ksh-safe. Run them one at a time:
 
-First:
+find /home/ak54743/Application -type f -name '*token*' -print 2>/dev/null
 
-find /home/ak54743 -name refresh_token.sh -print 2>/dev/null
+then:
 
-Then:
+find /home/ak54743/Application -type f -name '*artif*' -print 2>/dev/null
 
-find /home/ak54743 -name update_token.sh -print 2>/dev/null
+then:
 
-Nothing complicated. No parentheses, no pipes, no chained commands.
+find /home/ak54743/.local -type f -name '*token*' -print 2>/dev/null
 
-If both return nothing
+then:
 
-Run:
+find /home/ak54743/.local -type f -name '*artif*' -print 2>/dev/null
 
-ls -la /home/ak54743
+If those show nothing, run:
+
+ls -la /home/ak54743/.local/bin 2>/dev/null
