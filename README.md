@@ -1,14 +1,17 @@
-Do not run another pip install yet. Run only these simple commands, one by one:
+Run exactly these two commands
 
-cd /home/ak54743
-ls -l refresh_token.sh
-ls -l update_token.sh
-ls -l token_refresh.log
+First:
 
-Then inspect the scripts without executing them:
+find /home/ak54743 -name refresh_token.sh -print 2>/dev/null
 
-sed -n '1,200p' refresh_token.sh
+Then:
 
-and:
+find /home/ak54743 -name update_token.sh -print 2>/dev/null
 
-sed -n '1,200p' update_token.sh
+Nothing complicated. No parentheses, no pipes, no chained commands.
+
+If both return nothing
+
+Run:
+
+ls -la /home/ak54743
