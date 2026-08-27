@@ -1,217 +1,306 @@
-We now have the official Citi architecture conclusion from Stylus:
+FINAL RPR MARKETDEV M2M IMPLEMENTATION AUDIT — DO NOT ASK ME MORE QUESTIONS
 
-Target deployment = shared UNIX MarketDev service using M2M.
+We have spent considerable time diagnosing MarketDev authentication. I now want you to finish the architecture decision and give me an executable implementation plan.
 
-Official documentation states:
+DO NOT MODIFY ANY FILE YET. READ-ONLY FORENSIC ANALYSIS ONLY.
 
-M2M / local_m2m is the supported service/shared deployment authentication pattern.
-Credentials are an application/agent-specific COIN Client ID + Client Secret.
-OAuth grant = client_credentials.
-H2M browser login, Helix interactive authentication, localhost:8822 callback and Tectia tunnel are NOT required for M2M.
-The credential must represent the application/agent, not my personal SOEID.
-Do NOT expose or print credentials.
+TARGET
 
-Your previous read-only code inspection found:
+RPR must run as a shared, independent MarketDev UNIX FastAPI service.
 
-def _acquire_token(self):
-    if self._auth_mode == "h2m":
-        return get_h2m_token()
-    else:
-        return self._get_m2m_token()
+Windows, Tectia, browser OAuth, localhost:8822, my personal SOEID session and persisted ~/.helix/*-oidc.cred must NOT be runtime dependencies of the final shared deployment.
 
-and _get_m2m_token() already implements OAuth2 client_credentials for the Claude/R2D2 path.
+We are moving to the officially supported M2M/service identity architecture.
 
-You also found that the Gemini/ADK path in rpr_search_agent.py appears to call the H2M/Helix token logic independently.
-
-DO NOT MODIFY ANYTHING YET.
-
-Perform one final exhaustive READ-ONLY deployment-authentication audit.
-
-Inspect:
-
-llm_gateway.py
-rpr_search_agent.py
-market_event_scout.py
-narrative_enricher.py
-every helix_adk_adapter import/use
-every Gemini/Vertex initialization path
-every R2D2/Claude initialization path
-server.py
-RUNTIME_ENV.ps1
-all environment-variable lookups relevant to authentication
-all occurrences of:
-R2D2_AUTH_MODE
-RUN_MODE
-COIN_CLIENT_ID
-R2D2_CLIENT_ID
-CLIENT_ID
-COIN_CLIENT_SECRET
-R2D2_CLIENT_SECRET
-CLIENT_SECRET
-get_h2m_token
-_get_m2m_token
-helix
-access-token
-client_credentials
-GRANT_TYPE
-TOKEN_URL
-Vertex
-Gemini
-google
-adk
-
-Also inspect the UNIX marketdev_start.sh if available. If it is not in the Windows workspace, say so explicitly and do not guess.
-
-I want exact answers to these questions:
-
-1. Claude/R2D2 M2M
-
-Confirm the exact existing implementation and exact environment variable names it reads. Cite file + line numbers.
-
-Determine whether:
+FACTS ALREADY ESTABLISHED
+llm_gateway.py already supports:
 
 R2D2_AUTH_MODE=m2m
 
-is sufficient to select it, or whether RUN_MODE=local_m2m is also consumed anywhere by my application.
+and contains a working _get_m2m_token() implementation using OAuth2 client credentials.
 
-2. Credential names
+It consumes:
 
-Resolve the apparent difference between Citi documentation saying:
+COIN_CLIENT_ID / alias R2D2_CLIENT_ID
+COIN_CLIENT_SECRET / alias R2D2_CLIENT_SECRET
+Citi CA certificate path
 
-CLIENT_ID
-CLIENT_SECRET
+Therefore Claude/R2D2 is GO for M2M without application logic changes.
 
-and the RPR implementation apparently reading:
+Current marketdev_start.sh still contains:
 
-COIN_CLIENT_ID / R2D2_CLIENT_ID
-COIN_CLIENT_SECRET / R2D2_CLIENT_SECRET
+export R2D2_AUTH_MODE="h2m"
 
-Give the exact variables the CURRENT CODE reads. Do not propose renaming working application code unless necessary.
+and Helix-presence validation associated with H2M.
 
-3. Gemini/ADK authentication — CRITICAL
+Your previous audit found three Gemini implementations:
 
-Trace the complete execution path for:
+A. rpr_search_agent.py
 
-Step1 Trigger1
-    → theme gate
-    → Gemini discovery
-    → enterprise web search/evidence
-    → narrative enrichment
-    → Claude refinement
+Current path imported by market_event_scout.py and narrative_enricher.py.
 
-For every model/API call identify:
+It manually invokes:
 
-component
-model
-authentication implementation
-credential source
-H2M dependency yes/no
-M2M support yes/no
-Helix dependency yes/no
+helix auth access-token print -a
 
-Do not infer. Cite source.
+and therefore currently has no M2M branch.
 
-In particular determine whether the Gemini/ADK enterprise search adapter itself already supports local_m2m, CLIENT_ID/CLIENT_SECRET, service identity, or another non-interactive mechanism that the RPR simply is not configuring.
+B. web_search_agent.py
 
-Inspect the installed adapter/package/interface if locally available.
+Used/imported around theme_assistant.py / rpr_service.py.
 
-4. Separate the two authentication systems
+It uses:
 
-Determine whether:
+helix_adk_adapter.custom_google_llm.HelixGemini
 
-Claude/R2D2 authentication
+The Citi adapter documentation indicates native RUN_MODE=local_m2m using CLIENT_ID + CLIENT_SECRET.
 
-and
+C. rapid-portfolio/
 
-Gemini/Vertex/ADK authentication
+Standalone Helix ADK template/reference project, not believed to be imported by the live app. Its documentation describes the native M2M implementation.
 
-are actually independent.
+IMPORTANT
 
-I need to know whether one COIN M2M client can support both or whether Gemini uses a different enterprise authentication system entirely.
+Do not assume the Windows environment proves what is installed on MarketDev.
 
-5. Startup script
+The final target is MarketDev, where the UNIX venv is:
 
-Identify exactly which existing H2M-specific startup checks become invalid under M2M, including:
+~/Rapid_Portfolio_Review_AI_UNIX_PACKAGE/.venv
 
-Helix executable check
-auth plugin check
-persisted H2M credential check
+and application package/root is:
+
+~/Rapid_Portfolio_Review_AI_UNIX_PACKAGE
+
+Entry point remains:
+
+server:app
+
+Do NOT change RPR business logic, prompts, scoring, Step 1 behaviour, UI, Step 2.x logic, models or frozen visual design.
+
+TASK 1 — Establish the ACTUAL Gemini runtime import graph
+
+Trace from server.py all the way to Gemini for:
+
+Trigger 1 theme gate
+event discovery
+evidence search
+enrichment
+Trigger 2 if relevant
+
+For every route show:
+
+server endpoint -> service -> module -> class/function -> auth mechanism
+
+Explicitly identify whether:
+
+rpr_search_agent.py
+
+or
+
+web_search_agent.py
+
+is invoked for each operation.
+
+Cite exact filenames/functions/line ranges.
+
+Do not infer.
+
+TASK 2 — Determine whether helix_adk_adapter can replace ONLY the authentication layer
+
+Compare the public interfaces of:
+
+rpr_search_agent.py
+
+versus
+
+web_search_agent.py
+
+Determine whether the existing discovery/enrichment callers can use the Citi adapter without changing their business behaviour.
+
+I do NOT want a rewrite.
+
+Preserve:
+
+prompts
+Gemini model names
+enterprise web search
+grounding metadata
+return shapes
+timeout logic
+retries
+theme/event isolation
+progressive discovery → evidence → Opus refinement pipeline
+max events per theme
+logging/model trace behaviour
+
+If an adapter layer is needed, describe the smallest possible compatibility patch.
+
+TASK 3 — Give me ONE MarketDev read-only KSH audit block
+
+I want ONE copy/paste block that I can run on MarketDev.
+
+It must:
+
+activate the existing project .venv
+print Python version
+determine whether helix_adk_adapter is importable
+if importable, show module path and package metadata/version without reading credentials
+determine whether HelixGemini imports successfully
+inspect installed package metadata only
+check for the presence of required M2M environment variable NAMES only
+report whether the Citi CA file exists
+inspect marketdev_start.sh for authentication-related lines
+show which Gemini modules exist in the deployed package
+NEVER print environment variable values, tokens or secrets
+
+Output should end with a concise PASS/FAIL matrix.
+
+Make this one safe KSH block rather than making me execute commands one-by-one.
+
+TASK 4 — Resolve the environment-variable naming issue precisely
+
+We appear to have two conventions:
+
+Existing RPR llm_gateway.py:
+
+COIN_CLIENT_ID
+COIN_CLIENT_SECRET
+
+Citi helix_adk_adapter documentation:
+
+possibly CLIENT_ID
+possibly CLIENT_SECRET
+RUN_MODE=local_m2m
+
+Determine from the actual installed/source adapter code or official documentation, not guesswork:
+
+exact names consumed by HelixGemini
+whether aliases exist
+whether both subsystems can consume the same COIN service identity
+whether we should export aliases in marketdev_start.sh
+
+A safe solution may be:
+
+export R2D2_AUTH_MODE=m2m
+export COIN_CLIENT_ID=...
+export COIN_CLIENT_SECRET=...
+export RUN_MODE=local_m2m
+export CLIENT_ID="$COIN_CLIENT_ID"
+export CLIENT_SECRET="$COIN_CLIENT_SECRET"
+
+But do not accept this until verified against code/documentation.
+
+TASK 5 — Audit TLS behaviour
+
+Previous inspection flagged an existing fallback in _get_m2m_token() that may use verify=False if the configured Citi certificate path is invalid.
+
+Inspect this exactly.
+
+Final MarketDev deployment must fail closed on invalid CA configuration.
+
+Do not disable TLS validation.
+
+Tell me whether a tiny safety patch is required and show it separately from functional M2M work.
+
+TASK 6 — Audit marketdev_start.sh
+
+I need the actual final deployment startup architecture.
+
+Identify exact changes required to transform:
+
+R2D2_AUTH_MODE=h2m
+
+into the M2M configuration.
+
+When M2M is active:
+
+Helix CLI startup validation should not be mandatory unless some remaining Gemini code genuinely requires it.
+Tectia should not be required.
+port 8822 should not be required.
+browser OAuth should not be required.
+~/.helix/*-oidc.cred should not be required.
+
+Keep all unrelated working startup behaviour unchanged:
+
+Python 3.11 venv
+package checks
+certificates
+host 0.0.0.0
+port 8010
+server:app
+frontend window.location.origin
+existing model environment variables
+existing timeout/cache configuration.
+
+Show a minimal unified diff, but DO NOT APPLY IT.
+
+TASK 7 — Give an explicit GO/NO-GO decision
+
+End with exactly these sections:
+
+A. Claude/R2D2 M2M
+
+GO / NO-GO and reason.
+
+B. Gemini/ADK M2M
+
+GO / NO-GO and exact blocker, if any.
+
+C. MarketDev dependencies after M2M
+
+State YES/NO for:
+
+Windows
+Tectia
+Helix CLI
+browser
 port 8822
-browser/Tectia assumptions
+personal SOEID OAuth credential
+COIN application identity
+Citi CA certificate
 
-Do NOT remove generic TLS/certificate checks.
+D. Files that must change
 
-6. TLS
+Exact filenames only.
 
-Confirm the exact certificate variables the current Python code reads and whether any path contains an unsafe fallback such as verify=False.
+E. Files that MUST NOT change
 
-Identify it but DO NOT modify anything.
+Explicitly protect the RPR working bone.
 
-7. Functional coverage
+F. Environment variables
 
-Build this table for the FULL RPR application:
+Names only. Never values.
 
-RPR capability	Current auth	M2M-ready today?	Code change required?
-Theme quality gate			
-Step1 Gemini discovery			
-Enterprise web evidence			
-Narrative enrichment			
-Claude/Opus refinement			
-Trigger2			
-Step2.1			
-Step2.3			
-Step2.4			
-Step2.5			
+G. One-time setup actions
 
-8. Minimum patch
+Approval/service-identity/configuration actions.
 
-Only after completing the audit, show a proposed MINIMUM patch.
+H. Runtime startup sequence
 
-Preserve the RPR bone.
+Exact final UNIX sequence.
 
-Rules:
+I. Test sequence
 
-no refactoring
-no prompt changes
-no frontend changes
-no portfolio-data changes
-no scoring changes
-no model-routing changes
-no Step1/Step2 business-logic changes
-no deleting H2M support
+Health check → Claude/R2D2 call → Gemini discovery → evidence enrichment → full Step 1.
 
-M2M should be an additional/selectable deployment authentication mode.
+J. FINAL VERDICT
 
-DO NOT APPLY THE PATCH.
+Answer:
 
-Show exact old/new snippets only.
+Can RPR become a completely independent shared MarketDev application with no Windows/Tectia/8822 runtime dependency? YES/NO
 
-9. MarketDev final target architecture
+Then state precisely what remains before that becomes true.
 
-End with one diagram:
+NON-NEGOTIABLE RULES
+READ ONLY.
+DO NOT modify files.
+DO NOT display or read secrets.
+DO NOT copy personal .cred files.
+DO NOT create tokens.
+DO NOT weaken TLS.
+DO NOT alter the working RPR business pipeline.
+DO NOT propose broad refactoring.
+Distinguish VERIFIED / STRONG INFERENCE / UNKNOWN.
+If something can be established with a command, provide the command instead of guessing.
 
-Browser users
-      |
-      v
-MarketDev FastAPI RPR
-      |
-      +---- Gemini / enterprise search ----> [exact auth mechanism]
-      |
-      +---- Claude / R2D2 -----------------> COIN M2M
-                                               |
-                                               +-- application Client ID
-                                               +-- Client Secret
-                                               +-- client_credentials
-
-10. GO / NO-GO
-
-Give one of:
-
-GO — configuration only
-GO — minimal auth adapter patch required
-NO-GO — missing enterprise credential/capability
-
-Explain exactly why.
-
-SECURITY:
-Never print, read, decode or expose an existing token, secret or credential file. Metadata and environment-variable NAMES only.
+I am tired of iterative debugging. Produce one consolidated answer and one consolidated MarketDev KSH audit block. Do not ask me to execute twenty individual commands.
