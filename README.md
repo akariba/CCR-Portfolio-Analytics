@@ -1,1347 +1,652 @@
-Perform a read-only technical audit of the completed RPR Step 2.5 SEC + approved-web implementation.
+Apply the reviewed Stylus findings to the production-only RPR Step 2.5 implementation.
 
-The purpose is to produce a self-contained implementation dossier that will be sent to Stylus for independent review against the official SEC/EDGAR filing-access process.
+This is not a demo task.
 
-Do not implement, refactor, repair, format, install, delete, or modify anything during this task.
-
-Do not contact SEC.
-
-Do not perform live web searches.
-
-Do not call the LLM.
-
-Do not acquire authentication tokens.
-
-Do not start an assessment.
-
-Inspect the code and report what is actually implemented.
-
-# 1. Audit rules
-
-Base every statement on code, configuration, tests, or existing documentation.
-
-Do not describe intended behavior as implemented behavior.
-
-Use these status labels consistently:
+Do not reintroduce:
 
 ```text
-IMPLEMENTED_AND_TESTED
-IMPLEMENTED_NOT_LIVE_TESTED
-IMPLEMENTED_BUT_UNVERIFIED
-DESIGN_ONLY
-BLOCKED_BY_CONFIGURATION
-BLOCKED_BY_APPROVAL
-MISSING
-NOT_APPLICABLE
-TEST_ONLY
+fixtures
+mock providers
+demo companies
+Apple defaults
+synthetic evidence
+synthetic conflicts
+mock assessments
+demo banners
+runtime test modes
 ```
 
-For every major capability, provide:
+The active frontend remains:
 
 ```text
-Status
-File
-Class/function
-Relevant configuration
-Test evidence
-Known limitation
+UI Design/step23.html
 ```
 
-If code and documentation disagree, describe the discrepancy.
+# 1. Architecture decision
 
-If a value is unknown, say `UNKNOWN`.
-
-Do not invent:
-
-* SEC requirements.
-* MarketDev approvals.
-* User-Agent values.
-* Credentials.
-* XBRL concepts.
-* Filing-selection methodology.
-* Live-test results.
-* Successful network access.
-
-Do not expose secret values, access tokens, client secrets, certificate contents, internal URLs, personal email addresses, or sensitive company data.
-
-Environment variable names may be listed, but redact their values:
+For this increment, use:
 
 ```text
-SET
-NOT SET
-REDACTED
+Primary SEC source: Path A — direct official SEC EDGAR APIs
+Web source: existing approved enterprise web-search path
+Assessment model: existing H2M-backed R2D2/LLM gateway
 ```
 
-# 2. Exact implementation inventory
+Do not add the Stylus “U.S. SEC Filings” Preset as a production evidence source in this increment.
 
-Identify the exact active frontend and backend.
+Reason:
 
-Report:
+* Direct SEC provides deterministic URLs, accession numbers, reported facts, and audit provenance.
+* The Preset combines retrieval and interpretation and would introduce a second evidence architecture before the direct path is complete.
+* It may be evaluated later as a separately labeled `llm_interpretation` supplementary lane.
+
+Document this architecture decision.
+
+# 2. Correct the authentication gate
+
+The current production preflight incorrectly requires:
 
 ```text
-Application root
-Active frontend path
-Active frontend filename
-Backend entry point
-Step 2.5 router prefix
-Step 2.5 package path
-Step 2.5 implementation-document path
-Test directories
-Runtime storage/cache directories
+R2D2_AUTH_MODE=m2m
 ```
 
-List every file that participates in Step 2.5 and describe its responsibility.
+For this phase, M2M/COIN client credentials are unavailable. H2M is the available working authentication mode.
 
-Include:
+Change the Step 2.5 production model/web authentication requirement to the established H2M mode.
 
-* Production source files.
-* Frontend files.
-* Configuration files.
-* Router registration.
-* Tests.
-* Test-only fixtures/mocks.
-* Documentation.
-* Any mistakenly modified v31 files, clearly marked as not active.
+Requirements:
 
-Explicitly distinguish:
+* Accept and require the project’s real H2M configuration.
+* Use the existing approved H2M acquisition path.
+* Do not invent M2M credentials.
+* Do not gate Step 2.5 on unavailable M2M.
+* Do not introduce a mock fallback.
+* Do not relabel an H2M fallback as M2M.
+* Correct misleading comments in `rpr_search_agent.py` or related files.
+* Keep SEC access independent of H2M because SEC endpoints are public and unauthenticated.
+* H2M applies only to approved-web and model-backed assessment operations.
+* A failed H2M session must return a typed blocker and must not become risk evidence.
+
+Suggested production status:
 
 ```text
-PRODUCTION_RUNTIME
-TEST_ONLY
-UNUSED
-LEGACY
-UNKNOWN
+STEP25_H2M_AUTH_READY
+STEP25_H2M_AUTH_NOT_READY
 ```
 
-# 3. High-level production flow
+Remove `STEP25_MODEL_AUTH_NOT_READY: R2D2_AUTH_MODE must be m2m`.
 
-Describe the implemented sequence from the actual user action to the final assessment.
+Replace it with an accurate H2M readiness check.
 
-Start with:
+# 3. Implement real live CIK resolution
+
+Stylus found that `CikResolver` still reads a static fixture mapping even when SEC mode is live.
+
+Fix this first.
+
+When live SEC mode is active:
+
+1. Fetch and cache:
 
 ```text
-User selects SEC + Web in step23.html
+https://www.sec.gov/files/company_tickers.json
 ```
 
-End with:
+2. Optionally fetch:
 
 ```text
-Validated nonbinding Step 2.5 assessment is displayed
+https://www.sec.gov/files/company_tickers_exchange.json
 ```
 
-For every step, provide:
+for exchange disambiguation.
+
+3. Use the existing live SEC client and transport.
+4. Reuse the same:
+
+   * Host allow-list.
+   * HTTPS enforcement.
+   * User-Agent.
+   * TLS verification.
+   * Rate limiter.
+   * Retry policy.
+   * Caching.
+   * Audit behavior.
+5. Do not create another HTTP client.
+6. Cache ticker mappings with the configured TTL.
+7. Refresh periodically, not for every company.
+8. Store:
+
+   * Source URL.
+   * Retrieval timestamp.
+   * Raw-artifact reference.
+   * SHA-256.
+9. Preserve strict matching:
+
+   * Existing confirmed CIK first.
+   * Exact ticker candidate.
+   * Exact normalized legal-name candidate.
+   * No fuzzy automatic confirmation.
+   * Ambiguity becomes `CIK_REVIEW_REQUIRED`.
+10. Confirm the selected candidate against:
 
 ```text
-Sequence number
-Component
-Function/method
-Input
-Output
-Failure behavior
-Persisted artifact
+https://data.sec.gov/submissions/CIK##########.json
 ```
 
-The flow must cover:
+before granting final `CIK_CONFIRMED`.
 
-1. Step 2.2 company selection.
-2. Step 2.3 factor retrieval.
-3. Step 2.4 factor/version retrieval.
-4. Upstream validation.
-5. CIK resolution.
-6. SEC preflight.
-7. SEC submissions retrieval.
-8. Filing selection.
-9. Company Facts/XBRL retrieval.
-10. Filing document retrieval.
-11. Filing-text extraction.
-12. Approved-web query generation.
-13. Approved-web retrieval.
-14. Evidence normalization.
-15. Conflict detection.
-16. LLM input construction.
-17. R2D2 invocation.
-18. Model-output validation.
-19. Assessment persistence.
-20. Frontend rendering.
-21. RRR non-mutation protection.
+Validation must compare:
 
-Include a compact text sequence diagram suitable for Stylus to review.
+* Returned SEC entity name.
+* Known ticker where available.
+* Frontend/backend selected company identity.
+* Former-name data when available.
 
-# 4. Production-versus-test isolation
+Do not silently reject a legitimate former-name difference, but require a warning or analyst review.
 
-Search the implementation for:
+# 4. Revalidate company identity server-side
+
+The browser must not be authoritative for:
 
 ```text
-demo
-fixture
-mock
-demo-aapl
-AAPL
-0000320193
-FixtureSecTransport
-FixtureWebEvidenceProvider
-LLM_PROVIDER=mock
-synthetic
-hardcoded assessment
+company name
+confirmation status
+ticker
+CIK
+Step 2.2 confirmation
 ```
 
-For each match, report:
+Use the selected internal company ID to reload the authoritative Step 2.2 record server-side.
+
+Implement or reuse a minimal read-only Step 2.2 lookup.
+
+The backend must verify:
+
+* Company exists.
+* Company belongs to the active portfolio/context.
+* Company is confirmed.
+* Submitted internal ID matches the authoritative record.
+* Frontend-supplied name/ticker/CIK do not override backend values.
+
+If the current Step 2.2 architecture cannot provide a backend lookup, return a clearly documented trust-boundary blocker. Do not silently trust browser booleans.
+
+# 5. Resolve the current selected-company scope
+
+The selected company shown in the production UI is:
 
 ```text
-File
-Line/function
-Purpose
-Production reachable: yes/no
-Test only: yes/no
-Risk
+NATIONWIDE BUILDING SOCIETY–SWINDON HEAD OFFICE
 ```
 
-Confirm whether any production route, frontend control, environment default, query parameter, or request field can activate fixture/mock behavior.
+This appears to be a UK entity.
 
-Answer explicitly:
+Do not assume it is a domestic 10-K/10-Q filer.
+
+During CIK resolution, determine whether it is:
 
 ```text
-Can step23.html select a fixture company?
-Can the production run API accept sec_mode=fixture?
-Can the production run API accept web_mode=fixture?
-Can the production run API invoke a mock assessment?
-Can a production configuration default to fixture/mock?
-Can test fixtures be reached through a production endpoint?
+U.S. domestic filer
+foreign private issuer
+SEC debt/security filer
+non-filer
+subsidiary of a filer
+ambiguous entity
 ```
 
-If any answer is yes, mark it as a production-alignment defect.
-
-# 5. Step 2.2 company binding
-
-Document exactly how Step 2.5 obtains the selected company.
-
-Report:
-
-* Frontend state variable or getter.
-* Backend authoritative lookup.
-* Internal company identifier.
-* Legal name.
-* Ticker.
-* Existing CIK.
-* Confirmation status.
-* Assessment as-of date.
-* Portfolio/scenario relationship.
-* Whether frontend-provided identity fields are trusted.
-* Whether the backend reloads authoritative company identity.
-* Behavior when no company is selected.
-* Behavior when the company is unconfirmed.
-* Behavior for subsidiaries.
-* Behavior for private/non-filing companies.
-* Behavior for foreign private issuers.
-
-Explain whether Step 2.5 modifies any Step 2.2 data.
-
-# 6. Step 2.3 and Step 2.4 integration
-
-Document how real upstream factors are loaded.
-
-For Step 2.3:
+Use a controlled filer classification:
 
 ```text
-Storage/source
-Lookup key
-Required status
-Factor schema
-Version/provenance
-Minimum factor count
-Validation
-Failure behavior
+DOMESTIC_FILER
+FOREIGN_PRIVATE_ISSUER
+SEC_LIMITED_FORM_FILER
+SEC_NOT_APPLICABLE
+FILER_REVIEW_REQUIRED
 ```
 
-For Step 2.4:
+If no CIK or SEC filing relationship is confirmed:
+
+* Return `SEC_NOT_APPLICABLE` or `CIK_REVIEW_REQUIRED`.
+* Do not use another company’s filings.
+* Do not substitute web-only evidence under the SEC + Web assessment type.
+* Do not fabricate SEC evidence.
+
+Because a foreign entity is present in the real portfolio, implement form routing for foreign filers if confirmed in scope:
 
 ```text
-Storage/source
-Sector lookup
-Version selection
-Required approval status
-Factor schema
-Importance/weight fields
-Minimum factor count
-Validation
-Failure behavior
+20-F
+20-F/A
+40-F
+40-F/A
+6-K
+6-K/A
 ```
 
-Explain how the implementation rejects operational error strings such as:
+If product methodology has not approved foreign-issuer assessment:
+
+* Detect the filer correctly.
+* Return a production scope blocker.
+* Do not silently process it as a domestic filer.
+
+# 6. Expand domestic filing coverage
+
+The current implementation retrieves only 10-K/10-K/A.
+
+Add:
 
 ```text
-Command ['helix', 'auth', 'access-token', 'print', '-a'] timed out
+latest 10-K and applicable amendment
+latest 1–2 10-Q filings and amendments
+credit-relevant 8-K metadata
+relevant 8-K documents within the assessment window
 ```
 
-Confirm whether zero factors, pending factors, failed generation, or unconfirmed factors block Step 2.5.
+Do not indiscriminately fetch every 8-K.
 
-Identify whether Step 2.4 still uses the Helix CLI anywhere and, if so:
-
-* Exact code path.
-* Why it is selected.
-* Whether M2M is bypassed.
-* Whether this is expected or a defect.
-* How failure is represented.
-* Whether the failure can enter an assessment as evidence.
-
-# 7. CIK-resolution implementation
-
-Document the exact CIK-resolution hierarchy.
-
-For each method, report:
+Filter relevant 8-K items, including where applicable:
 
 ```text
-Priority
-Input
-Source
-Matching rule
-Automatic confirmation allowed
-Confidence/status
-Manual review condition
+1.03 Bankruptcy or Receivership
+2.04 Triggering Events That Accelerate or Increase a Direct Financial Obligation
+4.01 Changes in Registrant’s Certifying Accountant
+4.02 Non-Reliance on Previously Issued Financial Statements
+5.02 Departure/Election of Directors or Principal Officers
+7.01 Regulation FD Disclosure
+8.01 Other Events
 ```
 
-Cover:
+Use the existing form-agnostic filing metadata parser.
 
-* Existing confirmed CIK.
-* Exact ticker.
-* Exact legal name.
-* Normalized name.
-* Former company name.
-* Multiple matches.
-* Fuzzy matching.
-* Subsidiary/parent ambiguity.
-* Private companies.
-* Foreign issuers.
-* Missing ticker.
-* Missing CIK.
-
-List implemented statuses and exact enum values.
-
-Confirm:
-
-* CIK is padded to ten digits for `data.sec.gov`.
-* Leading zeros are removed only for archive-directory URLs.
-* Fuzzy matching cannot result in automatic confirmation.
-* An ambiguous CIK stops retrieval.
-* CIK provenance is retained.
-* The SEC ticker file is not treated as guaranteed complete or authoritative proof by itself.
-
-Provide the exact model/schema returned by CIK resolution.
-
-# 8. SEC authentication and request headers
-
-Document the exact live SEC HTTP request behavior.
-
-Answer:
+Preserve:
 
 ```text
-Does the SEC data path use an API key?
-Does it use OAuth?
-Does it use COIN/R2D2 credentials?
-Does it require only public HTTPS plus a declared User-Agent?
-```
-
-List the exact request headers constructed by code.
-
-Redact the User-Agent value, but describe its source and validation:
-
-```text
-Environment variable
-Required format
-Blank-value behavior
-Placeholder rejection
-Logging behavior
-Frontend exposure
-```
-
-Report whether the code sends:
-
-```text
-User-Agent
-Accept-Encoding
-Accept
-Host
-Connection
-```
-
-Explain whether headers differ between:
-
-```text
-data.sec.gov
-www.sec.gov
-```
-
-Confirm that SEC access is independent of LLM/R2D2 authentication.
-
-# 9. SEC endpoint inventory
-
-List every SEC endpoint or URL pattern implemented.
-
-For each:
-
-```text
-Purpose
-Host
-Path pattern
-Method
-Expected response type
-Parser
-Cache behavior
-Used in production flow
-Test coverage
-```
-
-At minimum evaluate:
-
-```text
-company_tickers.json
-company_tickers_exchange.json
-submissions/CIK##########.json
-api/xbrl/companyfacts/CIK##########.json
-api/xbrl/companyconcept
-api/xbrl/frames
-Archives/edgar/data
-additional submissions-history files
-daily indexes
-quarterly indexes
-full-text search
-RSS
-```
-
-Distinguish:
-
-```text
-actively used
-supported but unused
-deferred
-not implemented
-```
-
-Confirm that arbitrary caller-provided SEC URLs cannot be requested.
-
-# 10. SEC network controls
-
-Document the actual implementation of:
-
-* HTTPS-only enforcement.
-* Host allow-list.
-* Redirect validation.
-* TLS verification.
-* CA-bundle selection.
-* Proxy behavior.
-* DNS assumptions.
-* Connection timeout.
-* Read timeout.
-* Maximum response size.
-* Rate limiter.
-* Concurrency.
-* Retry policy.
-* Exponential backoff.
-* Jitter.
-* `Retry-After`.
-* 403 handling.
-* 404 handling.
-* 408 handling.
-* 429 handling.
-* 5xx handling.
-* Malformed JSON handling.
-* Decompression.
-* User-Agent validation.
-
-Give exact configured defaults and hard maximums.
-
-Answer explicitly:
-
-```text
-Can TLS verification be disabled?
-Can the frontend change the host allow-list?
-Can a redirect escape the allow-list?
-Can callers provide arbitrary URLs?
-Can request rate exceed the RPR conservative limit?
-Are SEC requests sequential or concurrent?
-```
-
-# 11. MarketDev activation gates
-
-Document every production activation requirement.
-
-Report the exact environment variables and validation functions for:
-
-```text
-Live SEC enabled
-SEC egress approved
-Approved User-Agent
-Proxy
-CA bundle
-TLS readiness
-Allowed hosts
-Approved web provider
-R2D2 M2M
-```
-
-For each variable:
-
-```text
-Name
-Required/optional
-Default
-Validation
-Failure code
-Secret/nonsecret
-Logged or redacted
-```
-
-Describe preflight behavior.
-
-Confirm whether preflight performs:
-
-* Configuration validation.
-* DNS lookup.
-* Network connection.
-* SEC request.
-* Web request.
-* Token acquisition.
-
-If the implementation does not have verified MarketDev approval, state this clearly.
-
-# 12. SEC filing-selection logic
-
-Document the exact filing-selection algorithm.
-
-Cover:
-
-* 10-K.
-* 10-K/A.
-* 10-Q.
-* 10-Q/A.
-* 8-K.
-* 8-K/A.
-* 20-F.
-* 20-F/A.
-* 40-F.
-* 6-K.
-* Registration statements.
-* Exhibits.
-
-Report:
-
-```text
-Forms included
-Forms excluded
-Number of annual filings
-Number of quarterly filings
-8-K assessment window
-Sorting rules
-Deduplication key
-Amendment treatment
-Supersession logic
-Date fields used
-Older-history behavior
-```
-
-Explain the distinction among:
-
-```text
-filing_date
-accepted_datetime
-report_date
-retrieved_at
-assessment as_of
-```
-
-Confirm that original filings and amendments are not silently collapsed.
-
-Explain how `supersedes_accession_number` is determined and when it remains null.
-
-# 13. Archive URL construction
-
-Document the exact implementation for archive URLs.
-
-Confirm:
-
-```text
-CIK directory format
-accession directory format
-primary document handling
-index-page handling
-complete-submission-text handling
-```
-
-Show a sanitized constructed example.
-
-Explain validation for:
-
-* Accession number format.
-* Removal of accession dashes.
-* Leading zeros in archive CIK.
-* Primary-document names.
-* Path traversal.
-* URL encoding.
-* Redirects.
-* Non-SEC hosts.
-
-# 14. Submissions JSON parsing
-
-Document how the code parses the SEC’s columnar `filings.recent` structure.
-
-Report required and optional arrays.
-
-Explain:
-
-* Unequal array-length handling.
-* Null-value handling.
-* Form normalization.
-* `filings.files` handling.
-* Filing-history pagination/additional files.
-* Duplicate accession handling.
-* Sort stability.
-* Malformed-response behavior.
-
-List the normalized filing metadata schema.
-
-# 15. Company Facts and XBRL
-
-Document the Company Facts parser and selection logic.
-
-For each normalized fact, confirm preservation of:
-
-```text
-taxonomy
-concept/tag
-label
-description
-unit
-value
-start date
-end date
-instant
-fiscal year
-fiscal period
 form
-filed date
-frame
+filing date
+accepted datetime
+report date
 accession number
+primary document
+items
+amendment status
+supersession relationship
 source URL
 retrieval timestamp
 ```
 
-Explain:
+# 7. Fix filing-text extraction
 
-* Instant versus duration facts.
-* Unit preservation.
-* Multiple units.
-* Repeated facts.
-* Duplicate periods.
-* Amendments.
-* Restatements.
-* Filing alignment.
-* Fiscal/calendar differences.
-* Taxonomy extensions.
-* Nonstandard concepts.
-* Null frames.
-* Selection of the current fact.
-* Exclusion/supersession rules.
+Current extraction is vulnerable to raw HTML and table-of-contents matches.
 
-Identify the production XBRL concept profile.
+Implement an HTML-to-text normalization stage using an existing installed parser.
 
-List every configured production concept.
+Requirements:
 
-For each concept, state:
+* Remove script/style content.
+* Remove tags safely.
+* Decode entities.
+* Normalize whitespace.
+* Preserve meaningful headings.
+* Avoid executing or rendering untrusted HTML.
+* Do not send full filing HTML to the LLM.
 
-```text
-Who approved it
-Where configured
-Why needed by Step 2.5
-Whether it is an SEC-reported fact
-Whether any calculation is performed
-```
+Add TOC disambiguation:
 
-If no product-approved concept list exists, say so.
+* Do not accept the first `Item 1A` or `Item 7` occurrence blindly.
+* Skip likely TOC occurrences near the beginning.
+* Require substantive body text after a heading.
+* Identify the next genuine item boundary.
+* Record extraction offsets and method.
+* Mark uncertain extraction as low confidence.
 
-List every derived metric or ratio.
-
-For each, provide:
-
-```text
-Formula
-Inputs
-Units
-Rounding
-Version
-Approval source
-Python implementation
-Test
-```
-
-If there are no derived metrics, confirm that explicitly.
-
-# 16. Filing-text retrieval and extraction
-
-Document how filing HTML/text is retrieved and handled.
-
-Report:
-
-* Maximum document size.
-* Content-type checks.
-* HTML parser.
-* Script/style removal.
-* Hidden-text treatment.
-* Table treatment.
-* Entity decoding.
-* Whitespace normalization.
-* Character encoding.
-* Sanitization.
-* Storage of raw versus sanitized content.
-
-Document every section extractor.
-
-At minimum evaluate:
+Expand deterministic sections:
 
 ```text
 Item 1A Risk Factors
 Item 3 Legal Proceedings
 Item 7 MD&A
+Item 7A Market Risk
 Liquidity and Capital Resources
-Controls and Procedures
+Debt and Covenant disclosures
 Going Concern
-Debt
-Covenants
+Controls and Procedures
 Cybersecurity
-Concentrations
 Commitments and Contingencies
 Subsequent Events
-8-K item extraction
 ```
 
-For each:
+Validate against multiple real historical filing structures when live testing is formally authorized, not only one fixture document.
+
+# 8. Do not unilaterally expand XBRL concepts
+
+The current five-concept list was created for an earlier fixture slice and is not an approved production methodology.
+
+Do not call it production approved.
+
+List the existing concepts and mark their status accurately.
+
+Candidate additions may include:
 
 ```text
-Implemented
-Pattern/algorithm
+cash and cash equivalents
+current assets
+current liabilities
+interest expense
+operating cash flow
+capital expenditures
+goodwill
+impairments
+```
+
+However:
+
+* Do not activate additional concepts without product-owner/methodology sign-off.
+* Create a versioned concept-profile configuration.
+* Mark the current profile `PENDING_METHODOLOGY_APPROVAL`.
+* Do not invent a universal metric list.
+* Do not create unapproved ratios.
+* Record excluded concepts and the reason.
+* Distinguish `concept_not_approved` from `concept_not_reported`.
+* Preserve company-extension taxonomy limitations.
+
+# 9. Make web queries use actual Step 2.3/2.4 factors
+
+The current approved-web implementation sends one generic query:
+
+```text
+{company_name} recent credit-relevant developments
+```
+
+Replace this with bounded factor-driven queries.
+
+Extend `ApprovedWebEvidenceProvider.collect()` to receive:
+
+```text
+selected company identity
+confirmed Step 2.3 factors
+confirmed Step 2.4 factors
+assessment as-of date
+```
+
+Build targeted queries by factor category.
+
+Examples:
+
+```text
+{company} + tariff/trade-policy exposure
+{company} + liquidity/funding risk
+{company} + debt/covenant developments
+{company} + regulatory action
+{company} + credit rating action
+{company} + management change
+{company} + litigation
+{company} + cybersecurity incident
+{company} + sector-specific confirmed factor
+```
+
+Requirements:
+
+* Use only confirmed real factors.
+* Limit query count.
+* Deduplicate related factor queries.
+* Preserve every query.
+* Preserve result provenance.
+* Exclude results outside the assessment window where appropriate.
+* Do not treat snippets as SEC-reported facts.
+* Do not allow untrusted result text to instruct the LLM.
+* Use the real H2M-approved web-search path.
+* No M2M requirement.
+* No mock fallback.
+
+# 10. Persist evidence and raw source material
+
+Stylus found that normalized evidence and assessments are currently held only in memory and lost on restart.
+
+Extend the existing `Step25Repository` rather than adding a new storage technology.
+
+Persist:
+
+```text
+run manifest
+raw SEC response bytes
+raw approved-web response payload
+normalized EvidenceRecord objects
+conflict records
+assessment input manifest
+raw model output
+validated Step25Assessment
+prompt version
+schema version
+model metadata
+```
+
+Requirements:
+
+* Store raw source bytes using content-addressed SHA-256 keys.
+* Never overwrite different bytes under the same artifact identity.
+* Link every normalized evidence record to its raw artifact.
+* Make a completed assessment reproducible without refetching sources.
+* Document retention as unresolved if no approved retention policy exists.
+* Do not silently delete source snapshots.
+* Protect against path traversal.
+* Do not store credentials or tokens.
+
+# 11. Formalize SEC egress approval
+
+`RPR_SEC_EGRESS_APPROVED=true` cannot by itself be treated as proof of approval.
+
+Keep the fail-closed boolean, but require deployment documentation to reference:
+
+```text
+approval/ticket ID
+approval date
+approver/team
+approved hosts
+approved port
+proxy requirement
+CA requirement
+environment
+```
+
+Do not hardcode organizational approval details.
+
+Do not enable or test live SEC access until this real approval exists.
+
+SEC egress approval is independent of H2M/M2M authentication.
+
+# 12. Correct production readiness
+
+The Step 2.5 production UI must display these independent readiness areas:
+
+```text
+Step 2.2 identity confirmed
+Step 2.3 factors confirmed
+Step 2.4 factors confirmed/versioned
+CIK status
+SEC egress approval
+SEC User-Agent
+SEC TLS/proxy readiness
+approved-web H2M readiness
+assessment-model H2M readiness
+evidence persistence readiness
+```
+
+Remove the M2M-only blocker.
+
+Do not enable Run Assessment until:
+
+* Real company identity is confirmed.
+* Step 2.3 is confirmed.
+* Step 2.4 is confirmed.
+* CIK is confirmed or valid filer classification permits SEC retrieval.
+* SEC access is formally approved and configured.
+* Approved web is available through H2M.
+* The real assessment model is available through H2M.
+* Persistence is ready.
+
+For the current screen, Step 2.4 is `No`; therefore the run must remain blocked even after correcting authentication.
+
+# 13. Strict orchestration
+
+Ensure no production code can call:
+
+```python
+Step25Orchestrator.run(strict=False)
+```
+
+Remove the permissive default or add a runtime guard.
+
+Production behavior must be strict:
+
+* Missing SEC lane: no assessment.
+* Missing web lane: no assessment.
+* Missing Step 2.4: no assessment.
+* H2M failure: no assessment.
+* Unconfirmed CIK: no assessment.
+* Persistence failure: do not mark complete.
+
+# 14. RRR regression protection
+
+Add a test that captures the authoritative RRR state before and after a Step 2.5 run and proves it is byte-for-byte or value-for-value unchanged.
+
+Also confirm:
+
+* Step 2.2 is unchanged.
+* Step 2.3 is unchanged.
+* Step 2.4 is unchanged.
+* No rating workflow is automatically completed.
+* The result remains nonbinding.
+
+# 15. Test requirements
+
+Add or update tests for:
+
+```text
+H2M accepted as current production auth mode
+M2M not required
+SEC access independent of H2M
+live CIK ticker-file retrieval through mocked live transport
+submissions confirmation of CIK
+ambiguous CIK review
+foreign-filer classification
+non-filer SEC_NOT_APPLICABLE
+10-Q selection
+10-Q/A retention
+credit-relevant 8-K filtering
+20-F/6-K routing when enabled
+HTML stripping
 TOC avoidance
-Boundary detection
-Excerpt limit
-Confidence value
-Failure behavior
-Test coverage
+factor-driven web queries
+query limits and deduplication
+persistent evidence records
+persistent raw source bytes
+assessment recovery after restart
+strict=False unreachable in production
+RRR unchanged
+frontend identity revalidated server-side
 ```
 
-Confirm whether any complete filing is sent to the LLM.
+All external calls must be mocked in unit/integration tests.
 
-# 17. Raw-source caching and reproducibility
+Do not claim production-ready from mocked tests alone.
 
-Document:
+# 16. Do not activate live mode in this task
 
-* Cache-key construction.
-* TTL.
-* Success caching.
-* Error caching.
-* Raw-byte retention.
-* SHA-256.
-* Content-addressed storage.
-* Versioning.
-* Immutability.
-* Retrieval manifest.
-* Cache-hit audit.
-* Refresh behavior.
-* Concurrent access.
-* Corrupt-cache behavior.
-* Retention policy.
-* Cleanup policy.
+Implement and test the code paths using controlled mocks.
 
-List the exact raw-artifact metadata schema.
-
-Explain whether an assessment can be reproduced from stored artifacts without recontacting SEC or the web provider.
-
-If not, explain what is missing.
-
-# 18. Evidence normalization
-
-Provide the exact production evidence schema.
-
-For every field:
+Do not set:
 
 ```text
-Field
-Type
-Required/optional
-Allowed values
-SEC behavior
-Web behavior
-Validation
+RPR_SEC_EGRESS_APPROVED=true
 ```
 
-At minimum cover:
+unless a real approval record is supplied.
+
+Do not invent the SEC User-Agent.
+
+Do not contact SEC.
+
+Do not perform real approved-web retrieval.
+
+Do not perform a real H2M model call unless the current authorized H2M session is already working and the user explicitly requests the live validation.
+
+# Final response
+
+Return:
 
 ```text
-evidence_id
-run_id
-company_id
-cik
-cik_match_status
-evidence_class
-source_kind
-form
-filing_date
-accepted_datetime
-accession_number
-supersedes_accession_number
-document_name
-section
-taxonomy
-fact_name
-value
-unit
-period_start
-period_end
-instant
-fiscal_year
-fiscal_period
-filed_date
-published_at
-source_title
-source_publisher
-source_url
-retrieved_at
-as_of
-evidence_type
-extraction_method
-source_excerpt
-extraction_confidence
-match_confidence
-conflict_flag
-conflict_notes
-related_step23_factor_ids
-related_step24_factor_ids
-raw_artifact_id
-content_sha256
-metadata
+STYLUS ALIGNMENT IMPLEMENTATION
+- COMPLETE / PARTIAL / BLOCKED
+
+ARCHITECTURE
+- Direct SEC primary:
+- Stylus SEC Preset adopted:
+- Approved web path:
+- Authentication mode:
+
+AUTH CORRECTION
+- Previous incorrect M2M gate:
+- Current H2M gate:
+- SEC independence from auth:
+
+CIK
+- Live ticker retrieval:
+- Submissions confirmation:
+- Identity server validation:
+- Foreign-filer handling:
+
+FILING COVERAGE
+- 10-K:
+- 10-Q:
+- 8-K:
+- 20-F/40-F/6-K:
+- Amendments:
+
+EXTRACTION
+- HTML stripping:
+- TOC avoidance:
+- Sections:
+
+XBRL
+- Current concept-profile status:
+- Product approval required:
+- Derived metrics:
+
+WEB
+- Step 2.3/2.4-driven queries:
+- H2M provider:
+- Query limits:
+
+PERSISTENCE
+- Raw SEC:
+- Raw web:
+- Evidence:
+- Assessment:
+- Restart recovery:
+
+SEC APPROVAL
+- Formal approval record present:
+- Live activation performed:
+
+PRODUCTION READINESS
+- Step 2.2:
+- Step 2.3:
+- Step 2.4:
+- CIK:
+- SEC:
+- Web:
+- Model:
+- Persistence:
+
+TESTS
+- Exact commands and results
+
+RRR PROTECTION
+- Regression result:
+
+FILES CHANGED
+- Exact paths and purpose
+
+REMAINING BLOCKERS
+- Exact unresolved production blockers
 ```
 
-Confirm conditional validation:
-
-* SEC filing/XBRL evidence requires source URL and accession.
-* Web evidence requires source URL and provenance.
-* Web evidence cannot have a fabricated SEC accession.
-* Web evidence cannot be labeled as an SEC reported fact.
-* LLM interpretation cannot replace source evidence.
-* Every record has an as-of and retrieval time.
-* Every assessment citation resolves to an evidence record.
-
-# 19. Approved-web implementation
-
-Document the exact approved-web provider.
-
-Report:
-
-```text
-File
-Class/function
-Underlying existing RPR function
-Provider/service
-Authentication path
-Network destination
-Proxy/TLS behavior
-Query inputs
-Result limits
-Timeout
-Retries
-Error behavior
-```
-
-Explain query construction from:
-
-* Company identity.
-* Step 2.3 factors.
-* Step 2.4 factors.
-* Assessment date.
-
-List all query templates actually used.
-
-Explain:
-
-* Source-domain handling.
-* URL validation.
-* URL canonicalization.
-* Query-string removal.
-* Deduplication.
-* Publication-date parsing.
-* Snippet handling.
-* Retrieval timestamps.
-* Source ranking.
-* Result limits.
-* Unsupported/unsafe URL rejection.
-
-Confirm whether the web provider returns search snippets, fetched page content, or both.
-
-Confirm whether RPR makes secondary fetches to result URLs.
-
-Confirm whether those secondary hosts are approved and controlled.
-
-# 20. SEC versus web separation
-
-Describe exactly how the implementation keeps SEC and web evidence independent.
-
-Confirm:
-
-* Separate `source_kind`.
-* Separate `evidence_class`.
-* Separate display lanes.
-* Separate provenance.
-* SEC facts are not overwritten.
-* Web claims are not promoted into SEC facts.
-* Conflicts retain both records.
-* Missing SEC disclosure is not treated automatically as proof that a web claim is false.
-* Web claims cannot silently change an XBRL fact.
-
-Document the conflict-detection algorithm.
-
-List every deterministic conflict rule.
-
-For each:
-
-```text
-Rule
-Inputs
-Output
-False-positive risk
-Analyst-review behavior
-Test
-```
-
-Explain which conflicts are identified by Python and which are interpreted by the LLM.
-
-# 21. LLM boundary
-
-Document the exact evidence package sent to R2D2.
-
-Report:
-
-* System prompt path.
-* Prompt version.
-* User-prompt builder.
-* Model-routing function.
-* Provider name.
-* Authentication method.
-* Temperature/settings if configured.
-* Maximum token/input limits.
-* Excerpt limits.
-* Evidence-selection rules.
-* Excluded evidence tracking.
-* Full-filing exclusion.
-* Raw-JSON exclusion.
-* Secret exclusion.
-
-Provide the exact assessment-output schema.
-
-Explain validation of:
-
-* JSON.
-* Enum values.
-* Evidence citations.
-* Material claims.
-* Unknown evidence IDs.
-* Uncited claims.
-* Conflict resolution.
-* Insufficient evidence.
-* Model timeouts.
-* Authentication failures.
-* Repair attempts.
-* Persistence of raw model output.
-
-Confirm:
-
-```text
-No mock fallback
-No hardcoded assessment fallback
-No automatic RRR change
-No authoritative arithmetic performed by the LLM
-```
-
-# 22. R2D2 M2M and Helix behavior
-
-Document the actual model-authentication path for Step 2.5.
-
-Report:
-
-```text
-Provider selection
-R2D2_AUTH_MODE handling
-M2M credential names
-Certificate configuration
-Token acquisition method
-Token caching/refresh
-Timeout
-Retry
-Failure type
-```
-
-Search for calls to:
-
-```text
-helix auth access-token print -a
-```
-
-Explain:
-
-* Whether Step 2.5 can invoke it.
-* Whether Step 2.4 can invoke it.
-* Under what configuration.
-* Whether M2M avoids it.
-* Whether any fallback invokes it unexpectedly.
-* How a timeout is surfaced.
-* Whether authentication errors can be mistaken for risk factors.
-
-# 23. Assessment semantics
-
-Document what Step 2.5 actually produces.
-
-List:
-
-```text
-Risk-direction enum
-RRR-review-recommendation enum
-Confidence enum
-Workflow-action enum
-Factor-assessment enum
-Conflict status
-Evidence-gap structure
-Freshness-warning structure
-Analyst-question structure
-```
-
-Explain whether these enums came from existing RPR methodology or were newly introduced.
-
-Identify any methodology decisions that still require product-owner approval.
-
-Confirm that Step 2.5:
-
-* Produces a review recommendation only.
-* Does not change RRR.
-* Does not auto-approve a credit action.
-* Does not alter Step 2.2–2.4.
-* Does not treat model output as an authoritative financial fact.
-
-# 24. API contracts
-
-List every production Step 2.5 endpoint.
-
-For each:
-
-```text
-Method
-Path
-Authentication
-Request schema
-Response schema
-Status codes
-Error codes
-Side effects
-Production source modes
-Test coverage
-```
-
-Confirm the production run endpoint does not accept:
-
-```text
-fixture mode
-mock mode
-arbitrary URLs
-arbitrary CIK without authorization
-frontend-selected User-Agent
-TLS-disable flag
-host allow-list
-credentials
-```
-
-Provide sanitized example requests and responses.
-
-# 25. step23.html integration
-
-Document the exact active frontend integration.
-
-Report:
-
-```text
-step23.html path
-Step 2.5 container ID
-SEC + Web selector
-Run Assessment button selector
-JavaScript file
-CSS file
-Initialization function
-API-base function
-Selected-company getter
-Step 2.3 getter
-Step 2.4 getter
-Result-render functions
-Error-render function
-```
-
-Explain the exact button-click sequence.
-
-Confirm that the UI displays:
-
-* Real selected company.
-* Real upstream readiness.
-* CIK status.
-* SEC access status.
-* Web status.
-* Model status.
-* SEC evidence.
-* Web evidence.
-* Conflicts.
-* Gaps.
-* Assessment.
-* Evidence citations.
-* No-RRR-change disclaimer.
-
-Confirm no demo/fixture content remains.
-
-# 26. Persistence and audit trail
-
-Document where the implementation stores:
-
-* Run metadata.
-* Raw SEC responses.
-* Raw web responses.
-* Normalized evidence.
-* Conflict records.
-* Model input.
-* Raw model output.
-* Validated assessment.
-* Manifest.
-* Prompt version.
-* Schema version.
-* Model metadata.
-
-Explain:
-
-* IDs.
-* Versioning.
-* Immutability.
-* Update behavior.
-* Retention.
-* Access controls.
-* Sensitive-data handling.
-* Reproducibility.
-* Relationship to the selected company.
-* Relationship to the assessment as-of date.
-
-# 27. Security review
-
-Evaluate the implemented controls for:
-
-```text
-SSRF
-path traversal
-unsafe redirects
-TLS bypass
-secret logging
-PII in User-Agent
-HTML injection
-stored XSS
-untrusted filing HTML
-untrusted web snippets
-oversized responses
-resource exhaustion
-rate-limit violations
-cache poisoning
-arbitrary local file access
-frontend authority escalation
-cross-company data access
-prompt injection from filings
-prompt injection from web content
-```
-
-For each:
-
-```text
-Risk
-Control
-Code location
-Test
-Residual gap
-```
-
-Explain how filing/web content is marked as untrusted evidence rather than instructions to the LLM.
-
-# 28. Test-evidence matrix
-
-List every Step 2.5 test file.
-
-For every test:
-
-```text
-Test name
-Capability
-Inputs
-Expected result
-Network used
-Mock/test double used
-Production behavior proven
-Production behavior not proven
-```
-
-Summarize:
-
-```text
-Total tests
-Passed
-Failed
-Skipped
-Live SEC tests
-Live web tests
-Real R2D2 tests
-Browser tests
-API integration tests
-Security tests
-```
-
-Do not equate mocked tests with live production validation.
-
-# 29. Implementation gaps and deviations
-
-Create a table:
-
-| Requirement | Status | Code evidence | Test evidence | Gap | Severity |
-| ----------- | ------ | ------------- | ------------- | --- | -------- |
-
-Include every known gap.
-
-Specifically evaluate:
-
-* MarketDev SEC egress.
-* SEC User-Agent approval.
-* Proxy.
-* DNS.
-* Public CA trust.
-* Allow-list.
-* CIK accuracy.
-* Foreign issuers.
-* XBRL concept approval.
-* Full filing extraction.
-* Amendments.
-* Evidence retention.
-* Web provider approval.
-* R2D2 M2M.
-* Browser end-to-end execution.
-* Real company assessment.
-* Audit reproducibility.
-* RRR protection.
-
-# 30. Exact claims for Stylus to validate
-
-End the report with a section titled:
-
-```text
-CLAIMS REQUIRING STYLUS VALIDATION AGAINST OFFICIAL SEC GUIDANCE
-```
-
-List each implementation assumption as a numbered claim.
-
-At minimum include:
-
-1. SEC public data APIs require no authentication or API key.
-2. A declared organizational User-Agent is required for automated access.
-3. The implemented User-Agent format is acceptable.
-4. The implemented request-rate policy is acceptable.
-5. The implemented retry/backoff behavior is acceptable.
-6. The implemented endpoint hosts and paths are current.
-7. Ten-digit zero-padded CIK use is correct.
-8. Archive CIK/accession path construction is correct.
-9. Company ticker files are used with appropriate caution.
-10. Submissions JSON parsing is correct.
-11. Additional submissions-history handling is correct.
-12. Filing date, report date, and acceptance time are interpreted correctly.
-13. Amendment handling is appropriate.
-14. Company Facts selection preserves XBRL semantics.
-15. The implemented form scope fits an initial credit-risk assessment.
-16. Direct archive-document retrieval is appropriate.
-17. The caching and request frequency respect SEC fair-access expectations.
-18. The raw-response retention approach supports reproducibility.
-19. The source URL and accession combination provides sufficient audit provenance.
-20. The SEC/web responsibility separation is appropriate.
-21. The implementation does not overstate the authority of web evidence.
-22. The implementation does not infer absence of risk merely from absence in a filing.
-23. The implementation’s XBRL limitations are properly represented.
-24. Any unsupported filing forms or issuer types are correctly scoped.
-25. Any use of SEC content in an LLM pipeline remains consistent with source provenance and fair-access principles.
-
-For every claim include:
-
-```text
-Implementation behavior
-Relevant code
-Reason Claude believes it aligns
-What Stylus should verify
-Impact if incorrect
-```
-
-# 31. Questions for Stylus
-
-End with exact questions Stylus should answer.
-
-Include:
-
-1. Are all SEC endpoint patterns current and officially supported?
-2. Does SEC require or recommend any headers not implemented?
-3. Is the User-Agent validation adequate?
-4. Is the conservative RPR request-rate policy appropriate?
-5. Is retrying 403 ever appropriate, or should it fail immediately?
-6. Is the `Retry-After` handling correct?
-7. Is caching company ticker mappings and submissions for the configured TTL appropriate?
-8. Is ticker-to-CIK confirmation sufficiently conservative?
-9. Is legal-name matching sufficiently conservative?
-10. Does the archive URL builder follow current SEC directory conventions?
-11. Does the implementation preserve enough metadata for audit and reproducibility?
-12. Are filing amendments represented appropriately?
-13. Are the chosen filing forms sufficient for the intended initial scope?
-14. Are relevant 8-K items being selected appropriately?
-15. Does Company Facts normalization preserve units, contexts, periods, and accession provenance?
-16. Are repeated/amended XBRL facts handled safely?
-17. Should additional SEC sources be included before production?
-18. Should daily indexes, RSS, or full-text search be added now or deferred?
-19. Are narrative extraction methods sufficiently conservative?
-20. Does the code correctly separate SEC-reported facts from approved-web claims?
-21. Are there fair-access, policy, legal, or operational risks not addressed?
-22. What changes are required before the first authorized live SEC request?
-23. What changes are required before the first real-company Step 2.5 assessment?
-24. Which implementation choices should be approved by the RPR product owner rather than inferred from SEC guidance?
-25. Is the implementation suitable for a controlled production pilot?
-
-# Required output format
-
-Return one self-contained report in the chat.
-
-Use this title:
-
-```text
-RPR STEP 2.5 SEC + APPROVED-WEB
-AS-BUILT IMPLEMENTATION DOSSIER FOR STYLUS VALIDATION
-```
-
-Start with:
-
-```text
-Audit date:
-Repository/project:
-Active frontend:
-Backend:
-Audit mode: READ ONLY
-External requests performed: NONE
-Files modified: NONE
-```
-
-End with:
-
-```text
-AUDITOR ATTESTATION
-
-This report distinguishes implemented behavior, test-only behavior,
-unverified live behavior, blocked behavior, design-only behavior, and
-missing behavior. No live SEC, web, authentication, or LLM request was
-performed during this audit.
-```
-
-Do not change any file. Do not produce another implementation plan. Inspect the completed implementation and report its actual behavior.
+Implement the reviewed gaps without reintroducing any demo or fixture runtime path.
