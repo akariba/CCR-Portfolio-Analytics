@@ -1,123 +1,105 @@
-# RPR STEP 2.5 — WINDOWS-ONLY SEC + APPROVED-WEB PRODUCTION COMPLETION
+# RPR STEP 2.5 — DECISIVE WINDOWS-ONLY COMPLETION AND STYLUS ESCALATION
 
-## THIS PROMPT SUPERSEDES ALL PREVIOUS STEP 2.5 PROMPTS
+## THIS IS A CONTINUATION, NOT A RESTART
 
-Work directly in the existing Windows project:
+Continue from the current working tree. Do not repeat the previous forensic exercise and do not rebuild Step 2.5.
+
+The previous execution produced three valid narrow changes that must be preserved:
+
+1. `UI Design\rpr_step25_append.js`
+
+   * Corrected the Step 2.4 confirmed-sector map lookup.
+   * Added the correct sector-key construction matching Step 2.4.
+2. `backend\step25\config.py`
+
+   * Removed an irrelevant non-Windows term from a user-facing message.
+3. `backend\tests\test_step25_frontend_wiring.py`
+
+   * Added regression coverage for the Step 2.4 lookup defect.
+
+The previous execution correctly preserved v31 and working Steps 1–2.4.
+
+However, the previous verdict `CODE COMPLETE — EXTERNAL APPROVAL REQUIRED` was incorrect. The correct state is:
+
+`PARTIAL — TECHNICAL AND EXTERNAL BLOCKERS REMAIN`
+
+Do not revert the valid changes. Continue from them.
+
+---
+
+# 1. ABSOLUTE SCOPE
+
+Windows project only:
 
 `C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI`
 
-Active frontend:
+Active frontend only:
 
 `C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI\UI Design\step23.html`
 
-The application must remain a Windows implementation. MarketDev, Unix, Linux, migration, hosting, containers, deployment packaging, and server installation are completely out of scope.
+v31 is a read-only reference for Step 2.5 visualization and PoC logic.
 
-## 1. NON-NEGOTIABLE RULES
+Do not modify, serve, mount, rename or execute v31.
 
-1. Do not mention, prepare for, or modify anything for MarketDev or Unix.
-2. Do not replace, rename, rebuild, simplify, refactor, or redesign the existing application.
-3. Preserve every currently working component as an immutable building bone.
-4. All changes must be additive or narrowly corrective.
-5. Do not modify working Steps 1, 2.1, 2.2, 2.3, or 2.4.
-6. Do not change their prompts, model routing, endpoints, state transitions, visualizations, scoring, or confirmation behavior.
-7. Do not modify the v31 HTML file.
-8. Do not serve, mount, execute, or make v31 the active frontend.
-9. v31 is a read-only reference only for its Step 2.5 visualization and PoC behavior.
-10. The only active frontend remains `UI Design\step23.html`.
-11. Strictly no demo mode, fixture mode, mock mode, simulated company, sample assessment, canned response, fabricated approval, or hidden fallback in runtime.
-12. Do not use Apple/AAPL or any other hardcoded test company.
-13. Never replace the selected company with a different company.
-14. Never map a subsidiary to its parent SEC filer without explicit stored entity linkage and analyst confirmation.
-15. Do not fabricate SEC CIKs, accession numbers, filings, web evidence, citations, scores, or assessment text.
-16. Do not set approval variables to `true` merely to pass preflight.
-17. Do not disable TLS validation, certificate verification, egress controls, User-Agent validation, or provenance validation.
-18. Do not expose, copy, save, print, log, or hardcode an H2M/Helix access token.
-19. Ignore any token visible in previous screenshots.
-20. Do not introduce `ANTHROPIC_API_KEY` as a new Step 2.5 requirement unless the existing Step 2.5 production code demonstrably uses that provider.
-21. Do not run destructive Git commands, global Undo, reset, checkout, clean, or mass file restoration.
-22. The repository has a large existing dirty working tree. Preserve unrelated changes.
+Do not perform any Unix, migration, deployment, hosting, container or server-platform work.
 
-## 2. VERIFIED WORKING BASELINE — PRESERVE IT
+---
 
-The latest real Windows run proves the following already works:
+# 2. STRICT NON-NEGOTIABLE RULES
 
-### Step 1
+1. Preserve all accepted working bones.
+2. Do not modify working Steps 1, 2.1, 2.2, 2.3 or 2.4.
+3. Do not change their models, prompts, routes, scoring, confirmation workflow, visuals or persistence.
+4. Do not change the existing working routing:
 
-* `step23.html` is the active frontend.
-* Trigger 2 User Narrative works.
-* The eight-section enriched narrative renders.
-* Existing confirmation and feedback behavior works.
+   * Gemini 3.5 Flash through the existing enterprise evidence adapter.
+   * Existing R2D2/Opus reasoning route.
+5. Do not redesign the application.
+6. Do not create a second frontend.
+7. Do not create another Run Assessment button.
+8. Do not change CAM functionality.
+9. The only target in this task is **SEC + Web**.
+10. Do not silently select `CAM + SEC + Web`.
+11. No runtime demo, fixture, mock, sample, canned response or rule-based fake assessment.
+12. No Apple/AAPL.
+13. No hardcoded test company.
+14. No fabricated CIK, filing, accession number, citation, evidence, approval or assessment.
+15. No subsidiary-to-parent substitution without stored authoritative linkage and analyst confirmation.
+16. No fake environment variables.
+17. No setting approval flags merely to make preflight green.
+18. No disabling TLS, User-Agent validation, egress controls, certificate verification or provenance checks.
+19. No raw access tokens in files, logs, tests, reports or chat output.
+20. Test doubles are permitted only inside isolated automated tests and must not be reachable in runtime.
+21. Do not claim success from test fixtures or direct API calls alone.
+22. Do not run destructive Git operations or global Undo.
+23. Do not stop technical implementation merely because external approval is unavailable.
+24. Implement everything safely possible, then escalate only the genuinely external decisions to Stylus.
 
-### Step 2.1
+---
 
-* Scenario narrative and scenario assumptions render.
-* Assumptions can be reviewed and confirmed.
-* The workflow advances correctly.
+# 3. CURRENT OBSERVED STATE
 
-### Step 2.2
+The actual Windows workflow proves:
 
-* Portfolio selection works.
-* Sector filtering works.
-* The real company database loads approximately 157 matching companies for the demonstrated sector.
-* Real CAGIDs, company names, countries, sectors, and MLE information are displayed.
-* Portfolio confirmation reaches the backend.
+* Steps 1–2.4 are working.
+* Real portfolio selection works.
+* Real enterprise-web evidence works in Step 2.4.
+* Existing R2D2/Opus reasoning works.
+* Step 2.5 endpoints respond.
+* The Step 2.4 map-key defect has been fixed.
+* v31 remains unchanged.
 
-### Steps 2.3 and 2.4
+The latest screen currently shows:
 
-The terminal proves the existing production routing works:
+* A confirmed Step 2.2 portfolio with approximately 477 companies.
+* A real selected company.
+* Step 2.3 not yet confirmed/in progress.
+* Step 2.4 not yet confirmed.
+* Therefore combined upstream readiness is correctly `No`.
+* This specific upstream condition is not a Step 2.5 defect and must not be bypassed.
+* Production activation is also blocked by SEC and approved-web configuration.
 
-* Enterprise-web evidence:
-
-  * provider: `citi-r2d2-vertex`
-  * model: `gemini-3.5-flash`
-  * role: `enterprise_web_evidence`
-  * runtime: Google ADK Gemini
-  * location: `us`
-  * Windows certificate store is used
-* Step 2.4 reasoning:
-
-  * provider: `r2d2`
-  * model: `claude-opus-4-6`
-  * role: `step24_v6_sector_inherent_reasoning`
-* Both calls completed successfully.
-* Step 2.3 and Step 2.4 finalization endpoints returned HTTP 200.
-* The factor visualizations, threshold tables, scoring logic, and confirmation workflow are working.
-
-Do not change this routing and do not introduce another model architecture.
-
-### Existing Step 2.5 infrastructure
-
-The following endpoints already exist and return HTTP 200 where appropriate:
-
-* `GET /api/v1/rpr/step25/preflight`
-* `POST /api/v1/rpr/step25/context`
-* `GET /api/v1/rpr/step25/readiness/{company_id}`
-* `GET /api/v1/rpr/step25/workflow-state/{company_id}`
-* `POST /api/v1/rpr/step25/run`
-* Existing evidence and assessment retrieval routes
-
-Preserve these routes unless a proven route-level defect requires a narrowly compatible correction.
-
-Previously added production-hardening behavior must also be preserved, subject to verification:
-
-* `SEC_ACCESS_FAILED`
-* `EVIDENCE_COMPLETE_ASSESSMENT_FAILED`
-* SEC access-failure propagation
-* fail-closed SEC egress gate
-* evidence preservation when assessment generation fails
-* amendment-aware filing selection
-* schema aliases
-* citation-drop visibility
-* repository round-trip integrity
-* restart-durable evidence and assessment retrieval
-
-Do not rebuild this package from scratch.
-
-## 3. CURRENT OBSERVED STEP 2.5 PROBLEMS
-
-The current Step 2.5 screen shows a real confirmed portfolio and a real selected company, but Step 2.5 remains blocked.
-
-Observed production blockers:
+Observed production blockers include:
 
 * `STEP25_SEC_ACCESS_NOT_APPROVED`
 * `RPR_STEP25_SEC_MODE` is not `live`
@@ -129,544 +111,527 @@ Observed production blockers:
 * `STEP25_WEB_PROVIDER_NOT_READY`
 * `RPR_STEP25_WEB_MODE` is not recognized as approved
 
-There is also a visible state inconsistency:
+Do not confuse upstream workflow incompleteness with production activation blockers. Report them separately.
 
-* The workflow sidebar shows Steps 2.2, 2.3, and 2.4 as confirmed.
-* Step 2.5 shows Step 2.3 confirmed with six factors.
-* Step 2.5 simultaneously reports Step 2.4 or combined upstream confirmation as `No`.
+---
 
-This must be traced and corrected. Do not conceal the inconsistency by changing the displayed text.
+# 4. PRIMARY MISSION
 
-The demonstrated selected company includes `CITIBANK NIGERIA LTD`. Do not assume this entity is an SEC registrant and do not substitute Citigroup or another parent. Its SEC eligibility must be determined honestly.
+Complete every remaining technical Step 2.5 task that does not require an internal governance decision.
 
-## 4. FIRST ACTION — FORENSIC AUDIT
+Then:
 
-Before editing:
+1. Produce a detailed implementation and blocker report.
+2. Generate one complete, ready-to-paste prompt for Stylus.
+3. Ask Stylus only for authoritative internal answers that cannot be determined from the repository.
+4. Stop after producing these two deliverables.
+5. Do not continue guessing, testing arbitrary environment values or repeating preflight.
 
-1. Confirm the exact current working directory.
-2. Record `git status --short` and `git diff --stat`.
-3. Identify all files changed by the previous Step 2.5 work.
-4. Do not revert any change.
-5. Inspect applicable repository instructions.
-6. Locate and inspect:
+When the Stylus answers are later supplied, they will be used in a separate final activation pass.
 
-   * `UI Design\step23.html`
-   * the v31 HTML reference
-   * `start_backend.ps1`
-   * `RUNTIME_ENV.ps1`, if present
-   * `backend\server.py`
-   * the complete Step 2.5 package
-   * Step 2.5 router, configuration, orchestration, models and repository
-   * SEC client and transport
-   * CIK resolution
-   * SEC filing selection and extraction
-   * approved-web provider
-   * assessment service
-   * `llm_gateway.py`
-   * upstream Step 2.2, 2.3 and 2.4 persisted-state APIs
-   * Step 2.5 frontend JavaScript and CSS
-7. Calculate a hash of the v31 reference before editing.
-8. At completion, calculate it again and prove it is unchanged.
-9. Identify the exact files you plan to modify before modifying them.
-10. If a fix would require altering a working Step 1–2.4 component, stop and explain the blocker before changing it.
+---
 
-Do not infer code behavior from filenames. Read the implementation.
+# 5. REMOVE ALL RUNTIME MOCK/FIXTURE ASSESSMENT BEHAVIOR
 
-## 5. FIX THE UPSTREAM READINESS INCONSISTENCY
+The open production `assessment_service.py` visibly contains or appears to contain behavior such as:
 
-Trace the complete identity and state chain:
+* `fixture evidence`
+* `rule-based stand-in`
+* `Mock assessment for {company...}`
+* fallback assessment generation when `LLM_PROVIDER` is absent
 
-`confirmed Step 2.2 portfolio → selected company/CAGID → confirmed Step 2.3 factors → confirmed Step 2.4 sector factors → Step 2.5 context → readiness`
+Audit this completely.
 
 Requirements:
 
-1. Step 2.5 must use server-confirmed state, not merely green DOM indicators.
-2. Use the real workflow, portfolio, company/CAGID, sector, scenario and as-of identifiers.
-3. Do not key state only by company name.
-4. Do not lose leading zeros or convert identifiers unnecessarily.
-5. Confirm whether Step 2.4 is stored by sector, company, portfolio, scenario or workflow.
-6. Correct any mismatched key used by:
+1. Identify every runtime-reachable mock, fixture, rule-based fake or canned success path in Step 2.5.
+2. Search Python, JavaScript, HTML, PowerShell, configuration and environment handling.
+3. Remove or isolate every runtime-reachable fake-success path.
+4. Test fixtures may remain only under tests or behind explicit dependency injection unavailable to production routes.
+5. If the production assessment provider is missing:
 
-   * `/step25/context`
-   * `/step25/readiness/{company_id}`
-   * `/step25/workflow-state/{company_id}`
-7. Ensure Step 2.5 reads the same confirmed Step 2.4 artifact that the workflow sidebar reads.
-8. A browser refresh must not manufacture or silently discard confirmed backend state.
-9. A genuinely new workflow must remain unconfirmed.
-10. A previously persisted workflow should be restored only through its real workflow/run identifier.
-11. The Run Assessment button must be disabled when upstream state is genuinely incomplete.
-12. The UI must list exactly which upstream confirmation is missing.
-13. Do not send `POST /step25/run` when readiness is false.
-14. Preserve the backend HTTP 409 fail-closed behavior for an invalid run request.
+   * fail closed;
+   * preserve collected evidence;
+   * return `EVIDENCE_COMPLETE_ASSESSMENT_FAILED`;
+   * provide an actionable provider/authentication error;
+   * never manufacture an assessment.
+6. If SEC or web evidence is unavailable:
 
-Add regression tests for the exact observed inconsistency: sidebar-confirmed Step 2.4 versus Step 2.5 reporting Step 2.4 as unconfirmed.
+   * return an explicit evidence status;
+   * never substitute fixture evidence.
+7. No production response may contain:
 
-## 6. CORRECT WINDOWS CONFIGURATION PROPAGATION
+   * `provider: mock`
+   * `demo`
+   * `fixture`
+   * `Mock assessment`
+   * fabricated assessment IDs
+8. Add tests proving that production configuration cannot invoke these paths.
 
-Audit how the backend is started on Windows.
+Do not claim compliance merely because preflight prevents the path today. The forbidden fallback must not be reachable after production activation either.
+
+---
+
+# 6. COMPLETE THE v31 STEP 2.5 VISUALIZATION PORT
+
+The previous execution did not implement the v31 visualization. Fix that now.
+
+Read the exact v31 Step 2.5 HTML, CSS and JavaScript.
+
+Do not infer its behavior from screenshots.
+
+Document:
+
+* relevant v31 functions;
+* relevant DOM containers;
+* transformations;
+* factor grouping;
+* ED/SI weighting;
+* composite calculation;
+* expand/collapse logic;
+* analyst commentary;
+* rerun behavior;
+* portfolio-summary behavior.
+
+Port that behavior additively into:
+
+`UI Design\step23.html`
+
+and its existing Step 2.5 append JS/CSS files.
 
 Requirements:
 
-1. Determine the exact configuration precedence between:
+1. Do not modify v31.
+2. Record the v31 hash before and after.
+3. Use the existing Step 2.5 container.
+4. Use the existing Run Assessment button.
+5. Preserve all current navigation and workflow behavior.
+6. Do not duplicate global functions or IDs.
+7. Do not add sample rows or embedded sample JSON.
+8. Render only actual backend responses.
+9. Render:
 
-   * the current PowerShell process
-   * `start_backend.ps1`
-   * `RUNTIME_ENV.ps1`
-   * Python configuration defaults
-   * any `.env` or configuration file already used
-2. Do not introduce a new configuration system unless absolutely necessary.
-3. Environment variables set in one PowerShell window must not be assumed to affect an already-running backend in another window.
-4. The final restart instructions must set or load configuration before starting Uvicorn in the same process chain.
-5. `start_backend.ps1` must not overwrite legitimate environment values with unsafe defaults.
-6. Do not hardcode approval values in Python, JavaScript, PowerShell or HTML.
-7. Preflight must report:
+   * company identity;
+   * internal company ID/CAGID;
+   * exact legal entity name;
+   * ticker/CIK or unavailable state;
+   * country and industry;
+   * event-driven factors;
+   * sector-inherent factors;
+   * ED and SI scores;
+   * deterministic weights;
+   * composite score;
+   * impact/residual rating;
+   * key risk driver;
+   * factor commentary;
+   * overall assessment commentary;
+   * analyst override/commentary where supported;
+   * SEC evidence;
+   * approved-web evidence;
+   * conflicts;
+   * missing/unresolved evidence;
+   * clickable citations.
+10. SEC citations must show form, filing date and accession number.
+11. Web citations must show title, source domain, publication date where available and retrieval date.
+12. Show evidence status separately from assessment status.
+13. Show `SEC_NOT_APPLICABLE`, `CIK_UNRESOLVED` and `CIK_REVIEW_REQUIRED` honestly.
+14. Never show a completed result until a real assessment has been retrieved.
+15. Preserve human review and confirmation.
+16. Do not automatically confirm the workflow.
 
-   * whether each configuration item was found
-   * the configuration source
-   * readiness state
-   * a safe, redacted explanation
-8. Never return secrets or tokens in preflight.
-9. Separate readiness blockers into:
+---
 
-   * upstream workflow state
-   * SEC configuration
-   * SEC governance/egress approval
-   * approved-web provider
-   * assessment-model authentication
-10. A healthy `/health` response must not be presented as Step 2.5 production readiness.
-11. A `200` response from `/preflight` means only that preflight executed; the UI must also inspect its `ready` state.
+# 7. ENFORCE THE SEC + WEB MODE
 
-## 7. REUSE THE ALREADY WORKING APPROVED-WEB PATH
+The task is only SEC + Web.
 
-The existing Windows application has successfully executed enterprise-web evidence retrieval using:
+Requirements:
 
-* `citi-r2d2-vertex`
-* `gemini-3.5-flash`
-* Google ADK
+1. Inspect the assessment-type selection state.
+2. Ensure selecting `SEC + Web` produces exactly that mode.
+3. Ensure the existing Run Assessment button sends the correct mode.
+4. Do not silently retain a previous CAM selection.
+5. Do not invoke CAM data or CAM endpoints.
+6. Do not remove or redesign CAM cards; leave them outside this implementation.
+7. Clearly display the selected assessment mode before execution.
+8. Add a test showing:
+
+   * `SEC + Web` selection → SEC/Web request;
+   * CAM data absent;
+   * no mixed mode.
+
+---
+
+# 8. PRESERVE CORRECT UPSTREAM BLOCKING
+
+The current workflow has Step 2.3 in progress and Step 2.4 pending.
+
+Do not bypass that.
+
+Requirements:
+
+1. Run Assessment remains disabled until:
+
+   * Step 2.2 portfolio is confirmed;
+   * the selected company belongs to that portfolio;
+   * Step 2.3 is confirmed;
+   * Step 2.4 is confirmed.
+2. Display each missing upstream requirement separately.
+3. Do not label upstream incompleteness as an SEC configuration error.
+4. Do not post `/step25/run` while upstream readiness is false.
+5. Once Steps 2.3 and 2.4 are genuinely confirmed, Step 2.5 must read the same persisted confirmation state.
+6. Retain the newly fixed Step 2.4 sector-key logic.
+7. Add or preserve regression coverage for:
+
+   * genuinely incomplete upstream state;
+   * genuinely complete upstream state;
+   * wrong company/sector key;
+   * restored persisted workflow.
+
+---
+
+# 9. COMPLETE THE APPROVED-WEB TECHNICAL INTEGRATION
+
+The existing working enterprise adapter is already used by Steps 2.3/2.4:
+
+* `rpr_search_agent.run_web_search`
 * role `enterprise_web_evidence`
-* Windows certificate-store TLS
-
-Step 2.5 must reuse this existing approved adapter and configuration. Do not build a second public-web client.
-
-Audit `RPR_STEP25_WEB_MODE`:
-
-1. Determine whether it is a genuine existing governance requirement or a new Step 2.5 feature gate.
-2. Do not simply remove it.
-3. Do not blindly set it to `approved`.
-4. If the existing enterprise-web adapter is already the approved application path, connect Step 2.5 to that adapter.
-5. Readiness should verify the actual adapter configuration and capability.
-6. If an explicit opt-in remains required, load it through the existing Windows runtime configuration and document its authoritative source.
-7. No direct uncontrolled public-web requests are permitted.
-8. Preserve source-domain controls, TLS, timeouts and existing enterprise search behavior.
-9. Store web evidence separately from SEC evidence.
-10. Every web evidence record must contain:
-
-    * source URL
-    * source title
-    * publication date when available
-    * retrieval timestamp
-    * source domain
-    * relevant excerpt or structured fact
-    * evidence class/type
-    * company identifier
-    * applicable factor identifier
-11. Canonicalize and deduplicate URLs without destroying auditability.
-12. Web evidence may supplement or contradict SEC evidence but must never overwrite an SEC-reported fact.
-
-## 8. COMPLETE THE REAL SEC LANE
-
-Use only official SEC endpoints and existing approved code paths.
+* `citi-r2d2-vertex`
+* Gemini 3.5 Flash
+* Windows certificate store
 
 Requirements:
 
-1. Perform safe CIK resolution in this order:
+1. Reuse this adapter.
+2. Do not create another web client.
+3. Do not issue uncontrolled direct public-web requests.
+4. Trace `ApprovedWebEvidenceProvider` end to end.
+5. Verify Step 2.5 sends:
 
-   * explicitly stored and previously confirmed CIK
-   * exact ticker mapping
-   * exact legal-name mapping
-   * review-required candidate
-   * unresolved/not applicable
-2. Never choose a fuzzy match automatically.
-3. Never map a subsidiary to a parent solely because their names are related.
-4. Record:
+   * exact company identity;
+   * scenario;
+   * confirmed Step 2.3 factors;
+   * confirmed Step 2.4 factors;
+   * assessment as-of date.
+6. Verify normalization and persistence.
+7. Preserve:
 
-   * matching method
-   * confidence/status
-   * exact SEC legal name
-   * CIK
-   * reviewer confirmation when applicable
-5. Support explicit statuses such as:
+   * source URL;
+   * title;
+   * domain;
+   * publication date;
+   * retrieval timestamp;
+   * excerpt/fact;
+   * company and factor association;
+   * evidence class/type.
+8. Keep web and SEC evidence separate.
+9. Never let web evidence overwrite SEC-reported facts.
+10. Retain both sources and set `conflict_flag=true` when they conflict.
+11. Determine whether `RPR_STEP25_WEB_MODE=approved` is:
+
+    * a repository-defined governance control;
+    * an explicit feature opt-in;
+    * or an unsupported duplicate flag introduced by Step 2.5.
+12. Do not guess the answer.
+13. Implement adapter capability checks independently of the unresolved governance decision.
+14. Put the remaining governance decision into the Stylus prompt.
+
+---
+
+# 10. COMPLETE THE SEC TECHNICAL PATH WITHOUT UNAUTHORIZED LIVE ACCESS
+
+Audit the complete SEC lane:
+
+* configuration;
+* CIK resolution;
+* transport;
+* rate limiting;
+* filing selection;
+* amendments;
+* Company Facts/XBRL;
+* filing-text extraction;
+* normalization;
+* persistence;
+* serialization;
+* UI retrieval.
+
+Requirements:
+
+1. Safe CIK resolution:
+
+   * stored confirmed CIK;
+   * exact ticker;
+   * exact legal name;
+   * review required;
+   * unresolved/not applicable.
+2. No fuzzy auto-confirmation.
+3. No automatic parent substitution.
+4. Explicit statuses:
 
    * `CIK_CONFIRMED`
    * `CIK_REVIEW_REQUIRED`
    * `CIK_UNRESOLVED`
    * `SEC_NOT_APPLICABLE`
    * `SEC_ACCESS_FAILED`
-6. A company that is not an SEC filer must not receive fabricated SEC evidence.
-7. A non-filer or unresolved entity must produce an honest UI state and an evidence-completeness decision.
-8. Do not silently substitute a different company to achieve a successful test.
-9. Retrieve only relevant official SEC data such as:
+5. Preserve:
 
-   * submissions metadata
-   * Company Facts/XBRL
-   * selected filing documents and exhibits
-10. Preserve relevant 10-K, 10-Q and 8-K handling and amendment-aware supersession.
-11. Do not invent foreign-issuer scope. Preserve an explicit not-applicable or pending-scope state where necessary.
-12. Enforce the configured SEC User-Agent.
-13. Enforce HTTPS and certificate validation.
-14. Respect fair-access limits, bounded retries, backoff and caching.
-15. Do not conduct a live SEC call until the Windows egress and User-Agent requirements are genuinely satisfied.
-16. Store raw responses or reproducible raw-response metadata according to the existing repository pattern.
-17. Every SEC evidence item must retain:
+   * CIK;
+   * accession number;
+   * filing form;
+   * filing date;
+   * report period;
+   * primary document;
+   * exact SEC URL;
+   * retrieval timestamp.
+6. `source_url` and `accession_number` must survive normalization, persistence and serialization together.
+7. Preserve amendment-aware supersession.
+8. Preserve bounded retries, backoff, caching and fair-access rate limits.
+9. Preserve TLS verification.
+10. Do not make a live SEC request until the internal Windows approval questions are answered.
+11. Add offline technical tests without treating them as real end-to-end success.
+12. Document precisely what is code-complete and what requires authorization.
 
-* CIK
-* accession number
-* form
-* filing date
-* report period
-* primary document
-* exact resolvable SEC source URL
-* retrieval timestamp
-* evidence type/class
+---
 
-18. For SEC evidence, `source_url` and `accession_number` must remain populated together.
-19. Do not strip provenance during normalization, assessment generation, persistence or API serialization.
+# 11. HANDLE NON-SEC FILERS HONESTLY
 
-## 9. EVIDENCE AND CONFLICT RULES
-
-1. Keep SEC and approved-web evidence as separate provenance lanes.
-2. SEC filings are authoritative for company-reported financial facts and disclosures.
-3. Approved web supplies external context and disconfirming evidence.
-4. Web evidence must never automatically override an SEC-reported fact.
-5. When sources conflict:
-
-   * retain both records
-   * set `conflict_flag=true`
-   * describe the conflict
-   * require analyst review
-6. Do not silently reconcile conflicting evidence.
-7. Distinguish:
-
-   * reported fact
-   * deterministic extracted text
-   * derived deterministic metric
-   * approved-web evidence
-   * model-generated assessment
-8. Missing evidence must be explicit.
-9. No LLM-generated claim may masquerade as source evidence.
-10. Citation sanitization must not remove the source audit anchor.
-
-## 10. ASSESSMENT GENERATION
-
-1. Reuse the existing working R2D2/H2M model gateway.
-2. Do not redesign global model routing.
-3. Do not add an Anthropic API-key dependency if Step 2.5 uses the existing R2D2/H2M gateway.
-4. Use the same secure credential mechanism already working for the Windows R2D2 calls.
-5. Never display or log the access token.
-6. A token-fetch timeout must produce a bounded, actionable authentication error.
-7. Do not fall back to mock assessment text.
-8. Generate the assessment only from:
-
-   * confirmed Step 2.3 factors
-   * confirmed Step 2.4 factors
-   * normalized SEC evidence
-   * normalized approved-web evidence
-9. Preserve all collected evidence if the assessment model fails.
-10. Use `EVIDENCE_COMPLETE_ASSESSMENT_FAILED` when evidence succeeded but assessment generation failed.
-11. Allow an analyst to retry the assessment without retrieving all evidence again, subject to existing policy.
-12. Require citations connecting conclusions to evidence IDs.
-13. Drop or reject unsupported citations and expose the omission.
-14. Financial calculations, weighting and aggregation must remain deterministic Python/approved existing logic.
-15. The LLM must not invent a new scoring formula.
-
-## 11. PORT THE v31 STEP 2.5 VISUALIZATION AND PoC LOGIC
-
-The v31 HTML is a read-only reference.
-
-Before implementation:
-
-1. Locate the exact Step 2.5 HTML, CSS and JavaScript in v31.
-2. Trace its real:
-
-   * data transformation
-   * factor grouping
-   * deterministic scoring
-   * weighting
-   * aggregation
-   * portfolio-summary rendering
-   * expand/collapse behavior
-   * commentary behavior
-   * rerun behavior
-3. Do not guess its logic from screenshots.
-4. Document the source-to-target mapping.
-
-Then port the required behavior additively into `UI Design\step23.html`.
+The current portfolio may contain private, foreign or non-SEC entities.
 
 Requirements:
 
-1. Preserve the existing `step23.html` layout, IDs, navigation, workflow sidebar and feedback components.
-2. Do not create duplicate global functions, IDs or event handlers.
-3. Do not add another Run Assessment button.
-4. Wire the existing Run Assessment button.
-5. Keep the existing SEC + Web selection card.
-6. Do not implement or alter CAM modes during this task.
-7. Render the v31-style Step 2.5 portfolio outcome using real backend data.
-8. Remove all runtime dependence on sample arrays or embedded v31 data.
-9. Never display a demo/fixture banner or demo company selector.
-10. The result should include, where supported by the actual v31 logic and backend schema:
+1. Do not assume every selected company is an SEC filer.
+2. Do not replace the selected entity with a parent.
+3. Do not use another portfolio company secretly.
+4. If no authoritative CIK exists, return:
 
-    * company identity
-    * CAGID/internal identifier
-    * ticker/CIK or explicit unavailable state
-    * country
-    * industry hierarchy
-    * event-driven factor scores
-    * sector-inherent factor scores
-    * deterministic weights
-    * ED score
-    * SI score
-    * composite score
-    * residual/impact rating
-    * current and recommended actions where supported
-    * key risk driver
-    * analyst override
-    * analyst commentary
-    * overall assessment commentary
-11. Provide expandable factor-level detail.
-12. Provide separate SEC and web evidence views.
-13. Provide clickable citations using exact stored URLs.
-14. Show accession number and form for SEC citations.
-15. Show conflicts prominently for analyst review.
-16. Show missing, stale, unresolved and not-applicable states.
-17. Show evidence and assessment status independently.
-18. Support rerunning an assessment without duplicating the prior result.
-19. Preserve assessment history/version identifiers if the backend supports them.
-20. Do not show a completed assessment until a real assessment object has been retrieved successfully.
-21. Do not declare the overall workflow confirmed automatically; retain analyst review and confirmation behavior.
+   * review required;
+   * unresolved;
+   * or not applicable.
+5. Continue approved-web collection only if internal policy permits it.
+6. Whether SEC + Web may become web-only for a legitimate non-SEC filer is an internal methodology decision.
+7. Do not make that decision yourself.
+8. Ask Stylus for the authoritative policy.
+9. Until answered, preserve evidence and return an explicit blocked/partial status rather than a fabricated complete assessment.
 
-If v31’s PoC processes only one selected company at a time, preserve that exact behavior using a real company from the confirmed Step 2.2 portfolio.
+---
 
-If v31 processes several confirmed portfolio companies, preserve that behavior without inventing results for unprocessed companies.
+# 12. TEST WHAT CAN BE TESTED NOW
 
-Do not silently change the PoC scope.
+Run targeted tests for all implemented technical behavior.
 
-## 12. TESTING RULES
+Required areas:
 
-Test doubles may be used only inside isolated automated tests for deterministic error paths. They must never be reachable from the production runtime.
+* Step 2.4 map-key regression;
+* upstream complete/incomplete state;
+* SEC + Web mode selection;
+* absence of CAM data in SEC + Web mode;
+* no runtime mock/fixture fallback;
+* provider failure is fail-closed;
+* evidence preserved after assessment failure;
+* approved-web adapter wiring;
+* SEC provenance;
+* URL/accession round trip;
+* conflicts;
+* CIK exact/review/unresolved/not-applicable states;
+* parent non-substitution;
+* v31 unchanged;
+* v31-style Step 2.5 renderer;
+* safe missing-data rendering;
+* restart persistence;
+* no regression in Steps 1–2.4.
 
-Fixture or mock success does not count as end-to-end success.
+A test double may validate technical behavior, but must not be reported as real SEC/web success.
 
-Required verification:
+Do not repeatedly run live preflight expecting different results when required configuration has not changed.
 
-### Regression
+---
 
-* Re-run existing Step 1–2.4 tests.
-* Confirm no regression in:
+# 13. REQUIRED IMPLEMENTATION REPORT
 
-  * narrative generation
-  * scenario confirmation
-  * portfolio selection
-  * Step 2.3 generation/finalization
-  * Step 2.4 web evidence
-  * Step 2.4 Opus reasoning
-  * workflow sidebar
-  * feedback panels
+After implementing everything possible, produce a detailed report with these sections:
 
-### Step 2.5 automated tests
-
-Cover:
-
-* upstream state key consistency
-* persisted Step 2.4 confirmation retrieval
-* CIK exact match
-* CIK unresolved
-* non-SEC filer
-* subsidiary/parent non-substitution
-* SEC access failure
-* approved-web adapter failure
-* amendment supersession
-* evidence provenance
-* SEC URL/accession preservation
-* web/SEC conflict retention
-* repository restart round-trip
-* model-auth failure
-* evidence-preserving assessment failure
-* citation rejection
-* rerun behavior
-* v31 reference hash unchanged
-* absence of demo/mock/fixture runtime switches
-
-### Real Windows integration
-
-After genuine readiness requirements are satisfied:
-
-1. Start the actual backend using the approved Windows virtual environment.
-2. Serve or open the actual `UI Design\step23.html` through the existing supported path.
-3. Complete the real workflow through Steps 1–2.4.
-4. Select a real confirmed company.
-5. Confirm whether that exact legal entity is an SEC filer.
-6. If it is not an SEC filer, do not replace it. Display the correct status.
-7. For the first successful SEC end-to-end verification, use a real confirmed Step 2.2 company that is genuinely an SEC filer.
-8. Do not add Apple/AAPL to the portfolio for testing.
-9. Run the existing Run Assessment button.
-10. Verify actual HTTP calls made by the browser.
-11. Verify:
-
-    * preflight ready
-    * context identity correct
-    * CIK confirmed
-    * SEC evidence retrieved
-    * approved-web evidence retrieved
-    * evidence stored
-    * conflicts retained
-    * real assessment generated
-    * provider is not mock
-    * citations resolve
-    * v31-style result renders in `step23.html`
-    * refresh/retrieval preserves the result
-
-Do not claim end-to-end success based only on direct API calls if the real browser button and DOM rendering were not tested.
-
-## 13. INTERNAL INFORMATION — STOP INSTEAD OF GUESSING
-
-If implementation is blocked by missing internal information, implement everything safely possible and then produce a short `STYLUS QUESTIONS REQUIRED` section.
-
-Ask only Windows-relevant questions, such as:
-
-1. What exact SEC User-Agent application/team name and monitored contact should RPR use?
-2. Is direct Windows HTTPS access to `data.sec.gov` and `www.sec.gov` approved?
-3. Is a proxy required for those destinations?
-4. What CA/TLS configuration is required on the Windows host?
-5. Is the existing `enterprise_web_evidence` adapter sufficient evidence of approved-web readiness for Step 2.5, or is a separate Step 2.5 opt-in required?
-6. Which existing workflow/run identifier is authoritative for restoring confirmed Steps 2.2–2.4?
-7. What is the approved behavior for a confirmed portfolio company that is not an SEC filer?
-
-Do not ask about MarketDev, Unix, deployment or hosting.
-
-## 14. COMPLETION CRITERIA
-
-Do not state “complete” unless all applicable conditions are true:
-
-* Active frontend is `UI Design\step23.html`.
-* v31 is unchanged.
-* Steps 1–2.4 still work.
-* Step 2.5 reads the correct confirmed workflow state.
-* The Step 2.4 confirmation mismatch is fixed.
-* Real selected company identity is preserved.
-* SEC eligibility is handled honestly.
-* Approved-web uses the existing enterprise adapter.
-* No runtime mock/demo/fixture path exists.
-* No fake approval is used.
-* SEC evidence contains exact source URLs and accession numbers.
-* Web evidence remains separately attributable.
-* Conflicts retain both sources.
-* Assessment is generated through the actual approved model path.
-* The v31-style Step 2.5 result renders in `step23.html`.
-* Browser execution has been tested.
-* Persistence survives retrieval/restart.
-* Regression tests pass or every unrelated pre-existing failure is identified with evidence.
-
-## 15. REQUIRED FINAL REPORT
-
-Return:
-
-### A. Implementation verdict
+## A. Honest verdict
 
 Choose exactly one:
 
 * `COMPLETE — REAL WINDOWS SEC+WEB VERIFIED`
-* `CODE COMPLETE — EXTERNAL APPROVAL REQUIRED`
-* `PARTIAL — TECHNICAL BLOCKER REMAINS`
+* `CODE READY — INTERNAL DECISIONS REQUIRED BEFORE ACTIVATION`
+* `PARTIAL — TECHNICAL WORK STILL REMAINS`
 * `NOT IMPLEMENTED`
 
-### B. Preserved working bones
+Do not use `CODE COMPLETE` if v31 visualization, runtime mock removal or production wiring remains incomplete.
 
-List all working components verified unchanged.
+## B. Implemented before this continuation
 
-### C. Root causes
+List previous Step 2.5 modules and behavior already present.
 
-For every observed problem, state:
+## C. Implemented in this continuation
 
-* symptom
-* root cause
-* file/function responsible
-* correction
-* verification
+For every change provide:
 
-### D. Files changed
+* absolute Windows path;
+* function/class;
+* defect or requirement;
+* exact correction;
+* test proving it.
 
-For every file:
+## D. Preserved bones
 
-* absolute Windows path
-* reason
-* narrow change made
+List every working component deliberately left unchanged.
 
-### E. Files explicitly not changed
-
-Include:
-
-* v31 reference
-* working Step 1–2.4 components
-* unrelated dirty-tree files
-
-### F. Model and provider proof
-
-Report actual providers and models observed without exposing credentials.
-
-### G. SEC proof
-
-Report:
-
-* exact tested legal entity
-* matching method
-* CIK status
-* forms/accessions retrieved
-* SEC evidence count
-* rate-limit behavior
-
-### H. Approved-web proof
-
-Report:
-
-* adapter used
-* query count
-* evidence count
-* domain/provenance behavior
-
-### I. Assessment proof
-
-Report:
-
-* assessment ID
-* provider
-* evidence IDs used
-* conflict count
-* citation-validation result
-
-### J. UI proof
-
-Confirm:
-
-* actual `step23.html`
-* existing Run Assessment button used
-* v31-style output rendered
-* no sample company
-* no demo/fixture banner
-* citations clickable
-* analyst review retained
-
-### K. Tests
-
-Provide exact commands and unedited pass/fail summaries.
-
-### L. Remaining blockers
+## E. Current workflow state
 
 Separate:
 
-* code blocker
-* Windows configuration blocker
-* internal approval blocker
-* company SEC-eligibility blocker
-* model-authentication blocker
+* Step 2.2 status;
+* Step 2.3 status;
+* Step 2.4 status;
+* selected assessment type;
+* selected company;
+* whether the selected legal entity is confirmed as an SEC filer.
 
-Do not hide blockers and do not represent a blocked implementation as successful.
+## F. Runtime mock/fixture audit
+
+List every discovered demo/mock/fixture path and whether it was:
+
+* removed;
+* isolated to tests;
+* still blocked with justification.
+
+## G. Step 2.5 UI implementation
+
+Describe:
+
+* v31 elements ported;
+* source-to-target mapping;
+* real API fields rendered;
+* citation behavior;
+* analyst-review behavior.
+
+## H. Technical verification
+
+Report exact commands and unedited summaries.
+
+## I. Remaining technical defects
+
+Do not mix these with approval questions.
+
+## J. Internal-policy blockers
+
+For each blocker provide:
+
+* blocker code;
+* exact configuration field;
+* why the repository cannot answer it;
+* risk of guessing;
+* exact authoritative decision required.
+
+## K. Real activation status
+
+State clearly why live SEC + Web was or was not executed.
+
+---
+
+# 14. GENERATE A READY-TO-PASTE STYLUS PROMPT
+
+After the implementation report, generate one self-contained prompt titled:
+
+`PROMPT FOR STYLUS — RPR STEP 2.5 WINDOWS BLOCKER RESOLUTION`
+
+The prompt must be ready for the user to copy directly into Stylus.
+
+It must contain:
+
+1. Windows-only context.
+2. Exact project/application purpose.
+3. What has already been implemented.
+4. Working existing enterprise model/web routing.
+5. Current Step 2.5 architecture.
+6. Exact blocker codes.
+7. Exact configuration variables.
+8. Explanation that no fake approval values may be used.
+9. Questions only about unresolved internal decisions.
+10. Request for authoritative internal-source citations or named policy owners.
+11. A required structured response format.
+
+At minimum, ask Stylus to resolve:
+
+### SEC Windows access
+
+* Is outbound HTTPS from the current Windows RPR workstation/runtime to `data.sec.gov` and `www.sec.gov` approved?
+* Are both hosts allowed?
+* Is a corporate proxy required?
+* Which CA/certificate-store configuration is required?
+* What approval ID, approver, date and approved-host metadata should be recorded?
+* Are the existing `RPR_STEP25_SEC_MODE`, `RPR_STEP25_LIVE_SEC_ENABLED` and `RPR_SEC_EGRESS_APPROVED` controls authoritative internal requirements?
+
+### SEC User-Agent
+
+* What exact SEC-compliant User-Agent should RPR use?
+* What application/team name should it contain?
+* What monitored team email/contact should it contain?
+* Where should the non-secret value be configured on Windows?
+
+### Approved-web authorization
+
+* Is the existing `citi-r2d2-vertex` / `enterprise_web_evidence` adapter already approved for Step 2.5?
+* Does it satisfy `RPR_STEP25_WEB_MODE=approved`?
+* Is separate governance approval required?
+* What domain/source restrictions, recency rules or logging requirements apply?
+
+### Non-SEC-filer methodology
+
+* What should SEC + Web do when the exact selected legal entity is not an SEC filer?
+* Should the run:
+
+  * stop as `SEC_NOT_APPLICABLE`;
+  * proceed with approved web only and an explicit limitation;
+  * require analyst confirmation;
+  * or use another approved rule?
+* Is parent-level SEC evidence permitted for a subsidiary?
+* If yes, what authoritative relationship field and analyst control are required?
+
+### Assessment/model authorization
+
+Only if still unresolved after code inspection:
+
+* Which existing R2D2 model route is approved for the final Step 2.5 assessment?
+* What authentication verification is required?
+* What retry behavior is approved after an H2M failure?
+
+Require Stylus to answer using this table:
+
+| Decision ID | Question | Authoritative answer | Exact value/configuration | Source/policy/owner | Approved? | Conditions | Still unknown |
+| ----------- | -------- | -------------------- | ------------------------- | ------------------- | --------- | ---------- | ------------- |
+
+Tell Stylus:
+
+* Do not invent missing values.
+* Mark unknown items clearly.
+* Do not provide secrets or tokens.
+* Do not discuss Unix, deployment or migration.
+* Focus exclusively on the current Windows implementation.
+* Distinguish technical capability from governance approval.
+
+---
+
+# 15. STOP CONDITION
+
+After producing:
+
+1. the detailed implementation report; and
+2. the complete Stylus prompt,
+
+stop.
+
+Do not:
+
+* guess approval values;
+* repeatedly rerun preflight;
+* switch to demo/fixture mode;
+* generate a mock assessment;
+* bypass Steps 2.3 or 2.4;
+* make unauthorized live SEC calls;
+* claim final end-to-end success.
+
+Wait for the user to return with Stylus’s authoritative answers.
