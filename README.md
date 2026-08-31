@@ -1,208 +1,253 @@
-We have enough evidence. Stop analysis, stop searching for old artifacts, stop proposing alternatives.
+STRICT EXECUTION MODE — MAKE “RUN ASSESSMENT” WORK NOW.
 
-Current proven state:
+Do not give me another investigation report.
+Do not stop because the previous server restart erased in-memory context.
+Do not fabricate any Step 1/2.1/2.3 data.
+Do not redesign/refactor/rewrite Steps 1–2.4.
+Do not change the frozen v31 UI.
+Do not create another Step 2.5 architecture.
+The existing Step 2.5 Stylus preset/Runner contract is now the baseline.
 
-Step 2.2 Apple identity = CONFIRMED
-company_id / CAGID = 0000014508
-CIK = 0000320193
-company = APPLE INC
-Step 2.4 genuine recovered artifact = _tmp_step24_final.json
-Step 2.4 = CONFIRMED
-Step 2.4 factor count = 5/5
-Step 2.3 old candidate file is NOT usable because it is only AI_PROPOSAL and lacks scoring_logic
-Stylus preset contract is configured
-correct preset ID bug is fixed
-Claude Sonnet 5 configured
-SEC + lookup integrations configured
-Stylus-specific SSE timeout = 300s
-token freshness/retry mechanism has already been implemented
-OBJECTIVE
+GOAL:
+I want the actual RPR “Run Assessment” button / Step 2.5 flow to execute successfully with REAL upstream data.
 
-Execute a real end-to-end Step 2.5 run now, following the RPR flow strictly.
+CURRENT VERIFIED STATE:
+- Step 2.5 preset contract = CONFIGURED.
+- preset id issue = FIXED.
+- model = claude-sonnet-5.
+- temperature = 1.
+- outer integrations = ["lookup_documentation","sec_filing"].
+- preset prompt = captured.
+- preset knowledge = captured.
+- five short Runner input names = captured.
+- Runner client id = configured.
+- Step 2.2 Apple identity:
+    company_id = 0000014508
+    company = APPLE INC
+    CIK = 0000320193
+    sec status = CIK_CONFIRMED.
+- Existing Step 2.4 artifact = CONFIRMED with 5 factors.
+- Previous Step 2.3 state disappeared because server memory was restarted.
+- A candidate Step 2.3 JSON is NOT acceptable because it was never finalized and lacks scoring_logic.
+- Therefore regenerate Step 1 → 2.1 → 2.3 genuinely using EXISTING application endpoints.
 
-Do NOT use fabricated factors.
-
-Do NOT manually patch scoring_logic.
-
-Do NOT run Step 2.5 with zero Step 2.3 factors.
-
-Do NOT modify Step 1–2.4 implementation code.
-
-Do NOT perform another architecture review.
-
-Do NOT create another smoke-test substitute.
-
+============================================================
 PHASE 1 — REBUILD ONLY THE MISSING REAL UPSTREAM STATE
+============================================================
 
-Re-establish the real Apple scenario using the existing working RPR endpoints and existing scenario:
+Use the EXISTING RPR flow exactly as implemented.
 
-China MOFCOM Ga/Ge/Sb export restrictions / technology supply-chain scenario
+1. Run the existing real Step 1 Market Scanner / discovery endpoint.
 
-Use the existing RPR execution flow, not manually created JSON.
+Use the same relevant technology/supply-chain theme that previously produced the
+China MOFCOM gallium/germanium/antimony export-control event.
 
-If Step 2.1 state must be recreated because the server restarted, recreate/register it using the existing Step 2.1 endpoint.
+Do NOT manufacture the old Step 1 object.
+Run genuine discovery again.
 
-Confirm Step 2.2 Apple:
+2. Select the real returned event corresponding most closely to:
 
-company_id = 0000014508
+China MOFCOM gallium / germanium / antimony / strategic-mineral
+export restrictions affecting technology / semiconductor supply chains.
 
-CIK = 0000320193
+Use the actual returned event object from Step 1.
 
-Then execute the REAL:
+3. Feed that REAL Step 1 event to the existing Step 2.1 scenario generation endpoint.
 
-POST /step2/event-factors/generate
+Generate the real 12-month scenario and assumptions.
 
-for Apple and the confirmed scenario.
+4. FINALIZE Step 2.1 through the existing finalize endpoint.
 
-The result must contain 6 real Step 2.3 factors.
+Required:
+STEP21_CONFIRMED=true
 
-Inspect the generated objects before finalization.
+5. Register/reconfirm Apple through existing Step 2.2 logic only if necessary.
 
-Each factor must contain the schema required by the existing Step 2.3 finalizer, including scoring_logic.
+Required identity:
+company_id=0000014508
+CIK=0000320193
+company=APPLE INC
+CIK_CONFIRMED=true
 
-Then execute the REAL:
+6. Call the EXISTING Step 2.3 event-factor generation endpoint using the genuine
+confirmed Step 1 + Step 2.1 context.
 
-POST /step2/event-factors/finalize
+7. FINALIZE Step 2.3 using the existing finalize endpoint.
 
-Do not create scoring_logic manually.
+Do NOT patch the generated factors manually.
+Do NOT invent scoring_logic.
 
-Do not alter the factors to make the validator pass.
+Required:
+STEP23_CONFIRMED=true
+STEP23_FACTOR_COUNT=6
+and all 6 factors must pass the existing deterministic schema/finalization checks.
 
-If the generation itself genuinely returns malformed factors, retry the genuine generation once using the same existing endpoint.
-
-Required result:
-
-STEP23_CONFIRMED = true
-
-STEP23_FACTOR_COUNT = 6
-
+============================================================
 PHASE 2 — RESTORE STEP 2.4
+============================================================
 
-Use the already-proven genuine:
+The existing real Step 2.4 CONFIRMED 5-factor artifact may be reused ONLY if it
+still corresponds to Apple's governed Software sector and passes the application's
+existing validation.
 
-_tmp_step24_final.json
-
-Register it through the existing /context mechanism.
-
-Required:
-
-STEP24_CONFIRMED = true
-
-STEP24_FACTOR_COUNT = 5
-
-No regeneration of Step 2.4 is needed unless registration itself proves impossible.
-
-PHASE 3 — PROVE THE ACTUAL STEP 2.5 INPUT
-
-Immediately before execution, inspect the exact five values that call_stylus_preset() will send.
+Register it through the EXISTING /context mechanism.
 
 Required:
+STEP24_CONFIRMED=true
+STEP24_FACTOR_COUNT=5
 
-companycontextjson = real confirmed Apple Step 2.2 context
+If the existing genuine Step 2.4 artifact cannot be registered, regenerate Step 2.4
+using its existing endpoint. Do not fabricate anything.
 
-EventDrivenF = 6 finalized Step 2.3 factors
+============================================================
+PHASE 3 — PROVE THE EXACT STEP 2.5 PAYLOAD
+============================================================
 
-SectorInhere = 5 finalized Step 2.4 factors
+Before sending anything to Stylus print ONLY:
 
-AssessmentAS = current assessment date
-
-EvidenceWind = configured evidence window
-
-HARD GATE:
-
-STEP25_PAYLOAD_EVENT_FACTORS == 6
-STEP25_PAYLOAD_SECTOR_FACTORS == 5
-
-If either is wrong, DO NOT execute Step 2.5.
-
-PHASE 4 — TOKEN AND IMMEDIATE EXECUTION
-
-Use the token-management implementation already created.
-
-Do not redesign authentication.
-
-Do not print the bearer token.
-
-First use any currently available valid token according to the existing freshness gate.
-
-If the current token is expired or has insufficient remaining lifetime, finish all upstream registration first and stop at exactly:
-
-NEED_FRESH_TOKEN_NOW
-
-Nothing else.
-
-If a valid token is available, immediately execute the REAL:
-
-POST /api/v1/rpr/step25/run
-
-Do not run another smoke test first.
-
-This must be the real Apple Step 2.5 run.
-
-Allow the full Stylus execution to complete. The SEC/web tool rounds can take several minutes.
-
-Do not abort merely because SSE events arrive slowly.
-
-PHASE 5 — RESULT VALIDATION
-
-When Step 2.5 completes:
-
-capture the complete final model response;
-extract the Step 2.5 JSON;
-validate it against the configured Step2.5Assessment schema;
-prove SEC lane activity where observable;
-prove web evidence/search activity where observable;
-confirm all 6 Step 2.3 factors were assessed;
-confirm all 5 Step 2.4 factors were assessed;
-save the genuine Step 2.5 output to disk so it survives server restart.
-
-Do not silently accept malformed JSON.
-
-Do not substitute a smoke-test response.
-
-Do not call a run successful merely because Runner returned HTTP 200.
-
-Success means a real analytical Step 2.5 assessment was returned and schema-validated.
-
-FREEZE RULE
-
-No refactoring.
-
-No cleanup.
-
-No architecture changes.
-
-No Step 1–2.4 code changes.
-
-Preserve every currently working Step 2.5 contract/auth/preset fix.
-
-Only make a code change if an actual runtime failure proves that a minimal Step 2.5-specific fix is necessary.
-
-EXECUTE
-
-Start now.
-
-Do not give me another plan.
-
-Do not ask permission between phases.
-
-Continue automatically from Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5.
-
-Stop only for:
-
-NEED_FRESH_TOKEN_NOW
-
-or after the genuine Step 2.5 result is obtained.
-
-Final report must be ONLY:
-
+COMPANY =
+COMPANY_ID =
+CIK =
+STEP21_CONFIRMED =
 STEP22_CONFIRMED =
 STEP23_CONFIRMED =
 STEP23_FACTOR_COUNT =
 STEP24_CONFIRMED =
 STEP24_FACTOR_COUNT =
-STEP25_EVENT_FACTORS_SENT =
-STEP25_SECTOR_FACTORS_SENT =
+UPSTREAM_READY =
+
+Then print:
+
+STEP25_INPUT_1 = companycontextjson size/summary
+STEP25_INPUT_2 = EventDrivenF size/factor count
+STEP25_INPUT_3 = SectorInhere size/factor count
+STEP25_INPUT_4 = AssessmentAS
+STEP25_INPUT_5 = EvidenceWind
+
+Do not print giant JSON bodies unless needed for an error.
+
+Required before execution:
+
+UPSTREAM_READY=true
+STEP23_FACTOR_COUNT=6
+STEP24_FACTOR_COUNT=5
+
+============================================================
+PHASE 4 — TOKEN
+============================================================
+
+Use the token handling already implemented.
+
+1. Check current cached / environment / clipboard Runner token.
+2. Decode expiry only.
+3. If current token has adequate remaining lifetime, use it immediately.
+4. If expired, first attempt the existing refresh-token exchange mechanism.
+5. If refresh credentials are unavailable, read a NEW Authorization: Bearer token
+from clipboard using the existing safe extraction code.
+
+DO NOT spend the fresh token on another smoke test.
+
+Once a valid fresh token is available, immediately proceed to the REAL RPR run.
+
+============================================================
+PHASE 5 — REAL STEP 2.5 EXECUTION
+============================================================
+
+Call the real application endpoint:
+
+POST /api/v1/rpr/step25/run
+
+for:
+
+company_id = 0000014508
+
+This must use the genuine registered:
+
+- Apple company context
+- 6 confirmed Step 2.3 event-driven factors
+- 5 confirmed Step 2.4 sector-inherent factors
+- assessment date
+- evidence window
+
+and the existing Stylus preset.
+
+NO synthetic smoke-test payload.
+
+Allow the Stylus-specific long SSE timeout already implemented.
+Do not terminate simply because SEC/web tool calls take several minutes.
+
+============================================================
+PHASE 6 — RESULT
+============================================================
+
+Wait until the full SSE response terminates.
+
+Extract the final Step25Assessment JSON using the existing result extraction logic.
+
+Validate it against our Step25Assessment schema.
+
+Save the genuine resulting JSON to the normal Step 2.5 result location.
+
+Then verify that the frontend Step 2.5 “Run Assessment” endpoint can retrieve/render
+that result using the CURRENT UI contract.
+
+Do not redesign the UI.
+
+============================================================
+PHASE 7 — PERMANENT RESTART FIX
+============================================================
+
+AFTER the successful real run, fix the precise persistence problem that caused this
+loop:
+
+A server restart must not unnecessarily destroy already-finalized Step 2.1 / 2.2 /
+2.3 / 2.4 context if genuine finalized artifacts already exist.
+
+IMPORTANT:
+- This is NOT permission to redesign state management.
+- Inspect the current repository/storage mechanisms first.
+- Make the MINIMUM ADDITIVE persistence/rehydration change.
+- Persist only already-finalized genuine workflow artifacts.
+- On startup/context lookup, rehydrate them using the existing models/validators.
+- Never auto-confirm AI_PROPOSAL/candidate artifacts.
+- Never convert an unfinalized artifact into CONFIRMED.
+- Preserve every existing endpoint and behavior.
+
+This should make Run Assessment work after a backend restart when legitimately
+confirmed upstream results were previously persisted.
+
+============================================================
+STRICT STOP CONDITIONS
+============================================================
+
+Do NOT stop for:
+- “old Step 1 object missing”
+- “server memory restarted”
+- “need original previous-session object”
+because the instruction is explicitly to regenerate that data genuinely through
+the existing flow.
+
+Stop ONLY if:
+A) a real endpoint itself fails,
+B) valid authentication cannot be obtained after the existing refresh/fresh-token
+mechanism,
+C) a genuine upstream LLM/tool/API returns an unrecoverable error.
+
+If that happens, report the EXACT HTTP endpoint, status, response/error and first
+failing function. No architectural speculation.
+
+============================================================
+FINAL REPORT — ONLY AFTER EXECUTION
+============================================================
+
+STEP1_REAL =
+STEP21_CONFIRMED =
+STEP22_CONFIRMED =
+STEP23_CONFIRMED =
+STEP23_FACTOR_COUNT =
+STEP24_CONFIRMED =
+STEP24_FACTOR_COUNT =
+UPSTREAM_READY =
 TOKEN_ACCEPTED =
 RUNNER_HTTP_STATUS =
 PRESET_EXECUTED =
@@ -212,7 +257,10 @@ STEP25_JSON_RETURNED =
 STEP25_SCHEMA_VALID =
 ANALYTICAL_RESULT_REAL =
 OUTPUT_FILE =
+RUN_ASSESSMENT_WORKING =
+RESTART_REHYDRATION_WORKING =
+FILES_CHANGED =
 FINAL_STATUS = SUCCESS / BLOCKED
-BLOCKER = <exact blocker or NONE>
+BLOCKER =
 
-Execute now.
+EXECUTE NOW. DO NOT RETURN A PLAN.
