@@ -1,130 +1,471 @@
-IMPORTANT — THIS OVERRIDES THE PREVIOUS "FREEZE / STOP" INSTRUCTION.
+STOP ALL NEW FEATURE DEVELOPMENT.
 
-DO NOT STOP AT READY_FOR_PRESET_CAPTURE.
+DO NOT redesign Step 2.5.
+DO NOT add another architecture layer.
+DO NOT create another authentication mechanism.
+DO NOT modify Steps 1–2.4.
+DO NOT assume the cause of the failure from previous reports.
 
-DO NOT DECLARE STEP 2.5 READY.
+I want a fresh, execution-based forensic trace of STEP 2.5 AS IT EXISTS RIGHT NOW.
 
-DO NOT DECLARE THE POC COMPLETE.
+The purpose is:
 
-STEP 2.5 MUST ACTUALLY WORK END-TO-END.
+1. Tell me EXACTLY what Step 2.5 is currently using.
+2. Test the SEC + WEB Stylus preset independently from the RPR flow.
+3. Test the RPR Step 2.5 path independently.
+4. Trace the exact route of failure.
+5. Separate PRESET problems from AUTH problems from RPR integration problems.
+6. Fix only the concrete problem that is actually proven.
 
-The objective now is EXECUTION, not more architecture review, documentation, readiness reports, or theoretical wiring.
+============================================================
+IMPORTANT CURRENT VERIFIED UPSTREAM STATE
+============================================================
 
-======================================================================
-PRIMARY OBJECTIVE
-======================================================================
+Do NOT re-test or redesign Steps 1–2.4 unless required simply to supply context to Step 2.5.
 
-MAKE STEP 2.5 WORK.
+The latest real execution proved:
 
-The required real flow is:
+REAL COMPANY:
+APPLE INC
 
-REAL Step 2.2 selected portfolio company
-        ↓
-REAL Step 2.3 Event-Driven Risk Factors
-        ↓
-REAL Step 2.4 Sector-Inherent Risk Factors
-        ↓
-exact SEC + WEB Stylus preset inputs
-        ↓
-approved Runner Service
-        ↓
-REAL SEC evidence
-        +
-REAL web evidence
-        ↓
-high-quality company credit assessment
-        ↓
-Step25Assessment validation
-        ↓
-existing Step 2.5 UI
+CAGID:
+0000014508
 
-DO NOT STOP UNTIL this flow is either:
+CIK:
+0000320193
 
-A. genuinely working end-to-end
+SEC IDENTITY:
+CIK_CONFIRMED
 
-OR
+REAL STEP 2.3:
+6 event-driven risk factors
 
-B. blocked by ONE specific external item that cannot possibly be solved from the code/environment available.
+REAL STEP 2.4:
+5 sector-inherent risk factors
 
-No more general investigation loops.
+STEP 2.5 CONTEXT REGISTRATION:
+upstream_ready=true
 
-======================================================================
-STRICT DEFINITION OF "WORKING"
-======================================================================
+Therefore the investigation begins AFTER upstream context is available.
 
-STEP 2.5 IS NOT WORKING merely because:
+The problem is Step 2.5 execution.
 
-- code compiles
-- unit tests pass
-- /preflight works
-- HTTP 409 is gone
-- company resolution works
-- CIK resolution works
-- Runner client exists
-- preset configuration file exists
-- JSON schema validates
-- UI renders
-- a smoke test exists
+============================================================
+PHASE 1 — TELL ME WHAT STEP 2.5 IS USING RIGHT NOW
+============================================================
 
-Those are components.
+BEFORE CHANGING ANY CODE, inspect the current runtime and current code and produce an exact CURRENT-STATE inventory.
 
-I need the ACTUAL FEATURE.
+I want to know:
 
-SUCCESS means:
+A. Which Step 2.5 engine is ACTIVE right now?
 
-1. Select a real company from Step 2.2.
+Report:
 
-2. Use that SAME company throughout the assessment.
+RPR_STEP25_ASSESSMENT_ENGINE =
+<actual resolved value>
 
-3. Carry its real Step 2.3 factors into Step 2.5.
+ENGINE_SOURCE =
+<env / config default / launcher / other>
 
-4. Carry its real Step 2.4 factors into Step 2.5.
+ACTIVE_ENGINE =
+<stylus / orchestrated / hybrid / direct_runner / other>
 
-5. Invoke the SEC + WEB assessment using the approved Runner mechanism.
+Do not assume it is Stylus because we intended it to be.
 
-6. Retrieve real evidence.
+Prove the resolved runtime value.
 
-7. Generate a real company-specific credit-risk assessment.
+------------------------------------------------------------
+B. Which backend route handles Run Assessment?
+------------------------------------------------------------
 
-8. Return schema-valid Step25Assessment.
+Trace from:
 
-9. Display it in the existing Step 2.5 UI.
+POST /api/v1/rpr/step25/run
 
-10. Show evidence/citations supporting material conclusions.
+or the exact current endpoint
 
-======================================================================
-CURRENT VERIFIED BASELINE
-======================================================================
+through every function called until Runner invocation.
 
-Do NOT re-investigate these findings.
+Produce the actual chain, for example:
 
-They are accepted.
+router.py
+  -> function X
+  -> stylus_engine.py
+  -> function Y
+  -> stylus_runner_client.py
+  -> function Z
+  -> HTTP Runner request
 
-----------------------------------------------------------------------
-A. REAL STEP 2.2 DATA WORKS
-----------------------------------------------------------------------
+Use the REAL function names.
 
-Real Step 2.2 portfolio data has been queried.
+For each stage report:
 
-The previous conclusion that company_name was unavailable was WRONG.
+FILE
+FUNCTION
+INPUT
+OUTPUT
+CAN_BLOCK = YES/NO
+CURRENT RESULT
 
-The real cache contains approximately:
+------------------------------------------------------------
+C. Which Runner endpoint is Step 2.5 using?
+------------------------------------------------------------
 
-84,051 rows
+Report exact configured endpoint, sanitized if needed.
 
-and approximately:
+Expected family may resemble:
 
-50,542 rows with real company_name values.
+https://workspaces.genai.citi.net/runner-service/chat
 
-Therefore use the existing data.
+But inspect actual code/config.
 
-Do NOT invent another portfolio source.
+Report:
 
-----------------------------------------------------------------------
-B. VERIFIED REAL COMPANY
-----------------------------------------------------------------------
+RUNNER_ENDPOINT =
+...
 
-A real portfolio example has already been proven:
+RUNNER_HTTP_METHOD =
+...
+
+STREAM_MODE =
+...
+
+ACCEPT_HEADER =
+...
+
+Do not expose credentials.
+
+------------------------------------------------------------
+D. What authentication mechanism is Step 2.5 using RIGHT NOW?
+------------------------------------------------------------
+
+This is critical.
+
+Do not tell me what it SHOULD use.
+
+Tell me what current code ACTUALLY uses.
+
+Trace:
+
+Where does Runner client_id come from?
+
+Where does access/bearer token come from?
+
+Where does refresh token come from?
+
+Does the code attempt token refresh?
+
+Does it look for token cache files?
+
+Does it reuse colleague app authentication?
+
+Does it use GENAI_BEARER_TOKEN?
+
+Does it use GENAI_REFRESH_TOKEN?
+
+Does it use RPR_STEP25_RUNNER_CLIENT_ID?
+
+Does it use another client ID?
+
+Report only configuration presence and code source.
+
+NEVER print actual credentials.
+
+Use this format:
+
+RUNNER_CLIENT_ID_REQUIRED = YES/NO
+RUNNER_CLIENT_ID_SOURCE = ...
+
+BEARER_TOKEN_SOURCE = ...
+BEARER_TOKEN_PRESENT = YES/NO
+
+REFRESH_TOKEN_SOURCE = ...
+REFRESH_TOKEN_PRESENT = YES/NO
+
+TOKEN_CACHE_USED = YES/NO
+TOKEN_CACHE_LOCATION = <path only if non-sensitive>
+
+OAUTH_REFRESH_IMPLEMENTED = YES/NO
+OAUTH_REFRESH_FUNCTION = <file:function>
+
+------------------------------------------------------------
+E. What preset definition is Step 2.5 using RIGHT NOW?
+------------------------------------------------------------
+
+Report:
+
+PRESET_SOURCE =
+<yaml / inline Python / other>
+
+PRESET_FILE =
+...
+
+PRESET_VERIFIED =
+true / false
+
+PRESET_PLACEHOLDERS_REMAIN =
+YES/NO
+
+NUMBER_OF_INPUTS =
+...
+
+ACTUAL_INPUT_NAMES =
+<exact names if known>
+
+PROMPT_PRESENT =
+YES/NO
+
+MODEL_PRESENT =
+YES/NO
+
+TOOLS_PRESENT =
+YES/NO
+
+KNOWLEDGE_PRESENT =
+YES/NO
+
+Do not make assumptions.
+
+If the current YAML still contains PENDING_CAPTURE, say exactly which REQUIRED sections are incomplete.
+
+============================================================
+PHASE 2 — TEST THE PRESET SEPARATELY FROM RPR
+============================================================
+
+I want to know whether the SEC + WEB PRESET ITSELF is accessible/executable.
+
+This must be a completely separate test from:
+
+POST /step25/run
+
+Do NOT use Step 2.5 route for this test.
+
+Use the smallest existing Runner test mechanism.
+
+Prefer:
+
+- existing colleague app Runner call;
+- existing runner_client;
+- existing Stylus smoke-test script;
+
+rather than creating new infrastructure.
+
+============================================================
+TEST 2A — RUNNER SERVICE CONNECTIVITY ONLY
+============================================================
+
+First test whether this machine/session can reach the Runner Service without involving the SEC + WEB preset.
+
+Use the safest existing approved request/check already present in the project.
+
+Report:
+
+RUNNER_NETWORK_REACHABLE =
+PASS / FAIL
+
+TLS =
+PASS / FAIL
+
+HTTP_CONNECTION =
+PASS / FAIL
+
+AUTHENTICATION_REACHED =
+YES/NO
+
+HTTP_STATUS =
+...
+
+FAILURE_STAGE =
+DNS / TLS / CONNECTION / AUTH / REQUEST / OTHER
+
+Do not bypass TLS.
+Do not disable certificate verification.
+
+============================================================
+TEST 2B — AUTHENTICATION ONLY
+============================================================
+
+Using the EXISTING APPROVED authentication flow, determine whether a current authenticated Runner request is possible.
+
+Do not ask me for credentials.
+
+Do not invent credentials.
+
+If colleague app contains a working OAuth refresh flow, test that exact mechanism.
+
+Report:
+
+AUTH_INITIAL_STATE =
+...
+
+REFRESH_ATTEMPTED =
+YES/NO
+
+REFRESH_RESULT =
+PASS / FAIL / NOT_AVAILABLE
+
+ACCESS_TOKEN_AVAILABLE_AFTER_REFRESH =
+YES/NO
+
+RUNNER_AUTHENTICATED_REQUEST_POSSIBLE =
+YES/NO
+
+FAILURE =
+<exact sanitized failure>
+
+============================================================
+TEST 2C — COLLEAGUE WORKING RUNNER PATH
+============================================================
+
+This test is very important.
+
+The colleague's app previously worked.
+
+Run or isolate the relevant Runner execution path from the colleague app AS-IS as far as safely possible.
+
+Do not modify it first.
+
+Determine:
+
+COLLEAGUE_RUNNER_TEST =
+PASS / FAIL
+
+If PASS:
+
+prove:
+- endpoint reached
+- authentication succeeded
+- request accepted
+- SSE/response received
+
+Then identify EXACTLY what colleague path has that RPR does not.
+
+If FAIL:
+
+identify EXACTLY where it now fails.
+
+This tells us whether the current problem is:
+
+RPR-SPECIFIC
+
+or
+
+RUNNER/AUTH ENVIRONMENT-WIDE.
+
+============================================================
+TEST 2D — SEC + WEB PRESET ACCESSIBILITY
+============================================================
+
+Now test the SEC + WEB preset separately.
+
+IMPORTANT:
+
+Do not assume that the RPR YAML is correct.
+
+There are two possible tests:
+
+TEST METHOD 1:
+If the exact real Stylus preset definition is already available locally, use it.
+
+TEST METHOD 2:
+If it is NOT available locally, do NOT fabricate one.
+
+Report:
+
+PRESET_DEFINITION_COMPLETE =
+YES/NO
+
+If NO:
+
+PRESET_EXECUTION_TEST =
+NOT_POSSIBLE_YET
+
+REASON =
+exact real Stylus preset payload has not been captured
+
+This is different from authentication failure.
+
+If YES:
+
+perform an isolated Runner call using ONLY:
+
+- real preset definition
+- safe representative values for its exact five inputs
+
+No RPR Step 2.5 context is required for this isolated accessibility test.
+
+The purpose is simply:
+
+CAN THIS PRESET EXECUTE THROUGH RUNNER?
+
+Report:
+
+PRESET_REQUEST_CONSTRUCTED =
+YES/NO
+
+PRESET_REQUEST_SENT =
+YES/NO
+
+RUNNER_ACCEPTED_PRESET =
+YES/NO
+
+MODEL_EXECUTION_STARTED =
+YES/NO
+
+TOOL_EXECUTION_STARTED =
+YES/NO
+
+SEC_TOOL_CALLED =
+YES/NO
+
+WEB_TOOL_CALLED =
+YES/NO
+
+RESPONSE_RECEIVED =
+YES/NO
+
+HTTP_STATUS =
+...
+
+FAILURE_STAGE =
+...
+
+EXACT SANITIZED FAILURE =
+...
+
+============================================================
+CRITICAL SEPARATION
+============================================================
+
+Do NOT combine these statuses.
+
+We need separately:
+
+1.
+RUNNER_CONNECTIVITY
+
+2.
+RUNNER_AUTHENTICATION
+
+3.
+PRESET_CONFIGURATION
+
+4.
+PRESET_EXECUTION
+
+5.
+RPR_STEP25_INTEGRATION
+
+A failure in one must not be described as failure in all five.
+
+============================================================
+PHASE 3 — TRACE RPR STEP 2.5 EXACTLY
+============================================================
+
+Now test the actual RPR route with the already-proven Apple context.
+
+Use:
 
 CAGID:
 0000014508
@@ -132,698 +473,409 @@ CAGID:
 COMPANY:
 APPLE INC
 
-SEC CIK:
+CIK:
 0000320193
 
-STATUS:
-CIK_CONFIRMED
+STEP23_FACTOR_COUNT:
+6
 
-This company genuinely exists in the real Step 2.2 data.
+STEP24_FACTOR_COUNT:
+5
 
-It was NOT substituted as a convenient example.
+Verify context first:
 
-Use this company for the FIRST complete E2E test unless there is a concrete technical reason another genuine Step 2.2 company is better.
+GET/POST relevant Step 2.5 context endpoint
 
-Reconfirm the mapping at execution time, but do NOT rebuild company-resolution architecture.
+Expected:
 
-----------------------------------------------------------------------
-C. COMPANY RESOLUTION
-----------------------------------------------------------------------
+upstream_ready=true
 
-Existing path:
+Then execute:
 
-Step 2.2
-    ->
-company_name / cagid_name / relevant existing name
-    ->
-resolve_company_identity()
-    ->
-existing CikResolver
-    ->
-verified CIK
+POST /step25/run
 
-is accepted.
+============================================================
+TRACE EVERY GATE
+============================================================
 
-DO NOT create a new entity-resolution framework.
+Instrument/log sanitized execution checkpoints if existing logs are insufficient.
 
-DO NOT create manual mapping unless actually necessary.
+Do NOT log portfolio confidential values unnecessarily.
 
-DO NOT substitute unrelated companies.
+Do NOT log tokens.
 
-----------------------------------------------------------------------
-D. 409 ROOT CAUSE
-----------------------------------------------------------------------
+I want checkpoints such as:
 
-The previous HTTP 409 problem was caused by running the default legacy/orchestrated assessment engine.
+TRACE_01_ROUTE_ENTERED=PASS
 
-The Stylus path works under:
+TRACE_02_ENGINE_RESOLVED=<actual engine>
 
-RPR_STEP25_ASSESSMENT_ENGINE=stylus
+TRACE_03_CONTEXT_LOADED=PASS/FAIL
 
-and correctly uses its own blocker set.
+TRACE_04_COMPANY_IDENTITY=PASS/FAIL
 
-Legacy SEC/web/H2M blockers must remain unchanged for legacy engines.
+TRACE_05_CIK_RESOLUTION=PASS/FAIL
 
-This problem is considered solved.
+TRACE_06_STEP23_PRESENT=PASS/FAIL
 
-DO NOT revisit it unless an actual E2E run contradicts this.
+TRACE_07_STEP24_PRESENT=PASS/FAIL
 
-----------------------------------------------------------------------
-E. RUNNER INVOCATION
-----------------------------------------------------------------------
+TRACE_08_ENGINE_BLOCKERS=<actual blockers>
 
-Existing code investigation established that the working approved Runner pattern sends:
+TRACE_09_PRESET_LOAD=PASS/FAIL
 
-FULL PRESET DEFINITION INLINE
+TRACE_10_PRESET_VERIFIED=PASS/FAIL
 
-not a preset UUID.
+TRACE_11_FIVE_INPUT_MAPPING=PASS/FAIL
 
-Therefore:
+TRACE_12_RUNNER_CLIENT_CREATED=PASS/FAIL
 
-DO NOT investigate UUID again.
-DO NOT create a by-ID API.
-DO NOT make preset ID a blocker.
-DO NOT create preset management architecture.
+TRACE_13_AUTH_READY=PASS/FAIL
 
-Use the proven INLINE Runner mechanism.
+TRACE_14_REQUEST_CONSTRUCTED=PASS/FAIL
 
-----------------------------------------------------------------------
-F. EXISTING STEP 2.5 CODE
-----------------------------------------------------------------------
+TRACE_15_HTTP_REQUEST_SENT=PASS/FAIL
 
-The following have already been implemented:
+TRACE_16_HTTP_RESPONSE_STATUS=<status/not reached>
 
-- stylus_engine.py
-- stylus_runner_client.py
-- company_identity.py
-- stylus_evidence_adapter.py
-- Step 2.5 /run Stylus branch
-- Stylus-specific readiness
-- Step25Assessment validation
-- offline tests
+TRACE_17_SSE_STREAM_STARTED=PASS/FAIL
 
-PRESERVE THEM.
+TRACE_18_MODEL_RESPONSE_RECEIVED=PASS/FAIL
 
-Modify them only when required for actual execution.
+TRACE_19_EVIDENCE_PARSED=PASS/FAIL
 
-======================================================================
-POC RULE
-======================================================================
+TRACE_20_SCHEMA_VALIDATION=PASS/FAIL
 
-THIS IS A POC.
+TRACE_21_UI_RESPONSE_RETURNED=PASS/FAIL
 
-Production engineering quality is NOT required.
+Do not manufacture PASS.
 
-Another team may rebuild all of this later.
+============================================================
+EXACT FAILURE LOCATION
+============================================================
 
-Therefore:
+At the end I want ONE exact boundary.
 
-DO NOT spend time on:
-- architecture elegance
-- generalized frameworks
-- scalability
-- future-proofing
-- enterprise abstractions
-- generic preset management
-- generalized entity masters
-- unnecessary documentation
-- unnecessary test infrastructure
-- refactoring working code
+For example:
 
-BUT FEATURE QUALITY MUST BE VERY HIGH.
+FAILURE OCCURS BETWEEN:
 
-Do NOT compromise:
+TRACE_13_AUTH_READY
+and
+TRACE_15_HTTP_REQUEST_SENT
 
-- real data
-- accuracy
-- SEC evidence
-- web evidence
-- company correctness
-- analytical quality
-- credit-risk interpretation
-- citations
-- traceability
-- Step 2.3 context
-- Step 2.4 context
-- UI quality
-- hallucination control
+because:
+<actual condition>
 
-TEMPORARY CODE IS ACCEPTABLE.
+OR:
 
-TEMPORARY-QUALITY ANALYSIS IS NOT.
+FAILURE OCCURS BETWEEN:
 
-======================================================================
-TASK 1 — FIND THE ACTUAL FIVE INPUTS WITHOUT GUESSING
-======================================================================
+TRACE_09_PRESET_LOAD
+and
+TRACE_10_PRESET_VERIFIED
 
-Before asking the user for anything, exhaust everything already available locally.
+because:
+...
 
-Inspect:
+No vague:
 
-- preset_knowledge/STYLUS_SEC_WEB_PRESET_DEFINITION.yaml
-- preset_knowledge/RPR_STEP25_FIELD_DICTIONARY.md
-- preset_knowledge/PRESET_PREVIEW_INPUTS.md
-- preset_knowledge/STYLUS_SEC_WEB_REQUIRED_CAPTURE.md
-- Step25Assessment.schema.json
-- existing colleague app.py / app 1.py
-- current Stylus/Runner client examples
-- current RPR Step 2.5 prompt/config
-- any saved screenshots/text/config already represented in repo files
-- any existing Runner request examples
+"Runner/Stylus issue"
 
-Determine whether the exact five case-sensitive Stylus inputs are ALREADY recoverable.
+No generic:
 
-If YES:
-USE THEM NOW.
+"external blocker"
 
-Do not ask the user for another capture.
+Give exact:
 
-If NO:
-the only permitted user intervention is ONE sanitized request-body capture from the Stylus UI.
+FILE
+FUNCTION
+LINE/CONDITION if practical
+VALUE/STATE causing failure
+HTTP STATUS if applicable
 
-Do not ask multiple questions.
+============================================================
+PHASE 4 — COMPARE ISOLATED PRESET VS RPR
+============================================================
 
-Do not ask for preset UUID.
+Create this comparison:
 
-Do not ask for auth headers.
+CHECK | ISOLATED PRESET | RPR STEP 2.5
 
-Do not ask for tokens.
+Runner reachable
+Authentication available
+Client ID resolved
+Preset complete
+Five inputs known
+Request constructed
+Request sent
+Runner accepted
+Model started
+SEC tool started
+Web tool started
+Response received
 
-======================================================================
-TASK 2 — IF CAPTURE IS REQUIRED, MAKE IT ONE ACTION ONLY
-======================================================================
+This comparison should tell us immediately which layer is responsible.
 
-If the real preset definition truly cannot be recovered locally, tell the user exactly:
+Examples:
 
-Open SEC + WEB in Stylus
+If isolated preset PASS + RPR FAIL:
+=> RPR integration/config defect.
+
+If isolated preset FAIL auth + colleague app FAIL auth:
+=> environment/auth issue.
+
+If colleague app PASS + RPR auth FAIL:
+=> RPR incorrectly reimplemented auth/config.
+
+If Runner/auth PASS + preset rejected:
+=> preset configuration issue.
+
+If preset executes but RPR mapping fails:
+=> five-input integration issue.
+
+============================================================
+PHASE 5 — FIX THE PROVEN ROOT CAUSE
+============================================================
+
+ONLY AFTER the trace identifies the exact cause should you modify code/configuration.
+
+Use the smallest possible POC fix.
+
+============================================================
+IF AUTH IS THE PROBLEM
+============================================================
+
+FIRST compare with colleague app.
+
+If colleague app already has a working approved authentication path:
+
+REUSE IT.
+
+Do not create a new authentication system.
+
+If RPR_STEP25_RUNNER_CLIENT_ID was introduced only by our wrapper and the working colleague code obtains client ID differently:
+
+remove/relax that unnecessary divergence and reuse the proven mechanism.
+
+Do NOT ask the user to manually paste tokens.
+
+============================================================
+IF PRESET CONFIG IS THE PROBLEM
+============================================================
+
+Determine whether exact preset values already exist locally.
+
+If they do:
+use them.
+
+If they do not:
+STOP ONLY at that precise point and request ONE Stylus capture.
+
+Do not ask for anything else.
+
+Required one-time capture:
+
+Stylus SEC + WEB
 → F12
 → Network
-→ clear
 → run preset
-→ select POST .../runner-service/chat
+→ POST /runner-service/chat
 → Payload / Request Body
 
-Need ONLY:
+Need only non-secret body:
 
-- top-level model
-- messageParts/messages structure
-- preset object
+- model
+- preset
 - prompt
 - toolConfig/tools
 - knowledge
 - inputs
 - answers
-- output/schema settings
-- other non-secret body fields
+- schema/output options
+- other required body fields
 
-DO NOT request:
+NEVER request headers/tokens/cookies.
 
-- Authorization
-- bearer tokens
-- refresh tokens
-- cookies
-- credentials
-- headers
+============================================================
+IF RPR INPUT MAPPING IS THE PROBLEM
+============================================================
 
-After the sanitized payload is supplied:
+Fix the mapping only.
 
-DO NOT start another analysis cycle.
+Prove each exact preset input receives its intended actual RPR data.
 
-Immediately populate:
+Do NOT regenerate Step 2.3/2.4.
 
-preset_knowledge/STYLUS_SEC_WEB_PRESET_DEFINITION.yaml
+Use the actual confirmed upstream outputs.
 
-with the ACTUAL captured configuration.
+============================================================
+IF RUNNER REQUEST SHAPE IS THE PROBLEM
+============================================================
 
-Set:
+Compare directly with colleague app's known-working Runner payload.
 
-verified: true
+Match its proven outer request structure.
 
-Then continue execution immediately.
+Do not invent a new request contract.
 
-======================================================================
-TASK 3 — EXACT FIVE-INPUT RPR MAPPING
-======================================================================
+============================================================
+PHASE 6 — DO NOT STOP AT THE FIRST FIX
+============================================================
 
-Once the exact five names are known, map them to REAL RPR data.
+Once the first failure is fixed:
 
-For EACH of the five fields prove:
+RUN THE TRACE AGAIN.
 
-EXACT STYLUS INPUT NAME
-→ source RPR object
-→ actual value/structure sent
-→ validation
-→ missing-data behaviour
+There may be another blocker behind it.
 
-The source data must come from the actual RPR run.
+Continue sequentially:
 
-The five inputs must collectively receive the information required by the preset.
+failure 1
+→ fix
+→ rerun
 
-Specifically ensure that the assessment receives:
+failure 2
+→ fix
+→ rerun
 
-A. REAL COMPANY CONTEXT
+until either:
 
-from Step 2.2.
-
-B. REAL EVENT-DRIVEN CONTEXT
-
-from Step 2.3.
-
-C. REAL SECTOR-INHERENT CONTEXT
-
-from Step 2.4.
-
-D. any additional company/risk context required by the preset.
-
-E. whatever final input is defined by the actual preset contract.
-
-Do NOT invent five field purposes.
-
-The actual Stylus preset determines the names/purposes.
-
-But prove exactly where every value comes from.
-
-======================================================================
-TASK 4 — VERIFY STEP 2.3 AND STEP 2.4 ARE REAL
-======================================================================
-
-This is critical.
-
-Do NOT merely pass company identity to Step 2.5.
-
-For CAGID 0000014508 / APPLE INC:
-
-retrieve/use the ACTUAL Step 2.3 result already generated by the RPR workflow.
-
-retrieve/use the ACTUAL Step 2.4 result already generated by the RPR workflow.
-
-If those upstream outputs are unavailable for the selected run:
-
-run the existing Step 2.3 and 2.4 flow normally.
-
-DO NOT fabricate them.
-
-DO NOT use hard-coded factors.
-
-DO NOT summarize generic Apple risks.
-
-DO NOT reconstruct them independently if the actual upstream result can be generated.
-
-Before sending to Stylus, output SANITIZED diagnostics showing:
-
-STEP22_COMPANY = APPLE INC
-STEP22_CAGID = 0000014508
-STEP22_CIK = 0000320193
-
-STEP23_FACTOR_COUNT = <actual>
-STEP24_FACTOR_COUNT = <actual>
-
-STYLUS_INPUT_1_SOURCE = ...
-STYLUS_INPUT_2_SOURCE = ...
-STYLUS_INPUT_3_SOURCE = ...
-STYLUS_INPUT_4_SOURCE = ...
-STYLUS_INPUT_5_SOURCE = ...
-
-Do not print confidential underlying portfolio values unnecessarily.
-
-======================================================================
-TASK 5 — AUTHENTICATION: SOLVE USING EXISTING APPROVED MECHANISM
-======================================================================
-
-Do NOT simply stop because the current Claude child shell lacks:
-
-GENAI_BEARER_TOKEN
+A.
+STEP 2.5 genuinely completes
 
 or
 
-GENAI_REFRESH_TOKEN.
+B.
+one genuine external dependency requiring a human action remains.
 
-First inspect the EXISTING approved runtime/auth setup.
+This is important:
 
-Check, without exposing values:
+DO NOT report success just because the current HTTP 409 disappears.
 
-- RUNTIME_ENV.ps1
-- current backend launch scripts
-- existing Runner client
-- colleague app.py authentication
-- refresh-token logic already implemented
-- existing environment-loading mechanism
-- existing `.runner_token` / `.runner_refresh_token` handling if applicable
-- existing normal RPR execution environment
+============================================================
+SUCCESS DEFINITION
+============================================================
 
-Report only:
+Success means:
 
-SET / NOT_SET
-AVAILABLE / UNAVAILABLE
+TRACE_01 through TRACE_21 complete sufficiently to produce a real Step 2.5 response.
 
-Never print secrets.
+Specifically:
 
-Attempt to execute using the existing approved mechanism.
+REAL Step 2.2 company
+PASS
 
-Do NOT implement a new auth architecture.
+REAL Step 2.3 context
+PASS
 
-Do NOT ask the user to paste a token into Claude.
+REAL Step 2.4 context
+PASS
 
-If the normal environment has to be launched differently, provide the exact safe launch command using the existing loader.
+EXACT SEC+WEB PRESET
+PASS
 
-Only if the current shell truly cannot inherit/use the approved user session after exhausting existing mechanisms may you state:
+RUNNER AUTH
+PASS
 
-BLOCKED_AUTH_CURRENT_SHELL
+RUNNER REQUEST SENT
+PASS
 
-But do not confuse this with a Step 2.5 code failure.
+SEC/WEB TOOL EXECUTION
+PASS
 
-======================================================================
-TASK 6 — RUN THE REAL PRESET
-======================================================================
+REAL RESPONSE
+PASS
 
-Once preset configuration + approved auth are available:
+EVIDENCE
+PASS
 
-RUN THE REAL CALL.
+SCHEMA
+PASS
 
-No mock.
+UI RESPONSE
+PASS
 
-No fixture response.
+============================================================
+STRICT FEATURE QUALITY
+============================================================
 
-No fabricated success.
+When it executes, do not accept low-quality assessment merely because the technical flow works.
 
-No fake SEC documents.
+The output must remain high quality:
 
-No fake web results.
-
-Use:
-
-APPLE INC
-CAGID 0000014508
-CIK 0000320193
-
-plus its actual Step 2.3 and Step 2.4 context.
-
-Invoke the actual Runner Service through:
-
-stylus_runner_client.py
-
-using the exact real inline preset.
-
-Capture sanitized execution diagnostics:
-
-RUNNER_REQUEST_SENT = YES
-PRESET_VERIFIED = YES
-COMPANY = APPLE INC
-CIK = 0000320193
-STEP23_INCLUDED = YES/NO
-STEP24_INCLUDED = YES/NO
-RUNNER_RESPONSE_RECEIVED = YES/NO
-
-Do not expose secrets.
-
-======================================================================
-TASK 7 — VERIFY SEC + WEB ACTUALLY RETRIEVED DATA
-======================================================================
-
-Do NOT assume retrieval happened merely because the model produced text.
-
-Prove it.
-
-Inspect Runner SSE/tool events / response metadata.
-
-For SEC evidence, verify where available:
-
-- source/SEC
-- registrant
-- filing type
-- accession number or filing identity
-- filing date
-- URL/source reference
-- statement/fact retrieved
-
-For web evidence verify:
-
-- source/provider
-- title
-- URL
-- publication date where available
-- relevant retrieved statement
-
-The final report must distinguish:
-
-SEC_EVIDENCE_COUNT = X
-WEB_EVIDENCE_COUNT = Y
-
-If either tool was expected but returned zero, investigate the concrete cause.
-
-Do NOT fabricate evidence to satisfy the count.
-
-======================================================================
-TASK 8 — CREDIT-RISK QUALITY
-======================================================================
-
-The final assessment must NOT be a generic company summary.
-
-It must translate the retrieved evidence into credit implications.
-
-Where relevant evaluate:
-
-- company/event exposure
-- sector transmission
-- revenues
-- margins
-- profitability
-- cash flow
-- liquidity
-- leverage
-- debt service
-- refinancing
-- maturity profile
-- ratings
-- funding access
-- covenants
-- collateral
-- counterparty risk
-- wrong-way risk
-- concentration
-- severity
+- real evidence
+- company-specific
+- event-specific
+- sector-specific
+- credit-risk translation
+- materiality
 - direction
-- time horizon
-- mitigants
-- contradictory evidence
-- uncertainty
+- relevant liquidity/leverage/refinancing/rating implications
+- counter-thesis
+- evidence gaps
+- citations
+- no fabricated facts
 
-Do not force irrelevant categories.
+POC simplification applies to engineering only.
 
-Materiality matters.
+============================================================
+DO THIS NOW
+============================================================
 
-======================================================================
-TASK 9 — EVIDENCE QUALITY
-======================================================================
+Start with PHASE 1.
 
-STRICT RULES:
+Before touching code, report in a concise table:
 
-NO fabricated evidence.
+CURRENT STEP 2.5 STATE
 
-NO fabricated URL.
+Engine:
+...
 
-NO fabricated SEC accession.
+Run route:
+...
 
-NO fabricated dates.
+Runner endpoint:
+...
 
-NO fabricated CIK.
+Runner client-id source:
+...
 
-NO unsupported numerical precision.
+Auth source:
+...
 
-NO invented citations.
+Preset source:
+...
 
-NO unsupported identity.
+Preset verified:
+...
 
-Distinguish as appropriate:
+Exact five inputs known:
+YES/NO
 
-REPORTED
-DERIVED
-ANALYTICAL ASSESSMENT
-NOT EVIDENCED
+Step 2.3 present:
+YES/NO
 
-If unavailable:
+Step 2.4 present:
+YES/NO
 
-Not evidenced in available sources.
+Current first blocker:
+...
 
-If sources conflict:
+Then immediately perform:
 
-show the conflict.
+1. isolated Runner connectivity test;
+2. isolated auth test;
+3. colleague Runner-path test;
+4. isolated preset accessibility test;
+5. actual /step25/run trace.
 
-Do not silently choose one without explaining why.
+Do NOT ask me questions before performing all tests that can be performed locally.
 
-======================================================================
-TASK 10 — SCHEMA + UI
-======================================================================
+Do NOT add architecture.
 
-Validate the REAL output against:
+Do NOT create another planning document.
 
-Step25Assessment.schema.json
+Do NOT stop at "READY".
 
-If validation fails:
-
-fix only the concrete mapping/output problem.
-
-Do NOT loosen the schema merely to accept bad output unless the schema itself is demonstrably inconsistent with the agreed Step 2.5 business output.
-
-Then send the REAL assessment through the existing Step 2.5 frontend flow.
-
-Verify visually/functionally:
-
-- assessment renders
-- company is correct
-- major risk conclusions visible
-- evidence visible
-- materiality visible
-- risk direction visible
-- conflicts/gaps visible where relevant
-- no raw JSON as final UX
-- no stack trace/debug information
-- no broken layout
-
-Preserve the v31 visual intent.
-
-Do NOT redesign the whole UI.
-
-Fix only concrete Step 2.5 display defects.
-
-======================================================================
-ABSOLUTE NO-SUBSTITUTION RULE
-======================================================================
-
-For the real E2E test:
-
-If Apple/0000014508 fails company resolution:
-
-DO NOT silently choose another company.
-
-Diagnose why.
-
-If we explicitly decide to use another company, it MUST be another genuine Step 2.2 company and the report must identify the change.
-
-At no point may the model/code silently assess a different issuer.
-
-======================================================================
-NO MORE PREMATURE STOPPING
-======================================================================
-
-DO NOT stop after:
-
-"READY_FOR_PRESET_CAPTURE"
-
-DO NOT stop after:
-
-"PRESET_CONFIGURED"
-
-DO NOT stop after:
-
-"CIK_CONFIRMED"
-
-DO NOT stop after:
-
-"RUNNER_READY"
-
-DO NOT stop after:
-
-"SCHEMA_VALID"
-
-DO NOT stop after:
-
-"HTTP 200"
-
-Continue through the full chain.
-
-The only legitimate early stop is a hard external blocker that cannot be solved using the existing environment/resources.
-
-If that occurs, provide:
-
-BLOCKER:
-<one precise blocker>
-
-PROOF:
-<exact sanitized evidence>
-
-WHY CODE CANNOT SOLVE IT:
-<one paragraph>
-
-ONE USER ACTION REQUIRED:
-<one exact action>
-
-Do not provide a list of speculative blockers.
-
-======================================================================
-FINAL ACCEPTANCE TEST
-======================================================================
-
-I expect ONE end-to-end evidence table:
-
-CHECK | RESULT | PROOF
-
-Step 2.2 real company | PASS/FAIL | ...
-CIK verified | PASS/FAIL | ...
-Step 2.3 actual output used | PASS/FAIL | ...
-Step 2.4 actual output used | PASS/FAIL | ...
-Exact 5 Stylus inputs mapped | PASS/FAIL | ...
-Real preset configured | PASS/FAIL | ...
-Runner authenticated | PASS/FAIL | ...
-Runner request executed | PASS/FAIL | ...
-SEC evidence retrieved | PASS/FAIL | ...
-Web evidence retrieved | PASS/FAIL | ...
-Step25 schema valid | PASS/FAIL | ...
-Credit assessment quality | PASS/PARTIAL/FAIL | ...
-Evidence traceability | PASS/PARTIAL/FAIL | ...
-Step 2.5 UI rendered | PASS/FAIL | ...
-
-STEP 2.5 IS COMPLETE ONLY WHEN THE FULL TABLE IS PASS,
-except analytical quality fields may require a targeted improvement cycle if PARTIAL.
-
-======================================================================
-QUALITY REVIEW
-======================================================================
-
-After the first genuine result, evaluate:
-
-1. Company accuracy
-2. SEC accuracy
-3. Web evidence accuracy
-4. Step 2.3 usage
-5. Step 2.4 usage
-6. Credit translation
-7. Materiality
-8. Counter-thesis
-9. Evidence gaps
-10. Hallucination
-11. Traceability
-12. UI readability
-13. Analyst usefulness
-
-PASS / PARTIAL / FAIL.
-
-If PARTIAL/FAIL:
-
-fix the actual problem.
-
-Do NOT rebuild architecture.
-
-======================================================================
-START NOW
-======================================================================
-
-Proceed with execution.
-
-First state in no more than 10 lines:
-
-1. exact current blocker to live Step 2.5
-2. whether exact five preset inputs are already recoverable locally
-3. whether approved Runner auth is recoverable through existing project/runtime mechanisms
-4. whether real Step 2.3 data for CAGID 0000014508 is available
-5. whether real Step 2.4 data for the same case is available
-
-Then immediately work through the blockers.
-
-DO NOT stop to ask me architecture questions.
-
-DO NOT create more planning documents.
-
-DO NOT create more memory/status files unless required for execution.
-
-DO NOT freeze anything until Step 2.5 genuinely works end-to-end.
+TRACE IT, IDENTIFY THE EXACT FAILURE, FIX IT, AND RETEST.
