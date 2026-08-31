@@ -1,428 +1,315 @@
-HIGH PRIORITY: COMPLETE THE FINAL V31 PARITY AND STEP 2.5 QUALITY-DATA POC FIXES
+STOP AND REASSESS THE CURRENT RESULT AGAINST THE SCREENSHOTS AND V31.
 
-Continue working directly in:
+The latest implementation is not complete. Do not report completion based on CSS being served, HTTP 200 responses, or the presence of a portfolio table.
 
-C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI
+The screenshots show several factual and state-machine defects that must now be corrected.
 
-TARGET APPLICATION:
-UI Design/step23.html and its active CSS/JavaScript/backend integration files.
+## 1. Test the correct page
 
-IMMUTABLE REFERENCE:
-UI Design/icm-pm-rapid-portfolio-review-v31.html
+The screenshots currently show:
 
-Treat v31 as the authoritative visual and interaction baseline for Steps 2.1 through 2.5, especially Steps 2.4 and 2.5. Do not modify v31.
+file:///C:/Users/ak54743/Downloads/OneDrive_2026-07-16/Rapid%20Portfolio%20Review_AI/UI%20Design/step23.html
 
-This is a local PoC. Do not stop because production governance, production activation, Fiddler, proxy configuration, Runner Service authorization, or production approval is unavailable. Those may remain fail-closed in production mode, but they must not block or dominate the local PoC interface.
+Final verification must instead use the live backend-served page:
 
-Do not replace working code unnecessarily. Preserve the existing backend hybrid Step 2.5 pipeline, live SEC/web research integration, model assessment, persistence, response schemas, tests, and accepted functionality. Make targeted additive changes.
+http://127.0.0.1:8000/ui-design/step23.html
 
-## 1. Correct interpretation of Step 2.5
+Use a cache-busting query string or hard refresh after restarting the backend. Do not verify the final result using the direct `file:///` page.
 
-Step 2.5 is not:
+Confirm which HTML, CSS and JavaScript files the backend is actually serving.
 
-* a readiness dashboard;
-* a production-deployment configuration page;
-* a generic company research report;
-* a place for invented demo assessments;
-* an LLM-generated replacement for Steps 2.2–2.4;
-* a single-company debug form.
+## 2. The current Step 2.5 state is logically contradictory
 
-Step 2.5 is the final name-level credit assessment workspace for the confirmed Step 2.2 portfolio.
+The screenshots simultaneously show:
 
-For every portfolio company, it must consolidate:
+* Step 2.5 local run blocked.
+* Run Assessment disabled.
+* Production mode not activated.
+* SEC/web readiness errors.
+* All results `Not available` or `Not assessed`.
+* Workflow Status showing “Name Level Assessment — Confirmed.”
+* Confirm Assessment available.
 
-1. Company identity and exposure from Step 2.2.
-2. Event-driven factors and deterministic ED score from Step 2.3.
-3. Sector-inherent factors and deterministic SI score from Step 2.4.
-4. Current credit state, including current RRR/classification when available.
-5. Current, attributable SEC and public-web evidence.
-6. A model-generated assessment of what that evidence means for the previously approved factors.
-7. A non-binding recommended credit action.
-8. Analyst-controlled override and commentary fields.
+This is invalid.
 
-The model must not recalculate or silently replace authoritative deterministic ED, SI, composite, exposure, current RRR, or current-class values.
+Implement an explicit Step 2.5 state machine:
 
-## 2. Current discrepancy that must be fixed
+1. NOT_STARTED
+2. READY
+3. RUNNING
+4. COMPLETED_VALID
+5. COMPLETED_INSUFFICIENT_EVIDENCE
+6. FAILED
+7. USER_CONFIRMED
 
-The supplied screenshots prove that `step23.html` is not yet visually or structurally equivalent to v31.
+Required behavior:
 
-The current `step23.html` shows large primary-flow sections such as:
+* “Name Level Assessment” cannot become Confirmed before a valid Step 2.5 result is persisted and the user presses Confirm Assessment.
+* Confirm Assessment must be disabled before a valid assessment exists.
+* Export must not present blank rows as completed assessments.
+* Run Assessment must be enabled when the selected company is eligible and the local hybrid engine is ready.
+* A technical blocker must result in FAILED or NOT_READY, never Confirmed.
+* Switching tabs must not alter completion state incorrectly.
+* Refreshing the page must restore the persisted state correctly.
 
-* “Step 2.5 — Local PoC Readiness”
-* server production mode
-* web-provider activation
-* production deployment configuration
-* red local-run blocker messages
-* a separate company-selection/debug area
-* an empty portfolio-summary area
+## 3. Remove production blockers from the local PoC path
 
-These diagnostic elements are not the main Step 2.5 experience in v31.
+The current screen still shows:
 
-In v31, the primary flow is:
+* `STEP25_WEB_PROVIDER_NOT_READY`
+* `RPR_STEP25_WEB_MODE must be 'approved'`
+* SEC access-not-approved errors
+* SEC egress approval errors
+* missing SEC user-agent errors
+* server production mode not activated
+* “Blocked: local live-data activation incomplete”
 
-1. Step 2.5 tab and heading.
-2. Assessment-type cards.
-3. Run Assessment action.
-4. Assessment Outcome — Portfolio Summary.
-5. Full portfolio table.
-6. Expandable company detail rows.
-7. Analyst override/commentary controls.
-8. Export and Confirm Assessment.
-9. Feedback section.
+This contradicts the local PoC requirement.
 
-Restructure `step23.html` to match that hierarchy.
+For explicit local PoC mode, use the already implemented hybrid pipeline:
 
-Diagnostic and production-readiness information may remain available only in a collapsed secondary “Technical diagnostics” details panel. It must not push the assessment table down, display a dominant red blocker during local PoC mode, or make the user believe Step 2.5 is unavailable.
+* real SEC/public evidence retrieval;
+* real enterprise web search;
+* real model assessment;
+* schema validation;
+* persistence.
 
-## 3. V31 visual parity requirements
+Do not require:
 
-Perform a direct DOM, CSS, spacing, and interaction comparison against v31. Do not settle for approximate styling.
+* Fiddler;
+* Runner Service;
+* production activation;
+* production governance approval;
+* production SEC-egress approval.
 
-Match v31 for:
+Keep production mode fail-closed, but make these checks non-applicable to the explicit local PoC engine.
 
-* overall content width and page density;
-* assessment journey header;
-* Step 2.1–2.5 navigation pills;
-* Step 2.5 active-state styling;
-* section titles and borders;
-* assessment-type card grid;
-* selected-card appearance;
-* Run Assessment position;
-* table placement;
-* header height;
-* column widths;
-* filter row;
-* font size and weight;
-* row height;
-* borders and background colors;
-* horizontal scrolling;
-* score and rating badges;
-* expand/collapse controls;
-* override dropdowns;
-* commentary text areas;
-* Export and Confirm Assessment actions;
-* feedback section;
-* right-side workflow status panel where present in v31.
+The large readiness panel must not appear in the primary Step 2.5 workflow. Move technical information into a collapsed “Technical diagnostics” panel.
 
-Do not merely confirm that new CSS is served. Demonstrate that the rendered DOM uses the intended classes and produces the v31 structure.
+## 4. Correct assessment eligibility
 
-## 4. Required Step 2.5 portfolio table
+The currently selected entity is:
 
-Restore the v31 portfolio table with the full applicable column set, including:
+“2ND ADMNT & RSTMT OF DEED OF TST OF E ROBERT FERNHOLZ”
 
-* Company Name
-* CAGID
-* Ticker / ID
-* Country of Risk
-* Limit Industry L1
-* Limit Industry L2
-* Limit Industry L3
-* Total OSUC
-* OSUC-P
-* OSUC-PWL
-* OSUC-SM
-* OSUC-SS
-* OSUC-D/L
-* ED Score (80%)
-* SI Score (20%)
-* Composite Score
-* Residual Rating
-* Credit Impact Rating
-* Current RRR
-* Recommended RRR Action
-* Current Class
-* Recommended Class Action
-* Key Risk Driver
-* Impact Rating Override
-* User Credit Commentary
+The table also contains trusts, branches, head offices and entities without tickers.
 
-Preserve v31’s compact table density, filter inputs, sticky header/filter behavior, horizontal scrolling, score coloring, badges, expandable rows, and footer actions.
+Do not automatically send such an entity through `SEC + Web`.
 
-If a field is genuinely unavailable, display “Not available” or “Not assessed.” Do not invent it and do not remove the column.
+Classify every portfolio company before enabling assessment:
 
-## 5. Expanded company row
+* `SEC_WEB_ELIGIBLE`: verified public registrant with resolved legal name and CIK; ticker when applicable.
+* `CAM_WEB_ELIGIBLE`: internal CAM data available, with sufficient identity for public research.
+* `CAM_SEC_WEB_ELIGIBLE`: both internal CAM data and verified SEC identity available.
+* `IDENTITY_REVIEW_REQUIRED`: ambiguous or incomplete identity.
+* `NOT_ELIGIBLE_FOR_SELECTED_LANE`: required source is unavailable.
 
-Each company row must expand to show:
+When `SEC + Web` is selected:
 
-* Event-Driven Factors from Step 2.3.
-* Sector-Inherent Factors from Step 2.4.
-* Factor IDs, labels, weights, and deterministic scores.
-* Overall risk narrative.
-* Supporting evidence.
-* Disconfirming or mitigating evidence.
-* Evidence source names, publication/filing dates, and clickable URLs.
-* SEC form, accession number, and filing date where applicable.
-* Key risk driver.
-* Evidence gaps.
-* Model confidence.
-* Suggested credit action.
-* Analyst commentary.
+* Default to a verified public company.
+* Require resolved company name and CIK.
+* Do not select a trust/deed record merely because it is first alphabetically.
+* Disable the run for ineligible entities with a short company-specific explanation.
+* Do not show production-configuration errors when the actual problem is entity eligibility.
 
-The expanded row must preserve v31’s presentation and must be populated from the assessment associated with that exact company.
-
-Never display a Salesforce assessment under Academy Securities or any other company. Validate company ID, name, ticker, and CIK before binding a saved run to a row.
-
-## 6. Accurate and quality-data behavior
-
-The Step 2.5 assessment prompt and orchestration must react in this order:
-
-### A. Resolve identity
-
-Verify the company using the confirmed Step 2.2 identity:
+For the final live PoC, deliberately select a recognizable verified public company with matching:
 
 * internal company ID;
 * legal company name;
 * ticker;
 * CIK;
 * country;
-* relevant aliases.
+* Step 2.2 portfolio record.
 
-If SEC or web evidence belongs to another entity, subsidiary, or similarly named company, reject that evidence or label the relationship explicitly.
+## 5. Fix the primary Step 2.5 layout
 
-An unresolved identity mismatch is a typed assessment error. It must never produce a normal assessment.
+The primary v31 hierarchy must be:
 
-### B. Preserve upstream assessments
+1. Step 2.5 heading/navigation.
+2. Select Assessment Type.
+3. Three assessment cards.
+4. Run Assessment.
+5. Assessment Outcome — Portfolio Summary.
+6. Portfolio table.
+7. Expanded company details.
+8. Export and Confirm Assessment.
+9. Feedback to Name-Level Assessment Agent.
 
-Load Steps 2.2, 2.3, and 2.4 and preserve their:
+Remove from the primary flow:
 
-* factor IDs;
-* factor labels;
-* weights;
-* scores;
-* exposure values;
-* current credit state.
+* “Step 2.5 — Local PoC Readiness”
+* production-mode status;
+* approval/egress messages;
+* separate debug-style company-selection section;
+* large red blocker banners.
 
-The model analyzes evidence against those factors. It does not create a different factor framework.
+Diagnostics can remain only in a collapsed secondary panel.
 
-### C. Perform targeted research
+Change the table heading to the exact v31 wording:
 
-Research queries must be based on the actual company and actual Step 2.3/2.4 factors.
+“Assessment Outcome — Portfolio Summary”
 
-For example, research should target relevant subjects such as:
+Restore the v31 assessment-card descriptions rather than shortened replacement text such as “Public evidence assessment.”
 
-* revenue and earnings deterioration;
-* leverage and liquidity;
-* debt maturities;
-* covenant or refinancing risk;
-* customer concentration;
-* litigation or regulatory events;
-* acquisitions and divestitures;
-* cybersecurity events;
-* management or auditor changes;
-* sector demand;
-* competitive pressure;
-* supply-chain dependence;
-* technology disruption.
+## 6. Data-quality correction
 
-Do not perform only a generic company-name search.
+A 361-row table filled with `Not available` is not a completed quality-data PoC.
 
-### D. Use a source-quality hierarchy
+Separate fields into three classes:
 
-Prefer:
+### Authoritative portfolio inputs
 
-1. SEC filings and official regulatory records.
-2. Company investor-relations materials.
-3. Official government or regulator publications.
-4. Recognized rating-agency or market disclosures when accessible.
-5. Reputable financial and business reporting.
-6. Other sources only when clearly identified and corroborated.
+These must come from Step 2.2 or its portfolio source:
 
-For the PoC, require at minimum:
+* company name;
+* CAGID/internal ID;
+* country;
+* industry L1/L2/L3;
+* Total OSUC;
+* OSUC-P/PWL/SM/SS/D-L;
+* current RRR;
+* current classification.
 
-* one verified official filing or regulatory source; and
-* one independent credible public source,
+The model must never invent these fields.
 
-unless the system explicitly returns “insufficient evidence.”
+If they are absent, display a precise reason such as:
 
-Prefer recent 10-K, 10-Q, and relevant 8-K filings. Research must respect the assessment as-of date and must not use later information without clearly marking it.
+* `Not supplied by Step 2.2 portfolio source`
+* `Exposure unavailable in input portfolio`
+* `Current rating unavailable in input portfolio`
 
-### E. Validate every material claim
+Do not use the generic `Not available` for every condition.
 
-Every material factual claim must map to one or more evidence IDs.
+### Deterministic assessment inputs
 
-Evidence records must contain:
+These must come from Steps 2.3 and 2.4:
 
-* evidence ID;
-* source title;
-* source organization;
-* source type;
-* publication or filing date;
-* retrieval date;
-* exact URL;
-* SEC form/accession when applicable;
-* factual statement supported;
-* factor IDs affected;
-* evidence direction: supporting, disconfirming, mixed, or contextual.
+* ED factors and weights;
+* ED score;
+* SI factors and weights;
+* SI score;
+* composite score calculated by the existing deterministic formula.
 
-Quantitative claims must include the reporting period, units, and source. Derived amounts or ratios must be labeled as derived and retain their calculation inputs.
+The model must not create or overwrite them.
 
-Model memory is not evidence.
+### Evidence/model outputs
 
-### F. Search for disconfirming evidence
+These come only after the real Step 2.5 run:
 
-Do not gather only negative information. Search for evidence that could weaken or contradict the risk conclusion, including:
+* evidence records;
+* factor/evidence mappings;
+* overall narrative;
+* key risk driver;
+* suggested impact;
+* recommended RRR action;
+* recommended class action;
+* confidence;
+* evidence gaps.
 
-* liquidity improvements;
-* deleveraging;
-* refinancing;
-* stronger earnings;
-* resolved litigation;
-* insurance recovery;
-* successful integration;
-* improved sector conditions;
-* mitigating controls.
+Before a run, render these as `Not assessed`, not `Not available`.
 
-Retain contradictory evidence and explain why one source or conclusion is given more weight.
+## 7. Portfolio-scale PoC behavior
+
+Do not attempt 361 live model assessments automatically.
 
-### G. Make a controlled recommendation
+For the PoC:
 
-The model may recommend:
-
-* Maintain
-* Review
-* Upgrade consideration
-* Downgrade consideration
-* Special mention review
-* Insufficient evidence / no recommendation
-
-The recommendation is non-binding. It must cite the evidence and explain what changed relative to the current state.
-
-If evidence is insufficient, stale, contradictory, or identity cannot be verified, do not force a downgrade or upgrade. Return an honest insufficient-evidence result.
-
-### H. Return schema-valid output
-
-Return only the existing structured Step25Assessment schema.
-
-Before accepting the result, validate:
-
-* company identity consistency;
-* all cited evidence IDs exist;
-* URLs are non-empty and attributable;
-* factor IDs exist upstream;
-* required fields are present;
-* deterministic scores were not changed;
-* recommendation values are allowed;
-* assessment as-of date is respected.
-
-Attempt one repair pass for schema or citation-reference errors. If repair fails, preserve diagnostics and show a clear typed failure.
-
-## 7. Local PoC state and restart behavior
-
-A backend restart must not destroy the demonstrable Step 2.5 workflow.
-
-Implement one of these controlled local-PoC mechanisms:
-
-* persist confirmed Step 2.2–2.4 workflow state; or
-* restore the most recent valid saved portfolio snapshot; or
-* allow an explicitly labeled PoC bootstrap portfolio based on existing repository data.
-
-Do not silently substitute Apple or unrelated fixture data.
-
-Any bootstrap portfolio must be clearly identified internally as PoC input. Live SEC/web/model outputs must still be real and must not be prewritten.
-
-The page must load with usable portfolio rows after restoration, instead of presenting only “No confirmed portfolio companies available.”
-
-## 8. Local-versus-production gating
-
-In local PoC mode:
-
-* production activation is non-applicable;
-* Fiddler is not required;
-* Runner Service is not required;
-* production approval is not required;
-* approved-web-mode flags must not prevent the existing hybrid SEC/web path;
-* the Run Assessment button must invoke the working hybrid pipeline.
-
-In production mode, existing fail-closed governance may remain unchanged.
-
-Do not weaken production controls globally. Scope the bypass explicitly to local PoC mode.
-
-## 9. Loading, completion, and error behavior
-
-Fix the stuck “Processing…” state.
-
-The UI must implement explicit states:
-
-* idle;
-* validating company;
-* collecting SEC evidence;
-* collecting public-web evidence;
-* generating assessment;
-* validating output;
-* persisting result;
-* completed;
-* completed with insufficient evidence;
-* failed.
-
-Every terminal path must clear the spinner and re-enable the appropriate controls.
-
-Switching steps or tabs must not leave stale loading state.
-
-A business result such as “insufficient evidence” is not a technical crash. Render it as a completed assessment with limitations.
-
-## 10. Step 2.4 parity
-
-Also compare Step 2.4 directly to v31.
-
-Restore v31’s:
-
-* table organization;
-* factor labels and weights;
-* compact row spacing;
-* score badges;
-* expandable company details;
-* summary placement;
-* navigation behavior.
-
-Keep current backend values and working formulas. Change presentation and interaction where needed for parity.
-
-## 11. Verification requirements
-
-Do not finish after editing files or confirming HTTP 200 responses.
-
-Verify:
-
-1. v31 remains unchanged.
-2. `step23.html` loads through the active backend.
-3. Steps 2.1–2.5 remain navigable.
-4. Step 2.4 matches v31 structurally and visually.
-5. Step 2.5 matches v31 structurally and visually.
-6. The primary Step 2.5 screen does not display production-readiness blockers.
-7. Portfolio rows appear after normal workflow or local snapshot restoration.
-8. Run Assessment completes through the hybrid pipeline.
-9. The spinner always terminates.
-10. The exact assessed company receives the result.
-11. Evidence URLs, SEC accession data, dates, and evidence IDs render correctly.
-12. Expanded rows show ED/SI factors and evidence.
-13. Override and commentary edits persist.
-14. Export works.
-15. Confirm Assessment works in local PoC mode.
-16. Existing regression tests still pass.
-
-Use a real rendered browser comparison when possible, including screenshots at the same viewport width. If automated screenshot capability is unavailable, inspect the live DOM and computed styles using an existing local browser tool or Playwright. Do not claim visual parity based only on static-file delivery.
-
-## 12. Required completion report
-
-At completion, provide:
-
-* files changed;
-* exact discrepancies corrected;
-* local-PoC gating behavior;
-* restored/persisted workflow-state behavior;
-* evidence-quality rules implemented;
-* browser verification performed;
-* test commands and results;
-* remaining differences from v31;
-* whether a real end-to-end Step 2.5 assessment was executed;
-* assessed company name, ticker, CIK, and run ID;
-* source count by type;
-* explicit final verdict.
-
-Use one of these verdicts:
-
-* COMPLETE — V31 PARITY AND QUALITY-DATA POC VERIFIED
-* BACKEND VERIFIED — UI PARITY NOT YET VERIFIED
-* PARTIAL — LIST REMAINING GAPS
-* FAILED — INCLUDE THE EXACT TECHNICAL FAILURE
-
-Do not use “complete” merely because CSS/JavaScript was served successfully. Completion requires rendered parity and a real company-specific end-to-end result.
+* Render the full confirmed portfolio.
+* Allow filters and eligibility indicators.
+* Run one selected eligible company at a time.
+* Display progress such as `1 assessed / 361 portfolio companies`.
+* Persist the completed company assessment.
+* Update only the matching company row.
+* Leave other companies as `Not assessed`.
+* Never copy the assessed company’s result into another row.
+
+The expanded row for the assessed company must show:
+
+* Step 2.3 Event-Driven Factors;
+* Step 2.4 Sector-Inherent Factors;
+* verified evidence;
+* exact URLs;
+* SEC form/accession/filing date;
+* supporting evidence;
+* disconfirming evidence;
+* key risk driver;
+* evidence gaps;
+* recommendation;
+* confidence;
+* analyst commentary.
+
+## 8. Step 2.4 parity remains unverified
+
+The latest Step 2.4 screenshots show a very large editable matrix with extensive vertical space.
+
+Compare it directly with the Step 2.4 section inside immutable v31.
+
+Preserve the current working Step 2.4 data and calculations, but match v31 for:
+
+* collapsed versus expanded default state;
+* factor-card organization;
+* metric tables;
+* spacing;
+* row density;
+* headers and color bands;
+* score display;
+* commentary placement;
+* expand/collapse controls.
+
+Do not claim Step 2.4 parity without a same-viewport screenshot comparison.
+
+## 9. Required live acceptance test
+
+Execute this exact scenario through the backend-served page:
+
+1. Load `http://127.0.0.1:8000/ui-design/step23.html`.
+2. Confirm or restore a real Step 2.2 portfolio.
+3. Select one verified public company with ticker and CIK.
+4. Confirm its Step 2.3 factors.
+5. Confirm its Step 2.4 factors.
+6. Select `SEC + Web`.
+7. Click Run Assessment.
+8. Verify the spinner passes through named phases and terminates.
+9. Verify real evidence is returned.
+10. Verify company name, ticker and CIK remain consistent.
+11. Verify the assessment appears only in that company’s row.
+12. Expand the row and inspect ED/SI factors, evidence and narrative.
+13. Enter an override/comment.
+14. Refresh the browser and verify persistence.
+15. Click Confirm Assessment.
+16. Verify the sidebar changes to Confirmed only now.
+17. Verify Export contains the same assessed result.
+
+## 10. Completion evidence
+
+Return:
+
+* backend-served URL used;
+* public company name;
+* ticker;
+* CIK;
+* internal company ID;
+* run ID;
+* assessment status;
+* SEC evidence count;
+* independent web-source count;
+* persisted artifact path;
+* screenshot of the completed Step 2.5 table;
+* screenshot of the expanded assessed row;
+* screenshot showing correct workflow status;
+* tests executed and results;
+* exact remaining v31 differences.
+
+Do not use the verdict COMPLETE unless:
+
+* Run Assessment is enabled and succeeds;
+* a valid real assessment is visible;
+* the correct company row is populated;
+* evidence is attributable;
+* persistence works;
+* confirmation state is correct;
+* primary Step 2.5 layout matches v31.
+
+Based on the current screenshots, the honest status is:
+
+PARTIAL — TABLE SHELL EXISTS, BUT LOCAL STEP 2.5 EXECUTION, STATE CONSISTENCY, DATA COMPLETENESS AND V31 PARITY ARE NOT VERIFIED.
