@@ -1,461 +1,295 @@
-FINAL CONTRACT-RESOLUTION PASS FOR STEP 2.5.
+STEP 2.5 — FINAL PRE-IMPLEMENTATION HOLD.
 
-READ THIS ENTIRELY BEFORE ACTING.
+READ THIS ENTIRE INSTRUCTION BEFORE TAKING ANY ACTION.
 
-DO NOT MODIFY CODE YET.
+DO NOT START ANOTHER INVESTIGATION CYCLE.
+DO NOT REFACTOR.
+DO NOT ADD ARCHITECTURE.
+DO NOT MODIFY STEPS 1–2.4.
+DO NOT INVESTIGATE PRESET-ID EXECUTION.
+DO NOT BUILD AUTHENTICATION INFRASTRUCTURE.
+DO NOT CREATE NEW HELPER FILES.
 
-DO NOT START ANOTHER ARCHITECTURE CYCLE.
+We have now reduced Step 2.5 to a small set of concrete request-contract differences.
 
-THIS IS THE LAST INVESTIGATION PASS BEFORE THE MINIMAL FUNCTIONAL STEP 2.5 FIX.
+This is a PURE POC from an engineering/lifecycle perspective.
 
-============================================================
-BUSINESS OBJECTIVE
-============================================================
+However, POC DOES NOT MEAN LOW QUALITY.
 
-We need the existing RPR flow to execute:
-
-REAL Step 2.2 company
-    ->
-REAL Step 2.3 factors
-    ->
-REAL Step 2.4 factors
-    ->
-existing SEC + WEB Stylus preset
-    ->
-high-quality Step25Assessment
-    ->
-existing Step 2.5 UI
-
-This is a PURE POC.
-
-Engineering implementation should remain as simple as possible.
-
-ANALYTICAL QUALITY MUST REMAIN HIGH.
+The final Step 2.5 result must remain analytically strong enough for a real CCR / credit-risk analyst to take seriously.
 
 ============================================================
-WHAT IS ALREADY PROVEN — DO NOT RE-INVESTIGATE
+ACCEPTED BUSINESS PROOF
 ============================================================
 
-The SEC + WEB Stylus preset itself WORKS.
+The SEC + WEB Stylus preset has already been executed successfully manually.
 
-A direct live Stylus execution successfully produced:
+The successful test used:
+
+Company:
+APPLE INC
+
+Step 2.2 CAGID:
+0000014508
+
+SEC CIK:
+0000320193
+
+The preset successfully consumed:
+
+- real company context
+- the RPR scenario
+- six Step 2.3 event-driven factors
+- five Step 2.4 sector-inherent factors
+
+It successfully used:
+
+- SEC Filing tooling
+- web research
+- counter-thesis research
+
+and generated:
 
 AAPL_Step25_Assessment.json
 
-for the genuine RPR company:
-
-CAGID = 0000014508
-Company = APPLE INC
-CIK = 0000320193
-
-The execution successfully used:
-
-- company context
-- scenario context
-- six event-driven factors
-- five sector-inherent factors
-- SEC filings
-- web research
-- counter-thesis research
-- final credit-risk synthesis
-
-Observed SEC behavior:
-
-FY2025 10-K = PASS
-FY2026 10-Q = PASS
-additional 10-Q = PASS
-
-One 8-K retrieval failed with:
-
-onSECFilingToolCall:
-Unmarshal results: unexpected end of JSON input
-
-but this DID NOT prevent final assessment generation.
-
-The final result included meaningful:
+The result contained:
 
 - identity validation
-- factor assessments
+- factor-by-factor assessments
 - risk direction
 - confidence
 - evidence references
-- conflicts
 - disconfirming evidence
+- conflicts
 - evidence gaps
 - freshness warnings
 - analyst questions
+- reasoning summary
 - workflow action
 
 Therefore:
 
-STYLUS_PRESET_WORKS = YES
+PRESET_BUSINESS_LOGIC_WORKS = TRUE
+SEC_RETRIEVAL_WORKS = TRUE
+WEB_RETRIEVAL_WORKS = TRUE
+STEP25_SCHEMA_GENERATION_WORKS = TRUE
 
-Do NOT alter the business prompt/schema merely because integration is incomplete.
+Do not redesign any of these.
 
 ============================================================
-SUCCESSFUL LIVE RUNNER REQUEST — SOURCE OF TRUTH
+KNOWN LIVE RUNNER CONTRACT
 ============================================================
 
-Browser DevTools captured the actual successful request:
+Successful browser execution:
 
 POST
 https://workspaces.genai.citi.net/runner-service/chat
 
-HTTP 200 OK
+Response:
+HTTP 200
+Content-Type: text/event-stream
 
-Content-Type:
-text/event-stream
+Observed live outer request body:
 
-Duration:
-approximately 13.1 minutes
+mode = 1
 
-Outer request payload visibly contained:
+application = "jukebox"
 
-mode: 1
+invoker = current logged-in SOEID
 
-application: "jukebox"
+message.role = 0
 
-invoker: <current logged-in user>
+message.parts = one initial preset-bearing part
 
-message: {
-    parts: [
-        {
-            data: ...,
-            data_type: 3,
-            mime_type: ...,
-            name: ...
-        }
-    ],
-    role: 0
-}
+initial part:
+    data = ""
+    data_type = 3
+    mime_type = ""
+    name = ""
+    preset = <full inline preset>
 
-model: "claude-sonnet-5"
+model = "claude-sonnet-5"
 
-request_id: <UUID>
+request_id = UUID
 
-temperature: 1
+temperature = 1
 
-tool_config: {
-    integrations: [
+tool_config = {
+    "integrations": [
         "lookup_documentation",
         "sec_filing"
     ],
-    auto_tool_mode: false
+    "auto_tool_mode": false
 }
 
-Frontend call stack visibly included:
+SSE:
+Accept: text/event-stream
 
-sendPresetInput
-
-THIS LIVE REQUEST IS THE PRIMARY EXECUTION CONTRACT.
+This is the source-of-truth execution contract.
 
 ============================================================
-SWAGGER FINDINGS — VERIFIED
+CURRENT RPR COMPARISON — ACCEPT AS PROVEN
 ============================================================
 
-1. INTERNAL Input model
+Current backend/step25/stylus_runner_client.py already matches the live request on:
 
-runner-service_internal_domain_models.Input
+- mode = 1
+- application = "jukebox"
+- invoker/current SOEID structure
+- message.role = 0
+- one initial preset-bearing message part
+- part.data = ""
+- part.data_type = 3
+- part.mime_type = ""
+- part.name = ""
+- request_id UUID generation
+- SSE Accept = text/event-stream
+- inline preset mechanism
+- flat answers dictionary using the exact 5 input names
 
-contains:
+DO NOT rewrite these working portions.
 
-canReply        boolean
-canSelectAll    boolean
-default         value/object
-label           string
-maxFileSize     integer
-maxFiles        integer
-name            string
-options         [string]
-placeholder     string
-required        boolean
-type            string
+============================================================
+CONCRETE DIFFERENCES ALREADY PROVEN
+============================================================
 
-The real Stylus preset UI contains these five inputs:
+DIFFERENCE 1 — MODEL
 
-CompanyContextJSON
-EventDrivenFactorsJSON
-SectorInherentFactorsJSON
-AssessmentASOFDATE
-EvidenceWindowMonths
+LIVE:
 
-Exact case must be preserved.
+"claude-sonnet-5"
 
-------------------------------------------------------------
-2. INTERNAL Knowledge model
-------------------------------------------------------------
+CURRENT RPR:
 
-runner-service_internal_domain_models.Knowledge
+currently resolves to approximately:
 
-visibly exposes:
+"claude-sonnet-4-6"
 
-file
+This must eventually be changed to:
 
-Inspect OpenAPI/source for exact type if necessary.
+"claude-sonnet-5"
 
-Do NOT guess.
+unless the final captured preset explicitly proves otherwise.
 
 ------------------------------------------------------------
-3. INTERNAL ToolConfig
+DIFFERENCE 2 — TEMPERATURE
+
+LIVE:
+
+temperature = 1
+
+CURRENT RPR:
+
+temperature = 0
+
+For exact POC parity, final implementation should use:
+
+temperature = 1
+
 ------------------------------------------------------------
+DIFFERENCE 3 — OUTER TOOL CONFIG
+
+LIVE:
+
+{
+  "integrations": [
+    "lookup_documentation",
+    "sec_filing"
+  ],
+  "auto_tool_mode": false
+}
+
+CURRENT RPR:
+
+{
+  "integrations": [],
+  "auto_tool_mode": false
+}
+
+THIS IS A MATERIAL CAPABILITY DIFFERENCE.
+
+The live assessment visibly executed SEC Filing calls.
+
+Therefore the final RPR implementation must reproduce the proven live integration list:
+
+[
+    "lookup_documentation",
+    "sec_filing"
+]
+
+Do not replace this with the unrelated Swagger internal-domain ToolConfig model.
+
+------------------------------------------------------------
+DIFFERENCE 4 — PRESET PROMPT
+
+LIVE:
+
+real RPR Step 2.5 SEC + WEB credit-assessment prompt
+
+CURRENT YAML:
+
+PENDING_CAPTURE
+
+The real prompt text supplied/captured by the user is the business source of truth.
+
+It must replace the placeholder exactly enough to preserve its full analytical behaviour.
+
+DO NOT shorten or simplify it.
+
+------------------------------------------------------------
+DIFFERENCE 5 — INNER PRESET TOOL CONFIG
+
+CURRENT STATUS:
+
+UNKNOWN.
+
+This refers specifically to:
+
+message.parts[0].preset.toolConfig
+
+or its exact actual spelling.
+
+Do NOT confuse it with OUTER:
+
+request.tool_config
+
+These are separate objects.
+
+Do NOT map Swagger:
 
 runner-service_internal_domain_models.ToolConfig
 
-visibly contains:
-
-google_search_enabled   boolean
-mock_llm                boolean
-
-IMPORTANT:
-
-THIS IS NOT THE SAME SHAPE AS THE SUCCESSFUL LIVE /chat:
-
-tool_config = {
-    integrations: [
-        "lookup_documentation",
-        "sec_filing"
-    ],
-    auto_tool_mode: false
-}
-
-Therefore DO NOT map the internal ToolConfig model blindly into the live chat request.
+blindly.
 
 ------------------------------------------------------------
-4. INTERNAL Preset model
-------------------------------------------------------------
+DIFFERENCE 6 — PRESET KNOWLEDGE
 
-runner-service_internal_domain_models.Preset
+CURRENT STATUS:
 
-contains approximately:
+UNKNOWN.
 
-answers
-id                  string
-is_custom_preset    boolean
-name                string
-preset_creator_id   string
-preset_creator_job_data models.LOBData
-version_no          integer
+This refers specifically to:
 
-preset_creator_job_data was expanded and is LOB/business metadata, including fields such as:
+message.parts[0].preset.knowledge
 
-emt_members
-function
-level
+or exact actual spelling.
 
-It is NOT the executable prompt/model/tool/input configuration.
-
-Therefore DO NOT assume GET /v1/presets/{id} necessarily returns the full executable inline preset.
-
-------------------------------------------------------------
-5. INTERNAL Data
-------------------------------------------------------------
-
-runner-service_internal_domain_models.Data
-
-was manually expanded.
-
-Verified visible fields:
-
-key       string
-type      string
-value     object
-
-------------------------------------------------------------
-6. INTERNAL DataContainer
-------------------------------------------------------------
-
-runner-service_internal_domain_models.DataContainer
-
-was manually expanded.
-
-Visible fields include:
-
-data              array[Data]
-latestInstance    string
-oauth             nested structure
-
-Do not infer the exact oauth type from the screenshot; inspect OpenAPI if relevant.
-
-CRITICAL:
-
-The internal Data model:
-
-key/type/value
-
-DOES NOT MATCH the live /chat message part shape:
-
-data/data_type/mime_type/name
-
-Therefore:
-
-DO NOT ASSUME
-internal_domain_models.Data == POST /chat message.parts item.
-
-============================================================
-STOP EXPLORING GENERIC INTERNAL MODELS
-============================================================
-
-The manual Swagger exploration is finished.
-
-Do NOT spend time on:
-
-signals
-spaces
-remote agents
-audience groups
-experiments
-feature config
-generic workflow models
-
-unless the exact POST /chat schema directly references one.
-
-The only remaining contract question is:
-
-HOW DOES sendPresetInput BUILD THE SUCCESSFUL message.parts OBJECT?
-
-============================================================
-TASK 1 — IDENTIFY THE EXACT POST /chat REQUEST DTO
-============================================================
-
-Find the exact route implementation/OpenAPI schema for:
-
-POST /chat
-
-Do NOT choose models based only on similar names.
-
-Trace the route to the actual request structure it deserializes.
-
-Return exact fields/types for:
-
-mode
-application
-invoker
-message
-model
-request_id
-temperature
-tool_config
-
-Determine which are required.
-
-============================================================
-TASK 2 — IDENTIFY EXACT MESSAGE DTO
-============================================================
-
-Find the concrete type used for:
+The user is performing one FINAL DevTools capture to expand:
 
 message
+  -> parts
+     -> [0]
+        -> preset
+           -> toolConfig
+           -> knowledge
 
-Then find the concrete type used for:
-
-message.parts[]
-
-The live request proves a part contains:
-
-data
-data_type
-mime_type
-name
-
-Return the exact definitions.
-
-We need:
-
-message type =
-...
-
-parts item type =
-...
-
-role type =
-...
-
-data_type type =
-...
+Those exact captured JSON values will be provided next.
 
 ============================================================
-TASK 3 — RESOLVE ENUM VALUES
+INPUT CONTRACT — ACCEPTED
 ============================================================
 
-From actual source/schema determine:
-
-role = 0 means exactly:
-...
-
-data_type = 3 means exactly:
-...
-
-Do NOT infer these values semantically.
-
-Find the enum/code.
-
-============================================================
-TASK 4 — TRACE sendPresetInput DIRECTLY
-============================================================
-
-This is the highest-priority task.
-
-Trace the frontend function:
-
-sendPresetInput
-
-through:
-
-sendPresetInput
-   ->
-request construction
-   ->
-message.parts
-   ->
-POST /runner-service/chat
-
-Use any available:
-
-- frontend source
-- source maps
-- colleague code
-- Swagger/OpenAPI
-- browser-generated request code
-- compiled JS inspection
-
-READ ONLY.
-
-Do not modify frontend code.
-
-Find exactly what is serialized into the `data` field.
-
-============================================================
-TASK 5 — ANSWER THE CENTRAL QUESTION
-============================================================
-
-Determine whether message.parts[0].data contains:
-
-A. full preset object as JSON
-
-B. preset + answers wrapper
-
-C. only answers
-
-D. command/preset reference
-
-E. another exact structure
-
-Return the exact non-secret shape.
-
-Example ONLY — do not assume:
-
-{
-  "preset": {...},
-  "answers": {...}
-}
-
-We need actual proof.
-
-============================================================
-TASK 6 — FIVE INPUT VALUES
-============================================================
-
-Trace how the five values entered into Stylus become runtime answers:
+The preset has exactly five inputs:
 
 CompanyContextJSON
 EventDrivenFactorsJSON
@@ -463,286 +297,352 @@ SectorInherentFactorsJSON
 AssessmentASOFDATE
 EvidenceWindowMonths
 
-Determine exact answer representation.
+Exact case matters.
 
-For example:
+Runtime answers use a flat dictionary:
 
-answers[name] = value
+preset["answers"] = {
+    "<exact input name>": <value>,
+    ...
+}
 
-or:
+The current RPR Stylus client already follows this pattern.
 
-answers = [
-   {name, value}
-]
-
-or another structure.
-
-Do not guess.
+Do NOT create another answers adapter.
 
 ============================================================
-TASK 7 — PROMPT / KNOWLEDGE / INPUT DEFINITIONS
+COMPANY INTEGRITY
 ============================================================
 
-Determine where the working runtime receives:
+Use the genuine Step 2.2 company.
 
-- the preset prompt
-- input definitions
-- knowledge configuration/files
-- output/schema instructions
+For the validated POC path:
 
-Possible locations may include:
+CAGID 0000014508
+    ->
+APPLE INC
+    ->
+CIK 0000320193
+    ->
+CIK_CONFIRMED
 
-- message.parts[0].data
-- server-side preset expansion
-- command expansion before /chat
-- another frontend-loaded object
+Do not substitute another company.
 
-Trace it.
+Do not infer identity from factor text.
 
-We need the actual working mechanism, not a theoretical design.
-
-============================================================
-TASK 8 — COMPARE TO CURRENT RPR
-============================================================
-
-Inspect:
-
-backend/step25/stylus_runner_client.py
-
-Compare CURRENT RPR with the successful browser request.
-
-Produce a table:
-
-ELEMENT
-LIVE STYLUS
-CURRENT RPR
-MATCH?
-MINIMAL FIX
-
-Include at least:
-
-outer body
-mode
-application
-invoker
-message
-message.role
-message.parts
-message part data
-message part data_type
-message part mime_type
-message part name
-model
-request_id
-temperature
-tool_config
-answers
-preset
-SSE Accept behavior
-SSE parsing
-final-result extraction
+Existing company/CikResolver behaviour should remain unchanged.
 
 ============================================================
-TASK 9 — FIND THE FIRST ACTUAL DIFFERENCE THAT WOULD BREAK EXECUTION
+STEP 2.3 AND STEP 2.4 REQUIREMENT
 ============================================================
 
-Do NOT list cosmetic differences first.
+The final Step 2.5 execution MUST consume the actual upstream factors registered by the existing RPR flow.
 
-Identify the earliest material contract mismatch in request construction.
+For the proven Apple test:
 
-Example:
+Step 2.3:
+6 event-driven factors
 
-LIVE:
-message.parts[0].data = X
+Step 2.4:
+5 sector-inherent factors
 
-RPR:
-message.parts[0].data = Y
+Do not manually rewrite those factors inside Step 2.5.
 
-Therefore Runner cannot treat RPR request as a preset invocation.
-
-I need the actual proven root cause.
+Do not introduce synthetic test factors when executing the final E2E.
 
 ============================================================
-TASK 10 — RESULT RETRIEVAL
+AUTHENTICATION
 ============================================================
 
-The successful Stylus run created:
+Authentication is a separate operational issue.
 
-AAPL_Step25_Assessment.json
-
-Determine whether current RPR SSE parsing can retrieve the final assessment reliably.
-
-If YES:
-keep it.
-
-If NO:
-check whether existing documented artifact retrieval is significantly simpler.
-
-Do NOT create an artifact framework.
-
-Choose the smallest proven POC route.
-
-============================================================
-TASK 11 — AUTHENTICATION IS NOT THE CONTRACT ROOT CAUSE
-============================================================
-
-Do not mix the two issues.
-
-Browser proves:
+Browser Stylus already proves:
 
 Runner reachable = YES
-browser auth = YES
-preset works = YES
+Runner authenticated from browser = YES
+Preset execution = YES
 
-Claude shell may still lack a Runner token.
-
-That is an operational execution condition.
+Claude shell may not currently possess a Runner bearer/refresh token.
 
 Do NOT:
 
-- request a bearer token from user
+- ask the user to paste a bearer token into chat
 - print tokens
-- persist browser cookies
-- design new OAuth
-- build auth architecture
+- persist browser Authorization headers
+- copy cookies
+- design OAuth
+- create dummy credentials
+- invent successful responses
 
-The final RPR test will use the existing approved authentication route/environment.
+Do not mix authentication with request serialization.
 
 ============================================================
-TASK 12 — NO MORE PRESET-ID ARCHITECTURE
+ONE FINAL PIECE OF INFORMATION IS COMING
 ============================================================
 
-Swagger proved preset repository APIs exist.
+The user will provide the exact expanded live values for:
 
-It did NOT prove that /chat executes by preset ID.
+message.parts[0].preset.toolConfig
 
-And the persisted Preset model is not obviously the executable preset structure.
+and
+
+message.parts[0].preset.knowledge
+
+When supplied:
+
+USE THEM AS GROUND TRUTH.
+
+Do not reinterpret them.
+
+Do not normalize field names.
+
+Do not replace them with Swagger internal models.
+
+Do not generalize them.
+
+============================================================
+WHAT YOU SHOULD DO RIGHT NOW
+============================================================
+
+NO CODE CHANGES YET.
+
+Before the capture arrives:
+
+1. Re-open:
+
+backend/step25/stylus_runner_client.py
+
+and:
+
+preset_knowledge/STYLUS_SEC_WEB_PRESET_DEFINITION.yaml
+
+2. Identify the EXACT existing lines/fields that will need modification for:
+
+- model
+- temperature
+- outer tool_config.integrations
+- preset prompt
+- inner preset toolConfig
+- preset knowledge
+- verified flag
+
+3. Confirm the existing five-answer mapping will NOT need modification.
+
+4. Confirm Steps 1–2.4 require NO modification.
+
+5. Confirm existing company identity resolution requires NO modification.
+
+6. Confirm the existing inline-preset architecture remains correct.
+
+7. Do NOT edit anything.
+
+============================================================
+AFTER THE TWO CAPTURED OBJECTS ARRIVE
+============================================================
+
+When the user provides preset.toolConfig and preset.knowledge:
+
+DO NOT ask another architectural question.
+
+Apply the smallest functional implementation.
+
+Expected maximum functional scope:
+
+FILE 1:
+backend/step25/stylus_runner_client.py
+
+Only if necessary for:
+
+- model parity
+- temperature parity
+- outer tool_config parity
+
+FILE 2:
+preset_knowledge/STYLUS_SEC_WEB_PRESET_DEFINITION.yaml
+
+For:
+
+- actual model
+- full real prompt
+- exact five inputs
+- exact inner toolConfig
+- exact knowledge
+- verified=true
+
+If captured shape proves a tiny serialization change is necessary in stylus_runner_client.py, make that change.
+
+Otherwise do not alter serialization.
+
+============================================================
+IMMEDIATELY AFTER IMPLEMENTATION
+============================================================
+
+Run offline/unit tests first.
+
+If they pass, run Step 2.5 preflight.
+
+Then, once approved Runner authentication is available, perform the REAL E2E using the already-proven Apple context:
+
+Step 2.2
+CAGID 0000014508
+APPLE INC
+CIK 0000320193
+
+    ->
+
+registered Step 2.3
+6 confirmed factors
+
+    ->
+
+registered Step 2.4
+5 confirmed factors
+
+    ->
+
+POST /api/v1/rpr/step25/run
+
+    ->
+
+Stylus engine
+
+    ->
+
+POST /runner-service/chat
+
+    ->
+
+SEC + WEB tools
+
+    ->
+
+real Step25Assessment
+
+    ->
+
+existing Step 2.5 UI
+
+============================================================
+RESULT QUALITY GATE
+============================================================
+
+HTTP 200 IS NOT SUCCESS BY ITSELF.
+
+JSON validation IS NOT SUCCESS BY ITSELF.
+
+Step 2.5 succeeds only if the result demonstrates meaningful use of:
+
+- real Apple identity
+- actual selected RPR scenario
+- actual Step 2.3 factors
+- actual Step 2.4 factors
+- SEC evidence
+- relevant web evidence
+- counter-thesis / disconfirming evidence
+- credit-risk implications
+- risk direction
+- confidence/materiality
+- evidence gaps
+- conflicts where present
+- analyst-relevant conclusions
+
+Compare the integrated result qualitatively with the already-successful manual Stylus assessment.
+
+If the integrated assessment is materially weaker, diagnose the concrete missing input/tool/config difference.
+
+Do NOT solve quality problems by creating new architecture.
+
+============================================================
+8-K TOOL FAILURE POLICY
+============================================================
+
+The manual Stylus test had one SEC 8-K tool failure:
+
+onSECFilingToolCall:
+Unmarshal results: unexpected end of JSON input
+
+Other SEC calls succeeded and the overall assessment completed.
 
 Therefore:
 
-STOP investigating preset-ID execution.
+- do not make one failed filing-tool call fatal
+- retain successful SEC evidence
+- retain web evidence
+- disclose the evidence gap
+- allow the assessment to finish when sufficient evidence remains
 
-Do NOT implement:
-
-GET preset every run
-preset sync
-preset cache
-preset repository client
-preset version framework
-
-unless the successful live call actually requires it.
+Do not fake the missing 8-K.
 
 ============================================================
-TASK 13 — QUALITY MUST NOT BE REDUCED
+SSE / EVIDENCE PARSING
 ============================================================
 
-The existing working preset's analytical quality is the baseline.
+Current SSE parsing has an imperfect tool-event citation probe.
 
-Do NOT simplify away:
+Do NOT expand this into another framework now.
 
-SEC research
-web research
-counter-thesis
-Step 2.3 usage
-Step 2.4 usage
-evidence gaps
-disconfirming evidence
-conflict detection
-freshness
-analyst questions
-credit-risk interpretation
+Keep the existing fallback unless the REAL integrated run proves it loses material assessment content or provenance.
 
-POC simplification means:
+For this POC:
 
-LESS ENGINEERING
+accurate final assessment + defensible traceability
 
-not:
+is the objective.
 
-LESS ANALYTICAL QUALITY.
+Not perfect enterprise event normalization.
 
 ============================================================
-REPORT FORMAT — EXACTLY THIS
+FREEZE RULE
 ============================================================
 
-Return:
+After the final two preset objects are supplied:
 
-1. ACTUAL POST /chat REQUEST TYPE
-<exact type/source>
+NO NEW ARCHITECTURE.
+NO NEW ENTITY FRAMEWORK.
+NO PRESET-ID SYSTEM.
+NO ARTIFACT FRAMEWORK.
+NO AUTH FRAMEWORK.
+NO STEP 1–2.4 CHANGES.
+NO CLEANUP.
+NO REFACTORING FOR STYLE.
+NO GENERALIZATION.
 
-2. ACTUAL MESSAGE TYPE
-<exact type>
-
-3. ACTUAL MESSAGE.PARTS ITEM TYPE
-<exact type>
-
-4. role=0
-<exact meaning>
-
-5. data_type=3
-<exact meaning>
-
-6. sendPresetInput SERIALIZATION
-<exact non-secret object shape>
-
-7. FIVE INPUT ANSWER REPRESENTATION
-<exact structure>
-
-8. WHERE PROMPT COMES FROM
-<exact path>
-
-9. WHERE INPUT DEFINITIONS COME FROM
-<exact path>
-
-10. WHERE KNOWLEDGE COMES FROM
-<exact path>
-
-11. WHERE OUTPUT SCHEMA COMES FROM
-<exact path>
-
-12. LIVE STYLUS vs RPR
-<table of material differences>
-
-13. FIRST EXECUTION-BREAKING DIFFERENCE
-<one precise root cause>
-
-14. MINIMUM FUNCTIONAL FIX
-<precise change>
-
-15. FILES REQUIRED TO CHANGE
-maximum target:
-1-2 functional files
-
-16. RESULT RETRIEVAL
-SSE or artifact + why
-
-17. AUTH REMAINING
-<only the genuine operational auth issue>
-
-18. FINAL STATUS
-choose exactly one:
-
-READY_FOR_MINIMAL_RPR_FIX
-
-NEED_ONE_MORE_CONTRACT_CHECK
-
-GENUINE_EXTERNAL_BLOCKER
+ONLY FIX WHAT IS NECESSARY TO MAKE STEP 2.5 WORK.
 
 ============================================================
-ABSOLUTE STOP RULE
+REPORT NOW
 ============================================================
 
-NO CODE CHANGES DURING THIS PASS.
+Do not modify code.
 
-NO NEW FILES.
+Return ONLY:
 
-NO REFACTORING.
+1. READY_FOR_FINAL_TWO_FIELDS:
+YES / NO
 
-NO CHANGES TO STEPS 1-2.4.
+2. FILES_EXPECTED_TO_CHANGE:
+exact paths
 
-NO PRODUCTION ARCHITECTURE.
+3. ALREADY_PROVEN_CHANGES:
+- model
+- temperature
+- outer integrations
+- prompt
 
-NO MORE GENERIC SWAGGER EXPLORATION.
+4. STILL_WAITING_FOR:
+- preset.toolConfig
+- preset.knowledge
 
-We are solving ONE remaining problem:
+5. FIVE_INPUT_MAPPING_CHANGE_REQUIRED:
+YES / NO
 
-MAKE RPR GENERATE THE SAME SUCCESSFUL RUNNER REQUEST THAT STYLUS GENERATES.
+6. STEPS_1_TO_2_4_CHANGE_REQUIRED:
+YES / NO
+
+7. COMPANY_RESOLUTION_CHANGE_REQUIRED:
+YES / NO
+
+8. ONE SENTENCE:
+what you will execute immediately when the two captured objects are supplied.
+
+Then STOP.
