@@ -1,254 +1,331 @@
-IMPORTANT CHANGE OF DIRECTION:
+STOP HERE AND FREEZE THE CURRENT IMPLEMENTATION.
+
+The current Step 2.5 Stylus POC work has reached the correct stopping point.
+
+Do NOT start another architecture cycle.
+Do NOT refactor the current implementation.
+Do NOT create more helper frameworks/files unless they are literally required to execute the POC.
+Do NOT redesign working Steps 1–2.4.
+Do NOT revisit decisions already made.
+
+============================================================
+CURRENT STATE — TREAT AS ACCEPTED BASELINE
+============================================================
+
+The following findings/implementation are accepted:
+
+1. Step 2.5 HTTP 409 issue
+- The legacy Step 2.5 blockers were traced correctly.
+- The Stylus POC path now bypasses legacy SEC/web/H2M readiness checks.
+- Legacy/orchestrated/hybrid/direct_runner paths remain unchanged.
+- This additive behaviour is accepted.
+
+2. Stylus preset invocation
+- Do NOT use or investigate preset UUID invocation further.
+- The only proven working Runner mechanism in the current codebase sends the FULL PRESET DEFINITION INLINE.
+- The POC will use that existing inline mechanism.
+- No by-ID preset architecture is required.
+
+3. Step 2.2 identifiers
+- Step 2.2 contains CAGID and potentially cagid_name / gfcid_name.
+- It does not provide ticker / CIK / LEI / ISIN / CUSIP directly.
+- The existing CikResolver/company identity path should be reused.
+- Do not invent a new entity-resolution framework.
+
+4. Company integrity
+- No fake Salesforce / Apple / Microsoft substitution is allowed.
+- The assessment company must genuinely correspond to the selected Step 2.2 record.
+- If company identity cannot be determined:
+  NO_COMPANY_IDENTITY_AVAILABLE
+- If legal company exists but SEC registrant cannot be confirmed:
+  NO_CONFIRMED_SEC_REGISTRANT
+
+5. Stylus route
+- The Stylus engine is wired into the existing Step 2.5 /run flow.
+- Offline/unit tests currently pass.
+- Preserve this.
+
+6. Evidence handling
+- Keep the current lightweight evidence/citation approach.
+- No need to design a production enterprise evidence framework.
+- Real source provenance is required.
+- No fabricated evidence IDs, URLs, SEC facts, or citations.
+
+============================================================
+POC PHILOSOPHY
+============================================================
 
 This is a PURE POC.
 
-Do NOT design this as production software.
+A separate production team may completely rebuild this implementation later.
 
-A separate production team will likely rebuild or replace this code later. Our objective is simply to prove that the RPR concept works accurately and convincingly end-to-end using the resources already available.
+Optimize only for:
 
-Therefore optimize for:
+- a convincing end-to-end demo
+- real data
+- accurate credit-risk assessment
+- enough traceability to validate the result
+- minimal changes to the current working RPR backbone
 
-1. speed
-2. simplicity
-3. accuracy of the assessment
-4. real data
-5. traceability sufficient for the demo
-6. minimal changes to the existing working RPR backbone
+Do NOT optimize for:
 
-Do NOT spend time on:
 - production architecture
-- generalized frameworks
-- elaborate abstraction layers
+- scalability
+- generalized reusable frameworks
+- abstract configuration systems
 - future-proof APIs
-- unnecessary adapters
-- extensive configuration systems
-- production deployment concerns
-- scalability engineering
-- sophisticated error frameworks
-- refactoring working code
-- code cleanliness for its own sake
+- deployment hardening
+- code cleanup for its own sake
 
-============================================================
-POC TARGET
-============================================================
+The business objective is:
 
-We need to demonstrate:
-
-REAL Step 2.2 selected company
-        ↓
-Step 2.3 event factors
-        ↓
-Step 2.4 sector factors
-        ↓
-SEC + WEB Stylus/Runner assessment
-        ↓
+REAL Step 2.2 company
+    ->
+Step 2.3 factors
+    ->
+Step 2.4 factors
+    ->
+SEC + WEB Stylus assessment
+    ->
 high-quality Step 2.5 result
-        ↓
-existing RPR UI
-
-That is the goal.
+    ->
+existing UI
 
 ============================================================
-1. FIX RUN ASSESSMENT WITH MINIMUM CHANGE
+DO NOT MODIFY CODE YET
 ============================================================
 
-The current HTTP 409 occurs because Step 2.5 checks legacy SEC/web/H2M production-readiness settings before any model call.
+There are now only TWO genuine external blockers:
 
-For the POC, make the smallest safe change that allows the new SEC+WEB Runner path to execute without requiring the old unused local services.
+1. The exact real SEC + WEB Stylus preset definition has not yet been captured from the Stylus UI.
+2. Runner authentication is unavailable in the current Claude shell.
 
-Do NOT redesign the readiness architecture.
+Do NOT compensate for either blocker by writing more architecture.
 
-If a simple condition such as:
-
-if using SEC_WEB_STYLUS_POC:
-    skip legacy SEC/web/H2M blockers
-
-is sufficient, use it.
-
-Preserve the old path unchanged.
+The next task is to PREPARE FOR THE ONE-TIME STYLUS CAPTURE ONLY.
 
 ============================================================
-2. DO NOT WASTE TIME ON PRESET UUID
+ONE-TIME STYLUS CAPTURE
 ============================================================
 
-Your investigation already showed that the known-working Runner code sends the preset definition inline.
+The user will manually open the SEC + WEB preset in Stylus and capture the real request body using browser DevTools.
 
-Use that mechanism.
+Expected process:
 
-Do not spend more time proving whether a saved Stylus preset can be invoked by UUID.
+1. Open SEC + WEB preset in Stylus.
+2. Open Chrome/Edge DevTools with F12.
+3. Open Network tab.
+4. Clear existing network entries.
+5. Execute/run the preset once with any safe test values.
+6. Find the request to the Runner endpoint, likely something similar to:
+   /runner-service/chat
+7. Open that request.
+8. Open Payload / Request Payload.
+9. Capture ONLY the request BODY.
 
-We will obtain the exact preset definition once from Stylus and use the same structure in the POC.
+DO NOT ask the user for:
+- Authorization header
+- bearer token
+- refresh token
+- cookies
+- authentication headers
+- any secret values
 
-No generalized preset-management feature is required.
+We only need the sanitized request structure.
 
 ============================================================
-3. FIVE INPUTS
+WHAT MUST BE CAPTURED
 ============================================================
 
-We need the exact five Stylus input names once.
+From the request body we need the exact real values/structure for:
 
-Create one short instruction telling me exactly how to capture the request from Stylus Browser DevTools -> Network.
-
-After I provide that request, extract:
-
-- exact input names
+- preset object
+- exact 5 input field names, including exact case
 - prompt
 - model
-- tools
+- toolConfig / tools
 - knowledge configuration
-- any other required preset fields
+- answers or related required fields
+- any other body fields required by the known-working Runner contract
 
-Then copy/use that exact definition for the POC.
+The most critical element is the exact input structure, e.g.:
 
-Do not invent names.
+inputs: [
+    { name: "<exact key 1>", ... },
+    { name: "<exact key 2>", ... },
+    { name: "<exact key 3>", ... },
+    { name: "<exact key 4>", ... },
+    { name: "<exact key 5>", ... }
+]
 
-============================================================
-4. COMPANY SELECTION
-============================================================
-
-We need ONE genuine company to prove the POC.
-
-Inspect the available Step 2.2 data for any useful company/entity identifier.
-
-Do not build a sophisticated entity-resolution framework.
-
-Use whatever authoritative information already exists in the current files/data.
-
-If Step 2.2 contains an identifier that can be mapped simply to a company, do that.
-
-If the current dataset genuinely cannot identify any company, tell me clearly.
-
-For the POC, a small explicit lookup/mapping table is acceptable if needed, PROVIDED the selected company genuinely corresponds to the Step 2.2 record.
-
-Do not substitute an unrelated convenient company.
-
-We only need enough real companies to demonstrate the workflow.
+Do NOT guess or normalize these names.
 
 ============================================================
-5. SEC
+AFTER THE USER PROVIDES THE CAPTURE
 ============================================================
 
-For the selected real company:
+When the real Stylus request body is supplied:
 
-- determine its legal company name
-- determine ticker if available
-- determine/verify CIK
-- use real SEC information
+1. Compare it against the current placeholder:
+   preset_knowledge/STYLUS_SEC_WEB_PRESET_DEFINITION.yaml
 
-For the POC, a simple resolver or explicit verified mapping is completely acceptable.
+2. Replace ONLY placeholder/pending values with the exact real captured values.
 
-We do not need a production-grade SEC entity master.
+3. Set the preset definition state to verified=true or the current equivalent flag.
 
-If no SEC registrant exists, return:
-NO_CONFIRMED_SEC_REGISTRANT
+4. Preserve the current inline Runner mechanism.
 
-============================================================
-6. EVIDENCE
-============================================================
+5. Do NOT add new abstraction layers.
 
-Keep evidence handling SIMPLE.
+6. Do NOT refactor stylus_runner_client.py unless the real request proves a tiny compatibility change is actually necessary.
 
-We need enough traceability to show that Step 2.5 is based on real evidence.
-
-If the Stylus/Runner response provides source URLs, SEC filing references, dates or citations, retain them and display/store them with the assessment.
-
-Do NOT build a complex enterprise EvidenceRecord subsystem unless the current RPR code already makes it trivial.
-
-A lightweight structure such as:
-
-{
-  "id": "E1",
-  "source": "...",
-  "url": "...",
-  "date": "...",
-  "statement": "..."
-}
-
-is sufficient for the POC.
-
-The important rule is:
-
-NO fabricated citations.
-NO invented sources.
-NO invented SEC facts.
+7. Do NOT touch unrelated Step 1–2.4 code.
 
 ============================================================
-7. AUTH
+POC COMPANY CHECK
 ============================================================
 
-Do not ask me to paste tokens into Claude.
+Before final E2E execution, identify at least ONE genuine Step 2.2 company that can complete the full path.
 
-Reuse the existing approved Runner authentication mechanism when we execute from the proper environment.
+We need a concrete demo record showing something like:
 
-Until then, build everything possible without the live call.
+Step 2.2 CAGID: <real value>
+Company: <real legal company name>
+Ticker: <if available>
+CIK: <verified real CIK>
+SEC status: CONFIRMED
 
-BLOCKED_AUTH is acceptable for the isolated smoke test.
+Use:
 
-Do not turn authentication into an architecture project.
+CAGID
+ -> cagid_name
+ -> if empty, first authoritative gfcid_name from MLE rows
+ -> existing CikResolver
+ -> confirmed SEC identity
+
+Do not infer the company from sector/event text.
+
+If current selected records do not resolve cleanly, search the actual Step 2.2 dataset for another genuine record that does.
+
+For this POC, a tiny explicit verified mapping such as:
+
+CAGID -> Legal Company -> Ticker -> CIK
+
+for a few demo companies is ACCEPTABLE if required.
+
+Conditions:
+- mapping must correspond to actual Step 2.2 records
+- mapping must be manually/verifiably correct
+- no unrelated company substitution
+- clearly label it as POC mapping if used
+
+Do NOT build a production entity master.
 
 ============================================================
-8. STEP 2.5 QUALITY
+FINAL E2E TARGET
 ============================================================
 
-This is the most important requirement.
+Once the preset definition is captured and normal Runner authentication is available, execute:
 
-The Step 2.5 result must actually be useful for a credit-risk analyst.
+Step 2.2 real company
+    ->
+resolve legal company
+    ->
+resolve/verify CIK
+    ->
+Step 2.3 event-driven factors
+    ->
+Step 2.4 sector-inherent factors
+    ->
+Step 2.5 Run Assessment
+    ->
+inline SEC + WEB Stylus preset
+    ->
+real SEC/web evidence
+    ->
+schema-valid Step25Assessment
+    ->
+existing Step 2.5 UI
 
-It should combine:
+The output must be genuinely useful for a credit-risk analyst.
 
-- selected company
-- event-driven factors from Step 2.3
-- sector factors from Step 2.4
-- company-specific SEC evidence
+Quality matters more than engineering elegance.
+
+============================================================
+STEP 2.5 QUALITY REQUIREMENT
+============================================================
+
+The final assessment must demonstrate that the model actually used:
+
+- real selected company context
+- Step 2.3 event-driven factors
+- Step 2.4 sector factors
+- real company-specific SEC evidence
 - relevant web evidence
-- credit implications
+- credit implication
 - direction of risk
-- materiality
-- supporting evidence
-- conflicting evidence where relevant
-- assumptions / gaps
+- materiality/severity
+- evidence/citations
+- conflicts or contrary evidence where relevant
+- assumptions/gaps where evidence is unavailable
 
-Do not optimize merely for producing valid JSON.
+Do NOT accept a result merely because valid JSON was returned.
 
-QUALITY OF THE CREDIT ASSESSMENT IS THE POC.
-
-============================================================
-9. KEEP EXISTING WORKING RPR
-============================================================
-
-Do not modify Steps 1–2.3 unless absolutely necessary.
-
-Do not redesign the application.
-
-Do not clean/refactor unrelated files.
-
-Do not introduce unnecessary dependencies.
-
-Use the existing code and bolt on the minimum required functionality.
+The POC succeeds only if the assessment content is credible and analytically useful.
 
 ============================================================
-10. IMPLEMENT NOW
+AUTHENTICATION
 ============================================================
 
-Proceed with:
+Do NOT request tokens from the user in Claude chat.
 
-A. inspect actual Step 2.2 identifiers
-B. identify the easiest legitimate company-resolution route
-C. make the minimal Run Assessment blocker change
-D. prepare the five-input mapping point
-E. prepare the inline Stylus preset call using existing runner_client.py
-F. prepare simple SEC/company validation
-G. prepare simple evidence/citation capture
-H. validate Step25Assessment output
-I. connect it to the existing Step 2.5 UI
+Do NOT print or persist secrets.
 
-Do not stop for architectural questions unless execution is genuinely impossible.
+Use the existing approved Runner authentication mechanism when the POC is run from the normal RPR environment.
 
-At the end tell me only:
+Until then:
+- BLOCKED_AUTH is acceptable
+- do not modify authentication architecture
+- do not create dummy tokens
+- do not manufacture successful model output
 
-1. What now works
-2. What files you changed
-3. What real company can be used for the POC
-4. What remains blocked
-5. The ONE exact Stylus action I need to perform
-6. Exact commands/steps to run the POC
+============================================================
+FREEZE RULE
+============================================================
+
+Current implementation is now frozen unless one of these conditions occurs:
+
+A. the real captured Stylus request body proves a small compatibility change is required;
+B. the final E2E test identifies a concrete execution defect;
+C. the user explicitly asks for another change.
+
+Otherwise:
+NO MORE ARCHITECTURE
+NO REFACTORING
+NO CLEANUP
+NO NEW FRAMEWORKS
+NO NEW HELPER FILES
+
+============================================================
+WHAT TO DO NOW
+============================================================
+
+Do not implement anything further right now.
+
+Review the existing:
+preset_knowledge/STYLUS_SEC_WEB_REQUIRED_CAPTURE.md
+
+Make sure it gives the user very short, exact instructions for the browser DevTools capture described above.
+
+If it already does, leave it unchanged.
+
+Then stop and report ONLY:
+
+1. Current code status: READY_FOR_PRESET_CAPTURE / not ready
+2. Exact file that will receive the real captured preset definition
+3. Exact endpoint/request type the user should look for in DevTools
+4. Exactly which request BODY sections are needed
+5. Confirmation that NO auth headers/secrets should be provided
+6. One sentence describing what happens immediately after the capture is supplied
+
+Do not continue coding after this report.
