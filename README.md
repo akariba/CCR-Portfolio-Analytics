@@ -1,652 +1,752 @@
-WE NOW HAVE THE ROOT-CAUSE TRACE.
+NOW PERFORM A QUALITY REVIEW OF THE ACTUAL SEC + WEB PRESET ITSELF.
 
-DO NOT REPEAT PHASE 1 OR PHASE 2.
+IMPORTANT:
 
-DO NOT INVESTIGATE STEPS 1–2.4 AGAIN.
+This is NOT another architecture exercise.
 
-DO NOT CREATE MORE ARCHITECTURE.
+Do NOT redesign RPR.
+Do NOT revisit Steps 1–2.4.
+Do NOT create new frameworks.
+Do NOT make changes merely because something could be architecturally cleaner.
 
-DO NOT ASK ME TO MANUALLY PASTE TOKENS.
+The objective is much narrower:
 
-DO NOT ASK ABOUT PRESET UUID.
+Determine whether the SEC + WEB preset we created is actually the BEST HIGH-QUALITY Step 2.5 preset for this RPR POC, now that you understand the real data flow and implementation.
 
-The latest execution trace is accepted as authoritative.
+I want you to critically review:
 
-============================================================
-PROVEN CURRENT STATE
-============================================================
+1. THE PRESET PROMPT
+2. THE JSON OUTPUT SCHEMA
+3. THE KNOWLEDGE .MD FILE(S)
+4. THE FIVE INPUT FIELDS
+5. THEIR MAPPING TO REAL RPR DATA
+6. THE MODEL/TOOLS CONFIGURATION
+7. WHETHER THE PRESET WILL PRODUCE THE CREDIT-RISK QUALITY WE EXPECT
 
-ACTIVE ENGINE:
-stylus
+Do NOT automatically defend the current design because we created it earlier.
 
-RPR_STEP25_ASSESSMENT_ENGINE=stylus
+Challenge it.
 
-REAL UPSTREAM RPR FLOW:
-WORKING
-
-Verified real case:
-
-CAGID:
-0000014508
-
-COMPANY:
-APPLE INC
-
-CIK:
-0000320193
-
-Step 2.3:
-6 CONFIRMED real factors
-
-Step 2.4:
-5 CONFIRMED real factors
-
-Step 2.5 context:
-upstream_ready=true
-
-Therefore Steps 1–2.4 and Step 2.5 context registration are NOT the current problem.
+If something should change, say so clearly and explain why.
 
 ============================================================
-EXACT CURRENT FAILURE ROUTE
+CONTEXT — WHAT STEP 2.5 MUST ACHIEVE
 ============================================================
 
-Current POST /api/v1/rpr/step25/run executes:
+Step 2.5 is not a generic research or summarization feature.
 
-router.py::run_step25()
-    ->
-config.py::local_live_blockers()
-    ->
-config.py::poc_stylus_blockers()
-    ->
-3 configuration blockers
-    ->
-HTTP 409
+It is a high-quality company-specific credit-risk assessment using:
 
-Therefore execution NEVER currently reaches:
+REAL Step 2.2 company
+        +
+REAL Step 2.3 Event-Driven Risk Factors
+        +
+REAL Step 2.4 Sector-Inherent Risk Factors
+        +
+REAL SEC evidence
+        +
+REAL approved web evidence
+        ↓
+analytically useful credit assessment
 
-stylus_engine.py::run_stylus_poc()
+The users are expected to be sophisticated CCR / credit-risk users.
 
-and NEVER reaches:
+Therefore the preset must produce analysis that is:
 
-stylus_runner_client.py::call_stylus_preset()
+- accurate
+- company-specific
+- event-specific
+- sector-aware
+- evidence-driven
+- materially focused
+- skeptical
+- traceable
+- analytically deep
+- explicit about uncertainty
 
-This is proven.
-
-Do not claim that the preset itself has failed execution.
-
-THE PRESET HAS NOT YET BEEN SENT TO RUNNER.
-
-============================================================
-PROVEN RUNNER CONNECTIVITY
-============================================================
-
-Direct Runner connectivity test returned HTTP 401.
-
-That proves:
-
-DNS = PASS
-TLS = PASS
-NETWORK = PASS
-PROXY/PATH = PASS
-RUNNER SERVICE REACHABLE = PASS
-
-401 is an authentication rejection, not a connectivity failure.
-
-The secureaccess OAuth endpoint is also reachable.
-
-DO NOT investigate VPN, proxy, TLS certificates or networking further unless a future execution gives a different failure.
+It must NOT produce generic LLM prose.
 
 ============================================================
-CURRENT THREE BLOCKERS
+VERY IMPORTANT DISTINCTION
 ============================================================
 
-BLOCKER 1:
-RPR_STEP25_RUNNER_CLIENT_ID is unset.
+This remains a POC from an ENGINEERING perspective.
 
-BLOCKER 2:
-No current Runner authentication material exists in this session:
+We do NOT require:
+- production architecture
+- generalized schemas for every future use case
+- scalable preset management
+- excessive abstraction
+- unnecessary fields
 
-GENAI_BEARER_TOKEN = NOT SET
-GENAI_REFRESH_TOKEN = NOT SET
+BUT:
 
-RPR cached bearer token = NOT PRESENT
-RPR cached refresh token = NOT PRESENT
+QUALITY OF THE FEATURE MUST BE VERY HIGH.
 
-colleague app token cache = NOT PRESENT
-colleague app refresh cache = NOT PRESENT
-
-BLOCKER 3:
-SEC + WEB preset definition is still:
-
-verified: false
-
-with PENDING_CAPTURE fields and unverified candidate input names.
-
-Treat these as THREE SEPARATE CONDITIONS.
+Do not simplify the analytical requirements merely because this is a POC.
 
 ============================================================
-IMPORTANT COLLEAGUE APP FINDING
+ARTIFACTS TO REVIEW
 ============================================================
 
-The colleague app and RPR use essentially the SAME authentication priority:
+Inspect the ACTUAL current versions, not your memory of them.
+
+At minimum review:
+
+- preset_knowledge/STYLUS_SEC_WEB_PRESET_DEFINITION.yaml
+- Step25Assessment.schema.json
+- preset_knowledge/RPR_STEP25_FIELD_DICTIONARY.md
+- preset_knowledge/PRESET_PREVIEW_INPUTS.md
+- any SEC + WEB knowledge Markdown file actually attached/intended for Stylus
+- the actual five Stylus input names
+- the current Step 2.5 model/schema classes
+- existing Step 2.5 UI requirements
+- actual Step 2.3 output shape
+- actual Step 2.4 output shape
+
+If the real Stylus preset request has now been captured, use the ACTUAL:
 
-1. bearer token from environment
-2. cached bearer token
-3. refresh token from environment -> OAuth exchange
-4. cached refresh token -> OAuth exchange
-
-Therefore:
-
-THE COLLEAGUE APP DOES NOT CURRENTLY HAVE A SECRET ALTERNATIVE AUTH FLOW.
-
-If launched fresh on this workstation right now, it would encounter the same missing-token condition.
-
-However, one concrete difference exists:
-
-COLLEAGUE APP:
-has a Runner OAuth client_id already defined/configured.
-
-RPR:
-expects RPR_STEP25_RUNNER_CLIENT_ID and it is unset.
-
-This difference must now be resolved with the minimum POC change.
-
-============================================================
-TASK 1 — RESOLVE THE RUNNER CLIENT ID
-============================================================
-
-Inspect the colleague app's Runner client_id definition.
-
-Determine:
-
-1. Is this an ordinary OAuth client identifier rather than a client secret?
-2. Is it the same Runner/OAuth application RPR should use?
-3. Is the same identifier used with:
-   https://workspaces.genai.citi.net/runner-service
-   and
-   https://secureaccess.../as/token.oauth2
-
-4. Is there any evidence that RPR needs a DIFFERENT client_id?
-
-Do not print secret values.
-
-The client ID itself may be reported only if it is clearly a non-secret OAuth application identifier already present in source code.
-
-POC RULE:
-
-If the colleague app's existing client_id is the correct approved Runner application ID and no evidence says RPR requires a different one:
-
-REUSE IT.
-
-Do not force the user to configure a new environment variable unnecessarily.
-
-The simplest acceptable POC solution is:
-
-RPR_STEP25_RUNNER_CLIENT_ID env override if supplied
-        otherwise
-existing colleague-approved Runner client_id
-
-Do NOT create configuration infrastructure.
-
-Do NOT create another secrets system.
-
-If this requires only a tiny change in config.py, make that tiny change.
-
-============================================================
-TASK 2 — FIND HOW THE AUTH CACHE WAS ORIGINALLY POPULATED
-============================================================
-
-This is now the MOST IMPORTANT investigation.
-
-The colleague app previously worked.
-
-Its code reads a cached/environment token mechanism.
-
-Today those cache files are absent.
-
-Therefore determine HOW that authentication state was originally created.
-
-Search the ENTIRE available project/workspace for references to:
-
-.runner_token
-.runner_refresh_token
-step25_runner_auth
-GENAI_BEARER_TOKEN
-GENAI_REFRESH_TOKEN
-token.oauth2
-load_backend_token
-load_current_user_token
-refresh_token
-secureaccess
-client_id
-OAuth
-login
-authenticate
-signin
-bootstrap
-token cache
-token write
-write_text
-Set-Content
-Out-File
-
-Also inspect:
-
-- colleague app folder
-- scripts
-- launchers
-- PowerShell files
-- README/instructions
-- RUNTIME_ENV.ps1
-- start_backend scripts
-- previous Runner utilities
-- pe-sponsor-search
-- any approved internal GenAI helper/client
-- environment-loading code
-
-We are looking specifically for the EXISTING APPROVED TOKEN BOOTSTRAP.
-
-I want:
-
-AUTH_BOOTSTRAP_FOUND =
-YES / NO
-
-If YES:
-
-SOURCE =
-<file/function/script>
-
-FLOW =
-<sanitized description>
-
-USER_ACTION =
-<if any>
-
-CACHE_CREATED =
-<file path>
-
-Then USE IT.
-
-Do not invent another OAuth implementation.
-
-============================================================
-TASK 3 — CHECK WHETHER AUTH EXISTS OUTSIDE THIS CHILD SHELL
-============================================================
-
-The Claude terminal may not inherit the same environment as the normal RPR/browser/user session.
-
-Without exposing values, inspect whether authentication is available through:
-
-- parent/user environment
-- existing PowerShell launcher
-- existing RUNTIME_ENV.ps1
-- normal project startup process
-- approved GenAI CLI/helper
-- colleague application launcher
-
-Only report:
-
-AVAILABLE / NOT_AVAILABLE
-
-Never echo tokens.
-
-If the normal existing launcher loads authentication, use that launcher rather than requiring manual token assignment.
-
-============================================================
-TASK 4 — DO NOT ASK FOR A TOKEN YET
-============================================================
-
-Do NOT ask the user:
-
-"Do you have a bearer token?"
-
-Do NOT ask:
-
-"Can you give me GENAI_REFRESH_TOKEN?"
-
-Do NOT ask them to copy authentication headers from DevTools.
-
-First exhaust the approved existing bootstrap mechanisms identified above.
-
-If no existing bootstrap exists anywhere in the available code/environment, report that precisely.
-
-But do not build a new production authentication system.
-
-============================================================
-TASK 5 — PRESET BLOCKER: SOLVE SEPARATELY
-============================================================
-
-Authentication and preset configuration are independent.
-
-The real SEC + WEB Stylus preset definition is still not available locally.
-
-Before asking for DevTools capture, check ONE LAST TIME whether the Stylus UI itself offers:
-
-- Export
-- Copy JSON
-- View configuration
-- API example
-- Copy request
-- Developer details
-- Run details
-
-If an easy built-in export exists, use that.
-
-Otherwise the user will perform the ONE-TIME DevTools capture.
-
-Required action:
-
-SEC + WEB Stylus preset
-    ->
-F12
-    ->
-Network
-    ->
-clear requests
-    ->
-run preset once
-    ->
-select POST .../runner-service/chat
-    ->
-Payload / Request Body
-
-Need ONLY the non-secret REQUEST BODY.
-
-DO NOT request:
-
-Authorization header
-bearer token
-refresh token
-cookies
-session identifiers
-credentials
-
-============================================================
-TASK 6 — EXACT PRESET CONTENT REQUIRED
-============================================================
-
-From the real Stylus request obtain:
-
-- top-level model
-- message/messageParts wrapper
-- complete preset object
 - prompt
-- defaultModel/model
-- toolConfig
+- model
 - tools
-- knowledge configuration
+- knowledge
 - inputs
-- answers
-- output/schema settings
-- any other non-secret runtime fields
+- output requirements
 
-MOST IMPORTANT:
-
-the exact five case-sensitive inputs[].name values.
-
-No guessing.
-No renaming.
-No candidate values once the capture is available.
-
-Populate:
-
-preset_knowledge/STYLUS_SEC_WEB_PRESET_DEFINITION.yaml
-
-Replace PENDING_CAPTURE fields.
-
-Then:
-
-verified: true
-
-Do NOT create another preset abstraction.
+as the source of truth.
 
 ============================================================
-TASK 7 — TEST PRESET ACCESSIBILITY SEPARATELY
+PART 1 — REVIEW THE PRESET PROMPT
 ============================================================
 
-Once:
+Read the complete current SEC + WEB prompt.
 
-AUTH_READY = YES
+Do not simply summarize it.
 
-and
+Evaluate whether it gives the model sufficient instructions to produce a serious credit-risk assessment.
 
-PRESET_VERIFIED = YES
+Score each area:
 
-test the preset independently BEFORE involving RPR.
+PASS
+PARTIAL
+FAIL
 
-Use the existing:
+Evaluate:
 
-stylus_runner_client.py
+A. ROLE
 
-or the smallest existing smoke-test mechanism.
+Does the prompt establish the correct analytical role?
 
-Supply safe representative values to the exact five inputs.
+The model should behave closer to a senior credit-risk / CCR analyst than a general researcher.
 
-Report:
+------------------------------------------------------------
+B. OBJECTIVE
 
-ISOLATED_PRESET_REQUEST_SENT =
-YES/NO
+Is the actual objective explicit?
 
-RUNNER_HTTP_STATUS =
+It should be clear that the model is translating an external event + sector exposure + company fundamentals into CREDIT RISK.
+
+Not simply:
+"research this company."
+
+------------------------------------------------------------
+C. STEP 2.3 INTEGRATION
+
+Does the prompt explicitly tell the model how to use the Event-Driven Risk Factors?
+
+Does it require the model to test each material Step 2.3 factor against company-specific evidence?
+
+Could the model currently ignore Step 2.3 and still technically answer?
+
+If yes, that is a weakness.
+
+------------------------------------------------------------
+D. STEP 2.4 INTEGRATION
+
+Same question for Sector-Inherent Risk Factors.
+
+Does Step 2.4 actually influence the analysis?
+
+Or is it merely supplied as context that the model may ignore?
+
+------------------------------------------------------------
+E. COMPANY-SPECIFICITY
+
+Does the prompt prevent generic sector analysis from being reported as company-specific analysis?
+
+Does it require explicit evidence of company exposure?
+
+------------------------------------------------------------
+F. SEC DISCIPLINE
+
+Does it clearly direct the model toward the most relevant company filings/evidence?
+
+Where relevant, consider:
+
+- 10-K
+- 10-Q
+- 8-K
+- debt disclosures
+- liquidity
+- cash
+- revolvers
+- maturities
+- covenant disclosure
+- risk factors
+- segment exposures
+- cash-flow information
+- leverage/funding information
+- material events
+
+Do NOT require irrelevant filings mechanically.
+
+------------------------------------------------------------
+G. WEB RESEARCH QUALITY
+
+Does the prompt tell the model what constitutes acceptable web evidence?
+
+Does it prioritize:
+- authoritative sources
+- company releases
+- regulators
+- rating agencies where accessible
+- credible financial press
+- reliable industry sources
+
+over weak sources?
+
+------------------------------------------------------------
+H. RECENCY
+
+Does the prompt appropriately prioritize information around the event/assessment date?
+
+Can stale information dominate the assessment?
+
+------------------------------------------------------------
+I. CREDIT TRANSLATION
+
+This is critical.
+
+Does the prompt force translation into:
+
+FACT
+    ->
+TRANSMISSION MECHANISM
+    ->
+CREDIT CONSEQUENCE
+
+Where relevant:
+
+event
+→ revenue/margin/cash-flow impact
+→ liquidity/leverage/refinancing implications
+→ credit consequence
+
+If the model could simply summarize evidence without making this translation, mark PARTIAL/FAIL.
+
+------------------------------------------------------------
+J. MATERIALITY
+
+Does the prompt prevent the model from flooding the report with immaterial facts?
+
+Does it prioritize what could change:
+- credit view
+- exposure management
+- rating
+- limits
+- headroom
+- escalation
+- portfolio monitoring
+
+------------------------------------------------------------
+K. COUNTER-THESIS
+
+Does the prompt explicitly require disconfirming evidence?
+
+Not a token sentence.
+
+The model should search for evidence that could invalidate or reduce the prevailing risk thesis.
+
+------------------------------------------------------------
+L. CONFLICT HANDLING
+
+Does it adequately handle conflicting sources/figures?
+
+------------------------------------------------------------
+M. EVIDENCE CLASSIFICATION
+
+Does it properly distinguish:
+
+REPORTED
+DERIVED
+ANALYTICAL ASSESSMENT
+NOT EVIDENCED
+
+------------------------------------------------------------
+N. NUMERICAL DISCIPLINE
+
+For material quantitative claims, does the prompt require where applicable:
+
+value
+unit
+period/window
+source
+publication/filing date
+
+And arithmetic for important derived values?
+
+------------------------------------------------------------
+O. NAMED-ENTITY DISCIPLINE
+
+Does it prevent inference of unnamed companies/parties?
+
+------------------------------------------------------------
+P. HALLUCINATION CONTROL
+
+Are instructions strong enough to prevent:
+- invented facts
+- invented sources
+- invented SEC details
+- invented ratings
+- invented covenants
+- invented CIKs
+- false precision
+
+------------------------------------------------------------
+Q. ACTIONABILITY
+
+Would the resulting output actually help someone make a credit-risk decision?
+
+============================================================
+PART 2 — REVIEW THE FIVE INPUT FIELDS
+============================================================
+
+Now inspect the ACTUAL five Stylus inputs.
+
+For each field provide:
+
+EXACT NAME:
 ...
 
-RUNNER_ACCEPTED_PRESET =
-YES/NO
-
-MODEL_STARTED =
-YES/NO
-
-SEC_TOOL_CALLED =
-YES/NO
-
-WEB_TOOL_CALLED =
-YES/NO
-
-RESPONSE_RECEIVED =
-YES/NO
-
-SEC_EVIDENCE_FOUND =
-YES/NO
-
-WEB_EVIDENCE_FOUND =
-YES/NO
-
-FAILURE_STAGE =
-<exact stage if failed>
-
-This tells us whether the SEC + WEB preset itself works.
-
-============================================================
-TASK 8 — THEN RUN REAL RPR STEP 2.5
-============================================================
-
-After the isolated preset test succeeds, execute the actual RPR flow.
-
-Use the already-registered real context:
-
-CAGID:
-0000014508
-
-APPLE INC
-
-CIK:
-0000320193
-
-6 actual Step 2.3 factors
-
-5 actual Step 2.4 factors
-
-Run:
-
-POST /api/v1/rpr/step25/run
-
-Trace:
-
-01 ROUTE_ENTERED
-02 ENGINE_STYLUS
-03 CONTEXT_PRESENT
-04 COMPANY_CONFIRMED
-05 CIK_CONFIRMED
-06 STEP23_PRESENT
-07 STEP24_PRESENT
-08 BLOCKERS_EMPTY
-09 PRESET_LOADED
-10 PRESET_VERIFIED
-11 FIVE_INPUTS_MAPPED
-12 RUNNER_CLIENT_CREATED
-13 AUTH_READY
-14 REQUEST_CONSTRUCTED
-15 REQUEST_SENT
-16 RUNNER_RESPONSE
-17 SSE_PARSED
-18 SEC_EVIDENCE
-19 WEB_EVIDENCE
-20 STEP25_SCHEMA_VALID
-21 UI_RESPONSE_RETURNED
-
-Do not manufacture PASS.
-
-============================================================
-TASK 9 — EXACT FIVE-INPUT MAPPING
-============================================================
-
-Once the real preset is captured, prove for each field:
-
-EXACT INPUT NAME
-RPR SOURCE
-VALUE TYPE
-TRANSFORMATION
-VALIDATION
-
-The actual RPR upstream data must be used.
-
-Step 2.3 must come from the confirmed 6 real factors.
-
-Step 2.4 must come from the confirmed 5 real factors.
-
-Do not regenerate generic Apple factors.
-
-============================================================
-TASK 10 — STRICT STEP 2.5 QUALITY
-============================================================
-
-Technical execution alone is not enough.
-
-The resulting assessment must be high-quality.
-
-It must:
-
-- assess the actual Step 2.2 company
-- use real Step 2.3 event factors
-- use real Step 2.4 sector factors
-- retrieve real SEC data
-- retrieve real web data
-- translate facts into credit risk
-- explain direction
-- explain materiality
-- identify liquidity/leverage/refinancing/rating effects where relevant
-- identify mitigants
-- identify counter-evidence
-- identify evidence gaps
-- retain real citations/provenance
-- avoid hallucinations
-
-Do NOT accept generic company summarization.
-
-============================================================
-TASK 11 — DO NOT STOP AFTER AUTH
-============================================================
-
-Once auth is fixed:
-
-CONTINUE.
-
-Do not stop and produce another status report.
-
-Once preset is populated:
-
-CONTINUE.
-
-Once Runner returns HTTP 200:
-
-CONTINUE.
-
-Once schema validates:
-
-CONTINUE.
-
-Stop only after Step 2.5 reaches the existing UI OR one genuinely external human-only blocker remains.
-
-============================================================
-EXPECTED IMMEDIATE OUTPUT
-============================================================
-
-First complete TASKS 1–4.
-
-Then report:
-
-CLIENT_ID:
-SOURCE =
-...
-COLLEAGUE/RPR COMPATIBLE =
-YES/NO
-ACTION =
+INTENDED PURPOSE:
 ...
 
-AUTH BOOTSTRAP:
-FOUND =
-YES/NO
-SOURCE =
-...
-ACTION =
+CURRENT RPR SOURCE:
 ...
 
-CURRENT AUTH:
-READY =
-YES/NO
+ACTUAL DATA RECEIVED:
+...
 
-PRESET:
-VERIFIED =
-YES/NO
+IS THIS A GOOD DESIGN?
+YES / PARTIAL / NO
 
-Then continue automatically with the next executable task.
+PROBLEM:
+...
 
-DO NOT ASK ME ANOTHER OPEN-ENDED QUESTION.
+RECOMMENDATION:
+...
 
-If preset capture is the only human action remaining, say exactly:
+Specifically determine whether the five inputs collectively transmit ALL important information from:
 
-ONLY HUMAN ACTION REMAINING:
-<one-line DevTools capture instruction>
+- Step 2.2
+- Step 2.3
+- Step 2.4
 
-and nothing speculative.
+without:
+- losing material context
+- duplicating huge amounts of unnecessary text
+- mixing unrelated semantics
+- requiring the LLM to reverse-engineer JSON it should not need to reverse-engineer
 
-============================================================
-POC ENGINEERING RULE
-============================================================
+Do not change the number of inputs simply for elegance.
 
-USE THE SIMPLEST WORKING SOLUTION.
-
-A separate production team may rebuild everything.
-
-Do not create production architecture.
-
-But maintain very high:
-
-DATA QUALITY
-ANALYTICAL QUALITY
-EVIDENCE QUALITY
-UX QUALITY
+But if one of the five fields is poorly defined or materially harms the assessment, say so.
 
 ============================================================
-START NOW
+PART 3 — REVIEW Step25Assessment.schema.json
 ============================================================
 
-Resolve the colleague client-ID difference.
+Now critically review the current JSON schema.
 
-Find the original approved authentication bootstrap.
+Question:
 
-Do not touch upstream RPR.
+DOES THE SCHEMA CAPTURE WHAT A HIGH-QUALITY STEP 2.5 ANALYSIS ACTUALLY NEEDS?
 
-Then separately prove preset accessibility.
+Do not assume more fields = better schema.
 
-Then run Step 2.5 end-to-end.
+A good POC schema should preserve analytical value while remaining practical.
+
+Evaluate:
+
+A. Does it preserve company identity?
+
+B. Does it connect findings to Step 2.3 factors?
+
+C. Does it connect findings to Step 2.4 factors?
+
+D. Does it capture assessment direction?
+
+E. Does it capture materiality/severity?
+
+F. Does it capture evidence references?
+
+G. Does it preserve uncertainty?
+
+H. Does it capture mitigating/counter-thesis findings?
+
+I. Does it capture conflicting evidence?
+
+J. Does it capture unevidenced/gap areas?
+
+K. Does it support UI rendering cleanly?
+
+L. Does it create unnecessary complexity?
+
+M. Are any required fields likely to force the model to fabricate content?
+
+That last question is especially important.
+
+A field should NOT be required if, in practice, the model frequently lacks evidence and would be tempted to invent a value.
+
+"Not evidenced" may be acceptable where appropriate.
+
+============================================================
+CRITICAL SCHEMA QUESTION
+============================================================
+
+Check whether the schema forces the model into a false sense of precision.
+
+Examples:
+
+- mandatory numerical rating when evidence does not justify it
+- mandatory direction when evidence is ambiguous
+- mandatory evidence ID when no evidence exists
+- mandatory SEC-specific fields for non-SEC evidence
+- mandatory factor assessments even when the factor is immaterial
+
+Identify such problems.
+
+============================================================
+PART 4 — REVIEW THE KNOWLEDGE .MD
+============================================================
+
+Read the actual Markdown knowledge supplied to Stylus.
+
+Determine what its purpose currently is.
+
+It should contain relatively stable RPR domain instructions/definitions that improve the assessment.
+
+It should NOT become a dumping ground for dynamic run-specific data that already arrives through the five inputs.
+
+Evaluate whether it contains the right guidance for:
+
+- Step 2.3 meaning
+- Step 2.4 meaning
+- factor interpretation
+- credit-risk terminology
+- evidence standards
+- materiality
+- direction
+- assessment output semantics
+- JSON field definitions
+- expected treatment of uncertainty
+
+Check for:
+
+- contradictions with the prompt
+- contradictions with JSON schema
+- stale field names
+- duplicated instructions
+- ambiguous terminology
+- excessive content
+- irrelevant material
+
+============================================================
+IMPORTANT KNOWLEDGE RULE
+============================================================
+
+Knowledge should support the model.
+
+It should not fight the prompt.
+
+There should be ONE coherent hierarchy:
+
+PRESET PROMPT
+    ->
+KNOWLEDGE DEFINITIONS
+    ->
+REAL RPR INPUTS
+    ->
+SEC/WEB EVIDENCE
+    ->
+JSON OUTPUT
+
+If the same rule is defined differently in multiple places, identify it.
+
+============================================================
+PART 5 — REVIEW MODEL + TOOLS
+============================================================
+
+Inspect the actual Stylus model/tool configuration.
+
+Evaluate:
+
+MODEL:
+Is the selected model appropriate for the reasoning complexity?
+
+SEC TOOL:
+Is it configured/available correctly?
+
+WEB TOOL:
+Is it configured/available correctly?
+
+KNOWLEDGE:
+Is it actually connected?
+
+OUTPUT:
+Does the model have sufficient instruction to return structured output reliably?
+
+Do NOT recommend a different model simply because a theoretically stronger one exists.
+
+Recommend change only if there is a meaningful POC quality benefit.
+
+============================================================
+PART 6 — TEST AGAINST REAL RPR DATA
+============================================================
+
+If a real Step 2.5 result is now available, use it as the MOST IMPORTANT evidence for this review.
+
+Do not judge the prompt only theoretically.
+
+Use the real result to detect:
+
+- ignored Step 2.3 factors
+- ignored Step 2.4 factors
+- generic prose
+- weak SEC evidence
+- weak web evidence
+- duplicated findings
+- unsupported statements
+- poor materiality ranking
+- missing counter-thesis
+- excessive speculation
+- incorrect credit translation
+- schema fields that produce nonsense
+- evidence that does not support conclusions
+
+============================================================
+IF NO LIVE RESULT EXISTS YET
+============================================================
+
+If Step 2.5 still cannot execute because of authentication/preset availability:
+
+perform the structural review now,
+
+BUT clearly label:
+
+STRUCTURAL REVIEW
+
+and do NOT pretend that output quality has been empirically proven.
+
+After the first real successful Step 2.5 result, repeat ONLY the output-quality portion.
+
+============================================================
+PART 7 — SHOULD WE CHANGE ANYTHING?
+============================================================
+
+Now give me an opinionated recommendation.
+
+Classify every proposed change as:
+
+MUST CHANGE BEFORE POC
+SHOULD CHANGE FOR QUALITY
+OPTIONAL
+DO NOT CHANGE
+
+Do NOT generate a giant wishlist.
+
+Focus only on changes with meaningful impact.
+
+Use this table:
+
+ARTIFACT
+CURRENT ISSUE
+SEVERITY
+WHY IT MATTERS
+EXACT RECOMMENDATION
+CHANGE NOW? YES/NO
+
+Artifacts:
+
+- preset prompt
+- five inputs
+- Step25Assessment.schema.json
+- knowledge .md
+- model
+- SEC tool config
+- web tool config
+- output instructions
+
+============================================================
+PART 8 — CHECK OUR ORIGINAL DESIGN ASSUMPTIONS
+============================================================
+
+Explicitly tell me whether our original manually-created SEC + WEB preset design was:
+
+A. fundamentally sound;
+
+B. sound but needs targeted improvements;
+
+C. materially flawed and should be revised before relying on Step 2.5.
+
+Do NOT choose A simply because implementation already exists.
+
+Explain the evidence.
+
+============================================================
+PART 9 — IMPORTANT: DO NOT CHANGE FILES YET
+============================================================
+
+For THIS review pass:
+
+DO NOT modify:
+
+- preset prompt
+- JSON schema
+- knowledge markdown
+- five input definitions
+- model/tool configuration
+
+unless there is an execution-blocking typo/configuration issue that prevents inspection.
+
+I want the REVIEW FIRST.
+
+This prevents us from creating another unnecessary change loop.
+
+============================================================
+FINAL REQUIRED REPORT
+============================================================
+
+Return exactly these sections:
+
+1. OVERALL VERDICT
+
+Preset design:
+GOOD / NEEDS_TARGETED_IMPROVEMENT / NEEDS_MAJOR_REVISION
+
+Confidence:
+HIGH / MEDIUM / LOW
+
+Reason:
+maximum 5 concise points.
+
+------------------------------------------------------------
+
+2. PROMPT QUALITY
+
+PASS/PARTIAL/FAIL for:
+Role
+Objective
+Step2.3 usage
+Step2.4 usage
+SEC research
+Web research
+Credit translation
+Materiality
+Counter-thesis
+Evidence discipline
+Numerical discipline
+Conflict handling
+Hallucination control
+Actionability
+
+------------------------------------------------------------
+
+3. FIVE INPUT REVIEW
+
+Exact current five fields and whether each is appropriate.
+
+------------------------------------------------------------
+
+4. JSON SCHEMA REVIEW
+
+GOOD / TARGETED_CHANGES / MAJOR_CHANGES
+
+List only material issues.
+
+------------------------------------------------------------
+
+5. KNOWLEDGE .MD REVIEW
+
+GOOD / TARGETED_CHANGES / MAJOR_CHANGES
+
+List only material issues.
+
+------------------------------------------------------------
+
+6. MODEL/TOOLS REVIEW
+
+State whether current:
+model
+SEC
+web
+knowledge
+
+configuration is suitable.
+
+------------------------------------------------------------
+
+7. MUST CHANGE BEFORE POC
+
+Only genuinely necessary items.
+
+If none:
+NONE
+
+------------------------------------------------------------
+
+8. SHOULD CHANGE FOR QUALITY
+
+Targeted improvements only.
+
+------------------------------------------------------------
+
+9. DO NOT CHANGE
+
+Explicitly identify elements that are already good and should be frozen.
+
+------------------------------------------------------------
+
+10. RECOMMENDED FINAL PRESET DESIGN
+
+Do NOT rewrite everything.
+
+Describe only the exact targeted differences you recommend from the existing design.
+
+------------------------------------------------------------
+
+11. NEXT ACTION
+
+Choose exactly one:
+
+KEEP_CURRENT_PRESET_AND_TEST
+
+TARGETED_PRESET_UPDATE_THEN_TEST
+
+MAJOR_PRESET_REVISION_REQUIRED
+
+============================================================
+QUALITY PRINCIPLE
+============================================================
+
+Do not optimize this review for preserving work already done.
+
+Optimize for creating the strongest possible Step 2.5 POC.
+
+At the same time:
+
+do NOT overengineer.
+
+The implementation may be disposable.
+
+The analytical feature cannot be disposable-quality.
