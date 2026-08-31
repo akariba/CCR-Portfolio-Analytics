@@ -1,90 +1,218 @@
-STOP BEFORE USING A FRESH TOKEN. STRICT RPR STEP 2.5 FLOW REQUIREMENT.
+We have enough evidence. Stop analysis, stop searching for old artifacts, stop proposing alternatives.
 
-Your latest report says:
+Current proven state:
 
-upstream_ready=true
+Step 2.2 Apple identity = CONFIRMED
+company_id / CAGID = 0000014508
+CIK = 0000320193
+company = APPLE INC
+Step 2.4 genuine recovered artifact = _tmp_step24_final.json
+Step 2.4 = CONFIRMED
+Step 2.4 factor count = 5/5
+Step 2.3 old candidate file is NOT usable because it is only AI_PROPOSAL and lacks scoring_logic
+Stylus preset contract is configured
+correct preset ID bug is fixed
+Claude Sonnet 5 configured
+SEC + lookup integrations configured
+Stylus-specific SSE timeout = 300s
+token freshness/retry mechanism has already been implemented
+OBJECTIVE
 
-but also:
+Execute a real end-to-end Step 2.5 run now, following the RPR flow strictly.
 
-STEP23_FACTORS_SENT=0/6
+Do NOT use fabricated factors.
 
-STEP24_FACTORS_SENT=0/5
+Do NOT manually patch scoring_logic.
 
-For this RPR POC, that is NOT READY.
+Do NOT run Step 2.5 with zero Step 2.3 factors.
 
-The technical Stylus gate may only require confirmed Step 2.2, but the analytical Step 2.5 contract requires the real confirmed outputs of Step 2.3 and Step 2.4.
+Do NOT modify Step 1–2.4 implementation code.
 
-Do NOT execute Step 2.5 with empty factor arrays.
+Do NOT perform another architecture review.
 
-Do NOT request another fresh token yet.
+Do NOT create another smoke-test substitute.
 
-TASK
+PHASE 1 — REBUILD ONLY THE MISSING REAL UPSTREAM STATE
 
-Restore the exact genuine Apple upstream RPR state:
+Re-establish the real Apple scenario using the existing working RPR endpoints and existing scenario:
 
-company_id/CAGID 0000014508
-CIK 0000320193
-confirmed Step 2.2
-6 genuine Step 2.3 event-driven factors
-5 genuine Step 2.4 sector-inherent factors
+China MOFCOM Ga/Ge/Sb export restrictions / technology supply-chain scenario
 
-We already executed these successfully earlier in this development session:
+Use the existing RPR execution flow, not manually created JSON.
 
-Step 2.3 generated 6 real event-driven risk factors
-Step 2.4 generated 5 real sector-inherent factors and was finalized CONFIRMED
+If Step 2.1 state must be recreated because the server restarted, recreate/register it using the existing Step 2.1 endpoint.
 
-First search the project, terminal history, temporary/evidence JSON, test artifacts, logs, context files and any retained outputs for those exact previously generated factors.
+Confirm Step 2.2 Apple:
 
-Search particularly for:
+company_id = 0000014508
 
-tmp_step23
+CIK = 0000320193
 
-tmp_step24
+Then execute the REAL:
 
-step23
+POST /step2/event-factors/generate
 
-step24
+for Apple and the confirmed scenario.
 
-RF1
+The result must contain 6 real Step 2.3 factors.
 
-factor_count
+Inspect the generated objects before finalization.
 
-0000014508
+Each factor must contain the schema required by the existing Step 2.3 finalizer, including scoring_logic.
 
-0000320193
+Then execute the REAL:
 
-and JSON files containing arrays of 6 and 5 factors.
+POST /step2/event-factors/finalize
 
-If the genuine prior JSON exists, register it through the existing /context mechanism.
+Do not create scoring_logic manually.
 
-If it genuinely no longer exists, regenerate only through the already-working existing Step 2.3 and Step 2.4 endpoints, using the already-confirmed Apple/Step-2.1/Step-2.2 state. Do not invent factors and do not manually reconstruct them.
+Do not alter the factors to make the validator pass.
 
-Do not modify Step 1–2.4 code.
+If the generation itself genuinely returns malformed factors, retry the genuine generation once using the same existing endpoint.
 
-Then verify the actual Step 2.5 payload immediately before Runner execution contains:
+Required result:
 
-EventDrivenF = 6 factors
+STEP23_CONFIRMED = true
 
-SectorInhere = 5 factors
+STEP23_FACTOR_COUNT = 6
 
-and return ONLY:
+PHASE 2 — RESTORE STEP 2.4
 
-STEP22_CONFIRMED = YES/NO
+Use the already-proven genuine:
 
-STEP23_FACTORS_RECOVERED = x/6
+_tmp_step24_final.json
 
-STEP24_FACTORS_RECOVERED = x/5
+Register it through the existing /context mechanism.
 
-STEP23_CONFIRMED = YES/NO
+Required:
 
-STEP24_CONFIRMED = YES/NO
+STEP24_CONFIRMED = true
 
-STEP25_PAYLOAD_EVENT_FACTORS = x
+STEP24_FACTOR_COUNT = 5
 
-STEP25_PAYLOAD_SECTOR_FACTORS = x
+No regeneration of Step 2.4 is needed unless registration itself proves impossible.
 
-READY_FOR_FRESH_TOKEN = YES/NO
+PHASE 3 — PROVE THE ACTUAL STEP 2.5 INPUT
 
-READY_FOR_FRESH_TOKEN may be YES only when the values are 6/6 and 5/5.
+Immediately before execution, inspect the exact five values that call_stylus_preset() will send.
 
-Do not execute /step25/run yet. Stop after proving the payload.
+Required:
+
+companycontextjson = real confirmed Apple Step 2.2 context
+
+EventDrivenF = 6 finalized Step 2.3 factors
+
+SectorInhere = 5 finalized Step 2.4 factors
+
+AssessmentAS = current assessment date
+
+EvidenceWind = configured evidence window
+
+HARD GATE:
+
+STEP25_PAYLOAD_EVENT_FACTORS == 6
+STEP25_PAYLOAD_SECTOR_FACTORS == 5
+
+If either is wrong, DO NOT execute Step 2.5.
+
+PHASE 4 — TOKEN AND IMMEDIATE EXECUTION
+
+Use the token-management implementation already created.
+
+Do not redesign authentication.
+
+Do not print the bearer token.
+
+First use any currently available valid token according to the existing freshness gate.
+
+If the current token is expired or has insufficient remaining lifetime, finish all upstream registration first and stop at exactly:
+
+NEED_FRESH_TOKEN_NOW
+
+Nothing else.
+
+If a valid token is available, immediately execute the REAL:
+
+POST /api/v1/rpr/step25/run
+
+Do not run another smoke test first.
+
+This must be the real Apple Step 2.5 run.
+
+Allow the full Stylus execution to complete. The SEC/web tool rounds can take several minutes.
+
+Do not abort merely because SSE events arrive slowly.
+
+PHASE 5 — RESULT VALIDATION
+
+When Step 2.5 completes:
+
+capture the complete final model response;
+extract the Step 2.5 JSON;
+validate it against the configured Step2.5Assessment schema;
+prove SEC lane activity where observable;
+prove web evidence/search activity where observable;
+confirm all 6 Step 2.3 factors were assessed;
+confirm all 5 Step 2.4 factors were assessed;
+save the genuine Step 2.5 output to disk so it survives server restart.
+
+Do not silently accept malformed JSON.
+
+Do not substitute a smoke-test response.
+
+Do not call a run successful merely because Runner returned HTTP 200.
+
+Success means a real analytical Step 2.5 assessment was returned and schema-validated.
+
+FREEZE RULE
+
+No refactoring.
+
+No cleanup.
+
+No architecture changes.
+
+No Step 1–2.4 code changes.
+
+Preserve every currently working Step 2.5 contract/auth/preset fix.
+
+Only make a code change if an actual runtime failure proves that a minimal Step 2.5-specific fix is necessary.
+
+EXECUTE
+
+Start now.
+
+Do not give me another plan.
+
+Do not ask permission between phases.
+
+Continue automatically from Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5.
+
+Stop only for:
+
+NEED_FRESH_TOKEN_NOW
+
+or after the genuine Step 2.5 result is obtained.
+
+Final report must be ONLY:
+
+STEP22_CONFIRMED =
+STEP23_CONFIRMED =
+STEP23_FACTOR_COUNT =
+STEP24_CONFIRMED =
+STEP24_FACTOR_COUNT =
+STEP25_EVENT_FACTORS_SENT =
+STEP25_SECTOR_FACTORS_SENT =
+TOKEN_ACCEPTED =
+RUNNER_HTTP_STATUS =
+PRESET_EXECUTED =
+SEC_TOOL_ACTIVITY =
+WEB_TOOL_ACTIVITY =
+STEP25_JSON_RETURNED =
+STEP25_SCHEMA_VALID =
+ANALYTICAL_RESULT_REAL =
+OUTPUT_FILE =
+FINAL_STATUS = SUCCESS / BLOCKED
+BLOCKER = <exact blocker or NONE>
+
+Execute now.
