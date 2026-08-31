@@ -1,42 +1,34 @@
 {
-  "test_type": "MANUAL_PRESET_SMOKE_TEST",
-  "scenario": "China MOFCOM Ga/Ge/Sb export restrictions and technology supply-chain disruption",
+  "sector": {
+    "l1": "Tech Media Telecom",
+    "l2": "Technology",
+    "l3": "Software"
+  },
   "factors": [
     {
       "factor_id": "RF1",
-      "name": "Critical mineral and semiconductor supply availability",
-      "importance": "HIGH",
-      "rationale": "Export restrictions may reduce availability of materials and semiconductor-related inputs required across technology supply chains."
+      "name": "Cybersecurity Vulnerabilities",
+      "details": "Software flaws are a primary target for cyberattacks, and a significant breach can damage reputation and lead to customer loss."
     },
     {
       "factor_id": "RF2",
-      "name": "Input cost and gross-margin pressure",
-      "importance": "HIGH",
-      "rationale": "Scarcity, supplier substitution and rerouting may raise component and procurement costs and pressure margins."
+      "name": "Talent Acquisition",
+      "details": "Intense competition for skilled software developers and engineers can drive up operating costs."
     },
     {
       "factor_id": "RF3",
-      "name": "Supplier concentration and China supply-chain dependency",
-      "importance": "HIGH",
-      "rationale": "Reliance on geographically concentrated suppliers can amplify disruption from trade controls and geopolitical measures."
+      "name": "High Customer Switching Costs (Vendor Lock-in)",
+      "details": "Vendor lock-in may become a risk if it causes customer dissatisfaction and eventual migration to competitors."
     },
     {
       "factor_id": "RF4",
-      "name": "Production and product-launch disruption",
-      "importance": "HIGH",
-      "rationale": "Component shortages or qualification delays may affect manufacturing schedules, product availability and revenue timing."
+      "name": "Pace of Innovation",
+      "details": "Failure to keep pace with technological developments such as AI integration can lead to product obsolescence."
     },
     {
       "factor_id": "RF5",
-      "name": "Inventory and working-capital response",
-      "importance": "MEDIUM",
-      "rationale": "Mitigation through inventory accumulation or alternative sourcing may increase working-capital requirements and procurement complexity."
-    },
-    {
-      "factor_id": "RF6",
-      "name": "Trade escalation and market-access risk",
-      "importance": "MEDIUM",
-      "rationale": "Broader retaliatory trade measures could affect supply chains, costs, demand and access to important geographic markets."
+      "name": "Competition",
+      "details": "The software market is highly competitive, with pressure from established competitors and new entrants."
     }
   ]
 }
