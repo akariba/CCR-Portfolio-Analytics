@@ -1,451 +1,246 @@
-STRICT EXECUTION MODE — STEP 2.5 ONLY.
+STRICT EXECUTION ONLY. NO ARCHITECTURE. NO REFACTORING.
 
-DO NOT INVESTIGATE AGAIN.
-DO NOT REDESIGN.
-DO NOT REFACTOR.
-DO NOT CREATE NEW AUTH ARCHITECTURE.
-DO NOT CHANGE STEPS 1–2.4.
-DO NOT CHANGE COMPANY RESOLUTION.
-DO NOT ASK ME TO PASTE THE TOKEN INTO CHAT.
-DO NOT STOP AT PREFLIGHT IF THE BLOCKER CAN BE RESOLVED LOCALLY.
+Your last report is accepted.
 
-The Stylus preset contract is now configured and verified.
+The preset configuration is now COMPLETE and is NOT the problem.
 
-Known current state:
-- Stylus preset definition = configured
-- verified = true
+Known state:
+- PRESET_CONFIGURED = YES
+- preset verified = true
 - model = claude-sonnet-5
-- temperature = 1
-- outer tool_config integrations =
-  ["lookup_documentation", "sec_filing"]
-- required SEC integration = sec_filing
-- exact 5 Runner-side input names are already captured
-- preset prompt is populated
-- preset knowledge is populated
-- Step 2.5 Runner request contract has already been corrected
-- remaining execution blocker was Runner bearer authentication
-- a valid current-user Runner bearer token is presently copied in the Windows clipboard from the successful live Stylus browser request
+- Runner request contract = configured
+- SEC + web integrations = configured
+- company identity = APPLE INC
+- CAGID = 0000014508
+- CIK = 0000320193
+- only auth failed because the clipboard token was expired
+- Step 2.3/2.4 disappeared only because the restarted server lost its in-memory context
+
+DO NOT modify architecture.
+DO NOT modify Steps 1–2.4 code.
+DO NOT create persistence.
+DO NOT create helper frameworks.
+DO NOT investigate the preset again.
+DO NOT change company resolution.
 
 ============================================================
-TASK 1 — LOAD THE TOKEN DIRECTLY FROM CLIPBOARD
+1. WAIT FOR FRESH TOKEN IN CLIPBOARD
 ============================================================
 
-Use the VS Code PowerShell terminal.
+I will obtain a FRESH Runner bearer token from a NEW successful Stylus browser request.
 
-Do NOT print the token.
+I will copy it locally to the Windows clipboard.
 
-Execute:
+Do NOT ask me to paste the token into chat.
 
-$raw = (Get-Clipboard).Trim()
+Once I tell you "TOKEN COPIED", immediately read it from clipboard using the same working extraction logic you just proved.
 
-if ($raw -match '^Bearer\s+') {
-    $raw = $raw -replace '^Bearer\s+', ''
-}
+Strip "Bearer " if present.
 
-$env:GENAI_BEARER_TOKEN = $raw
-$raw = $null
+Set:
 
-Then verify ONLY presence:
+$env:GENAI_BEARER_TOKEN = <fresh JWT>
 
-if ($env:GENAI_BEARER_TOKEN) {
-    Write-Host "RUNNER_TOKEN_READY"
-} else {
-    Write-Host "RUNNER_TOKEN_MISSING"
-}
+DO NOT print the token.
 
-Expected:
-RUNNER_TOKEN_READY
+Only verify:
 
-If ready, CONTINUE AUTOMATICALLY.
+TOKEN_PRESENT = YES
 
-Do not ask me another question.
+Optionally decode the public exp claim and verify:
+
+TOKEN_EXPIRED = NO
+
+If valid, continue immediately.
 
 ============================================================
-TASK 2 — START/RESTART THE STEP 2.5 STYLUS BACKEND
+2. RECREATE THE REAL APPLE UPSTREAM CONTEXT
 ============================================================
 
-Use the current RPR root:
+Because the restarted server lost the previous in-memory context, regenerate/re-register it using ONLY THE EXISTING RPR FLOW.
 
-C:\Users\ak54743\Downloads\OneDrive_2026-07-16\Rapid Portfolio Review_AI
+Do not create fake JSON manually.
 
-Start using the already-existing launcher and current Stylus configuration.
+Use the already-working endpoints/code paths.
 
-Use the same PowerShell process/environment containing GENAI_BEARER_TOKEN.
+Target company:
 
-Expected equivalent:
-
-.\start_backend_direct_runner_poc.ps1 -Engine stylus -Port 8020
-
-Do not invent a new launcher.
-
-Wait until the backend is responsive.
-
-============================================================
-TASK 3 — PREFLIGHT
-============================================================
-
-Call:
-
-GET http://127.0.0.1:8020/api/v1/rpr/step25/preflight
-
-Report the relevant fields only:
-
-assessment_engine
-runner_client_id_configured
-runner_token_available
-preset configured/verified state
-poc_stylus_blockers
-
-Required target:
-
-assessment_engine = stylus
-runner_client_id_configured = true
-runner_token_available = true
-preset configured = true
-preset verified = true
-poc_stylus_blockers = []
-
-If this target is reached:
-CONTINUE IMMEDIATELY.
-
-============================================================
-TASK 4 — RESTORE REAL APPLE RPR CONTEXT IF SERVER RESTART LOST IT
-============================================================
-
-The previous real RPR test established:
-
-Step 2.2:
-Company = APPLE INC
+APPLE INC
 CAGID = 0000014508
 CIK = 0000320193
-SEC status = CIK_CONFIRMED
 
-Step 2.3:
-6 confirmed event-driven factors
+Recreate:
 
-Step 2.4:
-5 confirmed sector-inherent factors
-governed sector = Software
+Step 2.3
+- run existing Step 2.3 generation for the existing selected scenario/company
+- finalize it through the existing endpoint
+- expected approximately 6 real event-driven factors
+- state must become CONFIRMED
 
-The server restart previously cleared the in-memory Step 2.5 context.
+Step 2.4
+- run existing Step 2.4 generation
+- finalize it through the existing endpoint
+- expected approximately 5 real sector-inherent factors
+- state must become CONFIRMED
 
-This is NOT a Stylus problem.
+Do not modify Step 2.3 or Step 2.4 code.
 
-Restore/register the already-generated real Step 2.2 / Step 2.3 / Step 2.4 artifacts into the current server using the EXISTING /context contract.
+Then register the real current context through the existing Step 2.5 /context route.
 
-Do NOT regenerate Steps 1–2.4 unless absolutely necessary.
+Verify:
 
-Prefer the real JSON artifacts already produced in this repo/session.
-
-You previously retained the relevant JSON evidence artifacts.
-
-Find and reuse them.
-
-Required resulting state:
-
-company_id = 0000014508
-company_name = APPLE INC
-confirmed_cik = 0000320193
-Step 2.3 confirmed = true
-Step 2.3 factor count = 6
-Step 2.4 confirmed = true
-Step 2.4 factor count = 5
+company = APPLE INC
+CAGID = 0000014508
+CIK = 0000320193
+step23_confirmed = true
+step23_factor_count > 0
+step24_confirmed = true
+step24_factor_count > 0
 upstream_ready = true
 
-Verify through the existing workflow/context endpoint.
-
 ============================================================
-TASK 5 — ISOLATED REAL RUNNER TEST FIRST
+3. RUN ISOLATED STYLUS TEST
 ============================================================
 
-Before blaming the RPR route, execute the existing isolated Stylus transport test using the REAL configured preset and REAL bearer token.
+With:
 
-Use the existing:
+- fresh bearer token
+- configured preset
+- valid CA bundle
+- existing Runner client
 
-step25_stylus_preset_smoke_test.py
+run the existing isolated Stylus smoke test.
 
-or the exact existing equivalent that calls:
+Do NOT change code unless the live request exposes a concrete defect.
 
-stylus_runner_client.call_stylus_preset()
+Expected:
 
-Do NOT create a replacement test framework.
+HTTP authentication succeeds
+Runner accepts request
+SEC tool can execute
+web/search can execute
+SSE stream returns model output
 
-This test must use:
-
-model:
-claude-sonnet-5
-
-temperature:
-1
-
-outer integrations:
-lookup_documentation
-sec_filing
-
-real preset.prompt
-
-real preset.inputs
-
-real preset.answers
-
-real preset.toolConfig
-
-real preset.knowledge
-
-Accept:
-text/event-stream
-
-Trace the exact outcome.
-
-Success criterion:
-Runner accepts the request and begins/returns the actual Stylus execution rather than:
-401
-403
-409
-STYLUS_PRESET_NOT_CONFIGURED
-BLOCKED_AUTH
-
-If it fails, identify the FIRST exact failing boundary:
-HTTP status
-Runner response body
-SSE event
-JSON parsing
-tool invocation
-final-result parsing
-
-Fix ONLY that concrete defect.
+If successful, immediately continue.
 
 ============================================================
-TASK 6 — REAL RPR STEP 2.5
+4. RUN REAL STEP 2.5
 ============================================================
 
-Once isolated Runner execution works, execute the real existing RPR route:
+Execute the existing:
 
 POST /api/v1/rpr/step25/run
 
-using:
+for:
 
 company_id = 0000014508
 
-and the real confirmed Apple context.
+Required path:
 
-The required flow is:
+APPLE INC
+→ real CAGID
+→ confirmed CIK
+→ real Step 2.3 factors
+→ real Step 2.4 factors
+→ existing Stylus inline preset
+→ SEC evidence
+→ web evidence
+→ Step25Assessment JSON
+→ existing RPR result
 
-Step 2.2 APPLE INC
-→ CAGID 0000014508
-→ CIK 0000320193
-→ 6 Step 2.3 factors
-→ 5 Step 2.4 factors
-→ Step 2.5 /run
-→ Stylus inline preset
-→ SEC Filing tool
-→ web/search evidence
-→ Claude Sonnet 5 assessment
-→ schema-valid Step25Assessment
-→ existing Step 2.5 UI-compatible result
+Do not stop after HTTP 200.
 
-============================================================
-CRITICAL — VERIFY THE ACTUAL 5 INPUT VALUES
-============================================================
+Verify that the assessment actually consumed:
 
-Before sending the Runner request, log a SANITIZED manifest containing:
-
-input key
-source
-character count
-non-empty yes/no
-
-Do not dump huge payloads.
-
-Confirm all 5 exact captured Runner-side keys receive their intended values.
-
-The semantic mapping must remain:
-
-CompanyContextJSON
-    ← real selected Step 2.2 company/company identity/context
-
-EventDrivenFactorsJSON
-    ← real confirmed Step 2.3 factors
-
-SectorInherentFactorsJSON
-    ← real confirmed Step 2.4 factors
-
-AssessmentASOFDATE
-    ← current assessment as-of date
-
-EvidenceWindowMonths
-    ← configured evidence window / existing default
-
-Remember:
-the Runner uses the captured SHORT internal names.
-Do not replace those names with their display labels.
+- Apple company context
+- CIK 0000320193
+- Step 2.3 factors
+- Step 2.4 factors
+- SEC evidence
+- web evidence
 
 ============================================================
-CRITICAL — SEC + WEB EXECUTION QUALITY
+5. IMPORTANT SEC TOOL BEHAVIOUR
 ============================================================
 
-Do not call Step 2.5 successful merely because HTTP 200 is returned.
+The manual Stylus test already proved:
 
-Confirm from the actual run that:
+- SEC 10-K works
+- SEC 10-Q works
+- one 8-K invocation failed with:
+  onSECFilingToolCall: Unmarshal results: unexpected end of JSON input
 
-1. SEC Filing integration is invoked.
-2. Web/search evidence is invoked.
-3. Apple is the assessed company.
-4. CIK 0000320193 is retained.
-5. Step 2.3 factors are actually consumed.
-6. Step 2.4 factors are actually consumed.
-7. Evidence is company-specific where appropriate.
-8. No fabricated SEC filing/accession/source facts are created.
-9. Conflicting/disconfirming evidence is preserved.
-10. Missing evidence is explicitly identified.
-11. Final JSON validates against the expected Step25Assessment structure.
-12. Final result is credible for an experienced CCR / credit-risk analyst.
+A single failed SEC tool call must NOT fail the entire assessment if other SEC/web evidence is available.
+
+Record the failed call honestly and continue.
+
+Do not fabricate missing evidence.
 
 ============================================================
-SEC TOOL ERROR HANDLING
+6. DO NOT CHANGE CODE UNLESS REQUIRED
 ============================================================
 
-In the manual Stylus execution we observed that:
+If fresh auth + regenerated context makes Step 2.5 work:
 
-- SEC 10-K retrieval worked.
-- SEC 10-Q retrieval worked.
-- at least one SEC 8-K call returned:
+FILES_CHANGED = NONE
 
-onSECFilingToolCall: Unmarshal results: unexpected end of JSON input
+That is the preferred outcome.
 
-Do NOT treat one failed SEC tool invocation as proof that the entire preset is broken.
-
-If the same happens programmatically:
-
-- retain successful SEC evidence
-- retain web evidence
-- record the failed tool call honestly
-- allow the assessment to continue if enough valid evidence exists
-- do not fabricate the missing filing result
-
-Only fail the whole Step 2.5 execution if the final analytical result cannot be produced reliably.
+Only make a code change if the real live execution proves a specific defect after authentication succeeds.
 
 ============================================================
-SSE / RESULT EXTRACTION
+FINAL REPORT ONLY
 ============================================================
 
-The browser run proved that /runner-service/chat returns:
+Return:
 
-text/event-stream
-
-and the final answer can arrive after tool-call events.
-
-Do not prematurely stop parsing at the first intermediate event.
-
-Consume the stream until completion according to the existing Runner client's design.
-
-If the live stream exposes an event shape currently missed by the parser, make the SMALLEST possible parser extension required to retrieve the real final result.
-
-Do NOT create a new SSE framework.
-
-============================================================
-STRICT CHANGE BOUNDARY
-============================================================
-
-Allowed files only if concretely required:
-
-backend/step25/stylus_runner_client.py
-backend/step25/stylus_preset_config.py
-preset_knowledge/STYLUS_SEC_WEB_PRESET_DEFINITION.yaml
-
-And only if the live execution proves an actual defect.
-
-Do not touch:
-
-Steps 1–2.4
-company identity architecture
-Step 2.2 portfolio selection
-Step 2.3 factor generation
-Step 2.4 factor generation
-frontend styling/layout
-legacy Step 2.5 engines
-deployment architecture
-authentication architecture
-
-============================================================
-DO NOT STOP EARLY
-============================================================
-
-Continue automatically through:
-
-TOKEN
-→ BACKEND
-→ PREFLIGHT
-→ CONTEXT RESTORE
-→ ISOLATED RUNNER TEST
-→ REAL /step25/run
-→ RESULT VALIDATION
-
-Do not stop after each phase asking me for permission.
-
-Only stop if there is a genuine external blocker that cannot be resolved from:
-- current clipboard token
-- existing repo
-- existing captured preset
-- existing generated RPR artifacts
-
-============================================================
-FINAL REPORT
-============================================================
-
-At the end report exactly:
-
-TOKEN_AVAILABLE:
+TOKEN_VALID:
 YES / NO
 
-PRESET_CONFIGURED:
+STEP23:
+CONFIRMED / FAILED
+factor_count =
+
+STEP24:
+CONFIRMED / FAILED
+factor_count =
+
+UPSTREAM_READY:
 YES / NO
 
-RUNNER_CONTRACT_ACCEPTED:
-YES / NO
-
-RUNNER_HTTP_STATUS:
-<status>
-
-SEC_TOOL_INVOKED:
-YES / NO
-
-WEB_EVIDENCE_INVOKED:
-YES / NO
-
-APPLE_IDENTITY:
-company =
-CAGID =
-CIK =
-status =
-
-STEP23_FACTORS_SENT:
-<count>
-
-STEP24_FACTORS_SENT:
-<count>
-
-ISOLATED_STYLUS_TEST:
+ISOLATED_STYLUS_RUN:
 PASS / FAIL
-exact reason =
+HTTP =
+
+SEC_TOOL:
+INVOKED / NOT_INVOKED
+
+WEB_SEARCH:
+INVOKED / NOT_INVOKED
 
 REAL_STEP25_RUN:
 PASS / FAIL
-HTTP status =
-exact reason =
+HTTP =
 
 STEP25_SCHEMA_VALID:
 YES / NO
 
-STEP25_ANALYTICAL_QUALITY:
-PASS / FAIL
-brief reason =
+APPLE_CONTEXT_USED:
+YES / NO
 
-FIRST_REMAINING_DEFECT:
-<exact file/function/boundary or NONE>
+CIK_USED:
+0000320193 / OTHER
 
-FILES_CHANGED_THIS_TURN:
-<exact list or NONE>
+STEP23_FACTORS_CONSUMED:
+YES / NO
 
-Do not perform unrelated work.
-Do not continue after this report.
+STEP24_FACTORS_CONSUMED:
+YES / NO
+
+FIRST_REAL_FAILURE_IF_ANY:
+<exact boundary>
+
+FILES_CHANGED:
+NONE or exact files
+
+STOP.
