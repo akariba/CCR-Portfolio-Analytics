@@ -1,419 +1,439 @@
-STOP ALL NEW FEATURE DEVELOPMENT.
+WE NOW HAVE THE ROOT-CAUSE TRACE.
 
-DO NOT redesign Step 2.5.
-DO NOT add another architecture layer.
-DO NOT create another authentication mechanism.
-DO NOT modify Steps 1–2.4.
-DO NOT assume the cause of the failure from previous reports.
+DO NOT REPEAT PHASE 1 OR PHASE 2.
 
-I want a fresh, execution-based forensic trace of STEP 2.5 AS IT EXISTS RIGHT NOW.
+DO NOT INVESTIGATE STEPS 1–2.4 AGAIN.
 
-The purpose is:
+DO NOT CREATE MORE ARCHITECTURE.
 
-1. Tell me EXACTLY what Step 2.5 is currently using.
-2. Test the SEC + WEB Stylus preset independently from the RPR flow.
-3. Test the RPR Step 2.5 path independently.
-4. Trace the exact route of failure.
-5. Separate PRESET problems from AUTH problems from RPR integration problems.
-6. Fix only the concrete problem that is actually proven.
+DO NOT ASK ME TO MANUALLY PASTE TOKENS.
+
+DO NOT ASK ABOUT PRESET UUID.
+
+The latest execution trace is accepted as authoritative.
 
 ============================================================
-IMPORTANT CURRENT VERIFIED UPSTREAM STATE
+PROVEN CURRENT STATE
 ============================================================
 
-Do NOT re-test or redesign Steps 1–2.4 unless required simply to supply context to Step 2.5.
+ACTIVE ENGINE:
+stylus
 
-The latest real execution proved:
+RPR_STEP25_ASSESSMENT_ENGINE=stylus
 
-REAL COMPANY:
-APPLE INC
+REAL UPSTREAM RPR FLOW:
+WORKING
+
+Verified real case:
 
 CAGID:
 0000014508
 
+COMPANY:
+APPLE INC
+
 CIK:
 0000320193
 
-SEC IDENTITY:
-CIK_CONFIRMED
+Step 2.3:
+6 CONFIRMED real factors
 
-REAL STEP 2.3:
-6 event-driven risk factors
+Step 2.4:
+5 CONFIRMED real factors
 
-REAL STEP 2.4:
-5 sector-inherent risk factors
-
-STEP 2.5 CONTEXT REGISTRATION:
+Step 2.5 context:
 upstream_ready=true
 
-Therefore the investigation begins AFTER upstream context is available.
-
-The problem is Step 2.5 execution.
+Therefore Steps 1–2.4 and Step 2.5 context registration are NOT the current problem.
 
 ============================================================
-PHASE 1 — TELL ME WHAT STEP 2.5 IS USING RIGHT NOW
+EXACT CURRENT FAILURE ROUTE
 ============================================================
 
-BEFORE CHANGING ANY CODE, inspect the current runtime and current code and produce an exact CURRENT-STATE inventory.
+Current POST /api/v1/rpr/step25/run executes:
 
-I want to know:
+router.py::run_step25()
+    ->
+config.py::local_live_blockers()
+    ->
+config.py::poc_stylus_blockers()
+    ->
+3 configuration blockers
+    ->
+HTTP 409
 
-A. Which Step 2.5 engine is ACTIVE right now?
+Therefore execution NEVER currently reaches:
 
-Report:
+stylus_engine.py::run_stylus_poc()
 
-RPR_STEP25_ASSESSMENT_ENGINE =
-<actual resolved value>
+and NEVER reaches:
 
-ENGINE_SOURCE =
-<env / config default / launcher / other>
+stylus_runner_client.py::call_stylus_preset()
 
-ACTIVE_ENGINE =
-<stylus / orchestrated / hybrid / direct_runner / other>
+This is proven.
 
-Do not assume it is Stylus because we intended it to be.
+Do not claim that the preset itself has failed execution.
 
-Prove the resolved runtime value.
-
-------------------------------------------------------------
-B. Which backend route handles Run Assessment?
-------------------------------------------------------------
-
-Trace from:
-
-POST /api/v1/rpr/step25/run
-
-or the exact current endpoint
-
-through every function called until Runner invocation.
-
-Produce the actual chain, for example:
-
-router.py
-  -> function X
-  -> stylus_engine.py
-  -> function Y
-  -> stylus_runner_client.py
-  -> function Z
-  -> HTTP Runner request
-
-Use the REAL function names.
-
-For each stage report:
-
-FILE
-FUNCTION
-INPUT
-OUTPUT
-CAN_BLOCK = YES/NO
-CURRENT RESULT
-
-------------------------------------------------------------
-C. Which Runner endpoint is Step 2.5 using?
-------------------------------------------------------------
-
-Report exact configured endpoint, sanitized if needed.
-
-Expected family may resemble:
-
-https://workspaces.genai.citi.net/runner-service/chat
-
-But inspect actual code/config.
-
-Report:
-
-RUNNER_ENDPOINT =
-...
-
-RUNNER_HTTP_METHOD =
-...
-
-STREAM_MODE =
-...
-
-ACCEPT_HEADER =
-...
-
-Do not expose credentials.
-
-------------------------------------------------------------
-D. What authentication mechanism is Step 2.5 using RIGHT NOW?
-------------------------------------------------------------
-
-This is critical.
-
-Do not tell me what it SHOULD use.
-
-Tell me what current code ACTUALLY uses.
-
-Trace:
-
-Where does Runner client_id come from?
-
-Where does access/bearer token come from?
-
-Where does refresh token come from?
-
-Does the code attempt token refresh?
-
-Does it look for token cache files?
-
-Does it reuse colleague app authentication?
-
-Does it use GENAI_BEARER_TOKEN?
-
-Does it use GENAI_REFRESH_TOKEN?
-
-Does it use RPR_STEP25_RUNNER_CLIENT_ID?
-
-Does it use another client ID?
-
-Report only configuration presence and code source.
-
-NEVER print actual credentials.
-
-Use this format:
-
-RUNNER_CLIENT_ID_REQUIRED = YES/NO
-RUNNER_CLIENT_ID_SOURCE = ...
-
-BEARER_TOKEN_SOURCE = ...
-BEARER_TOKEN_PRESENT = YES/NO
-
-REFRESH_TOKEN_SOURCE = ...
-REFRESH_TOKEN_PRESENT = YES/NO
-
-TOKEN_CACHE_USED = YES/NO
-TOKEN_CACHE_LOCATION = <path only if non-sensitive>
-
-OAUTH_REFRESH_IMPLEMENTED = YES/NO
-OAUTH_REFRESH_FUNCTION = <file:function>
-
-------------------------------------------------------------
-E. What preset definition is Step 2.5 using RIGHT NOW?
-------------------------------------------------------------
-
-Report:
-
-PRESET_SOURCE =
-<yaml / inline Python / other>
-
-PRESET_FILE =
-...
-
-PRESET_VERIFIED =
-true / false
-
-PRESET_PLACEHOLDERS_REMAIN =
-YES/NO
-
-NUMBER_OF_INPUTS =
-...
-
-ACTUAL_INPUT_NAMES =
-<exact names if known>
-
-PROMPT_PRESENT =
-YES/NO
-
-MODEL_PRESENT =
-YES/NO
-
-TOOLS_PRESENT =
-YES/NO
-
-KNOWLEDGE_PRESENT =
-YES/NO
-
-Do not make assumptions.
-
-If the current YAML still contains PENDING_CAPTURE, say exactly which REQUIRED sections are incomplete.
+THE PRESET HAS NOT YET BEEN SENT TO RUNNER.
 
 ============================================================
-PHASE 2 — TEST THE PRESET SEPARATELY FROM RPR
+PROVEN RUNNER CONNECTIVITY
 ============================================================
 
-I want to know whether the SEC + WEB PRESET ITSELF is accessible/executable.
+Direct Runner connectivity test returned HTTP 401.
 
-This must be a completely separate test from:
+That proves:
 
-POST /step25/run
+DNS = PASS
+TLS = PASS
+NETWORK = PASS
+PROXY/PATH = PASS
+RUNNER SERVICE REACHABLE = PASS
 
-Do NOT use Step 2.5 route for this test.
+401 is an authentication rejection, not a connectivity failure.
 
-Use the smallest existing Runner test mechanism.
+The secureaccess OAuth endpoint is also reachable.
 
-Prefer:
-
-- existing colleague app Runner call;
-- existing runner_client;
-- existing Stylus smoke-test script;
-
-rather than creating new infrastructure.
+DO NOT investigate VPN, proxy, TLS certificates or networking further unless a future execution gives a different failure.
 
 ============================================================
-TEST 2A — RUNNER SERVICE CONNECTIVITY ONLY
+CURRENT THREE BLOCKERS
 ============================================================
 
-First test whether this machine/session can reach the Runner Service without involving the SEC + WEB preset.
+BLOCKER 1:
+RPR_STEP25_RUNNER_CLIENT_ID is unset.
 
-Use the safest existing approved request/check already present in the project.
+BLOCKER 2:
+No current Runner authentication material exists in this session:
 
-Report:
+GENAI_BEARER_TOKEN = NOT SET
+GENAI_REFRESH_TOKEN = NOT SET
 
-RUNNER_NETWORK_REACHABLE =
-PASS / FAIL
+RPR cached bearer token = NOT PRESENT
+RPR cached refresh token = NOT PRESENT
 
-TLS =
-PASS / FAIL
+colleague app token cache = NOT PRESENT
+colleague app refresh cache = NOT PRESENT
 
-HTTP_CONNECTION =
-PASS / FAIL
+BLOCKER 3:
+SEC + WEB preset definition is still:
 
-AUTHENTICATION_REACHED =
-YES/NO
+verified: false
 
-HTTP_STATUS =
-...
+with PENDING_CAPTURE fields and unverified candidate input names.
 
-FAILURE_STAGE =
-DNS / TLS / CONNECTION / AUTH / REQUEST / OTHER
-
-Do not bypass TLS.
-Do not disable certificate verification.
+Treat these as THREE SEPARATE CONDITIONS.
 
 ============================================================
-TEST 2B — AUTHENTICATION ONLY
+IMPORTANT COLLEAGUE APP FINDING
 ============================================================
 
-Using the EXISTING APPROVED authentication flow, determine whether a current authenticated Runner request is possible.
+The colleague app and RPR use essentially the SAME authentication priority:
 
-Do not ask me for credentials.
+1. bearer token from environment
+2. cached bearer token
+3. refresh token from environment -> OAuth exchange
+4. cached refresh token -> OAuth exchange
 
-Do not invent credentials.
+Therefore:
 
-If colleague app contains a working OAuth refresh flow, test that exact mechanism.
+THE COLLEAGUE APP DOES NOT CURRENTLY HAVE A SECRET ALTERNATIVE AUTH FLOW.
 
-Report:
+If launched fresh on this workstation right now, it would encounter the same missing-token condition.
 
-AUTH_INITIAL_STATE =
-...
+However, one concrete difference exists:
 
-REFRESH_ATTEMPTED =
-YES/NO
+COLLEAGUE APP:
+has a Runner OAuth client_id already defined/configured.
 
-REFRESH_RESULT =
-PASS / FAIL / NOT_AVAILABLE
+RPR:
+expects RPR_STEP25_RUNNER_CLIENT_ID and it is unset.
 
-ACCESS_TOKEN_AVAILABLE_AFTER_REFRESH =
-YES/NO
-
-RUNNER_AUTHENTICATED_REQUEST_POSSIBLE =
-YES/NO
-
-FAILURE =
-<exact sanitized failure>
+This difference must now be resolved with the minimum POC change.
 
 ============================================================
-TEST 2C — COLLEAGUE WORKING RUNNER PATH
+TASK 1 — RESOLVE THE RUNNER CLIENT ID
 ============================================================
 
-This test is very important.
-
-The colleague's app previously worked.
-
-Run or isolate the relevant Runner execution path from the colleague app AS-IS as far as safely possible.
-
-Do not modify it first.
+Inspect the colleague app's Runner client_id definition.
 
 Determine:
 
-COLLEAGUE_RUNNER_TEST =
-PASS / FAIL
+1. Is this an ordinary OAuth client identifier rather than a client secret?
+2. Is it the same Runner/OAuth application RPR should use?
+3. Is the same identifier used with:
+   https://workspaces.genai.citi.net/runner-service
+   and
+   https://secureaccess.../as/token.oauth2
 
-If PASS:
+4. Is there any evidence that RPR needs a DIFFERENT client_id?
 
-prove:
-- endpoint reached
-- authentication succeeded
-- request accepted
-- SSE/response received
+Do not print secret values.
 
-Then identify EXACTLY what colleague path has that RPR does not.
+The client ID itself may be reported only if it is clearly a non-secret OAuth application identifier already present in source code.
 
-If FAIL:
+POC RULE:
 
-identify EXACTLY where it now fails.
+If the colleague app's existing client_id is the correct approved Runner application ID and no evidence says RPR requires a different one:
 
-This tells us whether the current problem is:
+REUSE IT.
 
-RPR-SPECIFIC
+Do not force the user to configure a new environment variable unnecessarily.
 
-or
+The simplest acceptable POC solution is:
 
-RUNNER/AUTH ENVIRONMENT-WIDE.
+RPR_STEP25_RUNNER_CLIENT_ID env override if supplied
+        otherwise
+existing colleague-approved Runner client_id
+
+Do NOT create configuration infrastructure.
+
+Do NOT create another secrets system.
+
+If this requires only a tiny change in config.py, make that tiny change.
 
 ============================================================
-TEST 2D — SEC + WEB PRESET ACCESSIBILITY
+TASK 2 — FIND HOW THE AUTH CACHE WAS ORIGINALLY POPULATED
 ============================================================
 
-Now test the SEC + WEB preset separately.
+This is now the MOST IMPORTANT investigation.
 
-IMPORTANT:
+The colleague app previously worked.
 
-Do not assume that the RPR YAML is correct.
+Its code reads a cached/environment token mechanism.
 
-There are two possible tests:
+Today those cache files are absent.
 
-TEST METHOD 1:
-If the exact real Stylus preset definition is already available locally, use it.
+Therefore determine HOW that authentication state was originally created.
 
-TEST METHOD 2:
-If it is NOT available locally, do NOT fabricate one.
+Search the ENTIRE available project/workspace for references to:
 
-Report:
+.runner_token
+.runner_refresh_token
+step25_runner_auth
+GENAI_BEARER_TOKEN
+GENAI_REFRESH_TOKEN
+token.oauth2
+load_backend_token
+load_current_user_token
+refresh_token
+secureaccess
+client_id
+OAuth
+login
+authenticate
+signin
+bootstrap
+token cache
+token write
+write_text
+Set-Content
+Out-File
 
-PRESET_DEFINITION_COMPLETE =
-YES/NO
+Also inspect:
 
-If NO:
+- colleague app folder
+- scripts
+- launchers
+- PowerShell files
+- README/instructions
+- RUNTIME_ENV.ps1
+- start_backend scripts
+- previous Runner utilities
+- pe-sponsor-search
+- any approved internal GenAI helper/client
+- environment-loading code
 
-PRESET_EXECUTION_TEST =
-NOT_POSSIBLE_YET
+We are looking specifically for the EXISTING APPROVED TOKEN BOOTSTRAP.
 
-REASON =
-exact real Stylus preset payload has not been captured
+I want:
 
-This is different from authentication failure.
+AUTH_BOOTSTRAP_FOUND =
+YES / NO
 
 If YES:
 
-perform an isolated Runner call using ONLY:
+SOURCE =
+<file/function/script>
 
-- real preset definition
-- safe representative values for its exact five inputs
+FLOW =
+<sanitized description>
 
-No RPR Step 2.5 context is required for this isolated accessibility test.
+USER_ACTION =
+<if any>
 
-The purpose is simply:
+CACHE_CREATED =
+<file path>
 
-CAN THIS PRESET EXECUTE THROUGH RUNNER?
+Then USE IT.
+
+Do not invent another OAuth implementation.
+
+============================================================
+TASK 3 — CHECK WHETHER AUTH EXISTS OUTSIDE THIS CHILD SHELL
+============================================================
+
+The Claude terminal may not inherit the same environment as the normal RPR/browser/user session.
+
+Without exposing values, inspect whether authentication is available through:
+
+- parent/user environment
+- existing PowerShell launcher
+- existing RUNTIME_ENV.ps1
+- normal project startup process
+- approved GenAI CLI/helper
+- colleague application launcher
+
+Only report:
+
+AVAILABLE / NOT_AVAILABLE
+
+Never echo tokens.
+
+If the normal existing launcher loads authentication, use that launcher rather than requiring manual token assignment.
+
+============================================================
+TASK 4 — DO NOT ASK FOR A TOKEN YET
+============================================================
+
+Do NOT ask the user:
+
+"Do you have a bearer token?"
+
+Do NOT ask:
+
+"Can you give me GENAI_REFRESH_TOKEN?"
+
+Do NOT ask them to copy authentication headers from DevTools.
+
+First exhaust the approved existing bootstrap mechanisms identified above.
+
+If no existing bootstrap exists anywhere in the available code/environment, report that precisely.
+
+But do not build a new production authentication system.
+
+============================================================
+TASK 5 — PRESET BLOCKER: SOLVE SEPARATELY
+============================================================
+
+Authentication and preset configuration are independent.
+
+The real SEC + WEB Stylus preset definition is still not available locally.
+
+Before asking for DevTools capture, check ONE LAST TIME whether the Stylus UI itself offers:
+
+- Export
+- Copy JSON
+- View configuration
+- API example
+- Copy request
+- Developer details
+- Run details
+
+If an easy built-in export exists, use that.
+
+Otherwise the user will perform the ONE-TIME DevTools capture.
+
+Required action:
+
+SEC + WEB Stylus preset
+    ->
+F12
+    ->
+Network
+    ->
+clear requests
+    ->
+run preset once
+    ->
+select POST .../runner-service/chat
+    ->
+Payload / Request Body
+
+Need ONLY the non-secret REQUEST BODY.
+
+DO NOT request:
+
+Authorization header
+bearer token
+refresh token
+cookies
+session identifiers
+credentials
+
+============================================================
+TASK 6 — EXACT PRESET CONTENT REQUIRED
+============================================================
+
+From the real Stylus request obtain:
+
+- top-level model
+- message/messageParts wrapper
+- complete preset object
+- prompt
+- defaultModel/model
+- toolConfig
+- tools
+- knowledge configuration
+- inputs
+- answers
+- output/schema settings
+- any other non-secret runtime fields
+
+MOST IMPORTANT:
+
+the exact five case-sensitive inputs[].name values.
+
+No guessing.
+No renaming.
+No candidate values once the capture is available.
+
+Populate:
+
+preset_knowledge/STYLUS_SEC_WEB_PRESET_DEFINITION.yaml
+
+Replace PENDING_CAPTURE fields.
+
+Then:
+
+verified: true
+
+Do NOT create another preset abstraction.
+
+============================================================
+TASK 7 — TEST PRESET ACCESSIBILITY SEPARATELY
+============================================================
+
+Once:
+
+AUTH_READY = YES
+
+and
+
+PRESET_VERIFIED = YES
+
+test the preset independently BEFORE involving RPR.
+
+Use the existing:
+
+stylus_runner_client.py
+
+or the smallest existing smoke-test mechanism.
+
+Supply safe representative values to the exact five inputs.
 
 Report:
 
-PRESET_REQUEST_CONSTRUCTED =
+ISOLATED_PRESET_REQUEST_SENT =
 YES/NO
 
-PRESET_REQUEST_SENT =
-YES/NO
+RUNNER_HTTP_STATUS =
+...
 
 RUNNER_ACCEPTED_PRESET =
 YES/NO
 
-MODEL_EXECUTION_STARTED =
-YES/NO
-
-TOOL_EXECUTION_STARTED =
+MODEL_STARTED =
 YES/NO
 
 SEC_TOOL_CALLED =
@@ -425,457 +445,208 @@ YES/NO
 RESPONSE_RECEIVED =
 YES/NO
 
-HTTP_STATUS =
-...
+SEC_EVIDENCE_FOUND =
+YES/NO
+
+WEB_EVIDENCE_FOUND =
+YES/NO
 
 FAILURE_STAGE =
-...
+<exact stage if failed>
 
-EXACT SANITIZED FAILURE =
-...
-
-============================================================
-CRITICAL SEPARATION
-============================================================
-
-Do NOT combine these statuses.
-
-We need separately:
-
-1.
-RUNNER_CONNECTIVITY
-
-2.
-RUNNER_AUTHENTICATION
-
-3.
-PRESET_CONFIGURATION
-
-4.
-PRESET_EXECUTION
-
-5.
-RPR_STEP25_INTEGRATION
-
-A failure in one must not be described as failure in all five.
+This tells us whether the SEC + WEB preset itself works.
 
 ============================================================
-PHASE 3 — TRACE RPR STEP 2.5 EXACTLY
+TASK 8 — THEN RUN REAL RPR STEP 2.5
 ============================================================
 
-Now test the actual RPR route with the already-proven Apple context.
+After the isolated preset test succeeds, execute the actual RPR flow.
 
-Use:
+Use the already-registered real context:
 
 CAGID:
 0000014508
 
-COMPANY:
 APPLE INC
 
 CIK:
 0000320193
 
-STEP23_FACTOR_COUNT:
-6
+6 actual Step 2.3 factors
 
-STEP24_FACTOR_COUNT:
-5
+5 actual Step 2.4 factors
 
-Verify context first:
+Run:
 
-GET/POST relevant Step 2.5 context endpoint
+POST /api/v1/rpr/step25/run
 
-Expected:
+Trace:
 
-upstream_ready=true
-
-Then execute:
-
-POST /step25/run
-
-============================================================
-TRACE EVERY GATE
-============================================================
-
-Instrument/log sanitized execution checkpoints if existing logs are insufficient.
-
-Do NOT log portfolio confidential values unnecessarily.
-
-Do NOT log tokens.
-
-I want checkpoints such as:
-
-TRACE_01_ROUTE_ENTERED=PASS
-
-TRACE_02_ENGINE_RESOLVED=<actual engine>
-
-TRACE_03_CONTEXT_LOADED=PASS/FAIL
-
-TRACE_04_COMPANY_IDENTITY=PASS/FAIL
-
-TRACE_05_CIK_RESOLUTION=PASS/FAIL
-
-TRACE_06_STEP23_PRESENT=PASS/FAIL
-
-TRACE_07_STEP24_PRESENT=PASS/FAIL
-
-TRACE_08_ENGINE_BLOCKERS=<actual blockers>
-
-TRACE_09_PRESET_LOAD=PASS/FAIL
-
-TRACE_10_PRESET_VERIFIED=PASS/FAIL
-
-TRACE_11_FIVE_INPUT_MAPPING=PASS/FAIL
-
-TRACE_12_RUNNER_CLIENT_CREATED=PASS/FAIL
-
-TRACE_13_AUTH_READY=PASS/FAIL
-
-TRACE_14_REQUEST_CONSTRUCTED=PASS/FAIL
-
-TRACE_15_HTTP_REQUEST_SENT=PASS/FAIL
-
-TRACE_16_HTTP_RESPONSE_STATUS=<status/not reached>
-
-TRACE_17_SSE_STREAM_STARTED=PASS/FAIL
-
-TRACE_18_MODEL_RESPONSE_RECEIVED=PASS/FAIL
-
-TRACE_19_EVIDENCE_PARSED=PASS/FAIL
-
-TRACE_20_SCHEMA_VALIDATION=PASS/FAIL
-
-TRACE_21_UI_RESPONSE_RETURNED=PASS/FAIL
+01 ROUTE_ENTERED
+02 ENGINE_STYLUS
+03 CONTEXT_PRESENT
+04 COMPANY_CONFIRMED
+05 CIK_CONFIRMED
+06 STEP23_PRESENT
+07 STEP24_PRESENT
+08 BLOCKERS_EMPTY
+09 PRESET_LOADED
+10 PRESET_VERIFIED
+11 FIVE_INPUTS_MAPPED
+12 RUNNER_CLIENT_CREATED
+13 AUTH_READY
+14 REQUEST_CONSTRUCTED
+15 REQUEST_SENT
+16 RUNNER_RESPONSE
+17 SSE_PARSED
+18 SEC_EVIDENCE
+19 WEB_EVIDENCE
+20 STEP25_SCHEMA_VALID
+21 UI_RESPONSE_RETURNED
 
 Do not manufacture PASS.
 
 ============================================================
-EXACT FAILURE LOCATION
+TASK 9 — EXACT FIVE-INPUT MAPPING
 ============================================================
 
-At the end I want ONE exact boundary.
+Once the real preset is captured, prove for each field:
 
-For example:
+EXACT INPUT NAME
+RPR SOURCE
+VALUE TYPE
+TRANSFORMATION
+VALIDATION
 
-FAILURE OCCURS BETWEEN:
+The actual RPR upstream data must be used.
 
-TRACE_13_AUTH_READY
-and
-TRACE_15_HTTP_REQUEST_SENT
+Step 2.3 must come from the confirmed 6 real factors.
 
-because:
-<actual condition>
+Step 2.4 must come from the confirmed 5 real factors.
 
-OR:
+Do not regenerate generic Apple factors.
 
-FAILURE OCCURS BETWEEN:
+============================================================
+TASK 10 — STRICT STEP 2.5 QUALITY
+============================================================
 
-TRACE_09_PRESET_LOAD
-and
-TRACE_10_PRESET_VERIFIED
+Technical execution alone is not enough.
 
-because:
+The resulting assessment must be high-quality.
+
+It must:
+
+- assess the actual Step 2.2 company
+- use real Step 2.3 event factors
+- use real Step 2.4 sector factors
+- retrieve real SEC data
+- retrieve real web data
+- translate facts into credit risk
+- explain direction
+- explain materiality
+- identify liquidity/leverage/refinancing/rating effects where relevant
+- identify mitigants
+- identify counter-evidence
+- identify evidence gaps
+- retain real citations/provenance
+- avoid hallucinations
+
+Do NOT accept generic company summarization.
+
+============================================================
+TASK 11 — DO NOT STOP AFTER AUTH
+============================================================
+
+Once auth is fixed:
+
+CONTINUE.
+
+Do not stop and produce another status report.
+
+Once preset is populated:
+
+CONTINUE.
+
+Once Runner returns HTTP 200:
+
+CONTINUE.
+
+Once schema validates:
+
+CONTINUE.
+
+Stop only after Step 2.5 reaches the existing UI OR one genuinely external human-only blocker remains.
+
+============================================================
+EXPECTED IMMEDIATE OUTPUT
+============================================================
+
+First complete TASKS 1–4.
+
+Then report:
+
+CLIENT_ID:
+SOURCE =
+...
+COLLEAGUE/RPR COMPATIBLE =
+YES/NO
+ACTION =
 ...
 
-No vague:
-
-"Runner/Stylus issue"
-
-No generic:
-
-"external blocker"
-
-Give exact:
-
-FILE
-FUNCTION
-LINE/CONDITION if practical
-VALUE/STATE causing failure
-HTTP STATUS if applicable
-
-============================================================
-PHASE 4 — COMPARE ISOLATED PRESET VS RPR
-============================================================
-
-Create this comparison:
-
-CHECK | ISOLATED PRESET | RPR STEP 2.5
-
-Runner reachable
-Authentication available
-Client ID resolved
-Preset complete
-Five inputs known
-Request constructed
-Request sent
-Runner accepted
-Model started
-SEC tool started
-Web tool started
-Response received
-
-This comparison should tell us immediately which layer is responsible.
-
-Examples:
-
-If isolated preset PASS + RPR FAIL:
-=> RPR integration/config defect.
-
-If isolated preset FAIL auth + colleague app FAIL auth:
-=> environment/auth issue.
-
-If colleague app PASS + RPR auth FAIL:
-=> RPR incorrectly reimplemented auth/config.
-
-If Runner/auth PASS + preset rejected:
-=> preset configuration issue.
-
-If preset executes but RPR mapping fails:
-=> five-input integration issue.
-
-============================================================
-PHASE 5 — FIX THE PROVEN ROOT CAUSE
-============================================================
-
-ONLY AFTER the trace identifies the exact cause should you modify code/configuration.
-
-Use the smallest possible POC fix.
-
-============================================================
-IF AUTH IS THE PROBLEM
-============================================================
-
-FIRST compare with colleague app.
-
-If colleague app already has a working approved authentication path:
-
-REUSE IT.
-
-Do not create a new authentication system.
-
-If RPR_STEP25_RUNNER_CLIENT_ID was introduced only by our wrapper and the working colleague code obtains client ID differently:
-
-remove/relax that unnecessary divergence and reuse the proven mechanism.
-
-Do NOT ask the user to manually paste tokens.
-
-============================================================
-IF PRESET CONFIG IS THE PROBLEM
-============================================================
-
-Determine whether exact preset values already exist locally.
-
-If they do:
-use them.
-
-If they do not:
-STOP ONLY at that precise point and request ONE Stylus capture.
-
-Do not ask for anything else.
-
-Required one-time capture:
-
-Stylus SEC + WEB
-→ F12
-→ Network
-→ run preset
-→ POST /runner-service/chat
-→ Payload / Request Body
-
-Need only non-secret body:
-
-- model
-- preset
-- prompt
-- toolConfig/tools
-- knowledge
-- inputs
-- answers
-- schema/output options
-- other required body fields
-
-NEVER request headers/tokens/cookies.
-
-============================================================
-IF RPR INPUT MAPPING IS THE PROBLEM
-============================================================
-
-Fix the mapping only.
-
-Prove each exact preset input receives its intended actual RPR data.
-
-Do NOT regenerate Step 2.3/2.4.
-
-Use the actual confirmed upstream outputs.
-
-============================================================
-IF RUNNER REQUEST SHAPE IS THE PROBLEM
-============================================================
-
-Compare directly with colleague app's known-working Runner payload.
-
-Match its proven outer request structure.
-
-Do not invent a new request contract.
-
-============================================================
-PHASE 6 — DO NOT STOP AT THE FIRST FIX
-============================================================
-
-Once the first failure is fixed:
-
-RUN THE TRACE AGAIN.
-
-There may be another blocker behind it.
-
-Continue sequentially:
-
-failure 1
-→ fix
-→ rerun
-
-failure 2
-→ fix
-→ rerun
-
-until either:
-
-A.
-STEP 2.5 genuinely completes
-
-or
-
-B.
-one genuine external dependency requiring a human action remains.
-
-This is important:
-
-DO NOT report success just because the current HTTP 409 disappears.
-
-============================================================
-SUCCESS DEFINITION
-============================================================
-
-Success means:
-
-TRACE_01 through TRACE_21 complete sufficiently to produce a real Step 2.5 response.
-
-Specifically:
-
-REAL Step 2.2 company
-PASS
-
-REAL Step 2.3 context
-PASS
-
-REAL Step 2.4 context
-PASS
-
-EXACT SEC+WEB PRESET
-PASS
-
-RUNNER AUTH
-PASS
-
-RUNNER REQUEST SENT
-PASS
-
-SEC/WEB TOOL EXECUTION
-PASS
-
-REAL RESPONSE
-PASS
-
-EVIDENCE
-PASS
-
-SCHEMA
-PASS
-
-UI RESPONSE
-PASS
-
-============================================================
-STRICT FEATURE QUALITY
-============================================================
-
-When it executes, do not accept low-quality assessment merely because the technical flow works.
-
-The output must remain high quality:
-
-- real evidence
-- company-specific
-- event-specific
-- sector-specific
-- credit-risk translation
-- materiality
-- direction
-- relevant liquidity/leverage/refinancing/rating implications
-- counter-thesis
-- evidence gaps
-- citations
-- no fabricated facts
-
-POC simplification applies to engineering only.
-
-============================================================
-DO THIS NOW
-============================================================
-
-Start with PHASE 1.
-
-Before touching code, report in a concise table:
-
-CURRENT STEP 2.5 STATE
-
-Engine:
+AUTH BOOTSTRAP:
+FOUND =
+YES/NO
+SOURCE =
+...
+ACTION =
 ...
 
-Run route:
-...
-
-Runner endpoint:
-...
-
-Runner client-id source:
-...
-
-Auth source:
-...
-
-Preset source:
-...
-
-Preset verified:
-...
-
-Exact five inputs known:
+CURRENT AUTH:
+READY =
 YES/NO
 
-Step 2.3 present:
+PRESET:
+VERIFIED =
 YES/NO
 
-Step 2.4 present:
-YES/NO
+Then continue automatically with the next executable task.
 
-Current first blocker:
-...
+DO NOT ASK ME ANOTHER OPEN-ENDED QUESTION.
 
-Then immediately perform:
+If preset capture is the only human action remaining, say exactly:
 
-1. isolated Runner connectivity test;
-2. isolated auth test;
-3. colleague Runner-path test;
-4. isolated preset accessibility test;
-5. actual /step25/run trace.
+ONLY HUMAN ACTION REMAINING:
+<one-line DevTools capture instruction>
 
-Do NOT ask me questions before performing all tests that can be performed locally.
+and nothing speculative.
 
-Do NOT add architecture.
+============================================================
+POC ENGINEERING RULE
+============================================================
 
-Do NOT create another planning document.
+USE THE SIMPLEST WORKING SOLUTION.
 
-Do NOT stop at "READY".
+A separate production team may rebuild everything.
 
-TRACE IT, IDENTIFY THE EXACT FAILURE, FIX IT, AND RETEST.
+Do not create production architecture.
+
+But maintain very high:
+
+DATA QUALITY
+ANALYTICAL QUALITY
+EVIDENCE QUALITY
+UX QUALITY
+
+============================================================
+START NOW
+============================================================
+
+Resolve the colleague client-ID difference.
+
+Find the original approved authentication bootstrap.
+
+Do not touch upstream RPR.
+
+Then separately prove preset accessibility.
+
+Then run Step 2.5 end-to-end.
