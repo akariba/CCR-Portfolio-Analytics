@@ -1,120 +1,257 @@
-STEP 2.5 — FINAL PRE-IMPLEMENTATION HOLD.
+EXECUTE NOW — FINAL STEP 2.5 STYLUS CONTRACT CAPTURE IS COMPLETE.
 
-READ THIS ENTIRE INSTRUCTION BEFORE TAKING ANY ACTION.
+READ THIS ENTIRE INSTRUCTION BEFORE MODIFYING ANYTHING.
 
-DO NOT START ANOTHER INVESTIGATION CYCLE.
-DO NOT REFACTOR.
-DO NOT ADD ARCHITECTURE.
-DO NOT MODIFY STEPS 1–2.4.
-DO NOT INVESTIGATE PRESET-ID EXECUTION.
-DO NOT BUILD AUTHENTICATION INFRASTRUCTURE.
-DO NOT CREATE NEW HELPER FILES.
+This is no longer an investigation task.
 
-We have now reduced Step 2.5 to a small set of concrete request-contract differences.
+We have now captured the missing live Stylus preset contract directly from
+the successful manual SEC + WEB execution.
 
-This is a PURE POC from an engineering/lifecycle perspective.
+The objective is now:
 
-However, POC DOES NOT MEAN LOW QUALITY.
-
-The final Step 2.5 result must remain analytically strong enough for a real CCR / credit-risk analyst to take seriously.
+MAKE THE EXISTING RPR STEP 2.5 STYLUS PATH REPRODUCE THE PROVEN-WORKING
+STYLUS REQUEST WITH THE MINIMUM POSSIBLE CODE CHANGE.
 
 ============================================================
-ACCEPTED BUSINESS PROOF
+NON-NEGOTIABLE FREEZE RULE
 ============================================================
 
-The SEC + WEB Stylus preset has already been executed successfully manually.
+DO NOT:
 
-The successful test used:
+- start another architecture cycle
+- refactor Step 2.5 generally
+- redesign Steps 1–2.4
+- change Step 2.2 portfolio selection
+- change Step 2.3 generation
+- change Step 2.4 generation
+- redesign company resolution
+- introduce a new entity master
+- introduce a preset-ID invocation architecture
+- build a knowledge management framework
+- build a file-upload framework
+- build an auth framework
+- create generalized adapters
+- create unnecessary helper files
+- clean up unrelated code
+- rewrite working code for style
+- weaken analytical quality because this is a POC
 
-Company:
-APPLE INC
+POC simplification applies to ENGINEERING ARCHITECTURE ONLY.
+
+It does NOT mean simplification of:
+
+- evidence quality
+- credit analysis quality
+- company identity integrity
+- SEC evidence
+- web evidence
+- factor assessment
+- citations/provenance
+- validation
+- final user-facing result
+
+The Step 2.5 result must be sufficiently strong that an experienced
+credit-risk analyst can evaluate it seriously.
+
+============================================================
+CURRENT BUSINESS FLOW — PRESERVE
+============================================================
+
+The desired and accepted flow is:
+
+REAL Step 2.2 portfolio company
+        ↓
+real CAGID/company identity
+        ↓
+existing CikResolver
+        ↓
+confirmed SEC registrant/CIK
+        ↓
+confirmed Step 2.3 event-driven factors
+        ↓
+confirmed Step 2.4 sector-inherent factors
+        ↓
+existing Step 2.5 /run
+        ↓
+Stylus Runner
+        ↓
+FULL SEC + WEB PRESET INLINE
+        ↓
+SEC Filing + web search
+        ↓
+evidence-backed Step25Assessment
+        ↓
+existing Step 2.5 UI
+
+Do not alter this flow.
+
+============================================================
+PROVEN COMPANY FOR THE POC
+============================================================
+
+The current genuine demo path already proved:
 
 Step 2.2 CAGID:
 0000014508
 
+Company:
+APPLE INC
+
 SEC CIK:
 0000320193
 
-The preset successfully consumed:
+Status:
+CIK_CONFIRMED
 
-- real company context
-- the RPR scenario
-- six Step 2.3 event-driven factors
-- five Step 2.4 sector-inherent factors
+This is a genuine Step 2.2 portfolio record.
 
-It successfully used:
+Do not substitute another unrelated company.
 
-- SEC Filing tooling
-- web research
-- counter-thesis research
+Existing company-resolution logic is accepted and should remain unchanged.
 
-and generated:
+============================================================
+PROVEN MANUAL STYLUS RESULT
+============================================================
 
-AAPL_Step25_Assessment.json
+The SEC + WEB preset has already been manually executed successfully in
+Stylus with Apple.
 
-The result contained:
+The successful manual execution demonstrated:
 
-- identity validation
-- factor-by-factor assessments
-- risk direction
-- confidence
-- evidence references
-- disconfirming evidence
-- conflicts
-- evidence gaps
-- freshness warnings
-- analyst questions
-- reasoning summary
-- workflow action
+- Apple company identity was accepted
+- SEC Filing was invoked
+- web/internet searches were invoked
+- Step 2.3 factors were consumed
+- Step 2.4 factors were consumed
+- company-specific credit assessment was produced
+- AAPL_Step25_Assessment.json was produced
+- Apple CIK 0000320193 was confirmed
+- factor-by-factor assessment was produced
+- evidence IDs were produced
+- supporting evidence was produced
+- disconfirming evidence was produced
+- conflicts were represented
+- evidence gaps were represented
+- analyst questions were represented
+- workflow action was produced
 
 Therefore:
 
-PRESET_BUSINESS_LOGIC_WORKS = TRUE
-SEC_RETRIEVAL_WORKS = TRUE
-WEB_RETRIEVAL_WORKS = TRUE
-STEP25_SCHEMA_GENERATION_WORKS = TRUE
+DO NOT redesign the preset.
 
-Do not redesign any of these.
+DO NOT split SEC and WEB into separate presets.
+
+The combined SEC + WEB concept is now proven manually.
+
+The task is only to reproduce this successful invocation through RPR.
 
 ============================================================
-KNOWN LIVE RUNNER CONTRACT
+LIVE RUNNER ENDPOINT
 ============================================================
 
-Successful browser execution:
+Successful browser execution used:
 
 POST
 https://workspaces.genai.citi.net/runner-service/chat
 
 Response:
 HTTP 200
-Content-Type: text/event-stream
+Content-Type:
+text/event-stream
 
-Observed live outer request body:
+RPR must continue using the existing Runner integration mechanism.
 
-mode = 1
+Do not invent another service.
 
-application = "jukebox"
+============================================================
+PROVEN OUTER REQUEST CONTRACT
+============================================================
 
-invoker = current logged-in SOEID
+The successful request contains the same fundamental structure already used
+by the current RPR Runner client:
 
-message.role = 0
+{
+    "mode": 1,
+    "application": "jukebox",
+    "invoker": <current user's SOEID>,
+    "message": {
+        "parts": [
+            {
+                "data": "",
+                "data_type": 3,
+                "mime_type": "",
+                "name": "",
+                "preset": <FULL INLINE PRESET>
+            }
+        ],
+        "role": 0
+    },
+    "model": "claude-sonnet-5",
+    "request_id": <uuid>,
+    "temperature": 1,
+    "tool_config": {
+        "integrations": [
+            "lookup_documentation",
+            "sec_filing"
+        ],
+        "auto_tool_mode": false
+    }
+}
 
-message.parts = one initial preset-bearing part
+IMPORTANT:
 
-initial part:
-    data = ""
-    data_type = 3
-    mime_type = ""
-    name = ""
-    preset = <full inline preset>
+The preset is INLINE.
 
-model = "claude-sonnet-5"
+Do NOT call it by preset UUID.
 
-request_id = UUID
+Do NOT implement preset-ID retrieval.
 
-temperature = 1
+request_id should continue to be generated in the existing appropriate
+manner.
 
-tool_config = {
+============================================================
+MODEL
+============================================================
+
+The live successful request used:
+
+"model": "claude-sonnet-5"
+
+Use this exact model value for this preset invocation.
+
+Do not silently fall back to claude-sonnet-4-6.
+
+If the YAML currently contains PENDING_CAPTURE or another stale model,
+replace it with:
+
+claude-sonnet-5
+
+============================================================
+TEMPERATURE
+============================================================
+
+The live successful request used:
+
+"temperature": 1
+
+Current RPR was observed using:
+
+"temperature": 0
+
+Change ONLY the Stylus Runner POC request so that it reproduces the
+successful value:
+
+"temperature": 1
+
+Do not modify unrelated LLM/model settings elsewhere in RPR.
+
+============================================================
+OUTER RUNNER TOOL_CONFIG
+============================================================
+
+The successful browser request used:
+
+"tool_config": {
     "integrations": [
         "lookup_documentation",
         "sec_filing"
@@ -122,174 +259,199 @@ tool_config = {
     "auto_tool_mode": false
 }
 
-SSE:
-Accept: text/event-stream
+The previous RPR implementation had:
 
-This is the source-of-truth execution contract.
+"integrations": []
 
-============================================================
-CURRENT RPR COMPARISON — ACCEPT AS PROVEN
-============================================================
+That must be corrected for the Stylus Step 2.5 POC path.
 
-Current backend/step25/stylus_runner_client.py already matches the live request on:
-
-- mode = 1
-- application = "jukebox"
-- invoker/current SOEID structure
-- message.role = 0
-- one initial preset-bearing message part
-- part.data = ""
-- part.data_type = 3
-- part.mime_type = ""
-- part.name = ""
-- request_id UUID generation
-- SSE Accept = text/event-stream
-- inline preset mechanism
-- flat answers dictionary using the exact 5 input names
-
-DO NOT rewrite these working portions.
-
-============================================================
-CONCRETE DIFFERENCES ALREADY PROVEN
-============================================================
-
-DIFFERENCE 1 — MODEL
-
-LIVE:
-
-"claude-sonnet-5"
-
-CURRENT RPR:
-
-currently resolves to approximately:
-
-"claude-sonnet-4-6"
-
-This must eventually be changed to:
-
-"claude-sonnet-5"
-
-unless the final captured preset explicitly proves otherwise.
-
-------------------------------------------------------------
-DIFFERENCE 2 — TEMPERATURE
-
-LIVE:
-
-temperature = 1
-
-CURRENT RPR:
-
-temperature = 0
-
-For exact POC parity, final implementation should use:
-
-temperature = 1
-
-------------------------------------------------------------
-DIFFERENCE 3 — OUTER TOOL CONFIG
-
-LIVE:
-
-{
-  "integrations": [
-    "lookup_documentation",
-    "sec_filing"
-  ],
-  "auto_tool_mode": false
-}
-
-CURRENT RPR:
-
-{
-  "integrations": [],
-  "auto_tool_mode": false
-}
-
-THIS IS A MATERIAL CAPABILITY DIFFERENCE.
-
-The live assessment visibly executed SEC Filing calls.
-
-Therefore the final RPR implementation must reproduce the proven live integration list:
+Use exactly:
 
 [
     "lookup_documentation",
     "sec_filing"
 ]
 
-Do not replace this with the unrelated Swagger internal-domain ToolConfig model.
-
-------------------------------------------------------------
-DIFFERENCE 4 — PRESET PROMPT
-
-LIVE:
-
-real RPR Step 2.5 SEC + WEB credit-assessment prompt
-
-CURRENT YAML:
-
-PENDING_CAPTURE
-
-The real prompt text supplied/captured by the user is the business source of truth.
-
-It must replace the placeholder exactly enough to preserve its full analytical behaviour.
-
-DO NOT shorten or simplify it.
-
-------------------------------------------------------------
-DIFFERENCE 5 — INNER PRESET TOOL CONFIG
-
-CURRENT STATUS:
-
-UNKNOWN.
-
-This refers specifically to:
-
-message.parts[0].preset.toolConfig
-
-or its exact actual spelling.
-
-Do NOT confuse it with OUTER:
-
-request.tool_config
-
-These are separate objects.
-
-Do NOT map Swagger:
-
-runner-service_internal_domain_models.ToolConfig
-
-blindly.
-
-------------------------------------------------------------
-DIFFERENCE 6 — PRESET KNOWLEDGE
-
-CURRENT STATUS:
-
-UNKNOWN.
-
-This refers specifically to:
-
-message.parts[0].preset.knowledge
-
-or exact actual spelling.
-
-The user is performing one FINAL DevTools capture to expand:
-
-message
-  -> parts
-     -> [0]
-        -> preset
-           -> toolConfig
-           -> knowledge
-
-Those exact captured JSON values will be provided next.
+Do not globally change tool settings for Steps 1–2.4.
 
 ============================================================
-INPUT CONTRACT — ACCEPTED
+VERY IMPORTANT — TWO DIFFERENT TOOL CONFIGURATION LAYERS
 ============================================================
 
-The preset has exactly five inputs:
+Do NOT confuse:
+
+OUTER request:
+tool_config
+
+with:
+
+INNER inline preset:
+toolConfig
+
+They are different objects in the successful request.
+
+OUTER:
+
+"tool_config": {
+    "integrations": [
+        "lookup_documentation",
+        "sec_filing"
+    ],
+    "auto_tool_mode": false
+}
+
+INNER PRESET:
+
+"toolConfig": {
+    "auto_tool_mode": false,
+    "google_search_enabled": true,
+    "google_url_context_enabled": false,
+    "integrations": null,
+    "mock_llm": false
+}
+
+Preserve both exactly.
+
+Do NOT merge them.
+
+Do NOT transform inner integrations:null into the outer integration list.
+
+============================================================
+REQUIRED INTEGRATIONS INSIDE PRESET
+============================================================
+
+The live preset separately contains:
+
+"requiredIntegrations": [
+    "sec_filing"
+]
+
+Preserve this exact field/value in the inline preset definition.
+
+============================================================
+EXACT FIVE INPUT DEFINITIONS — NOW CAPTURED
+============================================================
+
+This is the final previously-missing contract information.
+
+These values were read directly from:
+
+message.parts[0].preset.inputs
+
+inside the successful browser POST /runner-service/chat Request Payload.
+
+THESE ARE GROUND TRUTH.
+
+INPUT 0
+-------
+
+name:
+companycontextjson
+
+label:
+CompanyContextJSON
+
+type:
+text
+
+required:
+true
+
+helperText:
+contains link: {}
+
+INPUT 1
+-------
+
+name:
+EventDrivenF
+
+label:
+EventDrivenFactorsJSON
+
+type:
+text
+
+required:
+true
+
+helperText:
+contains link: {}
+
+INPUT 2
+-------
+
+name:
+SectorInhere
+
+label:
+SectorInherentFactorsJSON
+
+type:
+text
+
+required:
+true
+
+helperText:
+contains link: {}
+
+INPUT 3
+-------
+
+name:
+AssessmentAS
+
+label:
+AssessmentASOFDATE
+
+type:
+text
+
+required:
+true
+
+helperText:
+contains link: {}
+
+INPUT 4
+-------
+
+name:
+EvidenceWind
+
+label:
+EvidenceWindowMonths
+
+type:
+text
+
+required:
+false
+
+helperText:
+contains link: {}
+
+============================================================
+CRITICAL INPUT-NAME RULE
+============================================================
+
+The Runner's preset.answers dictionary is keyed by the exact preset INPUT
+"name" values.
+
+Therefore the exact keys are:
+
+companycontextjson
+EventDrivenF
+SectorInhere
+AssessmentAS
+EvidenceWind
+
+CASE IS SIGNIFICANT.
+
+DO NOT use the labels as keys.
+
+Specifically DO NOT use:
 
 CompanyContextJSON
 EventDrivenFactorsJSON
@@ -297,352 +459,624 @@ SectorInherentFactorsJSON
 AssessmentASOFDATE
 EvidenceWindowMonths
 
-Exact case matters.
+for preset.answers unless they occur somewhere separately for display.
 
-Runtime answers use a flat dictionary:
+Those are LABELS.
 
-preset["answers"] = {
-    "<exact input name>": <value>,
-    ...
+The actual serialized input names are the shorter values above.
+
+Do NOT 'correct' the spelling.
+
+Do NOT expand:
+
+EventDrivenF
+→ EventDrivenFactorsJSON
+
+Do NOT expand:
+
+SectorInhere
+→ SectorInherentFactorsJSON
+
+Do NOT expand:
+
+AssessmentAS
+→ AssessmentASOFDATE
+
+Do NOT expand:
+
+EvidenceWind
+→ EvidenceWindowMonths
+
+The shortened names are what the successful Stylus request actually sends.
+
+============================================================
+REQUIRED RPR → PRESET ANSWER MAPPING
+============================================================
+
+The current Step 2.5 adapter should populate the existing flat
+preset["answers"] dictionary approximately as follows:
+
+preset["answers"]["companycontextjson"]
+    = serialized real Step 2.2/company assessment context
+
+preset["answers"]["EventDrivenF"]
+    = serialized confirmed Step 2.3 event-driven factors
+
+preset["answers"]["SectorInhere"]
+    = serialized confirmed Step 2.4 sector-inherent factors
+
+preset["answers"]["AssessmentAS"]
+    = assessment as-of date
+
+preset["answers"]["EvidenceWind"]
+    = evidence-window-month value when supplied
+
+For the current POC test, EvidenceWind may use the already-agreed evidence
+window such as 12 if that is what the existing Step 2.5 context specifies.
+
+Do NOT fabricate missing Step 2.3 or Step 2.4 content.
+
+Pass the real registered RPR values.
+
+============================================================
+PRESET KNOWLEDGE — LIVE CAPTURE
+============================================================
+
+The successful preset contains two knowledge objects.
+
+Preserve them as the captured preset definition.
+
+Knowledge item 1:
+
+{
+    "file": {
+        "name": "RPR_STEP25_FIELD_DICTIONARY.md",
+        "value": "01a0584e-ca8a-7d0e-a77c-08578da91c47/input_files/RPR_STEP25_FIELD_DICTIONARY.md"
+    }
 }
 
-The current RPR Stylus client already follows this pattern.
+Knowledge item 2:
 
-Do NOT create another answers adapter.
+{
+    "file": {
+        "name": "Step25Assessment.schema.txt",
+        "value": "01a0584e-ca8a-7d0e-a77c-08578da91c47/input_files/Step25Assessment.schema.txt"
+    }
+}
 
-============================================================
-COMPANY INTEGRITY
-============================================================
+Use the captured values verbatim for the first POC execution.
 
-Use the genuine Step 2.2 company.
+DO NOT build a new knowledge upload/synchronization subsystem.
 
-For the validated POC path:
+If a REAL Runner execution later explicitly says these knowledge references
+cannot be resolved outside the originating workflow, stop on that concrete
+error and apply only the smallest necessary POC fix.
 
-CAGID 0000014508
-    ->
-APPLE INC
-    ->
-CIK 0000320193
-    ->
-CIK_CONFIRMED
-
-Do not substitute another company.
-
-Do not infer identity from factor text.
-
-Existing company/CikResolver behaviour should remain unchanged.
+Do not anticipate that failure with architecture.
 
 ============================================================
-STEP 2.3 AND STEP 2.4 REQUIREMENT
+INNER PRESET TOOLCONFIG — LIVE CAPTURE
 ============================================================
 
-The final Step 2.5 execution MUST consume the actual upstream factors registered by the existing RPR flow.
+Use exactly:
 
-For the proven Apple test:
+{
+    "auto_tool_mode": false,
+    "google_search_enabled": true,
+    "google_url_context_enabled": false,
+    "integrations": null,
+    "mock_llm": false
+}
 
-Step 2.3:
-6 event-driven factors
+This is preset.toolConfig.
 
-Step 2.4:
-5 sector-inherent factors
+Again:
 
-Do not manually rewrite those factors inside Step 2.5.
+THIS IS NOT THE SAME AS OUTER request.tool_config.
 
-Do not introduce synthetic test factors when executing the final E2E.
+============================================================
+PROMPT
+============================================================
+
+The complete live Step 2.5 preset prompt has already been captured/pasted
+during the prior investigation.
+
+Use that COMPLETE text VERBATIM.
+
+Do not summarize it.
+
+Do not shorten it.
+
+Do not paraphrase it.
+
+Do not produce a new generic credit-analysis prompt.
+
+Do not replace it with a simplified POC prompt.
+
+Its purpose is to produce a serious name-level credit assessment using:
+
+- verified company identity
+- Step 2.3 event-driven factors
+- Step 2.4 sector-inherent factors
+- SEC evidence
+- web evidence
+- supporting evidence
+- disconfirming evidence
+- direction
+- materiality
+- confidence
+- conflicts
+- evidence gaps
+- analyst questions
+- workflow recommendation/action
+
+If you cannot locate the exact full prompt already captured in the current
+conversation/repo material, STOP and report:
+
+EXACT_PROMPT_TEXT_NOT_FOUND
+
+Do NOT invent a replacement.
+
+============================================================
+PRESET FILE
+============================================================
+
+Update the existing:
+
+preset_knowledge/STYLUS_SEC_WEB_PRESET_DEFINITION.yaml
+
+Do not create a new preset configuration file unless the existing file
+physically cannot represent an observed field.
+
+Populate the current preset definition with the captured values.
+
+The YAML should represent the proven preset faithfully, including as
+applicable:
+
+- name
+- model
+- full prompt
+- inputs
+- answers/input keys
+- toolConfig
+- requiredIntegrations
+- knowledge
+- any already-existing relevant preset properties
+- verified=true
+
+Do not arbitrarily copy every irrelevant metadata field from the Stylus UI
+if the Runner doesn't need it.
+
+But do not omit execution-bearing fields proven above.
+
+============================================================
+EXPECTED CODE FILE
+============================================================
+
+The only expected Python change is approximately:
+
+backend/step25/stylus_runner_client.py
+
+and ONLY for request-contract differences that cannot live in the YAML,
+principally:
+
+1. temperature:
+0 → 1
+
+2. outer request tool_config integrations:
+[] →
+["lookup_documentation", "sec_filing"]
+
+Preserve:
+
+- mode=1
+- application="jukebox"
+- message.role=0
+- preset-bearing first message part
+- data_type=3
+- SSE request handling
+- current request-id generation
+- existing authentication loading
+- existing final-answer extraction/fallback unless a real test proves it
+  inadequate
+
+Do not rewrite this client.
+
+============================================================
+STEP 2.2 / COMPANY INTEGRITY
+============================================================
+
+No change required.
+
+Preserve the currently proven path:
+
+CAGID
+→ cagid_name / authoritative gfcid_name
+→ existing CikResolver
+→ legal company
+→ confirmed SEC registrant
+
+For current POC:
+
+0000014508
+→ APPLE INC
+→ CIK 0000320193
+→ CIK_CONFIRMED
+
+No company inferred from scenario wording.
+
+No Salesforce/Apple/Microsoft substitution.
+
+If a different portfolio company cannot resolve:
+
+NO_COMPANY_IDENTITY_AVAILABLE
+
+or:
+
+NO_CONFIRMED_SEC_REGISTRANT
+
+as already designed.
+
+============================================================
+STEP 2.3
+============================================================
+
+NO CODE CHANGE.
+
+Use the actual confirmed Step 2.3 factors already registered in Step 2.5
+context.
+
+Do not regenerate them inside Step 2.5.
+
+Do not rewrite them.
+
+Do not use placeholder factors.
+
+============================================================
+STEP 2.4
+============================================================
+
+NO CODE CHANGE.
+
+Use the actual confirmed Step 2.4 factors already registered in Step 2.5
+context.
+
+Do not regenerate them inside Step 2.5.
+
+Do not rewrite them.
+
+Do not alter the Step 2.4 UI or schema.
+
+============================================================
+STEP 2.5 QUALITY STANDARD
+============================================================
+
+A successful HTTP 200 is NOT sufficient.
+
+A successful JSON parse is NOT sufficient.
+
+Step 2.5 succeeds only when the result genuinely demonstrates:
+
+1. correct Step 2.2 company identity
+2. confirmed CIK where SEC assessment is applicable
+3. use of Step 2.3 factors
+4. use of Step 2.4 factors
+5. actual SEC evidence
+6. actual web evidence
+7. factor-by-factor assessment
+8. risk direction
+9. materiality/credit implication
+10. evidence IDs/provenance
+11. supporting evidence
+12. disconfirming/contrary evidence where available
+13. conflicts where evidence disagrees
+14. explicit evidence gaps
+15. freshness warnings where necessary
+16. analyst questions where uncertainty remains
+17. a useful overall credit-risk conclusion
+18. schema-compatible Step25Assessment
+19. successful rendering through the existing Step 2.5 UI
+
+Do not fabricate facts to obtain schema completeness.
+
+============================================================
+SEC TOOL FAILURE OBSERVED DURING MANUAL TEST
+============================================================
+
+During the successful manual Stylus test, some SEC calls succeeded and one
+8-K call surfaced:
+
+onSECFilingToolCall:
+Unmarshal results: unexpected end of JSON input
+
+Do NOT treat this as evidence that the overall preset is broken.
+
+Other SEC calls successfully returned actual filing data and the overall
+assessment completed.
+
+Do NOT build a retry framework now.
+
+Do NOT redesign SEC retrieval now.
+
+If the same isolated tool failure occurs during RPR but sufficient genuine
+SEC evidence is still returned and the assessment remains valid, surface
+the evidence limitation appropriately.
+
+Only investigate further if the final RPR assessment genuinely cannot
+complete or lacks sufficient SEC evidence.
+
+============================================================
+EVIDENCE / SSE
+============================================================
+
+Keep the current lightweight evidence handling.
+
+The previous investigation identified that direct SSE parsing may not
+recognize every Stylus-specific tool-call event name.
+
+Do NOT build a generalized SSE event framework pre-emptively.
+
+The current final-response fallback to the model's evidence IDs/citations is
+acceptable for this POC provided:
+
+- evidence is genuine
+- no fabricated IDs are introduced
+- no fabricated URLs are introduced
+- SEC statements are traceable
+- web statements are traceable as far as the Runner result supplies them
+
+If the real end-to-end run proves that evidence is being lost materially,
+fix that concrete defect only.
 
 ============================================================
 AUTHENTICATION
 ============================================================
 
-Authentication is a separate operational issue.
+Do NOT ask the user to paste browser bearer tokens into Claude chat.
 
-Browser Stylus already proves:
+Do NOT print credentials.
 
-Runner reachable = YES
-Runner authenticated from browser = YES
-Preset execution = YES
+Do NOT commit credentials.
 
-Claude shell may not currently possess a Runner bearer/refresh token.
+Do NOT persist browser tokens into source control.
 
-Do NOT:
+Use the existing approved Runner auth loader/mechanism.
 
-- ask the user to paste a bearer token into chat
-- print tokens
-- persist browser Authorization headers
-- copy cookies
-- design OAuth
-- create dummy credentials
-- invent successful responses
+The current Runner client_id fallback already established during the prior
+investigation should be preserved unless a concrete error proves otherwise.
 
-Do not mix authentication with request serialization.
+If no current Runner credential is available in this shell:
 
-============================================================
-ONE FINAL PIECE OF INFORMATION IS COMING
-============================================================
+BLOCKED_AUTH
 
-The user will provide the exact expanded live values for:
+is acceptable.
 
-message.parts[0].preset.toolConfig
-
-and
-
-message.parts[0].preset.knowledge
-
-When supplied:
-
-USE THEM AS GROUND TRUTH.
-
-Do not reinterpret them.
-
-Do not normalize field names.
-
-Do not replace them with Swagger internal models.
-
-Do not generalize them.
+But the preset/config implementation and offline tests should still be
+completed.
 
 ============================================================
-WHAT YOU SHOULD DO RIGHT NOW
+IMPLEMENTATION SEQUENCE — DO THIS NOW
 ============================================================
 
-NO CODE CHANGES YET.
+1. Inspect current:
+   preset_knowledge/STYLUS_SEC_WEB_PRESET_DEFINITION.yaml
 
-Before the capture arrives:
+2. Inspect current:
+   backend/step25/stylus_runner_client.py
 
-1. Re-open:
+3. Compare current implementation against THIS FINAL CAPTURE.
 
-backend/step25/stylus_runner_client.py
+4. Modify ONLY what is necessary.
 
-and:
+5. Populate the exact five preset inputs:
 
-preset_knowledge/STYLUS_SEC_WEB_PRESET_DEFINITION.yaml
+   companycontextjson
+   EventDrivenF
+   SectorInhere
+   AssessmentAS
+   EvidenceWind
 
-2. Identify the EXACT existing lines/fields that will need modification for:
+6. Ensure their corresponding labels/types/required flags agree with the
+   live capture.
 
-- model
-- temperature
-- outer tool_config.integrations
-- preset prompt
-- inner preset toolConfig
-- preset knowledge
-- verified flag
+7. Populate the captured model:
+   claude-sonnet-5
 
-3. Confirm the existing five-answer mapping will NOT need modification.
+8. Populate the previously captured full prompt verbatim.
 
-4. Confirm Steps 1–2.4 require NO modification.
+9. Populate inner preset.toolConfig exactly.
 
-5. Confirm existing company identity resolution requires NO modification.
+10. Populate preset.requiredIntegrations exactly.
 
-6. Confirm the existing inline-preset architecture remains correct.
+11. Populate the two knowledge entries exactly.
 
-7. Do NOT edit anything.
+12. Set outer request temperature to 1.
 
-============================================================
-AFTER THE TWO CAPTURED OBJECTS ARRIVE
-============================================================
+13. Set outer request integrations to:
+    lookup_documentation
+    sec_filing
 
-When the user provides preset.toolConfig and preset.knowledge:
+14. Set preset verified=true only after the real captured values have been
+    populated and the local preset validation accepts them.
 
-DO NOT ask another architectural question.
+15. Run the existing Step 2.5 offline/unit tests.
 
-Apply the smallest functional implementation.
+16. Run any existing preset/config validation.
 
-Expected maximum functional scope:
+17. Restart ONLY if required by current application behaviour.
 
-FILE 1:
-backend/step25/stylus_runner_client.py
+18. Run Step 2.5 preflight.
 
-Only if necessary for:
+19. Confirm the only remaining blocker, if any.
 
-- model parity
-- temperature parity
-- outer tool_config parity
+20. If Runner authentication is available, execute the REAL RPR Step 2.5
+    path using the registered Apple context:
 
-FILE 2:
-preset_knowledge/STYLUS_SEC_WEB_PRESET_DEFINITION.yaml
+    real Step 2.2 company
+    → confirmed Step 2.3
+    → confirmed Step 2.4
+    → POST /step25/run
+    → real Runner
+    → real SEC/web assessment
 
-For:
-
-- actual model
-- full real prompt
-- exact five inputs
-- exact inner toolConfig
-- exact knowledge
-- verified=true
-
-If captured shape proves a tiny serialization change is necessary in stylus_runner_client.py, make that change.
-
-Otherwise do not alter serialization.
+21. Do not manufacture success if authentication is unavailable.
 
 ============================================================
-IMMEDIATELY AFTER IMPLEMENTATION
+E2E ACCEPTANCE TEST
 ============================================================
 
-Run offline/unit tests first.
+For a successful real execution, prove all of the following:
 
-If they pass, run Step 2.5 preflight.
+COMPANY
+-------
+company_id = 0000014508
+company = APPLE INC
+CIK = 0000320193
+SEC identity = confirmed
 
-Then, once approved Runner authentication is available, perform the REAL E2E using the already-proven Apple context:
+UPSTREAM
+--------
+Step 2.3 confirmed and actually supplied
+Step 2.4 confirmed and actually supplied
 
-Step 2.2
-CAGID 0000014508
-APPLE INC
-CIK 0000320193
+RUNNER
+------
+real POST /runner-service/chat attempted
+full preset sent inline
+model = claude-sonnet-5
+temperature = 1
 
-    ->
+OUTER integrations include:
+lookup_documentation
+sec_filing
 
-registered Step 2.3
-6 confirmed factors
+PRESET
+------
+input key companycontextjson populated
+input key EventDrivenF populated
+input key SectorInhere populated
+input key AssessmentAS populated
+input key EvidenceWind populated if applicable
 
-    ->
+INNER:
+google_search_enabled = true
+requiredIntegrations includes sec_filing
+knowledge includes both captured files
 
-registered Step 2.4
-5 confirmed factors
-
-    ->
-
-POST /api/v1/rpr/step25/run
-
-    ->
-
-Stylus engine
-
-    ->
-
-POST /runner-service/chat
-
-    ->
-
-SEC + WEB tools
-
-    ->
-
-real Step25Assessment
-
-    ->
-
-existing Step 2.5 UI
-
-============================================================
-RESULT QUALITY GATE
-============================================================
-
-HTTP 200 IS NOT SUCCESS BY ITSELF.
-
-JSON validation IS NOT SUCCESS BY ITSELF.
-
-Step 2.5 succeeds only if the result demonstrates meaningful use of:
-
-- real Apple identity
-- actual selected RPR scenario
-- actual Step 2.3 factors
-- actual Step 2.4 factors
-- SEC evidence
-- relevant web evidence
-- counter-thesis / disconfirming evidence
-- credit-risk implications
-- risk direction
-- confidence/materiality
-- evidence gaps
-- conflicts where present
-- analyst-relevant conclusions
-
-Compare the integrated result qualitatively with the already-successful manual Stylus assessment.
-
-If the integrated assessment is materially weaker, diagnose the concrete missing input/tool/config difference.
-
-Do NOT solve quality problems by creating new architecture.
+RESULT
+------
+HTTP success if auth available
+SSE response consumed
+final Step25Assessment parsed
+company identity still Apple
+Step 2.3 factors assessed
+Step 2.4 factors assessed
+SEC evidence present
+web evidence present
+credit-risk conclusion present
+evidence gaps preserved rather than fabricated
+existing UI can consume result
 
 ============================================================
-8-K TOOL FAILURE POLICY
+DO NOT DECLARE SUCCESS TOO EARLY
 ============================================================
 
-The manual Stylus test had one SEC 8-K tool failure:
+Do NOT say "Step 2.5 works" merely because:
 
-onSECFilingToolCall:
-Unmarshal results: unexpected end of JSON input
+- YAML loads
+- unit tests pass
+- preflight passes
+- HTTP 200 occurs
+- JSON parses
 
-Other SEC calls succeeded and the overall assessment completed.
+There are three separate statuses:
 
-Therefore:
+A. CONTRACT_CONFIGURED
+B. RUNNER_EXECUTION_WORKING
+C. STEP25_ANALYTICAL_RESULT_VALIDATED
 
-- do not make one failed filing-tool call fatal
-- retain successful SEC evidence
-- retain web evidence
-- disclose the evidence gap
-- allow the assessment to finish when sufficient evidence remains
+Report them separately.
 
-Do not fake the missing 8-K.
+If auth is absent, likely status may be:
 
-============================================================
-SSE / EVIDENCE PARSING
-============================================================
+CONTRACT_CONFIGURED = YES
+RUNNER_EXECUTION_WORKING = BLOCKED_AUTH
+STEP25_ANALYTICAL_RESULT_VALIDATED = NOT_RUN_VIA_RPR
 
-Current SSE parsing has an imperfect tool-event citation probe.
+That is acceptable and truthful.
 
-Do NOT expand this into another framework now.
-
-Keep the existing fallback unless the REAL integrated run proves it loses material assessment content or provenance.
-
-For this POC:
-
-accurate final assessment + defensible traceability
-
-is the objective.
-
-Not perfect enterprise event normalization.
+If authentication exists and the real run succeeds, inspect the resulting
+assessment before marking C as YES.
 
 ============================================================
-FREEZE RULE
+FINAL REPORT FORMAT
 ============================================================
 
-After the final two preset objects are supplied:
+After doing the work, report ONLY:
+
+1. FILES_CHANGED
+   exact files and line/range summary
+
+2. FINAL_INPUT_KEYS
+   show all five exact keys
+
+3. REQUEST_CONTRACT
+   model
+   temperature
+   outer integrations
+   inner toolConfig
+   requiredIntegrations
+   knowledge count
+
+4. TESTS
+   exact tests executed and pass/fail
+
+5. PREFLIGHT
+   exact remaining blockers
+
+6. REAL_RPR_STEP25_RUN
+   ATTEMPTED / NOT_ATTEMPTED
+   HTTP/result
+   exact failure layer if failed
+
+7. DATA_FLOW_PROOF
+   Step 2.2 company/CAGID/CIK
+   Step 2.3 factor count
+   Step 2.4 factor count
+   exact five input keys populated
+
+8. ANALYTICAL_RESULT
+   only if a real Runner run completed:
+   SEC evidence present?
+   web evidence present?
+   factor assessments present?
+   conflicts/gaps preserved?
+   valid Step25Assessment?
+   useful credit conclusion?
+
+9. STATUS
+
+   CONTRACT_CONFIGURED =
+   RUNNER_EXECUTION_WORKING =
+   STEP25_ANALYTICAL_RESULT_VALIDATED =
+
+10. REMAINING_BLOCKER
+    exact blocker, or NONE
+
+============================================================
+FINAL FREEZE
+============================================================
+
+After this implementation/test:
 
 NO NEW ARCHITECTURE.
-NO NEW ENTITY FRAMEWORK.
-NO PRESET-ID SYSTEM.
-NO ARTIFACT FRAMEWORK.
+NO NEW PRESET FRAMEWORK.
+NO ENTITY FRAMEWORK.
 NO AUTH FRAMEWORK.
 NO STEP 1–2.4 CHANGES.
 NO CLEANUP.
-NO REFACTORING FOR STYLE.
-NO GENERALIZATION.
+NO REFACTORING.
 
-ONLY FIX WHAT IS NECESSARY TO MAKE STEP 2.5 WORK.
+Only fix a CONCRETE defect exposed by the real Step 2.5 execution.
 
-============================================================
-REPORT NOW
-============================================================
-
-Do not modify code.
-
-Return ONLY:
-
-1. READY_FOR_FINAL_TWO_FIELDS:
-YES / NO
-
-2. FILES_EXPECTED_TO_CHANGE:
-exact paths
-
-3. ALREADY_PROVEN_CHANGES:
-- model
-- temperature
-- outer integrations
-- prompt
-
-4. STILL_WAITING_FOR:
-- preset.toolConfig
-- preset.knowledge
-
-5. FIVE_INPUT_MAPPING_CHANGE_REQUIRED:
-YES / NO
-
-6. STEPS_1_TO_2_4_CHANGE_REQUIRED:
-YES / NO
-
-7. COMPANY_RESOLUTION_CHANGE_REQUIRED:
-YES / NO
-
-8. ONE SENTENCE:
-what you will execute immediately when the two captured objects are supplied.
-
-Then STOP.
+EXECUTE NOW.
