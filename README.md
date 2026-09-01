@@ -1,96 +1,67 @@
-We have now reached the required POC milestone. A fresh isolated live Step 2.5 Runner execution succeeded.
+We have now proven the Step 2.5 backend/Runner path separately. Do NOT modify stylus_engine.py, stylus_evidence_adapter.py, authentication, token handling, preset configuration, Step 1, Step 2.1–2.4 backend logic, schemas, or any working Step 2.5 backend code.
 
-VERIFIED RESULT:
+The only remaining objective is to test the existing Step 2.5 UI → backend → render path.
 
-LIVE_HTTP_STATUS = 200
-PRESET_EXECUTED = true
-SEC_TOOL_CALLED = true
-MODEL_RESPONSE_RECEIVED = true
-JSON_PARSED = true
-STEP25_SCHEMA_VALID = true
-FACTOR_ASSESSMENTS_COUNT = 2
-FINAL_STATUS = PASS
+Current UI visibly blocks execution because:
 
-Live run id: step25isolated_2d76e14c8868469c
-Execution time ~313.5 sec.
+“No confirmed Step 2.2 portfolio company available”
+“Blocked: Step 2.2/2.3/2.4 confirmation is incomplete for this company.”
 
-This is now the golden working Step 2.5 POC baseline.
+This prerequisite gate is correct for the final workflow, but it prevents our isolated Step 2.5 POC validation.
 
-IMPORTANT: This project is a POC, not production software. Do not introduce production architecture, hardening, abstraction, cleanup, refactoring, or additional quality improvements.
+TASK
 
-OBJECTIVE
+Inspect the current UI Design/step23.html JavaScript and identify the exact code that:
 
-Make the existing RPR application’s Step 2.5 Run Assessment action use the same known-working execution path that succeeded in the isolated live test.
+determines the confirmed Step 2.2 company,
+checks Step 2.2/2.3/2.4 completion,
+enables/disables or blocks the Step 2.5 Run Assessment action,
+builds the Step 2.5 request.
 
-We want exactly one end-to-end UI success:
+Then implement the smallest possible LOCAL POC TEST BYPASS so that Step 2.5 can be run independently using the already-tested Apple input.
 
-existing RPR UI Step 2.5 → existing backend → proven Stylus Runner/preset path → schema-valid Step25Assessment → render result in existing Step 2.5 UI
+Requirements:
 
-FIRST
+preserve all current UI/CSS/v31 layout exactly;
+do not delete the normal prerequisite gate;
+normal workflow behavior must remain unchanged;
+bypass must be clearly marked STEP25_POC_TEST_ONLY;
+when enabled, provide Apple as the temporary confirmed company/input required by the existing Step 2.5 request builder;
+reuse the existing Step 2.5 endpoint and response renderer;
+do not create a second Step 2.5 implementation;
+do not mock the backend response;
+do not change the successful Step 2.5 Runner/backend implementation;
+do not work on evidence quality, F2/F3, URLs, accession numbers or other enhancements.
 
-Inspect the current Step 2.5 endpoint/orchestration and the isolated harness that produced the PASS. Identify the smallest difference between them.
+First inspect the existing frontend code and report the exact gate/function you found. Then make only the minimal bypass change.
 
-Do not rewrite anything until you know exactly where the existing UI/backend path diverges from the successful isolated path.
+After the change:
 
-IMPLEMENTATION RULE
+restart the existing backend normally if it is currently stopped;
+verify /health = 200;
+open the existing step23.html;
+select SEC + Web;
+execute Run Assessment;
+confirm that the browser actually sends the Step 2.5 request;
+confirm HTTP 200;
+confirm the returned assessment_id, headline, risk direction and factor assessments render in the Step 2.5 UI.
 
-Reuse the successful code path/functions/configuration directly wherever possible. Make the smallest possible adapter/wiring change so the real Step 2.5 endpoint reaches the same Runner call and parses the same response shape.
+Report only:
 
-DO NOT CHANGE
-the currently working Stylus preset
-preset ID/configuration
-authentication/token refresh implementation
-Runner transport
-TLS/CA handling
-Step25Assessment schema
-Step 1
-Step 2.1
-Step 2.2
-Step 2.3
-Step 2.4
-v31 frontend styling/layout
-existing working RPR behavior
-SEC evidence URL/accession-number issues
-web-search evidence quality
-evidence-ID design
-weight/score schema
-unrelated tests/refactors
+FRONTEND_GATE_FOUND =
 
-EVIDENCE_RECORD_COUNT = 0 is a known limitation of this deliberately minimized SEC-only test and is NOT a blocker for this task. Do not expand scope to fix it.
+TEST_BYPASS_ADDED = YES/NO
 
-TEST
+BACKEND_HEALTH =
 
-After the minimal wiring change, execute one Step 2.5 request through the actual application path using the same known-good company/test input.
+RUN_ASSESSMENT_REQUEST_SENT = YES/NO
 
-Success means:
+STEP25_HTTP_STATUS =
 
-HTTP_STATUS = 200
-PRESET_EXECUTED = true
-MODEL_RESPONSE_RECEIVED = true
-JSON_PARSED = true
-STEP25_SCHEMA_VALID = true
-assessment has a non-empty headline
-assessment has a real risk direction
-factor assessment count > 0
-actual Step 2.5 endpoint returns the assessment successfully
+ASSESSMENT_ID =
 
-If the frontend is already wired to that endpoint, verify the result appears in the existing Step 2.5 UI. Do not redesign the UI.
+UI_RESULT_RENDERED = YES/NO
 
-STOP CONDITION
-
-The moment one end-to-end Step 2.5 application run succeeds, STOP.
-
-Do not proceed to SEC+Web enrichment or any additional improvements.
-
-At the end report only:
-
-FILES_CHANGED =
-DIFFERENCE_FROM_ISOLATED_PATH =
-STEP25_ENDPOINT_STATUS =
-RUNNER_STATUS =
-SCHEMA_VALID =
-FACTOR_ASSESSMENTS_COUNT =
-UI_RESULT_RENDERED =
 FINAL_STATUS = PASS/BLOCKED
 
-If blocked, give the exact failing layer and smallest required fix only.
+If blocked, give the exact first failing layer and stop. Do not make unrelated fixes.
