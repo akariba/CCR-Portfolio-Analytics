@@ -1,153 +1,361 @@
-STOP CHANGING STEP 2.5 EXECUTION LOGIC.
+I need your help understanding the AUTHENTICATION LIFECYCLE for calling
+the Stylus / Runner Service programmatically from an internal Python
+application.
 
-We are finally at the real root cause.
+This is NOT a request for a token value and you must NOT expose or print
+any credentials, bearer tokens, cookies, secrets, session IDs, or other
+sensitive values.
 
-The current evidence proves:
+I need the supported architecture and exact API/process.
 
-INITIAL_TOKEN_LOADED = YES
-AUTO_REFRESH = YES
-401_REFRESH_RETRY = YES
-RUNNER_SERVICE_REACHED = YES
-RUNNER_HTTP_STATUS = 401 TOKEN_EXPIRED
+============================================================
+CONTEXT
+============================================================
 
-The only remaining auth failure is:
+I have an internal Python application called RPR.
 
-NO REFRESH TOKEN AVAILABLE.
+RPR needs to execute a Stylus Preset through:
 
-Do not redesign runner_client.py.
-Do not redesign runner_token_manager.py.
-Do not change the preset.
-Do not change Steps 1–2.4.
-Do not ask me for another temporary browser bearer token yet.
-Do not create another auth framework.
+POST
+/runner-service/chat
 
-TASK A — FIND HOW THE WORKING PE SPONSOR APP WAS ACTUALLY SEEDED
+The request contract itself is now working.
 
-The PE Sponsor app.py is known to have worked on this workstation.
+We have already confirmed that the Runner Service is reachable and the
+request gets through TLS/network validation.
 
-Its code checks:
+A real request reaches Runner Service successfully.
 
-GENAI_BEARER_TOKEN
-GENAI_REFRESH_TOKEN
-pe-sponsor-search/.token
-pe-sponsor-search/.refresh_token
+The current failure is:
 
-Today these sources are apparently empty.
+HTTP 401
+TOKEN_EXPIRED
 
-Therefore find HOW they were populated when app.py actually worked.
+The Python application already implements:
 
-Search the working project and launch environment for:
+1. loading an access token
+2. storing the token in memory
+3. checking/using the latest token before each request
+4. refresh-token exchange logic
+5. automatic refresh on HTTP 401
+6. retrying the same Runner request after refresh
+7. background refresh support
 
-GENAI_BEARER_TOKEN
-GENAI_REFRESH_TOKEN
-.token
-.refresh_token
-TOKEN_URL
-CLIENT_ID
-setx
-$env:
-Environment.SetEnvironmentVariable
-RUNTIME_ENV
-Start-Process
-streamlit run
-app 1.py
-TOKEN_URL
+The refresh endpoint currently understood from another known-working
+internal application is approximately:
+
+TOKEN_URL =
+https://secureaccess.coin.nam.citigroup.net/as/token.oauth2
+
+grant_type = refresh_token
+
+The known-working Python pattern looks conceptually like:
+
 refresh_token
+    ↓
+POST TOKEN_URL
+    grant_type=refresh_token
+    refresh_token=<refresh token>
+    client_id=<client id>
+    ↓
+access_token
+    ↓
+Authorization: Bearer <access token>
+    ↓
+POST /runner-service/chat
 
-Specifically inspect:
+However, the unresolved problem is the INITIAL AUTHENTICATION /
+BOOTSTRAP.
 
-1. RUNTIME_ENV.ps1
-2. all *.ps1 launch/start scripts
-3. *.bat / *.cmd files
-4. VS Code launch.json/tasks.json
-5. project README/start instructions
-6. any wrapper that launched app 1.py
-7. current-user environment variables
-8. machine environment variables
-9. the parent shell/startup configuration used for the PE Sponsor app
+The current application has no persistent refresh token available.
 
-Do NOT print any credential values.
+Therefore after the browser-derived access token expires, the Python
+application cannot renew it.
 
-I only want the SOURCE/MECHANISM.
+I do NOT want users to manually copy a new browser Authorization header
+every 30 minutes.
 
-Report:
+============================================================
+WHAT I NEED YOU TO DETERMINE
+============================================================
 
-PE_SPONSOR_WORKING_BOOTSTRAP_SOURCE =
-HOW_INITIAL_ACCESS_TOKEN_WAS_CREATED =
-HOW_REFRESH_TOKEN_WAS_CREATED =
-IS_REFRESH_TOKEN_REUSABLE =
-CAN_STEP25_USE_SAME_SOURCE =
+Please explain how Stylus itself authenticates against Runner Service and
+what the supported programmatic authentication method is.
 
-TASK B — TLS CLEANUP
+Investigate your actual application/runtime configuration if available.
 
-Do not maintain a custom/dynamically-extracted TLS certificate chain if
-the existing working company CA bundle can be reused.
+Do not guess.
 
-The proven app.py uses:
+============================================================
+QUESTION 1 — ACCESS TOKEN ORIGIN
+============================================================
 
-CitiInternalCAChain_PROD.pem
+When I log into Stylus in the browser and Stylus sends:
 
-with REQUESTS_CA_BUNDLE / SSL_CERT_FILE.
+POST /runner-service/chat
 
-Find that exact existing PEM file and configure the Step 2.5 Runner
-client to use the same approved CA bundle.
+with:
 
-Do not modify the certificate itself.
+Authorization: Bearer <token>
 
-TASK C — FINAL AUTH DESIGN
+where did that bearer token originally come from?
 
-The desired design is:
+Explain the full chain, for example:
 
-approved initial credential source
-        ↓
-refresh token
-        ↓
-TOKEN_URL refresh_token grant
-        ↓
-new access token
-        ↓
-in-memory current token
-        ↓
-Step 2.5 Runner
-        ↓
-401 TOKEN_EXPIRED
-        ↓
-refresh once
-        ↓
-retry same request
+Corporate SSO
+→ ?
+→ ?
+→ access token
+→ Runner Service
 
-Access tokens should NOT need manual replacement every ~30 minutes.
+I want the actual lifecycle.
 
-Once a valid refresh token exists, the existing auto-refresh mechanism
-should maintain access automatically.
+============================================================
+QUESTION 2 — REFRESH TOKEN
+============================================================
 
-TASK D — IMPORTANT DECISION
+Does the Stylus browser session possess a refresh token?
 
-If after tracing the actual PE Sponsor launch environment you prove that
-the PE Sponsor app also depended on an externally supplied initial
-credential and there is NO automated supported source of a refresh
-token, say so explicitly:
+YES / NO
 
-INITIAL_BOOTSTRAP_REQUIRES_EXTERNAL_LOGIN = YES
+If YES:
 
-Do not pretend Python can manufacture a refresh token.
+Where is it logically managed?
 
-In that case identify the minimum ONE-TIME supported bootstrap required,
-after which the existing refresh-token lifecycle should operate
-automatically.
+Examples:
 
-TASK E — DO NOT RUN STEP 2.5 YET
+- authentication backend
+- secure cookie
+- browser storage
+- SSO session
+- token service
+- server-side Stylus session
+- another service
 
-First return only:
+Do NOT reveal the token itself.
 
-PE_SPONSOR_WORKING_BOOTSTRAP_SOURCE =
+============================================================
+QUESTION 3 — TOKEN REFRESH
+============================================================
+
+When the Stylus browser access token expires, how does Stylus obtain a
+new access token without forcing the user to manually log in every
+30 minutes?
+
+Describe the exact supported refresh flow.
+
+For example:
+
+access token expires
+→ Stylus detects expiry
+→ calls ______
+→ using ______
+→ receives ______
+→ retries Runner request
+
+Identify the endpoint/API involved.
+
+============================================================
+QUESTION 4 — token.oauth2
+============================================================
+
+Is this endpoint part of the supported Stylus authentication flow?
+
+https://secureaccess.coin.nam.citigroup.net/as/token.oauth2
+
+If YES, explain the supported grant type(s).
+
+In particular:
+
+Is:
+
+grant_type=refresh_token
+
+supported for the credentials used by Stylus?
+
+If yes, what identifies the correct client/application?
+
+Do NOT provide secret values.
+
+============================================================
+QUESTION 5 — PROGRAMMATIC PYTHON ACCESS
+============================================================
+
+What is the officially supported way for an internal Python application
+running under the SAME authenticated corporate user to obtain a valid
+Runner Service access token?
+
+Rank the supported options.
+
+For example, determine whether any of these exist:
+
+A. OAuth refresh token
+B. corporate SSO OAuth flow
+C. device authorization flow
+D. service account / machine identity
+E. application/client credentials
+F. Citi SDK/API for acquiring tokens
+G. Runner Service SDK
+H. endpoint that exchanges a logged-in corporate session for an access
+   token
+I. another supported method
+
+I specifically need a solution that does NOT require browser DevTools
+copy/paste every time.
+
+============================================================
+QUESTION 6 — CURRENT BROWSER SESSION
+============================================================
+
+Since I am currently authenticated to Stylus in this browser session:
+
+Is there a SUPPORTED mechanism by which my local Python application can
+bootstrap authentication from my existing authenticated session?
+
+For example:
+
+logged-in SSO session
+→ supported local auth mechanism
+→ refresh credential
+→ Python application
+
+I am NOT asking for browser scraping or stealing cookies.
+
+I want to know whether an official mechanism exists.
+
+============================================================
+QUESTION 7 — LONG-RUNNING APPLICATION
+============================================================
+
+RPR will eventually be deployed as an internal application accessible
+to multiple users.
+
+Therefore tell me which authentication architecture should be used for
+production.
+
+Should RPR operate using:
+
+USER-DELEGATED AUTH
+
+where every user's identity is propagated to Runner Service
+
+OR
+
+APPLICATION/SERVICE IDENTITY
+
+where RPR authenticates independently to Runner Service?
+
+Explain which architecture Runner Service supports and recommends.
+
+============================================================
+QUESTION 8 — TOKEN LIFETIMES
+============================================================
+
+Please tell me, if available:
+
+ACCESS_TOKEN_LIFETIME =
+REFRESH_TOKEN_LIFETIME =
+REFRESH_TOKEN_ROTATION = YES/NO
+REFRESH_TOKEN_REUSABLE = YES/NO
+SSO_SESSION_REQUIRED_FOR_REFRESH = YES/NO
+
+Do not invent values if they are not known.
+
+============================================================
+QUESTION 9 — OUR CURRENT DESIGN
+============================================================
+
+Our Python flow is currently:
+
+startup
+→ load refresh token if available
+→ exchange refresh token for access token
+→ keep access token in memory
+→ execute Runner Service
+→ if 401 TOKEN_EXPIRED
+→ refresh
+→ retry exactly once
+
+Is that the correct design for Stylus / Runner Service?
+
+Answer:
+
+CURRENT_DESIGN_CORRECT = YES / PARTIALLY / NO
+
+If PARTIALLY or NO, explain exactly what should change.
+
+============================================================
+QUESTION 10 — BEST PRACTICAL SOLUTION FOR THE POC
+============================================================
+
+We need Step 2.5 working immediately for an internal POC.
+
+Recommend the simplest SUPPORTED solution that gives us:
+
+Run Assessment
+→ valid authentication
+→ Runner executes preset
+→ SEC + web tools execute
+→ JSON returned
+
+without requiring a new manually copied browser bearer token every
+30 minutes.
+
+Then separately give the recommended production solution.
+
+============================================================
+IMPORTANT
+============================================================
+
+Do NOT:
+
+- expose tokens
+- expose cookies
+- print secrets
+- suggest hardcoding an access token
+- suggest browser scraping unless that is explicitly the official
+  supported mechanism
+- redesign the RPR application
+- discuss Step 1–2.4
+- discuss the assessment prompt
+- discuss the preset schema
+
+This investigation is ONLY about Stylus / Runner Service authentication.
+
+============================================================
+RETURN EXACTLY THIS REPORT
+============================================================
+
+STYLUS_AUTH_FLOW =
+ACCESS_TOKEN_SOURCE =
+REFRESH_TOKEN_EXISTS = YES/NO/UNKNOWN
 REFRESH_TOKEN_SOURCE =
-CA_BUNDLE_SOURCE =
-STEP25_CODE_READY = YES/NO
-ONLY_REMAINING_BLOCKER =
+TOKEN_REFRESH_ENDPOINT =
+TOKEN_REFRESH_GRANT =
+CLIENT_ID_REQUIRED = YES/NO
+CLIENT_SECRET_REQUIRED = YES/NO/UNKNOWN
 
-FILES_THAT_STILL_REQUIRE_CHANGE =
+PROGRAMMATIC_USER_AUTH_SUPPORTED = YES/NO/UNKNOWN
+SERVICE_IDENTITY_SUPPORTED = YES/NO/UNKNOWN
 
-No additional architecture work.
+ACCESS_TOKEN_LIFETIME =
+REFRESH_TOKEN_LIFETIME =
 
-Execute the investigation now.
+CURRENT_RPR_AUTH_DESIGN_CORRECT = YES/PARTIALLY/NO
+
+BEST_POC_AUTH_SOLUTION =
+BEST_PRODUCTION_AUTH_SOLUTION =
+
+CAN_REMOVE_MANUAL_BROWSER_TOKEN_COPY = YES/NO
+IF_YES_HOW =
+
+EXACT_NEXT_IMPLEMENTATION_STEPS =
+1.
+2.
+3.
+4.
+
+Do not return a generic OAuth explanation.
+
+Use the actual Stylus / Runner Service behavior and configuration
+available to you.
