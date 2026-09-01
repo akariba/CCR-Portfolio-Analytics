@@ -1,341 +1,188 @@
-FINAL STEP 2.5 IMPLEMENTATION — EXECUTE, DO NOT RE-DESIGN THE ARCHITECTURE
+STEP 2.5 — FINAL BLOCKER ONLY
 
-We are now finishing RPR Step 2.5.
+The previous acceptance report is NOT accepted as PASS.
 
-This is no longer an isolated transport experiment.
+Do not revisit completed work.
 
-The target is:
+The sole remaining target is:
 
-FULL RPR STEP 2.5 SEC + WEB WORKFLOW WORKING END-TO-END, WITH THE FRONTEND MATCHING v31 AS THE IMMUTABLE VISUAL BASELINE.
+wire the confirmed Step 2.3 and Step 2.4 factor state correctly into the real Step 2.5 Stylus request, obtain non-empty factor assessments, and render the real ED/SI detail panels in the v31 UI.
 
-You are the implementation agent. Inspect the repository first, then implement and test. Do not keep asking me for intermediate decisions unless you hit a genuine external blocker that cannot be solved from the repository.
+Everything else that already passed is frozen.
 
-0. ESTABLISHED FACTS — DO NOT RE-INVESTIGATE
+CURRENT VERIFIED STATE
 
-The following have already been empirically proven:
+Keep these untouched:
 
-live Runner transport works
-HTTP 200 from Runner works
-preset execution works
-SEC Filing tool executes
-Internet Search / web tool has executed in the prior full preset test
-streamed SSE reconstruction works
-model JSON is parseable
-Step25Assessment schema validation works
-Step 2.5 backend endpoint can return HTTP 200
-flat Stylus response handling was fixed
-current frontend POC can populate Apple and enable Run Assessment
-
-Therefore:
-
-DO NOT modify or re-investigate
-
-OAuth implementation
-token-refresh implementation
-H2M token implementation
-Runner authentication
-Runner SSE transport
-preset ID discovery
-SEC-tool transport
-Steps 1 / 2.1 / 2.2 / 2.3 / 2.4 backend logic
-
-unless an actual failing execution proves one of those is the first failing layer.
-
-No speculative refactoring.
-
-1. FIRST CHECK — FULL PRESET CONTRACT
-
-The live Stylus preset was temporarily reduced to an SEC-only test configuration.
-
-Before doing the final live validation, inspect the repository for the previously captured full Step 2.5 SEC + Web preset configuration.
-
-Search especially the existing Stylus capture/config/documentation files and previously saved request artifacts.
-
-The intended full preset contract previously contained at least:
-
-CompanyContextJSON
-EventDrivenFactorsJSON
-SectorInherentFactorsJSON
-AssessmentASOFDATE
-EvidenceWindowMonths
-
-and used:
-
-SEC Filings
-Web Search / Internet Search
-the Step25 schema / field-definition knowledge files previously configured
-
-DO NOT invent the original full prompt.
-
-Compare the captured original preset contract with the currently expected backend contract.
-
-If the live Stylus preset must be manually restored by me, do not waste time trying to automate the Stylus UI.
-
-Instead output one exact block headed:
-
-MANUAL_PRESET_RESTORE_REQUIRED
-
-containing:
-
-preset name
-shortcut
-each input field display name
-each exact input key
-required/optional setting
-prompt text
-knowledge files
-model
-integrations
-
-Then STOP only for that genuine manual action.
-
-If the full preset already matches, continue automatically.
-
-2. REMOVE THE TEST BYPASS FROM THE FINAL USER WORKFLOW
-
-The current Apple POC was useful for proving the plumbing.
-
-It is NOT the final Step 2.5 workflow.
-
-Final Step 2.5 must obtain companies from the confirmed Step 2.2 portfolio.
-
-Remove/hide from normal runtime:
-
-Company (POC test — Apple Inc.)
-hardcoded Apple population
-POC-only eligibility
-any debug Active page: step23.html... banner
-any visible test/debug controls
-
-If the POC helper is useful for regression testing, it may remain isolated behind a clearly disabled development flag, but:
-
+Runner HTTP 200
+Runner authentication/token mechanism
+preset invocation
+SEC Filing integration
+Internet Search integration
+SSE reconstruction
+flat response handling
+Step25 schema
+Step 2.5 endpoint
+v31 Step 2.5 DOM/CSS/table implementation
+Steps 1–2.4 behavior
 STEP25_POC_TEST_ONLY = false
 
-must be the normal state.
+Do NOT refactor them.
 
-Never let the test fixture contaminate normal Step 2.5 state.
+THE ACTUAL BLOCKER
 
-3. REAL RPR UPSTREAM CONTRACT
+Previous live run reported:
 
-Step 2.5 is downstream of:
+FACTOR_ASSESSMENTS_COUNT = 0
 
-2.1 Scenario & Assumptions
+ED_FACTORS_RENDERED = N/A
 
-→ 2.2 Portfolio Selection
+SI_FACTORS_RENDERED = N/A
 
-→ 2.3 Event-Driven Risk Factors
+and identified:
 
-→ 2.4 Sector-Inherent Risk Factors
+FIRST_REMAINING_BLOCKER = factor_assessments wiring
 
-→ 2.5 Name-Level Assessment
+You also found that the Stylus preset's CompanyContextJSON contract expects a composite structure containing more than the minimal company identity currently built by stylus_engine.py.
 
-For each company selected from the confirmed Step 2.2 portfolio, Step 2.5 must use the confirmed upstream information.
+This blocker is IN SCOPE and must now be fixed.
 
-Specifically construct the Stylus inputs from real state:
+1. TRACE THE CONTRACT EXACTLY
+
+Before editing, trace the actual data contracts from:
+
+confirmed Step 2.2 state
+confirmed Step 2.3 state
+confirmed Step 2.4 state
+Step 2.5 request model
+stylus_engine.py
+saved/full Stylus preset capture
+Step25 schema
+
+Determine exactly what the preset currently receives under:
 
 CompanyContextJSON
-
-Populate using the Step 2.2 company record and available identity information.
-
-Preserve available:
-
-company name
-CAGID / internal identifier
-ticker
-CIK if known
-country of risk
-L1
-L2
-L3
-relevant exposure values
-other existing company context
-
-Do not fabricate missing fields.
-
 EventDrivenFactorsJSON
-
-Must come from the confirmed Step 2.3 result for that company.
-
-Do NOT create generic substitute factors.
-
-Preserve factor:
-
-ID
-name
-weight
-score
-rationale / evidence already produced upstream
-
-as available in the existing Step 2.3 contract.
-
 SectorInherentFactorsJSON
-
-Must come from the confirmed Step 2.4 result applicable to that company/sector.
-
-Preserve the original confirmed factor IDs, weights and scores.
-
 AssessmentASOFDATE
-
-Use the Step 2.5 selected/current as-of date.
-
 EvidenceWindowMonths
 
-Use the existing RPR configured/default evidence window rather than inventing a new value.
+Do not infer names or structures from memory.
 
-4. ELIGIBILITY / WORKFLOW GATING
+Use the actual saved preset/capture and code.
 
-Restore real workflow semantics.
+2. FIX THE DATA WIRING
 
-A company must NOT be assessed merely because it appears in Step 2.2.
+Build the Step 2.5 request from the actual confirmed upstream objects.
 
-For normal Step 2.5:
+CompanyContextJSON must contain the complete company/context object required by the captured preset contract.
 
-Step 2.2 company must exist and be confirmed
-applicable Step 2.3 factors must be confirmed
-applicable Step 2.4 factors must be confirmed
+It must not remain merely:
 
-If anything required is missing, show the appropriate v31-style status instead of silently inventing data.
+{company_name, ticker, cik, ...}
 
-Do not use the POC bypass for the final acceptance test.
+if the real preset contract expects additional nested information.
 
-5. ONE COMPANY AT A TIME
+EventDrivenFactorsJSON must contain the actual confirmed Step 2.3 factors for the selected company.
 
-Preserve the intended v31 Step 2.5 operating model.
+SectorInherentFactorsJSON must contain the actual confirmed Step 2.4 factors applicable to the selected company.
 
-The portfolio table contains the portfolio.
+Preserve, where available:
 
-The analyst selects one eligible company.
+factor ID
+factor name
+weight
+score
+rationale
+evidence
+source step
 
-Run Assessment runs Step 2.5 for that selected company.
+Do not regenerate these factors in Step 2.5.
 
-When the response returns, update only that company's Step 2.5 assessment state.
+Do not substitute generic factors.
 
-Do not rerun every portfolio company automatically.
+Do not hardcode Apple factor data.
 
-Other companies remain unassessed until selected and run.
+3. IMPORTANT — DETERMINE WHETHER DUPLICATION IS REQUIRED
 
-6. SEC + WEB MUST BE REAL
+The previous report suggests the Stylus prompt may expect the confirmed factors both:
 
-For the SEC + Web assessment type:
+inside the composite CompanyContextJSON, and
+through the dedicated EventDriven/SectorInherent inputs.
 
-invoke the real configured Step 2.5 Stylus preset
-use SEC Filing integration
-use Web/Internet Search integration
-use the real Step 2.3 and Step 2.4 inputs
-use the real company context
-receive and parse the real model response
-validate it against the Step25 schema
-persist the run using the existing Step 2.5 mechanism
+Verify this against the actual captured preset.
 
-No mocked assessment.
+If that is genuinely the contract, populate both consistently.
 
-No frontend-generated assessment.
+Do NOT “simplify” the preset contract during this task.
 
-No hardcoded risk result.
+Our immediate target is compatibility with the working captured preset.
 
-No hardcoded Apple result.
+4. PRESERVE FACTOR IDENTITY
 
-No fallback pretending a model result succeeded.
+Step 2.5 must be able to relate its assessment back to the exact upstream factors.
 
-If the real assessment fails, expose the actual failure.
+Example:
 
-7. DO NOT FAKE CAM
+ED-1 in Step 2.3 must remain identifiable as the same ED-1 in the Step 2.5 result.
 
-Keep the v31 assessment-type UI:
+Same for SI factors.
 
-SEC + Web
-CAM + Web
-CAM + SEC + Web
+Do not silently replace IDs with newly generated IDs.
 
-But do not fabricate CAM integration if the real CAM backend/data lane is not implemented yet.
+If canonical evidence IDs are generated separately, keep that evidence-ID behavior independent from factor IDs.
 
-This implementation's required executable lane is SEC + Web.
+5. RUN ONE REAL LIVE TEST
 
-Preserve the other v31 options visually and preserve their existing behavior/state.
+Once the wiring is corrected, perform one real live Step 2.5 SEC + Web run.
 
-Do not claim them as operational unless they really are.
+Use the actual confirmed Step 2.2/2.3/2.4 state already available in the test workflow.
 
-8. v31 IS THE IMMUTABLE STEP 2.5 VISUAL BASELINE
+Required results:
 
-This is a STRICT requirement.
+RUNNER_HTTP_STATUS = 200
 
-Locate:
+PRESET_EXECUTED = YES
 
-UI Design/icm-pm-rapid-portfolio-review-v31.html
+SEC_TOOL_EXECUTED = YES
 
-and current:
+WEB_TOOL_EXECUTED = YES
 
-UI Design/step23.html
+JSON_PARSED = YES
 
-Do a direct forensic comparison of the Step 2.5 sections.
+STEP25_SCHEMA_VALID = YES
 
-DO NOT design a new Step 2.5.
+and most importantly:
 
-Reuse/transplant the v31 Step 2.5 DOM structure, CSS classes, spacing, dimensions, table treatment and controls as closely as technically possible.
+FACTOR_ASSESSMENTS_COUNT > 0
 
-The current application logic should be bound INTO the v31 structure.
+If the selected company has both ED and SI factors:
 
-The v31 structure must not be recreated approximately from memory.
+ED_FACTOR_INPUT_COUNT > 0
 
-Inspect the actual source.
+SI_FACTOR_INPUT_COUNT > 0
 
-9. REQUIRED v31 STEP 2.5 STRUCTURE
+ED_FACTOR_OUTPUT_COUNT > 0
 
-Verify visually and structurally that the final Step 2.5 contains the same concepts and layout as v31:
+SI_FACTOR_OUTPUT_COUNT > 0
 
-Assessment type area
-SEC + Web
-CAM + Web
-CAM + SEC + Web
-same cards
-same borders
-same typography
-same spacing/alignment
-Assessment Outcome — Portfolio Summary
+Do not call the task PASS while factor_assessments remains empty.
 
-Preserve the v31-style wide portfolio table.
+6. THEN TEST THROUGH THE ACTUAL BROWSER
 
-Preserve the relevant columns and ordering from the actual v31 source, including where present:
+After the backend live test passes:
 
-COMPANY NAME
-CAGID
-TICKER / ID
-REL COUNTRY OF RISK
-LIMIT INDUSTRY L1
-LIMIT INDUSTRY L2
-LIMIT INDUSTRY L3
-TOTAL OSUC
-OSUC-P
-OSUC-PWL
-OSUC-SM
-OSUC-SS
-OSUC-D/L
-ED SCORE
-SI SCORE
-COMPOSITE SCORE
-RESIDUAL RATING
-CREDIT IMPACT RATING
-CURRENT RRR
-REC. RRR ACTION
-CURRENT CLASS
-REC. CLASS ACTION
-KEY RISK DRIVER
-IMPACT RATING OVERRIDE
-USER CREDIT COMMENTARY
+start/restart backend normally
+open UI Design/step23.html
+go to Step 2.5
+select the eligible confirmed company
+select SEC + Web
+click the actual Run Assessment button
+wait for the real Runner execution
+verify the selected portfolio row updates
+expand the company row
 
-Use the actual v31 DOM/source as authority if names differ slightly.
-
-Do not delete columns just because the current POC lacks data.
-
-Where upstream data genuinely does not exist, use the existing RPR/v31 missing-data convention rather than fabrication.
-
-10. EXPANDABLE COMPANY DETAILS
-
-v31 shows expandable company rows.
-
-Preserve this behavior.
-
-For an assessed company, the expanded area must show the Step 2.3 and Step 2.4 factors in the v31 format:
+Confirm that the expanded area contains actual:
 
 EVENT-DRIVEN FACTORS
 
@@ -343,184 +190,105 @@ and
 
 SECTOR-INHERENT FACTORS
 
-with factor names/IDs, weights and scores derived from the actual confirmed upstream factors.
+matching the v31 layout and the actual upstream factor values.
 
-These values are NOT to be regenerated by Step 2.5.
+This must be verified from the rendered browser result, not only by inspecting JavaScript functions.
 
-Step 2.5 consumes them.
+7. DO NOT CHANGE v31 DESIGN
 
-11. SCORING
+The previous report says:
 
-Preserve the existing RPR scoring methodology already implemented/defined in the project.
+V31_DOM_PARITY = PASS
 
-Do not invent a new scoring formula.
+V31_TABLE_PARITY = PASS
 
-Do not let the LLM freely redefine ED/SI scores.
+V31_CSS_PARITY = PASS
 
-ED/SI/composite values shown in Step 2.5 must be traceable to the confirmed Step 2.3/2.4 state and the existing scoring rules.
+V31_EXPAND_ROW_PARITY = PASS
 
-If v31 uses an 80/20 combination, confirm it from the code before applying it.
+Treat that frontend structure as frozen.
 
-Never guess.
+Only bind the newly working data into it.
 
-12. MODEL ASSESSMENT OUTPUT
+No CSS redesign.
 
-Map the real Step25Assessment response into the Step 2.5 presentation.
+No table redesign.
 
-Use available model fields such as:
+No new widgets.
 
-assessment ID
-headline
-risk direction
-confidence
-factor assessments
-supporting evidence
-disconfirming evidence
-evidence gaps
-freshness warnings
-reasoning summary
-RRR review recommendation
-workflow action
-analyst questions
-model metadata/evidence
+No alternate Step 2.5 layout.
 
-according to the actual schema.
+8. NO SCOPE EXPANSION
 
-Do not fabricate a v31 field if the model does not supply it and no deterministic upstream source exists.
+Do not work on:
 
-13. ANALYST CONTROLS
+F2/F3 citation-quality improvements
+accession-number improvements
+generic web URL improvements
+token refresh
+auth
+MarketDev
+CAM
+Step 3
+scoring redesign
+unrelated refactoring
 
-Preserve v31 analyst controls:
+unless one is empirically proven to block this exact factor-wiring acceptance test.
 
-Run Assessment
-impact-rating override
-user credit commentary
-Export
-Confirm Assessment
-feedback panel
+FINAL REPORT — STRICT
 
-Keep any currently working state-management behavior.
+Report:
 
-Confirm Assessment must not become available based on fabricated completion.
+COMPANY_CONTEXT_CONTRACT_MATCH = PASS/FAIL
 
-14. NO VISUAL REGRESSION OUTSIDE STEP 2.5
+STEP23_INPUT_FOUND = YES/NO
 
-The rest of step23.html is an accepted working backbone.
+STEP23_INPUT_FACTOR_COUNT =
 
-DO NOT redesign:
+STEP24_INPUT_FOUND = YES/NO
 
-header
-assessment journey
-right workflow rail
-Steps 1 / 2.1 / 2.2 / 2.3 / 2.4
-existing feedback controls
+STEP24_INPUT_FACTOR_COUNT =
 
-Make only changes necessary for Step 2.5.
+STEP23_FACTORS_SENT_TO_PRESET = YES/NO
 
-Existing accepted working code is immutable building bone.
-
-15. TEST THE REAL FLOW — NOT JUST FUNCTIONS
-
-After implementation, run the application.
-
-Perform an actual end-to-end test through the real frontend/backend workflow.
-
-Required test:
-
-Load step23.html.
-Navigate to Step 2.5.
-Confirm a real Step 2.2 portfolio company is available.
-Confirm Step 2.3 and Step 2.4 inputs resolve for it.
-Select SEC + Web.
-Click the real Run Assessment button.
-Confirm browser request reaches the Step 2.5 endpoint.
-Confirm backend calls the real Runner.
-Confirm Stylus preset executes.
-Confirm SEC tool executes.
-Confirm web search executes.
-Confirm model response is received.
-Confirm JSON is parsed.
-Confirm Step25 schema passes.
-Confirm assessment is mapped into the company row.
-Confirm expandable ED/SI factors display.
-Confirm assessment/recommendation/risk information renders.
-Confirm no POC-only Apple/debug labels appear.
-Compare final Step 2.5 screen directly against v31.
-
-Do not claim UI parity without opening both source files and checking the rendered result.
-
-16. STRICT STOP CONDITIONS
-
-Do not loop through speculative improvements.
-
-Do not start F2/F3/F4 cleanup unless it directly blocks this acceptance test.
-
-Do not refactor unrelated code.
-
-Do not improve token tooling.
-
-Do not redesign the frontend.
-
-Do not create another architecture.
-
-If a genuine blocker occurs:
-
-identify the FIRST failing layer, fix that layer only, rerun, and continue.
-
-17. FINAL ACCEPTANCE REPORT
-
-Only after the real run, report:
-
-PRESET_FULL_SEC_WEB = YES/NO
-
-STEP22_REAL_COMPANY_USED = YES/NO
-
-STEP23_FACTORS_USED = YES/NO
-
-STEP24_FACTORS_USED = YES/NO
-
-POC_BYPASS_DISABLED = YES/NO
-
-REAL_ENDPOINT_CALLED = YES/NO
+STEP24_FACTORS_SENT_TO_PRESET = YES/NO
 
 RUNNER_HTTP_STATUS =
-
-PRESET_EXECUTED = YES/NO
 
 SEC_TOOL_EXECUTED = YES/NO
 
 WEB_TOOL_EXECUTED = YES/NO
 
-MODEL_RESPONSE_RECEIVED = YES/NO
-
-JSON_PARSED = YES/NO
-
 STEP25_SCHEMA_VALID = YES/NO
-
-ASSESSMENT_ID =
 
 FACTOR_ASSESSMENTS_COUNT =
 
-UI_RESULT_RENDERED = YES/NO
+ED_FACTOR_OUTPUT_COUNT =
+
+SI_FACTOR_OUTPUT_COUNT =
+
+UI_RUN_ASSESSMENT_CLICKED = YES/NO
+
+UI_COMPANY_ROW_UPDATED = YES/NO
 
 ED_FACTORS_RENDERED = YES/NO
 
 SI_FACTORS_RENDERED = YES/NO
 
-V31_DOM_PARITY = PASS/FAIL
-
-V31_CSS_PARITY = PASS/FAIL
-
-V31_TABLE_PARITY = PASS/FAIL
-
-V31_EXPAND_ROW_PARITY = PASS/FAIL
+V31_VISUAL_STRUCTURE_PRESERVED = YES/NO
 
 FILES_CHANGED =
 
 FINAL_STATUS = PASS/BLOCKED
 
-FIRST_REMAINING_BLOCKER =
+A final PASS is allowed only if:
 
-PASS means the actual browser workflow works, not merely an isolated Python harness.
+the real Step 2.3 factors entered Step 2.5
+the real Step 2.4 factors entered Step 2.5
+the resulting Step25Assessment contains factor assessments
+the actual browser Run Assessment workflow succeeds
+the ED/SI panels visibly render the resulting/upstream factors in the v31 structure
 
-Start now. Inspect first, implement directly, test directly, and drive this to PASS.
+Otherwise report FINAL_STATUS = BLOCKED.
+
+Start from the identified factor-wiring blocker and finish it. Do not reopen completed layers.
