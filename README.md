@@ -1,325 +1,133 @@
-STRICT POC FIX — AUTOMATE RUNNER TOKEN ACQUISITION/REFRESH FOR STEP 2.5.
+STRICT IMPLEMENTATION — REUSE THE PROVEN PE SPONSOR TOKEN PATTERN
 
-GOAL:
-Remove the repeated manual DevTools bearer-token copy/paste requirement.
+We have spent enough time on manual browser bearer-token capture. Stop building any new token architecture.
 
-I want:
+I have a proven working implementation in the colleague/PE Sponsor app1.py currently visible in this workspace. It already implements the exact Runner Service authentication lifecycle we need:
 
-Click Run Assessment
-    ↓
-ensure_runner_token()
-    ↓
-valid token? -> use it
-    ↓ no
-refresh token available? -> refresh automatically
-    ↓ no
-perform supported Citi/Runner interactive OAuth/SSO bootstrap ONCE
-    ↓
-cache credential using existing Step2.5 token cache
-    ↓
-execute real Step 2.5 immediately
+TOKEN_URL
+refresh-token → access-token exchange
+_read_file
+_write_file
+_refresh_access_token
+_get_current_token
+_set_current_token
+refresh_and_store_token_threadsafe
+load_backend_token
+background _auto_refresh_loop
+thread-safe token storage
+reuse of the latest token before follow-up Runner calls
+automatic authentication retry
 
-After initial bootstrap, normal Step 2.5 runs must refresh automatically.
+TASK
 
-STRICT RULES:
-- POC only.
-- Do NOT change Steps 1–2.4.
-- Do NOT change Step 2.5 assessment logic.
-- Do NOT change the Stylus preset.
-- Do NOT redesign the UI.
-- Do NOT introduce another authentication framework unless genuinely required.
-- Reuse the existing Runner OAuth implementation first.
-- Do NOT invent OAuth endpoints, scopes, grant types or credentials.
-- Inspect existing code/config and the proven Runner/colleague implementation.
-- Make the minimum additive change.
+Adapt that exact proven pattern into the RPR Step 2.5 Runner implementation.
 
-CURRENT VERIFIED STATE:
+Do NOT create another authentication framework.
+Do NOT scrape DevTools.
+Do NOT require the user to repeatedly copy browser bearer tokens.
+Do NOT change Steps 1–2.4.
+Do NOT refactor unrelated Step 2.5 logic.
 
-Existing code already contains:
+Preserve the existing working Step 2.5 preset contract, SEC integration, web integration, model, prompt, knowledge files, five input mapping, company resolution, factor validation and SSE processing.
 
-load_current_user_token()
-refresh_access_token()
+Required authentication behaviour
 
-Existing refresh logic uses:
+Use the PE Sponsor app1.py as the implementation baseline and adapt it minimally into the existing Step 2.5 authentication modules.
 
-config.runner_token_url
-config.runner_client_id
+Credential precedence should be equivalent to the working app:
 
-and supports:
+current valid access token already held in memory;
+configured access-token environment/file source;
+refresh token from the existing approved environment/file source;
+exchange refresh token at the same approved token endpoint used by the working PE Sponsor app;
+store the returned access token in the thread-safe current-token store and existing local token cache.
 
-grant_type=refresh_token
+Before every Runner request obtain the latest current token, not a token captured when the application started.
 
-Existing token sources currently include things such as:
+If Runner returns 401 / explicit token-expired response:
 
-GENAI_BEARER_TOKEN
-GENAI_REFRESH_TOKEN
-local Runner token cache
+refresh exactly once;
+store the new token;
+replace the Authorization header;
+repeat the same Runner request with the same payload and same session_id;
+continue the execution.
 
-Existing Step 2.5 client already has retry-on-auth-failure logic.
+Do not blindly treat every 403 as token expiry. Only refresh on 403 if the returned Runner body explicitly indicates invalid/expired authentication.
 
-Therefore DO NOT rewrite these pieces.
+Long-running Step 2.5
 
-============================================================
-PHASE 1 — TRACE CURRENT AUTH IMPLEMENTATION
-============================================================
+Step 2.5 SEC + web execution can be long.
 
-Inspect:
+Therefore reproduce the proven background refresh concept from PE Sponsor so that a long Runner session can obtain a newer token without requiring browser interaction.
 
-backend/step25/runner_token_manager.py
-backend/step25/stylus_runner_client.py
-backend/step25/config.py
+Most importantly, immediately before every follow-up request use the newest stored token, equivalent to the working PE Sponsor pattern:
 
-and any Runner/colleague reference implementation already present in the repo.
+Authorization = Bearer <get_current_token()>
 
-Report exactly:
+Do not terminate an already-running SSE stream merely because the originally issued JWT passes its local expiry time. Let the server decide. Refresh only for the next request or following a genuine authentication rejection.
 
-TOKEN_URL =
-CLIENT_ID =
-CURRENT_ACCESS_TOKEN_SOURCES =
-CURRENT_REFRESH_TOKEN_SOURCES =
-CURRENT_CACHE_FILES =
-REFRESH_FUNCTION =
-TOKEN_EXPIRY_FUNCTION =
-401_RETRY_FUNCTION =
+Source-of-truth rule
 
-Then continue automatically.
+Read the actual PE Sponsor app1.py implementation. Reuse its token endpoint configuration and refresh-token exchange semantics. Do not infer these from screenshots and do not manufacture endpoint parameters.
 
-============================================================
-PHASE 2 — DETERMINE THE SUPPORTED INITIAL LOGIN FLOW
-============================================================
+If equivalent utility code already exists in RPR (runner_token_manager.py, stylus_runner_client.py, etc.), modify/reuse it instead of duplicating it.
 
-We already know a normal Stylus browser session obtains a working Runner bearer token.
+Keep Step 2.5 Runner contract unchanged
 
-Find the supported mechanism used to create that authenticated session.
+Preserve:
 
-Search existing code/config/docs for:
+model = claude-sonnet-5
+temperature = 1
+Runner preset ID already corrected to the real preset ID
+outer integrations:
+lookup_documentation
+sec_filing
+all five existing Step 2.5 input names
+existing preset prompt
+existing preset knowledge
+Step 2.3 factors
+Step 2.4 factors
+SSE output extraction
+Step25Assessment schema validation
+Execution
 
-authorization_code
-PKCE
-code_verifier
-code_challenge
-device_code
-refresh_token
-oauth2
-authorize
-token.oauth2
-secureaccess
-SSO
-login
-callback
-redirect_uri
+After implementation:
 
-Also inspect any already-present Citi/Runner authentication utilities.
+start/reuse the RPR backend;
+obtain/refresh the token through the automated refresh-token path;
+confirm token acquisition without printing the full token;
+confirm Apple Step 2.2/2.3/2.4 context is registered;
+execute the real Step 2.5 assessment, not another smoke test;
+allow the SEC and web tools to execute;
+wait for the final JSON;
+validate against Step25Assessment;
+save the real result;
+report only:
 
-DO NOT invent a login mechanism.
+AUTO_REFRESH =
 
-Preferred order:
+ACCESS_TOKEN_SOURCE =
 
-1. Existing authorization-code + PKCE flow, if present.
-2. Existing device-code flow, if present.
-3. Existing Citi internal SSO helper/library, if present.
-4. Existing refresh-token/bootstrap utility in another local app.
+RUNNER_HTTP_STATUS =
 
-If one exists, reuse it.
+PRESET_EXECUTED =
 
-============================================================
-PHASE 3 — IMPLEMENT ensure_runner_token()
-============================================================
+SEC_TOOL_ACTIVITY =
 
-Create or minimally extend ONE token-manager function:
+WEB_TOOL_ACTIVITY =
 
-ensure_runner_token(min_remaining_seconds=600)
+STEP23_FACTORS_SENT =
 
-Behavior:
+STEP24_FACTORS_SENT =
 
-A. Load currently cached/access-token credential.
+STEP25_JSON_RETURNED =
 
-B. Decode JWT expiry.
+STEP25_SCHEMA_VALID =
 
-C. If remaining lifetime >= 600 seconds:
-   return current token.
+OUTPUT_FILE =
 
-D. Otherwise, if refresh token exists:
-   call the EXISTING refresh_access_token().
-   Save returned access token.
-   If OAuth rotates the refresh token, save the new refresh token as well.
-   Return the fresh access token.
+FINAL_STATUS = SUCCESS / BLOCKED
 
-E. If refresh fails specifically because the refresh credential is expired/revoked:
-   proceed to supported interactive bootstrap.
+BLOCKER =
 
-F. If there is no refresh token:
-   proceed to supported interactive bootstrap.
-
-G. After successful interactive bootstrap:
-   persist/cache the returned refresh credential using the existing
-   backend/data/step25_runner_auth location or existing equivalent.
-
-H. Return the new access token.
-
-Never log or print complete access/refresh tokens.
-
-============================================================
-PHASE 4 — ONE-TIME INTERACTIVE BOOTSTRAP
-============================================================
-
-If the internal OAuth implementation supports authorization-code/PKCE:
-
-Implement the MINIMUM local bootstrap:
-
-1. Generate PKCE verifier/challenge.
-2. Open the approved Citi authorization URL in the user's browser.
-3. User authenticates normally through Citi SSO if required.
-4. Receive the OAuth callback locally.
-5. Exchange authorization code through the existing approved token endpoint.
-6. Obtain access token + refresh token.
-7. Save them through the current token-cache mechanism.
-
-This interaction should happen only when there is no reusable refresh credential.
-
-DO NOT ask the user to manually inspect DevTools if a supported OAuth bootstrap
-can be implemented.
-
-If the platform instead provides device-code flow, use that existing supported
-flow rather than PKCE.
-
-============================================================
-PHASE 5 — STEP 2.5 INTEGRATION
-============================================================
-
-At the beginning of the REAL Stylus call:
-
-token = ensure_runner_token()
-
-Then execute the existing call_stylus_preset() unchanged except for using the
-returned fresh token.
-
-If Runner returns:
-
-401
-or
-403 indicating expired/invalid authentication
-
-then:
-
-1. invalidate cached ACCESS token only;
-2. call ensure_runner_token() again;
-3. retry the Runner request EXACTLY ONCE.
-
-Do not retry:
-- schema failures
-- preset failures
-- SEC failures
-- web-search failures
-- 4xx unrelated to authentication.
-
-============================================================
-PHASE 6 — IMPORTANT LONG-RUN CASE
-============================================================
-
-Step 2.5 can run for several minutes.
-
-A token may be valid when the SSE connection starts and expire later.
-
-Do NOT abort a successfully established SSE stream merely because the JWT's
-local expiry time passes while the Runner request is already executing.
-
-Only refresh/retry if the Runner actually returns an authentication failure.
-
-Keep the existing Stylus-specific long SSE timeout.
-
-============================================================
-PHASE 7 — ONE-COMMAND POC
-============================================================
-
-Update/reuse:
-
-scripts/run_step25_with_fresh_token.ps1
-
-so it performs:
-
-1. ensure backend running
-2. ensure Runner authentication
-3. /step25/preflight
-4. verify upstream_ready=true
-5. POST real /api/v1/rpr/step25/run
-6. wait for result
-7. print output file/result
-
-No smoke test before the real run.
-
-============================================================
-PHASE 8 — TEST
-============================================================
-
-Test these cases independently:
-
-CASE 1
-Fresh cached access token.
-Expected:
-NO refresh.
-Step 2.5 executes.
-
-CASE 2
-Expired access token + valid refresh token.
-Expected:
-automatic refresh.
-NO browser/manual interaction.
-Step 2.5 executes.
-
-CASE 3
-No access token + valid refresh token.
-Expected:
-automatic refresh.
-Step 2.5 executes.
-
-CASE 4
-No usable credentials.
-Expected:
-ONE interactive approved SSO/OAuth bootstrap.
-Credential cached.
-Step 2.5 executes.
-
-CASE 5
-Next Step 2.5 run after Case 4.
-Expected:
-NO DevTools.
-NO manual token copy.
-automatic token reuse/refresh.
-
-============================================================
-IF AUTOMATIC INITIAL BOOTSTRAP IS IMPOSSIBLE
-============================================================
-
-Only if inspection proves that Runner's OAuth system does NOT expose a supported
-authorization-code, PKCE, device-code, internal SSO helper, or reusable refresh
-credential to this application:
-
-STOP and report:
-
-BOOTSTRAP_AUTOMATION_SUPPORTED = NO
-EXACT_REASON =
-AVAILABLE_GRANT_TYPES =
-MISSING_CAPABILITY =
-
-Do NOT invent browser scraping or a fake authentication mechanism.
-
-But automatic refresh of an existing refresh token must still remain implemented.
-
-============================================================
-FINAL REPORT
-============================================================
-
-TOKEN_MANAGER_READY =
-INITIAL_SSO_BOOTSTRAP_READY =
-ACCESS_TOKEN_AUTO_REUSE =
-REFRESH_TOKEN_AUTO_REFRESH =
-EXPIRY_PRECHECK =
-401_ONE_TIME_REFRESH_RETRY =
-MANUAL_DEVTOOLS_REQUIRED_AFTER_FIRST_LOGIN =
-STEP25_REAL_RUN_TESTED =
-FILES_CHANGED =
-FINAL_STATUS =
-
-EXECUTE THE IMPLEMENTATION NOW.
-DO NOT RETURN ONLY A PLAN.
+Execute now. Do not stop for additional architectural analysis unless the working PE Sponsor pattern cannot technically be reused.
