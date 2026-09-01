@@ -1,191 +1,92 @@
-STOP FULL-PIPELINE TESTING.
+STRICT EXECUTION MODE.
 
-I am changing the execution strategy.
+We are NOT investigating anything else.
 
-We have already proven:
+The isolated Step 2.5 harness is ready. Your accidental process cleanup killed
+the dev servers. Recover only what is necessary to execute the isolated test.
 
-- Runner Service connectivity
-- TLS
-- fresh-token authentication
-- preset lookup/execution
-- real model execution
-- real Apple Step 2.5 assessment generation
+DO NOT:
+- modify Step 1–2.4
+- regenerate upstream data
+- modify the preset
+- modify Step 2.5 logic unless the isolated execution exposes a concrete defect
+- run smoke tests
+- run exploratory tests
+- search the repository again
+- kill any process
+- clean anything
+- create another auth architecture
+- discuss M2M/MCP
+- spend a fresh token before the execution path is ready
 
-The current objective is NOT to prove Steps 1–2.4 again.
+==================================================
+TASK 1 — RESTORE ONLY THE REQUIRED BACKEND
+==================================================
 
-The objective is to obtain ONE SMALL, CLEAN, REPEATABLE,
-SUCCESSFUL STEP 2.5 EXECUTION and freeze it as the Step 2.5 baseline.
-
-============================================================
-PHASE 1 — BUILD ISOLATED STEP 2.5 HARNESS
-============================================================
-
-Create the minimum possible isolated Step 2.5 execution harness.
-
-Preferred file:
+Identify which single backend/server is required by:
 
 backend/step25/step25_isolated_run.py
 
-It must use the EXISTING:
+Restart ONLY that backend.
 
-- Stylus preset definition
-- stylus_runner_client
-- auth handling
-- TLS handling
-- Step25Assessment schema
-- existing parser
+Prefer the already-established direct Runner POC configuration and existing
+start_backend_direct_runner_poc.ps1 if that is what the isolated harness expects.
 
-DO NOT duplicate those implementations.
+Do not start both 8010 and 8020 unless the harness genuinely requires both.
 
-DO NOT modify Steps 1, 2.1, 2.2, 2.3 or 2.4.
+After restart verify ONLY:
 
-DO NOT build new architecture.
+SERVER_REACHABLE = YES
+STEP25_ENDPOINT_REACHABLE = YES
+GOLDEN_INPUT_EXISTS = YES
+ISOLATED_HARNESS_IMPORTS = YES
 
-DO NOT introduce M2M or MCP.
+Do not make a Runner Service call yet.
 
-============================================================
-PHASE 2 — FROZEN INPUT
-============================================================
+==================================================
+TASK 2 — WAIT FOR TOKEN
+==================================================
 
-Create:
+When everything above is ready, return exactly:
+
+READY_FOR_FRESH_TOKEN = YES
+SERVER_PORT =
+COMMAND_AFTER_TOKEN =
+
+Then STOP.
+
+I will seed a fresh access token locally into the appropriate environment/file.
+
+Do not ask me to paste the token into Claude chat.
+
+==================================================
+TASK 3 — AFTER I SAY TOKEN_READY
+==================================================
+
+Immediately, with no additional investigation:
+
+1. Confirm the token is present.
+2. Do NOT print the token.
+3. Do NOT decode/debug it unless absolutely required.
+4. Immediately run:
+
+backend/step25/step25_isolated_run.py
+
+using:
 
 backend/step25/testdata/apple_step25_golden_input.json
 
-It must contain exactly the five real preset input keys:
+5. Make exactly ONE real Step 2.5 Runner execution.
 
-companycontextjson
-EventDrivenF
-SectorInhere
-AssessmentAS
-EvidenceWind
+No smoke test before it.
 
-For this isolated test these inputs are STATIC TEST FIXTURES.
+==================================================
+SUCCESS CONDITION
+==================================================
 
-They do NOT need to come from the live upstream RPR state.
+We want one simple successful Step 2.5 result.
 
-Use realistic Apple data sufficient to exercise the Step 2.5 preset.
-
-Clearly mark this file:
-
-TEST FIXTURE — NOT PRODUCTION UPSTREAM DATA.
-
-Keep it compact.
-
-The purpose is to test the Step 2.5 analytical engine independently
-from upstream orchestration.
-
-============================================================
-PHASE 3 — EXECUTION
-============================================================
-
-The isolated runner must:
-
-1. Load apple_step25_golden_input.json
-2. Build the existing five-answer preset payload.
-3. Execute the REAL Runner Service /chat call.
-4. Use the REAL SEC + Web preset.
-5. Collect the complete SSE stream.
-6. Preserve the complete raw response.
-7. Extract the first complete JSON object.
-8. Detect whether further JSON objects exist.
-9. Validate the selected object using the REAL Step25Assessment schema.
-10. Persist all artifacts.
-
-============================================================
-PHASE 4 — ARTIFACTS
-============================================================
-
-For every execution write:
-
-backend/data/step25_runs/<run_id>_raw.txt
-backend/data/step25_runs/<run_id>_parsed.json
-backend/data/step25_runs/<run_id>_manifest.json
-
-The manifest must contain at minimum:
-
-run_id
-started_at
-completed_at
-runner_http_status
-preset_executed
-sse_line_count
-raw_length
-first_json_found
-json_object_count
-trailing_content_length
-schema_valid
-assessment_id
-company_specific_risk_direction
-rrr_review_recommendation
-error
-
-IMPORTANT:
-
-If one valid JSON object is followed by harmless text,
-the parsed assessment may PASS while all trailing text remains
-preserved in _raw.txt.
-
-If more than one complete JSON object exists:
-
-MULTIPLE_JSON_OBJECTS = true
-
-and preserve the entire response.
-
-Do NOT silently discard forensic evidence.
-
-============================================================
-PHASE 5 — SUCCESS CRITERIA
-============================================================
-
-ONE RUN is considered successful only if:
-
-RUNNER_HTTP_STATUS = 200
-PRESET_EXECUTED = YES
-FIRST_JSON_FOUND = YES
-SCHEMA_VALID = YES
-
-and a populated assessment includes at least:
-
-assessment_id
-headline
-company_specific_risk_direction
-rrr_review_recommendation
-
-When this occurs, copy the validated parsed JSON to:
-
-backend/step25/testdata/apple_step25_golden_output.json
-
-This becomes the immutable Step 2.5 regression baseline.
-
-============================================================
-TOKEN RULE
-============================================================
-
-Do all local preparation BEFORE requesting/using a fresh token.
-
-Do not spend a fresh token on:
-
-- investigation
-- upstream regeneration
-- smoke tests
-- filesystem searching
-- architecture review
-
-When everything is locally ready, report:
-
-READY_FOR_ONE_REAL_STEP25_TEST = YES
-
-and STOP.
-
-I will then provide/seed a fresh token once.
-
-After I say GO, immediately execute ONE isolated Step 2.5 call.
-
-============================================================
-FINAL REPORT AFTER EXECUTION
-============================================================
-
-Return ONLY:
+Report ONLY:
 
 STEP25_ISOLATED_TEST =
 RUNNER_HTTP_STATUS =
@@ -203,23 +104,29 @@ RRR_REVIEW_RECOMMENDATION =
 RAW_OUTPUT_FILE =
 PARSED_OUTPUT_FILE =
 GOLDEN_OUTPUT_CREATED =
-EXECUTION_TIME =
+EXECUTION_TIME_SEC =
 FINAL_STATUS =
+BLOCKER =
 
-No additional redesign.
+If:
 
-============================================================
-FREEZE RULE
-============================================================
+RUNNER_HTTP_STATUS = 200
+PRESET_EXECUTED = YES
+FIRST_JSON_FOUND = YES
+SCHEMA_VALID = YES
 
-If STEP25_ISOLATED_TEST = PASS:
+then:
 
-STOP MODIFYING THE STEP 2.5 EXECUTION ENGINE.
+FINAL_STATUS = PASS
 
-That successful implementation becomes the Step 2.5 working baseline.
+Save the parsed result as:
 
-The next task will be connecting upstream Step 2.2/2.3/2.4 data to the
-five already-working inputs.
+backend/step25/testdata/apple_step25_golden_output.json
 
-Proceed now ONLY with preparation of the isolated harness.
-Do not perform another live Runner call until it is completely ready.
+and STOP.
+
+That successful configuration becomes the frozen Step 2.5 baseline.
+
+DO NOT reconnect Steps 1–2.4 in this task.
+
+Start TASK 1 now.
