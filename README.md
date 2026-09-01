@@ -1,62 +1,87 @@
-We have now proven the Step 2.5 backend/Runner path separately. Do NOT modify stylus_engine.py, stylus_evidence_adapter.py, authentication, token handling, preset configuration, Step 1, Step 2.1–2.4 backend logic, schemas, or any working Step 2.5 backend code.
+We have now empirically confirmed the frontend POC bypass is incomplete.
 
-The only remaining objective is to test the existing Step 2.5 UI → backend → render path.
+Current facts:
 
-Current UI visibly blocks execution because:
+window.STEP25_POC_TEST_BYPASS = true returns true
 
-“No confirmed Step 2.2 portfolio company available”
-“Blocked: Step 2.2/2.3/2.4 confirmation is incomplete for this company.”
+typeof window.RPR_STEP25_REFRESH_COMPANY_LIST returns "undefined"
 
-This prerequisite gate is correct for the final workflow, but it prevents our isolated Step 2.5 POC validation.
+Therefore DO NOT give me any more Console commands or DevTools workarounds.
 
-TASK
+Fix ONLY the Step 2.5 frontend POC path in UI Design/step23.html.
 
-Inspect the current UI Design/step23.html JavaScript and identify the exact code that:
+GOAL:
 
-determines the confirmed Step 2.2 company,
-checks Step 2.2/2.3/2.4 completion,
-enables/disables or blocks the Step 2.5 Run Assessment action,
-builds the Step 2.5 request.
+I must be able to open step23.html, go to Step 2.5, see Apple available in the company selector, choose SEC + Web, click Run Assessment, and execute the already-working REAL Step 2.5 backend/Runner flow.
 
-Then implement the smallest possible LOCAL POC TEST BYPASS so that Step 2.5 can be run independently using the already-tested Apple input.
+This is a temporary POC/test bypass only.
 
-Requirements:
+REQUIREMENTS:
 
-preserve all current UI/CSS/v31 layout exactly;
-do not delete the normal prerequisite gate;
-normal workflow behavior must remain unchanged;
-bypass must be clearly marked STEP25_POC_TEST_ONLY;
-when enabled, provide Apple as the temporary confirmed company/input required by the existing Step 2.5 request builder;
-reuse the existing Step 2.5 endpoint and response renderer;
-do not create a second Step 2.5 implementation;
-do not mock the backend response;
-do not change the successful Step 2.5 Runner/backend implementation;
-do not work on evidence quality, F2/F3, URLs, accession numbers or other enhancements.
+Add a clearly isolated constant:
 
-First inspect the existing frontend code and report the exact gate/function you found. Then make only the minimal bypass change.
+const STEP25_POC_TEST_ONLY = true;
 
-After the change:
+When STEP25_POC_TEST_ONLY === true, Step 2.5 must NOT require completed Step 2.2 / 2.3 / 2.4 UI state.
+Populate #s25-company-select with exactly one test company:
 
-restart the existing backend normally if it is currently stopped;
-verify /health = 200;
-open the existing step23.html;
-select SEC + Web;
-execute Run Assessment;
-confirm that the browser actually sends the Step 2.5 request;
-confirm HTTP 200;
-confirm the returned assessment_id, headline, risk direction and factor assessments render in the Step 2.5 UI.
+Apple Inc.
 
-Report only:
+Use the SAME Apple identifier/company context already used in our successful isolated Step 2.5 tests. Do not invent a different company identity.
 
-FRONTEND_GATE_FOUND =
+Create/fix the actual frontend population function if needed:
 
-TEST_BYPASS_ADDED = YES/NO
+window.RPR_STEP25_REFRESH_COMPANY_LIST
 
-BACKEND_HEALTH =
+It currently does NOT exist.
 
-RUN_ASSESSMENT_REQUEST_SENT = YES/NO
+The POC bypass must only bypass upstream UI prerequisites.
 
-STEP25_HTTP_STATUS =
+It MUST NOT:
+
+mock the assessment
+mock the Runner
+fabricate an assessment response
+bypass the Step 2.5 backend endpoint
+change Stylus preset logic
+change authentication/token logic
+change SEC tool logic
+change Step 1–2.4 backend logic
+redesign the UI
+Run Assessment must call the REAL existing Step 2.5 endpoint exactly as the normal production UI would.
+Preserve the existing v31 visual layout and all existing working behavior.
+Do not touch backend files unless you discover an actual frontend/backend contract mismatch. If you believe backend modification is necessary, STOP and explain first.
+
+TEST IT YOURSELF after the change.
+
+I do NOT want another theoretical report.
+
+Verify this exact sequence:
+
+open step23.html
+→ Step 2.5
+→ Apple visible/selectable
+→ SEC + Web selected
+→ Run Assessment enabled
+→ click Run Assessment
+→ real HTTP request sent to Step 2.5 backend
+→ HTTP 200
+→ real assessment returned
+→ result rendered in Step 2.5 UI
+
+Return ONLY:
+
+FILES_CHANGED =
+
+APPLE_VISIBLE = YES/NO
+
+COMPANY_SELECTOR_VALUE =
+
+RUN_ASSESSMENT_ENABLED = YES/NO
+
+REAL_ENDPOINT_CALLED = YES/NO
+
+HTTP_STATUS =
 
 ASSESSMENT_ID =
 
@@ -64,4 +89,6 @@ UI_RESULT_RENDERED = YES/NO
 
 FINAL_STATUS = PASS/BLOCKED
 
-If blocked, give the exact first failing layer and stop. Do not make unrelated fixes.
+If BLOCKED, give only the exact first failing layer and exact error.
+
+Do not investigate unrelated issues. Do not refactor. Do not continue to F2/F3/evidence quality. Fix this frontend POC path and test it.
