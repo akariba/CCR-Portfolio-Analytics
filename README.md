@@ -1,266 +1,325 @@
-STRICT EXECUTION MODE — MAKE “RUN ASSESSMENT” WORK NOW.
-
-Do not give me another investigation report.
-Do not stop because the previous server restart erased in-memory context.
-Do not fabricate any Step 1/2.1/2.3 data.
-Do not redesign/refactor/rewrite Steps 1–2.4.
-Do not change the frozen v31 UI.
-Do not create another Step 2.5 architecture.
-The existing Step 2.5 Stylus preset/Runner contract is now the baseline.
+STRICT POC FIX — AUTOMATE RUNNER TOKEN ACQUISITION/REFRESH FOR STEP 2.5.
 
 GOAL:
-I want the actual RPR “Run Assessment” button / Step 2.5 flow to execute successfully with REAL upstream data.
+Remove the repeated manual DevTools bearer-token copy/paste requirement.
+
+I want:
+
+Click Run Assessment
+    ↓
+ensure_runner_token()
+    ↓
+valid token? -> use it
+    ↓ no
+refresh token available? -> refresh automatically
+    ↓ no
+perform supported Citi/Runner interactive OAuth/SSO bootstrap ONCE
+    ↓
+cache credential using existing Step2.5 token cache
+    ↓
+execute real Step 2.5 immediately
+
+After initial bootstrap, normal Step 2.5 runs must refresh automatically.
+
+STRICT RULES:
+- POC only.
+- Do NOT change Steps 1–2.4.
+- Do NOT change Step 2.5 assessment logic.
+- Do NOT change the Stylus preset.
+- Do NOT redesign the UI.
+- Do NOT introduce another authentication framework unless genuinely required.
+- Reuse the existing Runner OAuth implementation first.
+- Do NOT invent OAuth endpoints, scopes, grant types or credentials.
+- Inspect existing code/config and the proven Runner/colleague implementation.
+- Make the minimum additive change.
 
 CURRENT VERIFIED STATE:
-- Step 2.5 preset contract = CONFIGURED.
-- preset id issue = FIXED.
-- model = claude-sonnet-5.
-- temperature = 1.
-- outer integrations = ["lookup_documentation","sec_filing"].
-- preset prompt = captured.
-- preset knowledge = captured.
-- five short Runner input names = captured.
-- Runner client id = configured.
-- Step 2.2 Apple identity:
-    company_id = 0000014508
-    company = APPLE INC
-    CIK = 0000320193
-    sec status = CIK_CONFIRMED.
-- Existing Step 2.4 artifact = CONFIRMED with 5 factors.
-- Previous Step 2.3 state disappeared because server memory was restarted.
-- A candidate Step 2.3 JSON is NOT acceptable because it was never finalized and lacks scoring_logic.
-- Therefore regenerate Step 1 → 2.1 → 2.3 genuinely using EXISTING application endpoints.
+
+Existing code already contains:
+
+load_current_user_token()
+refresh_access_token()
+
+Existing refresh logic uses:
+
+config.runner_token_url
+config.runner_client_id
+
+and supports:
+
+grant_type=refresh_token
+
+Existing token sources currently include things such as:
+
+GENAI_BEARER_TOKEN
+GENAI_REFRESH_TOKEN
+local Runner token cache
+
+Existing Step 2.5 client already has retry-on-auth-failure logic.
+
+Therefore DO NOT rewrite these pieces.
 
 ============================================================
-PHASE 1 — REBUILD ONLY THE MISSING REAL UPSTREAM STATE
+PHASE 1 — TRACE CURRENT AUTH IMPLEMENTATION
 ============================================================
 
-Use the EXISTING RPR flow exactly as implemented.
+Inspect:
 
-1. Run the existing real Step 1 Market Scanner / discovery endpoint.
+backend/step25/runner_token_manager.py
+backend/step25/stylus_runner_client.py
+backend/step25/config.py
 
-Use the same relevant technology/supply-chain theme that previously produced the
-China MOFCOM gallium/germanium/antimony export-control event.
+and any Runner/colleague reference implementation already present in the repo.
 
-Do NOT manufacture the old Step 1 object.
-Run genuine discovery again.
+Report exactly:
 
-2. Select the real returned event corresponding most closely to:
+TOKEN_URL =
+CLIENT_ID =
+CURRENT_ACCESS_TOKEN_SOURCES =
+CURRENT_REFRESH_TOKEN_SOURCES =
+CURRENT_CACHE_FILES =
+REFRESH_FUNCTION =
+TOKEN_EXPIRY_FUNCTION =
+401_RETRY_FUNCTION =
 
-China MOFCOM gallium / germanium / antimony / strategic-mineral
-export restrictions affecting technology / semiconductor supply chains.
-
-Use the actual returned event object from Step 1.
-
-3. Feed that REAL Step 1 event to the existing Step 2.1 scenario generation endpoint.
-
-Generate the real 12-month scenario and assumptions.
-
-4. FINALIZE Step 2.1 through the existing finalize endpoint.
-
-Required:
-STEP21_CONFIRMED=true
-
-5. Register/reconfirm Apple through existing Step 2.2 logic only if necessary.
-
-Required identity:
-company_id=0000014508
-CIK=0000320193
-company=APPLE INC
-CIK_CONFIRMED=true
-
-6. Call the EXISTING Step 2.3 event-factor generation endpoint using the genuine
-confirmed Step 1 + Step 2.1 context.
-
-7. FINALIZE Step 2.3 using the existing finalize endpoint.
-
-Do NOT patch the generated factors manually.
-Do NOT invent scoring_logic.
-
-Required:
-STEP23_CONFIRMED=true
-STEP23_FACTOR_COUNT=6
-and all 6 factors must pass the existing deterministic schema/finalization checks.
+Then continue automatically.
 
 ============================================================
-PHASE 2 — RESTORE STEP 2.4
+PHASE 2 — DETERMINE THE SUPPORTED INITIAL LOGIN FLOW
 ============================================================
 
-The existing real Step 2.4 CONFIRMED 5-factor artifact may be reused ONLY if it
-still corresponds to Apple's governed Software sector and passes the application's
-existing validation.
+We already know a normal Stylus browser session obtains a working Runner bearer token.
 
-Register it through the EXISTING /context mechanism.
+Find the supported mechanism used to create that authenticated session.
 
-Required:
-STEP24_CONFIRMED=true
-STEP24_FACTOR_COUNT=5
+Search existing code/config/docs for:
 
-If the existing genuine Step 2.4 artifact cannot be registered, regenerate Step 2.4
-using its existing endpoint. Do not fabricate anything.
+authorization_code
+PKCE
+code_verifier
+code_challenge
+device_code
+refresh_token
+oauth2
+authorize
+token.oauth2
+secureaccess
+SSO
+login
+callback
+redirect_uri
 
-============================================================
-PHASE 3 — PROVE THE EXACT STEP 2.5 PAYLOAD
-============================================================
+Also inspect any already-present Citi/Runner authentication utilities.
 
-Before sending anything to Stylus print ONLY:
+DO NOT invent a login mechanism.
 
-COMPANY =
-COMPANY_ID =
-CIK =
-STEP21_CONFIRMED =
-STEP22_CONFIRMED =
-STEP23_CONFIRMED =
-STEP23_FACTOR_COUNT =
-STEP24_CONFIRMED =
-STEP24_FACTOR_COUNT =
-UPSTREAM_READY =
+Preferred order:
 
-Then print:
+1. Existing authorization-code + PKCE flow, if present.
+2. Existing device-code flow, if present.
+3. Existing Citi internal SSO helper/library, if present.
+4. Existing refresh-token/bootstrap utility in another local app.
 
-STEP25_INPUT_1 = companycontextjson size/summary
-STEP25_INPUT_2 = EventDrivenF size/factor count
-STEP25_INPUT_3 = SectorInhere size/factor count
-STEP25_INPUT_4 = AssessmentAS
-STEP25_INPUT_5 = EvidenceWind
-
-Do not print giant JSON bodies unless needed for an error.
-
-Required before execution:
-
-UPSTREAM_READY=true
-STEP23_FACTOR_COUNT=6
-STEP24_FACTOR_COUNT=5
+If one exists, reuse it.
 
 ============================================================
-PHASE 4 — TOKEN
+PHASE 3 — IMPLEMENT ensure_runner_token()
 ============================================================
 
-Use the token handling already implemented.
+Create or minimally extend ONE token-manager function:
 
-1. Check current cached / environment / clipboard Runner token.
-2. Decode expiry only.
-3. If current token has adequate remaining lifetime, use it immediately.
-4. If expired, first attempt the existing refresh-token exchange mechanism.
-5. If refresh credentials are unavailable, read a NEW Authorization: Bearer token
-from clipboard using the existing safe extraction code.
+ensure_runner_token(min_remaining_seconds=600)
 
-DO NOT spend the fresh token on another smoke test.
+Behavior:
 
-Once a valid fresh token is available, immediately proceed to the REAL RPR run.
+A. Load currently cached/access-token credential.
 
-============================================================
-PHASE 5 — REAL STEP 2.5 EXECUTION
-============================================================
+B. Decode JWT expiry.
 
-Call the real application endpoint:
+C. If remaining lifetime >= 600 seconds:
+   return current token.
 
-POST /api/v1/rpr/step25/run
+D. Otherwise, if refresh token exists:
+   call the EXISTING refresh_access_token().
+   Save returned access token.
+   If OAuth rotates the refresh token, save the new refresh token as well.
+   Return the fresh access token.
 
-for:
+E. If refresh fails specifically because the refresh credential is expired/revoked:
+   proceed to supported interactive bootstrap.
 
-company_id = 0000014508
+F. If there is no refresh token:
+   proceed to supported interactive bootstrap.
 
-This must use the genuine registered:
+G. After successful interactive bootstrap:
+   persist/cache the returned refresh credential using the existing
+   backend/data/step25_runner_auth location or existing equivalent.
 
-- Apple company context
-- 6 confirmed Step 2.3 event-driven factors
-- 5 confirmed Step 2.4 sector-inherent factors
-- assessment date
-- evidence window
+H. Return the new access token.
 
-and the existing Stylus preset.
-
-NO synthetic smoke-test payload.
-
-Allow the Stylus-specific long SSE timeout already implemented.
-Do not terminate simply because SEC/web tool calls take several minutes.
+Never log or print complete access/refresh tokens.
 
 ============================================================
-PHASE 6 — RESULT
+PHASE 4 — ONE-TIME INTERACTIVE BOOTSTRAP
 ============================================================
 
-Wait until the full SSE response terminates.
+If the internal OAuth implementation supports authorization-code/PKCE:
 
-Extract the final Step25Assessment JSON using the existing result extraction logic.
+Implement the MINIMUM local bootstrap:
 
-Validate it against our Step25Assessment schema.
+1. Generate PKCE verifier/challenge.
+2. Open the approved Citi authorization URL in the user's browser.
+3. User authenticates normally through Citi SSO if required.
+4. Receive the OAuth callback locally.
+5. Exchange authorization code through the existing approved token endpoint.
+6. Obtain access token + refresh token.
+7. Save them through the current token-cache mechanism.
 
-Save the genuine resulting JSON to the normal Step 2.5 result location.
+This interaction should happen only when there is no reusable refresh credential.
 
-Then verify that the frontend Step 2.5 “Run Assessment” endpoint can retrieve/render
-that result using the CURRENT UI contract.
+DO NOT ask the user to manually inspect DevTools if a supported OAuth bootstrap
+can be implemented.
 
-Do not redesign the UI.
-
-============================================================
-PHASE 7 — PERMANENT RESTART FIX
-============================================================
-
-AFTER the successful real run, fix the precise persistence problem that caused this
-loop:
-
-A server restart must not unnecessarily destroy already-finalized Step 2.1 / 2.2 /
-2.3 / 2.4 context if genuine finalized artifacts already exist.
-
-IMPORTANT:
-- This is NOT permission to redesign state management.
-- Inspect the current repository/storage mechanisms first.
-- Make the MINIMUM ADDITIVE persistence/rehydration change.
-- Persist only already-finalized genuine workflow artifacts.
-- On startup/context lookup, rehydrate them using the existing models/validators.
-- Never auto-confirm AI_PROPOSAL/candidate artifacts.
-- Never convert an unfinalized artifact into CONFIRMED.
-- Preserve every existing endpoint and behavior.
-
-This should make Run Assessment work after a backend restart when legitimately
-confirmed upstream results were previously persisted.
+If the platform instead provides device-code flow, use that existing supported
+flow rather than PKCE.
 
 ============================================================
-STRICT STOP CONDITIONS
+PHASE 5 — STEP 2.5 INTEGRATION
 ============================================================
 
-Do NOT stop for:
-- “old Step 1 object missing”
-- “server memory restarted”
-- “need original previous-session object”
-because the instruction is explicitly to regenerate that data genuinely through
-the existing flow.
+At the beginning of the REAL Stylus call:
 
-Stop ONLY if:
-A) a real endpoint itself fails,
-B) valid authentication cannot be obtained after the existing refresh/fresh-token
-mechanism,
-C) a genuine upstream LLM/tool/API returns an unrecoverable error.
+token = ensure_runner_token()
 
-If that happens, report the EXACT HTTP endpoint, status, response/error and first
-failing function. No architectural speculation.
+Then execute the existing call_stylus_preset() unchanged except for using the
+returned fresh token.
+
+If Runner returns:
+
+401
+or
+403 indicating expired/invalid authentication
+
+then:
+
+1. invalidate cached ACCESS token only;
+2. call ensure_runner_token() again;
+3. retry the Runner request EXACTLY ONCE.
+
+Do not retry:
+- schema failures
+- preset failures
+- SEC failures
+- web-search failures
+- 4xx unrelated to authentication.
 
 ============================================================
-FINAL REPORT — ONLY AFTER EXECUTION
+PHASE 6 — IMPORTANT LONG-RUN CASE
 ============================================================
 
-STEP1_REAL =
-STEP21_CONFIRMED =
-STEP22_CONFIRMED =
-STEP23_CONFIRMED =
-STEP23_FACTOR_COUNT =
-STEP24_CONFIRMED =
-STEP24_FACTOR_COUNT =
-UPSTREAM_READY =
-TOKEN_ACCEPTED =
-RUNNER_HTTP_STATUS =
-PRESET_EXECUTED =
-SEC_TOOL_ACTIVITY =
-WEB_TOOL_ACTIVITY =
-STEP25_JSON_RETURNED =
-STEP25_SCHEMA_VALID =
-ANALYTICAL_RESULT_REAL =
-OUTPUT_FILE =
-RUN_ASSESSMENT_WORKING =
-RESTART_REHYDRATION_WORKING =
+Step 2.5 can run for several minutes.
+
+A token may be valid when the SSE connection starts and expire later.
+
+Do NOT abort a successfully established SSE stream merely because the JWT's
+local expiry time passes while the Runner request is already executing.
+
+Only refresh/retry if the Runner actually returns an authentication failure.
+
+Keep the existing Stylus-specific long SSE timeout.
+
+============================================================
+PHASE 7 — ONE-COMMAND POC
+============================================================
+
+Update/reuse:
+
+scripts/run_step25_with_fresh_token.ps1
+
+so it performs:
+
+1. ensure backend running
+2. ensure Runner authentication
+3. /step25/preflight
+4. verify upstream_ready=true
+5. POST real /api/v1/rpr/step25/run
+6. wait for result
+7. print output file/result
+
+No smoke test before the real run.
+
+============================================================
+PHASE 8 — TEST
+============================================================
+
+Test these cases independently:
+
+CASE 1
+Fresh cached access token.
+Expected:
+NO refresh.
+Step 2.5 executes.
+
+CASE 2
+Expired access token + valid refresh token.
+Expected:
+automatic refresh.
+NO browser/manual interaction.
+Step 2.5 executes.
+
+CASE 3
+No access token + valid refresh token.
+Expected:
+automatic refresh.
+Step 2.5 executes.
+
+CASE 4
+No usable credentials.
+Expected:
+ONE interactive approved SSO/OAuth bootstrap.
+Credential cached.
+Step 2.5 executes.
+
+CASE 5
+Next Step 2.5 run after Case 4.
+Expected:
+NO DevTools.
+NO manual token copy.
+automatic token reuse/refresh.
+
+============================================================
+IF AUTOMATIC INITIAL BOOTSTRAP IS IMPOSSIBLE
+============================================================
+
+Only if inspection proves that Runner's OAuth system does NOT expose a supported
+authorization-code, PKCE, device-code, internal SSO helper, or reusable refresh
+credential to this application:
+
+STOP and report:
+
+BOOTSTRAP_AUTOMATION_SUPPORTED = NO
+EXACT_REASON =
+AVAILABLE_GRANT_TYPES =
+MISSING_CAPABILITY =
+
+Do NOT invent browser scraping or a fake authentication mechanism.
+
+But automatic refresh of an existing refresh token must still remain implemented.
+
+============================================================
+FINAL REPORT
+============================================================
+
+TOKEN_MANAGER_READY =
+INITIAL_SSO_BOOTSTRAP_READY =
+ACCESS_TOKEN_AUTO_REUSE =
+REFRESH_TOKEN_AUTO_REFRESH =
+EXPIRY_PRECHECK =
+401_ONE_TIME_REFRESH_RETRY =
+MANUAL_DEVTOOLS_REQUIRED_AFTER_FIRST_LOGIN =
+STEP25_REAL_RUN_TESTED =
 FILES_CHANGED =
-FINAL_STATUS = SUCCESS / BLOCKED
-BLOCKER =
+FINAL_STATUS =
 
-EXECUTE NOW. DO NOT RETURN A PLAN.
+EXECUTE THE IMPLEMENTATION NOW.
+DO NOT RETURN ONLY A PLAN.
