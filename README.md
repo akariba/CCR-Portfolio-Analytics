@@ -16,10 +16,31 @@ AssessmentASOFDATE
 
 ## MANDATORY FINAL SCORING CONTRACT
 
-"scoring": {
-  "ed_score": 0.0,
-  "si_score": 0.0,
-  "composite_score": 0.0,
-  "residual_rating": "LOW",
-  "credit_impact_rating": "LOW_IMPACT"
-}
+MANDATORY SCORING RULES
+
+For a successfully completed Step 2.5 assessment:
+
+- scoring.ed_score MUST be a numeric value from 1.0 to 5.0.
+- scoring.si_score MUST be a numeric value from 1.0 to 5.0.
+- scoring.composite_score MUST be a numeric value from 1.0 to 5.0.
+- scoring.residual_rating MUST be exactly one of:
+  LOW
+  MEDIUM
+  HIGH
+
+- scoring.credit_impact_rating MUST be exactly one of:
+  LOW_IMPACT
+  MEDIUM_IMPACT
+  HIGH_IMPACT
+
+These five fields MUST NOT be null, blank, empty-string, omitted, or "Not available"
+when the supplied Event-Driven and Sector-Inherent factors have been successfully assessed.
+
+Composite calculation:
+
+composite_score = (0.80 * ed_score) + (0.20 * si_score)
+
+Round only the final displayed composite score to two decimal places.
+
+A response with successfully assessed factors but any of these five scoring fields
+missing or null is NOT a valid completed Step 2.5 assessment.
