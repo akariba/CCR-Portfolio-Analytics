@@ -59,859 +59,464 @@ SectorInherentFactorsJSON
 
 
 
-STOP ALL IMPLEMENTATION NOW.
+RPR STEP 2.5 — STOP ALL OTHER WORK. ROOT-CAUSE AND FIX THE RUNNER SSE / FINAL-OUTPUT HANDOFF.
 
-I need a precise forensic handoff of EVERYTHING you have done in this RPR workspace during the LAST 2 HOURS.
+We now have enough evidence to isolate the problem.
 
-THIS IS AN AUDIT / HANDOFF REQUEST ONLY.
+DO NOT modify:
+- Step 2.1
+- Step 2.2
+- Step 2.3
+- Step 2.4
+- step23.html layout
+- v31 UI
+- eligibility logic
+- company identity logic
+- CIK resolution logic
+- Stylus preset prompt
+- Step 3a methodology
+- Step 3a thresholds
+- SEC/Web configuration
+- output schema
+- scoring
+- token-refresh architecture
 
-DO NOT:
-- modify any code
-- fix anything
-- refactor anything
-- run another Step 2.5 assessment
-- run Stylus
-- call Runner
-- fetch or refresh a token
-- restart the backend
-- modify the frontend
-- modify the preset
-- modify knowledge files
-- modify Step 2.1 / 2.2 / 2.3 / 2.4 / 2.5
-- delete temporary files
-- clean anything
-- revert anything
-- create new architecture
-- continue previous TODOs
+Do not run another assessment yet.
 
-READ-ONLY INSPECTION ONLY.
+CURRENT PROVEN STATE
+====================
 
-============================================================
-PURPOSE
-============================================================
+The refreshed forensic audit proves:
 
-I am handing the project state to another reasoning session.
+CONTEXT / CIK resolution = working
+RUNNER_AUTH = PASS
+Runner Service is reached
+token refresh = working
+backend process = alive
+frontend request reaches backend
 
-The previous handoff does NOT include roughly the last two hours of your work.
+The previous hard NO_CONFIRMED_SEC_REGISTRANT block has already been removed for the POC path.
 
-I need you to reconstruct exactly what happened during that period so that another engineer/AI can understand:
+The same remaining failure has now occurred on FOUR real executions.
 
-1. what you changed;
-2. why you changed it;
-3. what was proven;
-4. what was only suspected;
-5. what failed;
-6. what is currently working;
-7. what remains broken;
-8. what the CURRENT filesystem/code state actually is;
-9. whether any working RPR backbone was changed;
-10. what should NOT be touched next.
+The failure is:
 
-Do not give me a high-level summary only.
+    Runner Service stream ended without final model text content
 
-I need an engineering-grade change log.
+Important:
 
-============================================================
-TIME WINDOW
-============================================================
+This failure occurred for:
+- companies with unresolved CIK
+- AND Apple, where CIK was confirmed
 
-First determine the CURRENT LOCAL SYSTEM TIME.
+Therefore DO NOT investigate CIK/identity as the cause.
 
-Define:
+The latest Canaccord run again reached Runner successfully and failed at the same Runner SSE/final-output stage.
 
-AUDIT_END = current local system time
-AUDIT_START = AUDIT_END minus exactly 2 hours
+JSON parsing/schema validation/persistence are not reached because final model content is never handed from runner_client into stylus_engine.
 
-Print both timestamps.
+THIS IS NOW THE ONLY PRIMARY BLOCKER.
 
-Then reconstruct activity occurring inside this exact interval.
+==========================================================
+CRITICAL CLUE — RUNNER MAY NOT RETURN THE RESULT AS "TEXT"
+==========================================================
 
-Use actual evidence wherever possible:
+Earlier we captured a REAL successful Runner/StyIus response from the browser.
 
-- Git diff/status/history if available
-- file modification timestamps
-- terminal command history available to you
-- VS Code edits
-- your current conversation/session actions
-- generated files
-- backend logs
-- Step 2.5 run artifacts
-- test scripts
-- server logs
-- temporary diagnostic files
-- frontend changes
-- YAML/prompt/schema changes
+Its message structure included content resembling:
 
-Do NOT depend solely on your conversational memory.
+message:
+  parts:
+    [
+      {
+        "data": "...",
+        "data_type": 1,
+        "mime_type": "json",
+        "name": "AAPL_Step2.5_Assessment.json",
+        ...
+      }
+    ]
 
-If you cannot prove that something happened inside the exact window, label it:
+In other words, the successful Step 2.5 model result may be transported as:
 
-TIME_UNCERTAIN
+    message.parts[].data
 
-Do not silently include older work as recent work.
+with JSON/artifact metadata,
 
-============================================================
-RPR IMMUTABLE BACKBONE RULE
-============================================================
+rather than as a traditional:
 
-The RPR project uses the following strict rule:
+    message.parts[].text
+
+or other text field.
+
+This means the current error:
+
+    "stream ended without final model text content"
+
+may be caused by our client looking only for one representation of final model output.
+
+DO NOT ASSUME THIS IS THE ROOT CAUSE.
+
+PROVE IT FROM THE RAW SSE CAPTURES FIRST.
+
+==========================================================
+TASK 1 — READ THE EXISTING RAW SSE CAPTURES
+==========================================================
+
+Do NOT launch another Runner execution.
+
+Inspect the existing files under:
+
+backend/data/step25_runs/_debug_raw/
+
+especially the raw SSE captures corresponding to:
+
+1. the Apple failure after backend restart
+2. the Canaccord failure
+3. the Panmure failure
+4. the latest Canaccord failure
+
+Identify the actual event sequence.
+
+For EVERY SSE event, report internally:
+
+sequence number
+event/type if present
+top-level JSON keys
+message role if present
+parts count
+part keys
+tool_call if present
+tool_response if present
+text field presence
+data field presence
+mime_type
+data_type
+artifact/name if present
+workflow/status fields
+terminal/completion indicator
+
+Do not paste credentials or bearer tokens.
+
+I need you to answer:
+
+A. Did the Runner actually return final model content?
+B. If yes, exactly where is that content located?
+C. If no, did the model/tool execution itself fail upstream?
+D. Does our parser stop before all events are consumed?
+E. Does our parser reject a valid structured JSON/artifact final response because it is not plain text?
+
+==========================================================
+TASK 2 — COMPARE WITH THE KNOWN-WORKING app.py IMPLEMENTATION
+==========================================================
+
+This is extremely important.
+
+My colleague's app.py / Swagger implementation is known to work with the same corporate Runner infrastructure.
+
+Find the known-working app.py that has already been used in this project/workspace.
+
+READ IT.
+
+Do not rewrite it.
+
+Compare its Runner invocation and response-consumption logic line-by-line against:
+
+    backend/step25/runner_client.py
+
+Specifically compare:
+
+request URL
+HTTP method
+request body
+preset representation
+headers
+Accept header
+Content-Type
+stream=True or equivalent
+timeout behavior
+SSE/event parsing
+blank-line handling
+data: prefix handling
+multi-line SSE event handling
+JSON decoding
+workflow_id handling
+message handling
+parts handling
+tool_call handling
+tool_response handling
+terminal-event handling
+final-result extraction
+connection-close behavior
+
+Our rule is:
 
 KNOWN WORKING CODE IS THE BUILDING BONE.
 
-Anything already proven working must be preserved.
-
-Changes should be additive/minimal and must not casually replace, refactor or redesign working behavior.
-
-The currently proven Step 2.5 path includes important building blocks such as:
-
-- existing Step 2.5 FastAPI route
-- existing Runner Service integration
-- existing same-session Runner SSE handling
-- SEC integration
-- Web integration
-- six-input Step 2.5 context contract
-- Step 2.2 company context
-- Step 2.1 scenario context
-- Step 2.3 Event-Driven factors
-- Step 2.4 Sector-Inherent factors
-- Step 2.5 user feedback
-- Stylus inline preset execution path
-- existing company identity / CIK resolution mechanism
-- existing Step 2.5 parsing/schema persistence
-- v31 as frontend visual/functional reference
-- successful real Apple Step 2.5 execution previously proven:
-  CONTEXT_HTTP = 200
-  RUNNER_AUTH = PASS
-  PRESET_TOOL_CALLED = PASS
-  PRESET_TOOL_COMPLETED = PASS
-  SEC = PASS
-  WEB = PASS
-  MODEL_FINAL_RESPONSE = PASS
-  JSON_PARSED = PASS
-  SCHEMA_VALID = PASS
-  RUN_HTTP = 200
-
-Do not assume these are unchanged.
-
-CHECK whether anything you did during the last two hours modified any of these building blocks.
-
-============================================================
-SECTION 1 — EXACT FILE CHANGE INVENTORY
-============================================================
-
-List EVERY file modified, created, deleted, renamed or generated during the audit window.
-
-For each file provide:
-
-FILE:
-FULL/PROJECT-RELATIVE PATH:
-ACTION:
-    modified / created / deleted / renamed / generated
-TIMESTAMP:
-WHY:
-WHAT EXACTLY CHANGED:
-APPROXIMATE LINES/SECTIONS:
-BEHAVIOR BEFORE:
-BEHAVIOR AFTER:
-STATUS:
-    required / diagnostic / temporary / accidental / uncertain
-WORKING BACKBONE IMPACT:
-    none / additive / modifies working behavior / unknown
-SAFE TO KEEP:
-    YES / NO / REVIEW
-ROLLBACK NEEDED:
-    YES / NO / UNKNOWN
-
-Do not simply say:
-
-"updated frontend"
-
-Tell me exactly what function, model, predicate, field mapping,
-route, CSS rule, event listener, schema object, etc. changed.
-
-Pay particular attention to files including, if touched:
-
-backend/step25/models.py
-backend/step25/stylus_engine.py
-backend/step25/stylus_runner_client.py
-backend/step25/runner_client.py
-backend/step25/router.py
-backend/step25/company_context.py
-backend/step25/company_identity.py
-backend/step25/errors.py
-backend/server.py
-backend/step22_portfolio_service.py
-
-STYLUS_SEC_WEB_PRESET_DEFINITION.yaml
-
-RPR_STEP25_FIELD_DICTIONARY.md
-
-pr_step25_secweb_output_schema_v1.*
-Step25Assessment.schema.*
-
-UI Design/step23.html
-UI Design/rpr_step25_append.js
-UI Design/rpr_step25_append.css
-v31 reference HTML
-
-plus ANY other files.
-
-Do not restrict the report to the examples above.
-
-============================================================
-SECTION 2 — EXACT CODE DIFF SUMMARY
-============================================================
+If app.py already handles the Runner protocol correctly, COPY/ADAPT THE MINIMUM WORKING TRANSPORT/PARSING BEHAVIOR.
 
-For every CODE file changed, show the meaningful diff conceptually.
+Do not invent a new framework.
 
-I do NOT need thousands of raw diff lines.
+==========================================================
+TASK 3 — AUDIT _stream_sse() / CURRENT RUNNER PARSER
+==========================================================
 
-I need:
+Inspect the exact implementation responsible for:
 
-FUNCTION / CLASS / BLOCK:
-BEFORE:
-AFTER:
-REASON:
-OBSERVED EFFECT:
-PROVEN OR ASSUMED:
+    Runner Service stream ended without final model text content
 
-Example:
+Find the condition that raises this message.
 
-File:
-backend/step25/models.py
+Trace what values it has collected before raising.
 
-Object:
-FactorAssessment
+I particularly want you to determine whether it currently only accepts something equivalent to:
 
-Before:
-fields X/Y/Z...
+    part["text"]
 
-After:
-added weight, score, impact_rating...
+while ignoring valid content such as:
 
-Reason:
-Stylus returned these fields but Pydantic extra="forbid" /
-mapping discarded them...
+    part["data"]
 
-Observed evidence:
-...
+or:
 
-Do this for every material code change.
+    message.parts[].data
 
-============================================================
-SECTION 3 — DATA MODEL / SCHEMA CHANGES
-============================================================
+or JSON MIME/artifact parts.
 
-This is especially important.
+Also inspect whether it assumes:
 
-Tell me exactly whether the last two hours changed:
+    one physical HTTP line == one complete SSE event
 
-- FactorAssessment
-- Step25Assessment
-- scoring object
-- evidence object
-- credit conclusion
-- company context
-- ED score mapping
-- SI score mapping
-- composite score mapping
-- residual rating
-- credit impact rating
-- factor weight
-- factor score
-- factor impact_rating
-- RRR
-- classification
-- recommendation fields
-- evidence IDs
-- analyst fields
+That is unsafe if the server sends proper SSE framing or multi-line data fields.
 
-For each change state:
+Do not change anything until you can state the exact failure mechanism.
 
-SOURCE MODEL FIELD
-→ MODEL OUTPUT FIELD
-→ BACKEND PARSED FIELD
-→ SAVED ASSESSMENT FIELD
-→ FRONTEND FIELD
+==========================================================
+TASK 4 — DEFINE THE VALID FINAL-OUTPUT CONTRACT
+==========================================================
 
-Identify any data that was previously being silently discarded.
+A valid final Step 2.5 Runner result may only be accepted from a genuine final assistant/model message.
 
-Identify whether that issue is NOW fixed.
+Do NOT accidentally treat:
+- SEC tool responses
+- Web Search tool responses
+- intermediate tool payloads
+- status messages
+- workflow metadata
 
-============================================================
-SECTION 4 — PROMPT / PRESET STATE
-============================================================
+as the final model assessment.
 
-I need an exact answer here because we discovered possible drift.
+Final-output extraction should support the REAL Runner protocol observed in the captures.
 
-Report separately:
+Expected precedence should roughly be:
 
-A. CURRENT LIVE STYLUS PRESET PROMPT
+1. genuine final assistant/model textual content, if supplied;
 
-B. CURRENT LOCAL:
-STYLUS_SEC_WEB_PRESET_DEFINITION.yaml
+otherwise
 
-C. CURRENT:
-RPR_STEP25_FIELD_DICTIONARY.md
+2. genuine final assistant/model structured part containing JSON data,
+   e.g. message.parts[].data with an appropriate JSON MIME/data type;
 
-D. CURRENT Step 2.5 output schema knowledge file
+otherwise
 
-E. Any Step 3a methodology/threshold knowledge files
+3. whatever equivalent genuine final-result representation is PROVEN by
+   the working app.py / raw successful Runner traffic.
 
-For each report:
+Do not implement speculative formats that we have never observed.
 
-CURRENT FILE/PRESET:
-LAST MODIFIED:
-WHAT IT CONTAINS:
-USED BY ACTUAL BACKEND? YES/NO/UNKNOWN
-USED BY LIVE STYLUS PRESET? YES/NO/UNKNOWN
-MATCHES LIVE PRESET? YES/NO/UNKNOWN
-MISMATCH DETAILS:
+The returned value handed to stylus_engine must ultimately be the raw Step 2.5 JSON assessment content so the EXISTING parser/schema validation continues unchanged.
 
-In particular confirm whether the backend inline preset prompt
-currently matches the live Stylus preset I manually configured.
+==========================================================
+TASK 5 — SSE FRAMING
+==========================================================
 
-Do NOT change anything to make them match during this audit.
+Verify whether runner_client currently implements real SSE framing correctly.
 
-Just report the truth.
+SSE events are separated by an empty line.
 
-============================================================
-SECTION 5 — STEP 3a METHODOLOGY GROUNDING
-============================================================
+An event may contain multiple "data:" lines.
 
-During the recent work you raised concerns around Step 3a methodology.
+HTTP/TCP chunk boundaries must NOT be interpreted as logical event boundaries.
 
-Report exactly what you discovered.
+If the existing implementation parses every physical iter_lines() entry independently and this differs from the known-working app.py or the actual Runner stream, fix only that parsing defect.
 
-Specifically answer:
+Maintain heartbeats/comments safely.
 
-1. Does Step 2.5 currently have the authoritative Step 3a:
-   - 1–5 scoring rules?
-   - ED weighted calculation?
-   - SI weighted calculation?
-   - 80% ED / 20% SI composite?
-   - residual-rating thresholds?
-   - credit-impact rules?
-   - RRR decision tables?
-   - classification tables?
-   - downgrade / Better-of rules?
+Do not terminate merely because one event contains no text.
 
-2. Where does each rule currently live?
+Do not terminate merely because a tool call completed.
 
-3. Is it:
-   - supplied directly in prompt,
-   - supplied through knowledge,
-   - coded deterministically,
-   - or merely expected from model memory?
+Wait for the genuine workflow/model terminal condition established from the real Runner protocol.
 
-4. Did you generate any new Step 3a knowledge file?
+==========================================================
+TASK 6 — IMPLEMENT THE MINIMUM FIX
+==========================================================
 
-5. If yes:
-   FILE =
-   CREATED =
-   CONTENT =
-   UPLOADED TO STYLUS = YES/NO
-   WIRED INTO BACKEND INLINE PRESET = YES/NO
+ONLY after Tasks 1–5 establish the root cause:
 
-Do NOT upload or wire anything during this audit.
+Implement the smallest possible correction in:
 
-============================================================
-SECTION 6 — STEP 2.2 PORTFOLIO DATA
-============================================================
+    backend/step25/runner_client.py
 
-Explain every change you made related to Step 2.2.
+and only another file if genuinely necessary.
 
-We recently observed real UI portfolio rows such as:
+Do not modify Stylus analytical behavior.
 
-- DOMI TRADING SL
-- Spanish/private-company names
-- CAGIDs
-- missing ticker/CIK in Step 2.2 source
-- many rows showing:
-  "Not supplied by Step 2.2 portfolio source"
-- exposure fields showing:
-  "Exposure unavailable in input portfolio"
+Do not modify the preset.
 
-Report exactly:
+Do not modify Step 3a.
 
-STEP22 SOURCE USED:
-ROWS OBSERVED:
-ROW COUNT:
-COMPANY NAME SOURCE:
-CAGID SOURCE:
-TICKER SOURCE:
-CIK SOURCE:
-MLE SOURCE:
-COUNTRY SOURCE:
-L1/L2/L3 SOURCE:
-EXPOSURE SOURCE:
-OSUC SOURCE:
+Do not modify the schema.
 
-What was changed in Step 2.2 code?
+Do not modify frontend behavior in this task.
 
-Did you:
-- repair company names?
-- create fallback names?
-- alter pagination?
-- increase row count?
-- change field aliases?
-- change deduplication?
-- change filtering?
-- change confirmed-company state?
-- change SEC eligibility?
-- infer missing values?
+Preserve all existing:
+- authentication
+- token cache
+- token refresh
+- timeout
+- retry
+- HTTP status handling
+- tool observation
+- diagnostics
 
-Give exact details.
+unless a specific line is proven to be causing this protocol defect.
 
-No fabricated field values are permitted.
+==========================================================
+TASK 7 — TEST USING EXISTING RAW CAPTURES FIRST
+==========================================================
 
-============================================================
-SECTION 7 — STEP 2.3 / STEP 2.4 STATE
-============================================================
+Before making another network/model call, create a small local parser regression test using the EXISTING raw SSE dumps.
 
-Report what happened during the last two hours involving:
+Feed the captured failing stream into the corrected parsing/extraction logic.
 
-Step 2.3 Event-Driven factors
-Step 2.4 Sector-Inherent factors
+If the raw stream actually contains the final JSON artifact:
 
-For each:
+the parser MUST recover it.
 
-INPUT:
-MODEL/LLM:
-NUMBER OF FACTORS GENERATED:
-NUMBER CONFIRMED:
-CONFIRMATION STATE:
-FILES/ROUTES CHANGED:
-FAILURES OBSERVED:
-FIXES APPLIED:
-CURRENT STATUS:
+Then feed it through the existing Step 2.5 JSON/schema parsing logic.
 
-Explain the repeated UI/system-log messages such as generation
-failures if they occurred.
+Expected:
 
-Separate genuine backend failure from UI/state-display failure.
+MODEL_FINAL_RESPONSE = PASS
+JSON_PARSED = PASS
+SCHEMA_VALID = PASS
 
-============================================================
-SECTION 8 — STEP 2.5 READINESS / RUN BUTTON
-============================================================
+If the raw SSE dump genuinely does NOT contain final model content, STOP.
 
-This is currently one of the most important areas.
+Do not fabricate it.
 
-The recent UI showed:
+Instead state that the failure is upstream in the Runner/model execution and show the last genuine Runner event.
 
-Step 2.1 = confirmed
-Step 2.2 = confirmed
-Step 2.3 = confirmed
-Step 2.4 = confirmed
+==========================================================
+TASK 8 — ONE LIVE ACCEPTANCE RUN ONLY AFTER LOCAL PROOF
+==========================================================
 
-Selected company present.
+Only if the existing raw-capture regression proves our parser was wrong:
 
-UI displayed:
+restart the backend once if required.
 
-"Eligible — SEC + Web"
+Then execute ONE real acceptance run.
 
-but:
+Prefer Apple first if it remains available because Apple has a confirmed CIK and removes identity resolution as a test variable.
 
-"Run Assessment"
+Expected chain:
 
-was disabled / prohibited cursor.
+CONTEXT_HTTP = 200
+RUNNER_AUTH = PASS
+PRESET_TOOL_CALLED = PASS
+PRESET_TOOL_COMPLETED = PASS
+SEC = PASS
+WEB = PASS
+MODEL_FINAL_RESPONSE = PASS
+JSON_PARSED = PASS
+SCHEMA_VALID = PASS
+ED_SCORE = populated
+SI_SCORE = populated
+COMPOSITE_SCORE = populated
+RESIDUAL_RATING = populated
+CREDIT_IMPACT = populated
+ASSESSMENT_PERSISTED = PASS
+RUN_HTTP = 200
 
-Report exactly what you discovered about this.
+Only after this succeeds may you say Step 2.5 backend is repaired.
 
-Give me:
+==========================================================
+TASK 9 — THEN LEAVE IT READY FOR MY UI TEST
+==========================================================
 
-ELIGIBILITY_BADGE_PREDICATE =
-RUN_BUTTON_DISABLED_PREDICATE =
-BACKEND_PREFLIGHT_PREDICATE =
-SELECTED_COMPANY_STATE =
-SEC_ELIGIBILITY_STATE =
-CIK_RESOLUTION_STATE =
-CURRENT_MISMATCH =
-ROOT_CAUSE_KNOWN = YES/NO
+Do not perform repeated UI runs.
+
+Once the backend acceptance succeeds:
+
+leave the backend running
+leave token refresh running
+leave step23.html unchanged unless a separate UI defect still demonstrably exists
+
+Tell me exactly which company I should select.
+
+I will personally perform the final Step 2.1 → 2.5 browser test.
+
+==========================================================
+VERY IMPORTANT — DO NOT CHASE THESE NOW
+==========================================================
+
+Do NOT spend time on:
+
+- unresolved CIK for Canaccord
+- port 8000 vs 8001 unless actual connectivity fails
+- SEC production-mode flags
+- Web production-mode flags
+- Step 3a knowledge upload
+- Stylus live-vs-local preset synchronization
+- v31 cosmetic differences
+- Step 2.2 pagination
+- exposure fields
+- score thresholds
+- RRR/classification
+- CAM paths
+
+They are NOT the current first failure.
+
+The first failure is Runner final-output handoff.
+
+==========================================================
+FINAL RESPONSE FORMAT
+==========================================================
+
+Return ONLY:
+
 ROOT_CAUSE =
-
-If you made any modification attempting to fix it, give the exact
-change.
-
-Do NOT make another change now.
-
-============================================================
-SECTION 9 — TOKEN / AUTH WORK
-============================================================
-
-Report everything done during the audit window concerning:
-
-.runner_token
-.runner_refresh_token
-GENAI_BEARER_TOKEN
-GENAI_REFRESH_TOKEN
-manual token copying
-browser token
-token.oauth2
-Runner bearer token
-auto-refresh
-background token refresher
-refresh interval
-401
-TOKEN_EXPIRED
-400 refresh failure
-
-For security:
-
-DO NOT print actual tokens or credentials.
-
-Use:
-
-[REDACTED]
-
-Report only:
-
-TOKEN SOURCE:
-TOKEN CACHE FILE:
-EXPIRY BEHAVIOR:
-AUTO REFRESH STATUS:
-MANUAL REFRESH STATUS:
-CURRENT TOKEN STATUS:
-ANY CODE CHANGED:
-FILES CHANGED:
-
-Also state whether any token appeared in console/log/source files
-and whether those files should be cleaned later.
-
-Do NOT clean them now.
-
-============================================================
-SECTION 10 — COMMANDS AND PROCESSES EXECUTED
-============================================================
-
-Reconstruct significant commands run during the audit period.
-
-Group by purpose rather than dumping useless shell noise.
-
-Examples:
-
-SERVER START/STOP:
-TOKEN COMMANDS:
-TEST COMMANDS:
-HTTP CALLS:
-PYTHON SCRIPTS:
-SEARCH/GREP:
-FILE GENERATION:
-OTHER:
-
-For every REAL model assessment execution tell me:
-
-COMPANY:
-RUN_ID:
-ASSESSMENT_ID:
-CONTEXT_HTTP:
-RUNNER_AUTH:
-SEC:
-WEB:
-MODEL_FINAL_RESPONSE:
-JSON_PARSED:
-SCHEMA_VALID:
-RUN_HTTP:
-RESULT:
-
-Do NOT confuse:
-- manual Stylus execution
-- backend Runner execution
-- terminal harness execution
-- frontend execution
-
-They must be reported separately.
-
-============================================================
-SECTION 11 — TESTS PERFORMED
-============================================================
-
-List every meaningful test during the two-hour window.
-
-For each:
-
-TEST:
-PURPOSE:
-INPUT:
-EXPECTED:
-ACTUAL:
-PASS/FAIL:
-WHAT IT PROVES:
-WHAT IT DOES NOT PROVE:
-
-Especially identify whether any successful result was:
-
-- direct Stylus only
-- backend only
-- terminal harness only
-- actual frontend end-to-end
-
-Do not call a terminal harness success an end-to-end UI success.
-
-============================================================
-SECTION 12 — CURRENT FRONTEND STATE
-============================================================
-
-Report current frontend implementation status for:
-
-Step 2.1
-Step 2.2
-Step 2.3
-Step 2.4
-Step 2.5
-
-Compare Step 2.5 specifically with v31.
-
-Report:
-
-V31 STRUCTURE MATCH =
-V31 TABLE MATCH =
-V31 COLUMNS MATCH =
-V31 EXPANDED FACTOR PANELS =
-V31 RRR FIELDS =
-V31 CLASSIFICATION FIELDS =
-V31 KEY RISK DRIVER =
-V31 IMPACT RATING OVERRIDE =
-V31 USER CREDIT COMMENTARY =
-V31 CONFIRM ASSESSMENT =
-RUN ASSESSMENT WORKING =
-REAL BACKEND RESULT RENDERING =
-FEEDBACK WORKING =
-
-For any NO/PARTIAL explain why.
-
-============================================================
-SECTION 13 — CURRENT BACKEND STATE
-============================================================
-
-Give the current state of the Step 2.5 backend.
-
-Use exactly:
-
-CONTEXT_ROUTE =
-RUN_ROUTE =
+RAW_SSE_CONTAINS_FINAL_MODEL_RESULT = YES/NO
+FINAL_RESULT_ACTUAL_LOCATION =
+CURRENT_PARSER_EXPECTED_LOCATION =
+APP_PY_WORKING_BEHAVIOR =
+SSE_FRAMING_BUG = YES/NO
+STRUCTURED_DATA_PART_BUG = YES/NO
+FILES_CHANGED =
+LOCAL_RAW_STREAM_REGRESSION = PASS/FAIL
+LIVE_RUN_EXECUTED = YES/NO
 RUNNER_AUTH =
-RUNNER_SSE =
-PRESET_TOOL_CALL =
-SEC_TOOL =
-WEB_TOOL =
-MODEL_FINAL =
-JSON_PARSE =
-SCHEMA_VALIDATION =
-PERSISTENCE =
-FACTOR_SCORE_PERSISTENCE =
+PRESET_TOOL_CALLED =
+PRESET_TOOL_COMPLETED =
+SEC =
+WEB =
+MODEL_FINAL_RESPONSE =
+JSON_PARSED =
+SCHEMA_VALID =
 ED_SCORE =
 SI_SCORE =
 COMPOSITE_SCORE =
 RESIDUAL_RATING =
 CREDIT_IMPACT =
-CIK_RESOLUTION =
-TOKEN_REFRESH =
-KNOWN_BLOCKER =
+ASSESSMENT_PERSISTED =
+RUN_HTTP =
+READY_FOR_USER_UI_TEST = YES/NO
 
-============================================================
-SECTION 14 — PROVEN FACTS VS HYPOTHESES
-============================================================
+If READY_FOR_USER_UI_TEST = NO:
 
-Create two groups.
+FIRST_REMAINING_BLOCKER =
+EXACT_LAST_RUNNER_EVENT =
+NEXT_MINIMUM_ACTION =
 
-PROVEN:
-
-Only things demonstrated from actual execution/code/logs.
-
-HYPOTHESES / NOT YET PROVEN:
-
-Anything still inferred or suspected.
-
-This distinction is mandatory.
-
-============================================================
-SECTION 15 — TEMPORARY / DIAGNOSTIC ARTIFACTS
-============================================================
-
-List every temporary file/script/log created during the window.
-
-Examples may include:
-
-_step25_acceptance_run.py
-_step25_acceptance_run_output.txt
-raw Runner SSE dumps
-debug artifacts
-temporary JSON
-temporary token files
-trace scripts
-generated knowledge files
-
-For each:
-
-FILE:
-PURPOSE:
-STILL NEEDED:
-SAFE TO DELETE LATER:
-DO NOT DELETE YET IF:
-
-Do not delete them now.
-
-============================================================
-SECTION 16 — TODO / UNFINISHED ACTIONS
-============================================================
-
-List everything you were in the middle of doing.
-
-For each:
-
-TODO:
-WHY:
-STATUS:
-BLOCKER:
-NEXT ACTION YOU WOULD HAVE TAKEN:
-SHOULD NEXT ENGINEER CONTINUE IT:
-YES / NO / REVIEW FIRST
-
-Include questions you asked me but I have not yet answered.
-
-============================================================
-SECTION 17 — HIGH-RISK CHANGES
-============================================================
-
-Identify any changes during the last two hours that could have
-accidentally changed previously working behavior.
-
-Use:
-
-HIGH_RISK_CHANGE:
-FILE:
-WHY RISKY:
-PREVIOUS WORKING BEHAVIOR:
-NEW BEHAVIOR:
-TESTED:
-RECOMMEND KEEP/REVERT/REVIEW:
-
-This section is extremely important.
-
-============================================================
-SECTION 18 — GIT / WORKTREE STATE
-============================================================
-
-If Git is available, report:
-
-BRANCH =
-HEAD =
-GIT_STATUS =
-MODIFIED_FILES =
-UNTRACKED_FILES =
-DELETED_FILES =
-
-Do NOT commit.
-Do NOT stage.
-Do NOT checkout.
-Do NOT reset.
-
-Also distinguish:
-
-changes from the LAST 2 HOURS
-
-from:
-
-older existing dirty-worktree changes.
-
-This repo already contained many historical modifications, so do
-not attribute every current diff to your recent work.
-
-============================================================
-SECTION 19 — THE 10 MOST IMPORTANT THINGS THAT HAPPENED
-============================================================
-
-After the detailed forensic report, give exactly the 10 most
-important developments from the last two hours, ordered by
-importance.
-
-Each should be one or two sentences maximum.
-
-============================================================
-SECTION 20 — HANDOFF SNAPSHOT
-============================================================
-
-Finish with this exact compact structure:
-
-AUDIT_WINDOW_START =
-AUDIT_WINDOW_END =
-
-LAST_KNOWN_GOOD_STEP25_BACKEND =
-CURRENT_STEP25_BACKEND =
-CURRENT_STEP25_FRONTEND =
-CURRENT_STEP22_DATA =
-CURRENT_PRESET_STATE =
-CURRENT_SCHEMA_STATE =
-CURRENT_STEP3A_GROUNDING =
-CURRENT_TOKEN_STATE =
-
-MOST_IMPORTANT_CODE_CHANGE =
-MOST_IMPORTANT_BUG_FIXED =
-MOST_IMPORTANT_UNRESOLVED_BUG =
-
-WORKING_BACKBONE_CHANGED = YES/NO/PARTIAL
-IF_YES_EXPLAIN =
-
-SAFE_NEXT_ACTION =
-DO_NOT_TOUCH =
-
-READY_FOR_FULL_UI_2.1_TO_2.5_TEST = YES/NO
-
-IF_NO:
-EXACT_REMAINING_BLOCKERS =
-1.
-2.
-3.
-
-============================================================
-STRICT ACCURACY RULES
-============================================================
-
-1. DO NOT GUESS.
-
-2. DO NOT claim a test passed unless you have execution evidence.
-
-3. DO NOT call something "fixed" merely because code was changed.
-
-4. Distinguish:
-   CODE_CHANGED
-   from
-   TESTED
-   from
-   PROVEN_WORKING.
-
-5. Do not use a successful direct Stylus run as proof that the RPR
-   UI integration works.
-
-6. Do not use a successful backend harness as proof that the
-   frontend works.
-
-7. Do not attribute old changes to the last two hours.
-
-8. Do not hide accidental changes.
-
-9. Do not shorten the report because of token length. This is a
-   handoff document and completeness is more important.
-
-10. Do not perform any new implementation while preparing it.
-
-11. Do not start another assessment.
-
-12. Do not alter files just to improve the report.
-
-13. If evidence conflicts, show both pieces of evidence.
-
-14. If exact timing cannot be reconstructed, say TIME_UNCERTAIN.
-
-15. Any credential/token content must be REDACTED.
-
-START NOW WITH READ-ONLY INSPECTION.
-
-Your first line must be:
-
-FORENSIC RPR 2-HOUR HANDOFF — READ-ONLY AUDIT
-
-Your final line must be:
-
-NO CODE OR RUNTIME STATE WAS INTENTIONALLY CHANGED DURING THIS AUDIT.
+STOP THERE.
