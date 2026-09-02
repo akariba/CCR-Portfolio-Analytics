@@ -16,45 +16,30 @@ AssessmentASOFDATE
 
 ## MANDATORY FINAL SCORING CONTRACT
 
-A successful assessment MUST populate all of the following fields with non-null values:
+The Stylus Step 2.5 preset has now been manually corrected so the five final scoring fields are explicitly mandatory and non-null whenever ED/SI factors are assessable.
 
-- scoring.ed_score
-- scoring.si_score
-- scoring.composite_score
-- scoring.residual_rating
-- scoring.credit_impact_rating
+Runner authentication is already proven working with the fresh bearer token. Do not reopen authentication investigation. Do not work on auto-refresh. Do not produce another diagnostic report.
 
-These fields are mandatory whenever at least one Event-Driven factor and one Sector-Inherent factor have been successfully assessed.
+Execute the target now.
 
-SCORING RULES:
+Preserve every existing working Step 1–2.4 building block.
+Preserve the completed six-input Step 2.5 contract.
+Preserve SEC + Web execution.
+Run one real Step 2.5 assessment immediately using the current fresh .runner_token.
+Verify:
+HTTP 200
+SEC executed
+Web executed
+ED factor assessments returned
+SI factor assessments returned
+ed_score populated
+si_score populated
+composite_score populated
+residual_rating populated
+credit_impact_rating populated
+key risk driver/conclusion populated
+Render the real results in Step 2.5.
+Compare Step 2.5 visually against v31 itself, not against an approximation. Preserve v31 column ordering, table structure, expandable ED/SI factor sections, scoring presentation, actions, commentary area, spacing and existing RPR styling. Do not redesign.
+Do not fix the unrelated Step 2.2 MLE source-data issue during this execution. Record it separately only.
 
-1. Calculate Event-Driven score as the weighted average of all supplied Step 2.3 factor scores:
-   ED_SCORE = SUM(factor_score × factor_weight) / SUM(event_driven_weights)
-
-2. Calculate Sector-Inherent score as the weighted average of all supplied Step 2.4 factor scores:
-   SI_SCORE = SUM(factor_score × factor_weight) / SUM(sector_inherent_weights)
-
-3. Calculate Composite Score using the RPR Step 2.5 methodology:
-   COMPOSITE_SCORE = (0.80 × ED_SCORE) + (0.20 × SI_SCORE)
-
-4. residual_rating and credit_impact_rating MUST then be derived using the Step 3a methodology and attached Field Dictionary.
-
-5. Do NOT return null merely because current_rrr or current_class is unavailable.
-   Those fields affect RRR/classification recommendation only.
-   They DO NOT prevent calculation of ED score, SI score, composite score, residual rating, or credit impact rating.
-
-6. If an individual supplied factor genuinely cannot be scored because evidence is insufficient:
-   - document the reason under evidence_gaps;
-   - do not invent evidence;
-   - calculate the aggregate score from the legitimately assessed factors only if permitted by the Step 3a methodology.
-
-7. Before returning the JSON, perform a final validation:
-   scoring.ed_score != null
-   scoring.si_score != null
-   scoring.composite_score != null
-   scoring.residual_rating != null
-   scoring.credit_impact_rating != null
-
-If any of these five values is null despite sufficient factor assessments, DO NOT return the response yet. Complete the calculation first.
-
-Return exactly one schema-conformant final assessment.
+STRICT STOP CONDITION: continue directly until either the real Step 2.5 assessment is rendered successfully in the browser or one concrete external failure prevents execution. No architecture work, no refactoring, no speculative loops, no additional reports before attempting the run.
