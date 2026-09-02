@@ -16,31 +16,59 @@ AssessmentASOFDATE
 
 ## MANDATORY FINAL SCORING CONTRACT
 
-MANDATORY SCORING RULES
+Scoring
 
-For a successfully completed Step 2.5 assessment:
+Apply the authoritative Step 3a five-scale financial methodology.
 
-- scoring.ed_score MUST be a numeric value from 1.0 to 5.0.
-- scoring.si_score MUST be a numeric value from 1.0 to 5.0.
-- scoring.composite_score MUST be a numeric value from 1.0 to 5.0.
-- scoring.residual_rating MUST be exactly one of:
-  LOW
-  MEDIUM
-  HIGH
+For every supplied factor:
+- assess the factor using genuine SEC/Web evidence;
+- preserve its supplied factor_id, source step and weight;
+- assign a factor score from 1.0 to 5.0 where the methodology permits assessment;
+- explain the evidence supporting the score.
 
-- scoring.credit_impact_rating MUST be exactly one of:
-  LOW_IMPACT
-  MEDIUM_IMPACT
-  HIGH_IMPACT
+Calculate:
 
-These five fields MUST NOT be null, blank, empty-string, omitted, or "Not available"
-when the supplied Event-Driven and Sector-Inherent factors have been successfully assessed.
+ED_SCORE = weighted result of confirmed Step 2.3 Event-Driven factors.
 
-Composite calculation:
+SI_SCORE = weighted result of confirmed Step 2.4 Sector-Inherent factors.
 
-composite_score = (0.80 * ed_score) + (0.20 * si_score)
+COMPOSITE_SCORE = (ED_SCORE × 0.80) + (SI_SCORE × 0.20)
 
-Round only the final displayed composite score to two decimal places.
+Round the final displayed COMPOSITE_SCORE to two decimal places.
 
-A response with successfully assessed factors but any of these five scoring fields
-missing or null is NOT a valid completed Step 2.5 assessment.
+For a successfully completed assessment, all five final scoring fields are mandatory:
+
+scoring.ed_score
+scoring.si_score
+scoring.composite_score
+scoring.residual_rating
+scoring.credit_impact_rating
+
+Requirements:
+
+scoring.ed_score MUST be numeric from 1.0 to 5.0.
+
+scoring.si_score MUST be numeric from 1.0 to 5.0.
+
+scoring.composite_score MUST be numeric from 1.0 to 5.0.
+
+scoring.residual_rating MUST be exactly one of:
+LOW
+MEDIUM
+HIGH
+
+scoring.credit_impact_rating MUST be exactly one of:
+LOW_IMPACT
+MEDIUM_IMPACT
+HIGH_IMPACT
+
+These five fields MUST NOT be null, blank, empty, omitted, or "Not available" after the supplied Event-Driven and Sector-Inherent factors have been successfully assessed.
+
+Do not fabricate evidence.
+
+If evidence for an individual factor is genuinely insufficient, record the specific limitation in evidence_gaps and follow the authoritative Step 3a methodology for treatment of that factor.
+
+A completed assessment containing successfully assessed factors but missing any of the five mandatory final scoring fields is INVALID.
+
+
+Follow rpr_step25_secweb_output_schema_v1.json.
