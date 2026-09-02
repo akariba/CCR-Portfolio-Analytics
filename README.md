@@ -58,100 +58,37 @@ SectorInherentFactorsJSON
 
 
 
-STEP 2.5 — EXECUTE NOW WITH THE FRESH RUNNER TOKEN
+## FINAL OUTPUT AND TERMINATION CONTRACT
 
-I have just copied a fresh Runner bearer token from the working Stylus browser
-/runner-service/chat request into my Windows clipboard.
+Return exactly ONE machine-readable JSON object conforming to the attached Step 2.5 SEC+Web output schema.
 
-DO NOT ask me to paste the token into chat.
-DO NOT print, log, echo, expose, or persist the token anywhere unnecessarily.
+The JSON object is the COMPLETE and FINAL deliverable for this preset.
 
-CURRENT PROVEN STATE — DO NOT REOPEN:
+CRITICAL EXECUTION RULES:
 
-- Step 2.5 preset configuration is correct.
-- The reduced/current preset and both knowledge files are frozen.
-- Six-input mapping is confirmed correct.
-- CONTEXT_HTTP previously = 200.
-- The genuine runner_client.py _stream_sse tuple-return bug was identified and minimally fixed.
-- The last run failed only because the cached bearer token was expired.
-- Cached refresh-token exchange is currently unreliable/expired and MUST NOT become another investigation.
-- run_step25_with_fresh_token.ps1 is the already-proven fresh-token execution mechanism.
+- Do NOT create a Markdown artifact.
+- Do NOT create a supporting commentary artifact.
+- Do NOT generate charts, graphs, diagrams, tables, visualizations, or dashboards.
+- Do NOT invoke charts_generator.
+- Do NOT invoke any presentation/document-generation tool.
+- Do NOT create a second artifact of any kind.
+- Do NOT provide prose before the JSON.
+- Do NOT provide prose after the JSON.
+- Do NOT summarize the JSON separately.
+- Do NOT continue analysis after the schema-conformant JSON has been produced.
 
-EXECUTE, DO NOT INVESTIGATE.
+Use SEC Filing and Web Search only as required to gather evidence for the assessment.
 
-1. Read the fresh bearer token from the Windows clipboard using the EXISTING
-   run_step25_with_fresh_token.ps1 mechanism.
+Once the final schema-conformant JSON object has been produced, TERMINATE THE RESPONSE IMMEDIATELY.
 
-2. Use it only for the current Runner authentication state expected by the existing code.
+The required execution sequence is:
 
-3. Restart the backend if required so the fresh token is loaded into memory.
+1. Read supplied RPR inputs.
+2. Retrieve only necessary SEC/Web evidence.
+3. Assess supplied Step 2.3 and Step 2.4 factors.
+4. Calculate all mandatory Step 2.5 scoring fields.
+5. Construct the schema-conformant JSON.
+6. Return that JSON.
+7. STOP.
 
-4. Run EXACTLY ONE real Apple Step 2.5 acceptance execution.
-
-5. Do NOT:
-   - change the preset;
-   - change either knowledge file;
-   - change the six-input contract;
-   - change SEC;
-   - change Web Search;
-   - change Step 2.1–2.4;
-   - change company identity;
-   - redesign authentication;
-   - attempt to repair automatic refresh now;
-   - start multiple /run calls;
-   - refactor unrelated code;
-   - inspect architecture;
-   - produce another long diagnostic report.
-
-6. Preserve the minimal runner_client.py tuple-return correction already made.
-   Do not undo it.
-
-7. For this one run report ONLY:
-
-CONTEXT_HTTP =
-RUNNER_AUTH =
-PRESET_TOOL_CALLED =
-PRESET_TOOL_COMPLETED =
-SEC =
-WEB =
-MODEL_FINAL_RESPONSE =
-JSON_PARSED =
-SCHEMA_VALID =
-ED_SCORE =
-SI_SCORE =
-COMPOSITE_SCORE =
-RESIDUAL_RATING =
-CREDIT_IMPACT =
-RUN_HTTP =
-
-If there is a failure, report only:
-
-FIRST_FAILED_STAGE =
-EXACT_ERROR =
-LAST_RUNNER_EVENT =
-
-Then STOP.
-
-SUCCESS CONDITION:
-
-RUNNER_AUTH = PASS
-SEC = PASS
-WEB = PASS
-MODEL_FINAL_RESPONSE = PASS
-JSON_PARSED = PASS
-SCHEMA_VALID = PASS
-ED_SCORE = populated
-SI_SCORE = populated
-COMPOSITE_SCORE = populated
-RESIDUAL_RATING = populated
-CREDIT_IMPACT = populated
-RUN_HTTP = 200
-
-If this succeeds, STOP all Step 2.5 backend investigation immediately.
-Do not make further backend changes.
-
-
-
-
-
-IMPLEMENT -> RUN ONCE -> REPORT RESULT.
+A successful execution produces exactly ONE final JSON artifact and no other artifact.
