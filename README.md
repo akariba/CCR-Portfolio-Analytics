@@ -16,13 +16,47 @@ AssessmentASOFDATE
 
 ## MANDATORY FINAL SCORING CONTRACT
 
-For non-mandatory evidence or contextual fields only, use null or an evidence-gap entry when information cannot be established.
+CompanyContextJSON
 
-This rule does NOT apply to the five mandatory final scoring fields:
-scoring.ed_score
-scoring.si_score
-scoring.composite_score
-scoring.residual_rating
-scoring.credit_impact_rating
+{
+  "company_name": "Apple Inc.",
+  "ticker": "AAPL",
+  "cik": "0000320193"
+}
 
-Once the supplied Event-Driven and Sector-Inherent factors have been successfully assessed, those five fields must contain valid values as defined above.
+ScenarioContextJSON
+
+{
+  "assessment_horizon": "12M",
+  "base_case": "Soft landing",
+  "stress_case": "Regulatory escalation"
+}
+
+EventDrivenFactorsJSON
+
+[
+  {
+    "factor_id": "ED-1",
+    "factor_name": "Leadership transition",
+    "weight": 0.3
+  },
+  {
+    "factor_id": "ED-2",
+    "factor_name": "Regulatory scrutiny of Services",
+    "weight": 0.4
+  }
+]
+
+SectorInherentFactorsJSON
+
+[
+  {
+    "factor_id": "SI-1",
+    "factor_name": "Regulatory scrutiny of Services",
+    "weight": 0.2
+  }
+]
+
+AssessmentASOFDATE
+
+2026-09-02
