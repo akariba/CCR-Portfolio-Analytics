@@ -1,1 +1,6 @@
-RPR 2.5 SEC + WEB – Financial Assessment
+CompanyContextJSON — Required
+ScenarioContextJSON — Required
+EventDrivenFactorsJSON — Required
+SectorInherentFactorsJSON — Required
+AssessmentASOFDATE — Required
+UserFeedback — Optional
