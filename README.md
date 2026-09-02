@@ -260,8 +260,3 @@ No speculative architecture changes.
 No looping.
 
 IMPLEMENT -> RUN ONCE -> REPORT RESULT.
-]
-
-AssessmentASOFDATE
-
-2026-09-02
