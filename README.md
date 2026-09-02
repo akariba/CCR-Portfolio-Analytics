@@ -16,4 +16,13 @@ AssessmentASOFDATE
 
 ## MANDATORY FINAL SCORING CONTRACT
 
-Follow the attached Step 2.5 SEC+Web output schema knowledge file exactly.
+For non-mandatory evidence or contextual fields only, use null or an evidence-gap entry when information cannot be established.
+
+This rule does NOT apply to the five mandatory final scoring fields:
+scoring.ed_score
+scoring.si_score
+scoring.composite_score
+scoring.residual_rating
+scoring.credit_impact_rating
+
+Once the supplied Event-Driven and Sector-Inherent factors have been successfully assessed, those five fields must contain valid values as defined above.
