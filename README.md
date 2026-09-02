@@ -1,294 +1,241 @@
-STEP 2.5 — FINAL BLOCKER ONLY
+# ROLE AND AUTHORITY
 
-The previous acceptance report is NOT accepted as PASS.
+Execute the RPR Step 2.5 Name-Level Financial Assessment for exactly one company.
 
-Do not revisit completed work.
+The attached "Factor Analysis — Financials" Step 3a methodology is the authoritative analytical methodology. Follow it in full.
 
-The sole remaining target is:
+Do not replace, simplify, reinterpret, or create an alternative methodology.
 
-wire the confirmed Step 2.3 and Step 2.4 factor state correctly into the real Step 2.5 Stylus request, obtain non-empty factor assessments, and render the real ED/SI detail panels in the v31 UI.
+Your task is to apply that methodology to the supplied confirmed RPR inputs and return the machine-readable output required by the attached Step 2.5 SEC+Web output schema.
 
-Everything else that already passed is frozen.
 
-CURRENT VERIFIED STATE
+# INPUTS
 
-Keep these untouched:
+Company Context:
+{CompanyContextJSON}
 
-Runner HTTP 200
-Runner authentication/token mechanism
-preset invocation
-SEC Filing integration
-Internet Search integration
-SSE reconstruction
-flat response handling
-Step25 schema
-Step 2.5 endpoint
-v31 Step 2.5 DOM/CSS/table implementation
-Steps 1–2.4 behavior
-STEP25_POC_TEST_ONLY = false
+Confirmed Scenario Context:
+{ScenarioContextJSON}
 
-Do NOT refactor them.
+Confirmed Event-Driven Risk Factors:
+{EventDrivenFactorsJSON}
 
-THE ACTUAL BLOCKER
+Confirmed Sector-Inherent Risk Factors:
+{SectorInherentFactorsJSON}
 
-Previous live run reported:
+Assessment As-Of Date:
+{AssessmentASOFDATE}
 
-FACTOR_ASSESSMENTS_COUNT = 0
+Analyst Feedback:
+{UserFeedback}
 
-ED_FACTORS_RENDERED = N/A
 
-SI_FACTORS_RENDERED = N/A
+# EXECUTION BOUNDARIES
 
-and identified:
+Assess exactly the company supplied in CompanyContextJSON.
 
-FIRST_REMAINING_BLOCKER = factor_assessments wiring
+Do not introduce additional companies.
 
-You also found that the Stylus preset's CompanyContextJSON contract expects a composite structure containing more than the minimal company identity currently built by stylus_engine.py.
+Do not change, rename, merge, delete or invent Event-Driven or Sector-Inherent risk factors.
 
-This blocker is IN SCOPE and must now be fixed.
+Use only the confirmed factors supplied in EventDrivenFactorsJSON and SectorInherentFactorsJSON.
 
-1. TRACE THE CONTRACT EXACTLY
+Preserve their factor IDs, source type, importance and weights.
 
-Before editing, trace the actual data contracts from:
+Treat Event-Driven and Sector-Inherent factors as separate factor sets throughout the analysis.
 
-confirmed Step 2.2 state
-confirmed Step 2.3 state
-confirmed Step 2.4 state
-Step 2.5 request model
-stylus_engine.py
-saved/full Stylus preset capture
-Step25 schema
+Do not move an Event-Driven factor into the Sector-Inherent set or vice versa.
 
-Determine exactly what the preset currently receives under:
 
-CompanyContextJSON
-EventDrivenFactorsJSON
-SectorInherentFactorsJSON
-AssessmentASOFDATE
-EvidenceWindowMonths
+# COMPANY IDENTITY CONTROL
 
-Do not infer names or structures from memory.
+Before financial analysis, verify that SEC evidence corresponds to the supplied company identity using the provided company name, ticker and/or CIK.
 
-Use the actual saved preset/capture and code.
+Do not infer a public registrant identity from company-name similarity alone.
 
-2. FIX THE DATA WIRING
+If identity cannot be established with sufficient confidence, return the appropriate identity/evidence limitation in the schema rather than analysing another company.
 
-Build the Step 2.5 request from the actual confirmed upstream objects.
 
-CompanyContextJSON must contain the complete company/context object required by the captured preset contract.
+# EVIDENCE RETRIEVAL
 
-It must not remain merely:
+Use the SEC Filing integration and approved Internet Search integration.
 
-{company_name, ticker, cik, ...}
+The assessment as-of date is a hard evidence cutoff.
 
-if the real preset contract expects additional nested information.
+Do not use information first published after AssessmentASOFDATE as if it were known at the assessment date.
 
-EventDrivenFactorsJSON must contain the actual confirmed Step 2.3 factors for the selected company.
+For each vulnerability and buffer metric required by every supplied factor, retrieve the most recent information appropriate to the methodology.
 
-SectorInherentFactorsJSON must contain the actual confirmed Step 2.4 factors applicable to the selected company.
+Where a metric requires trend analysis, retrieve all periods required to evaluate the trend rather than imposing an arbitrary fixed evidence window.
 
-Preserve, where available:
+Prefer authoritative evidence in this order where appropriate:
 
-factor ID
-factor name
-weight
-score
-rationale
-evidence
-source step
+1. SEC filings and filed exhibits.
+2. Company financial disclosures and investor materials.
+3. Rating agency / regulatory / government material where retrievable.
+4. High-quality external sources for evidence not contained in filings.
 
-Do not regenerate these factors in Step 2.5.
+Do not invent values.
 
-Do not substitute generic factors.
+Do not infer exact numeric values when the source does not support them.
 
-Do not hardcode Apple factor data.
+If required information cannot be evidenced, explicitly mark it unavailable.
 
-3. IMPORTANT — DETERMINE WHETHER DUPLICATION IS REQUIRED
 
-The previous report suggests the Stylus prompt may expect the confirmed factors both:
+# METRIC ASSESSMENT
 
-inside the composite CompanyContextJSON, and
-through the dedicated EventDriven/SectorInherent inputs.
+For every Event-Driven and Sector-Inherent factor:
 
-Verify this against the actual captured preset.
+Assess Vulnerability Metrics and Buffer/Mitigant Metrics separately.
 
-If that is genuinely the contract, populate both consistently.
+For every material metric provide:
 
-Do NOT “simplify” the preset contract during this task.
+- metric being tested;
+- observed value where available;
+- unit;
+- relevant reporting period;
+- source name;
+- source/publication date;
+- retrievable URL or filing reference;
+- availability status;
+- metric interpretation;
+- vulnerability signal label OR buffer-strength label, as applicable.
 
-Our immediate target is compatibility with the working captured preset.
+Vulnerability signal labels must use:
+VERY_HIGH
+HIGH
+MEDIUM
+LOW
 
-4. PRESERVE FACTOR IDENTITY
+Buffer strength labels must use:
+STRONG
+MEDIUM
+WEAK
+NEGLIGIBLE
 
-Step 2.5 must be able to relate its assessment back to the exact upstream factors.
+Follow the scoring methodology supplied with the factor.
 
-Example:
+The score represents residual credit risk AFTER mitigants, not gross event severity.
 
-ED-1 in Step 2.3 must remain identifiable as the same ED-1 in the Step 2.5 result.
+Strong company-specific buffers must reduce residual risk where the methodology supports that conclusion.
 
-Same for SI factors.
 
-Do not silently replace IDs with newly generated IDs.
+# FACTOR SCORING
 
-If canonical evidence IDs are generated separately, keep that evidence-ID behavior independent from factor IDs.
+Produce a Residual Risk Score from 1.0 to 5.0 for every factor for which sufficient evidence exists.
 
-5. RUN ONE REAL LIVE TEST
+Do not mechanically assign identical scores to different factors.
 
-Once the wiring is corrected, perform one real live Step 2.5 SEC + Web run.
+Every factor score must be justified by company-specific evidence.
 
-Use the actual confirmed Step 2.2/2.3/2.4 state already available in the test workflow.
+If the source methodology says a factor cannot be scored because required financial evidence is unavailable, return the factor as not assessable rather than creating a score.
 
-Required results:
+Do not alter the confirmed factor weight.
 
-RUNNER_HTTP_STATUS = 200
 
-PRESET_EXECUTED = YES
+# AGGREGATION
 
-SEC_TOOL_EXECUTED = YES
+Calculate a proposed Event-Driven weighted score using the confirmed Event-Driven factor weights.
 
-WEB_TOOL_EXECUTED = YES
+Calculate a proposed Sector-Inherent weighted score using the confirmed Sector-Inherent factor weights.
 
-JSON_PARSED = YES
+For the RPR product-level Step 2.5 composite use:
 
-STEP25_SCHEMA_VALID = YES
+Composite Score =
+0.80 × Event-Driven Weighted Score
++
+0.20 × Sector-Inherent Weighted Score
 
-and most importantly:
+Do not modify the 80/20 product weighting.
 
-FACTOR_ASSESSMENTS_COUNT > 0
+Apply the Step 3a name-level residual-risk methodology when assigning the residual-risk level.
 
-If the selected company has both ED and SI factors:
+Do not substitute portfolio-level Step 4 scoring thresholds.
 
-ED_FACTOR_INPUT_COUNT > 0
 
-SI_FACTOR_INPUT_COUNT > 0
+# CREDIT ANCHORING
 
-ED_FACTOR_OUTPUT_COUNT > 0
+Where current RRR and/or current classification are genuinely supplied in CompanyContextJSON, apply the Step 3a methodology for:
 
-SI_FACTOR_OUTPUT_COUNT > 0
+- impact rating;
+- recommended RRR action;
+- final RRR;
+- recommended classification action;
+- final classification;
+- applicable rating/classification caps and floors;
+- better-of rule.
 
-Do not call the task PASS while factor_assessments remains empty.
+If current RRR or current classification is absent, null or unavailable, do not invent it.
 
-6. THEN TEST THROUGH THE ACTUAL BROWSER
+Return "No recommendation" for outputs that cannot legitimately be calculated from the supplied company context.
 
-After the backend live test passes:
 
-start/restart backend normally
-open UI Design/step23.html
-go to Step 2.5
-select the eligible confirmed company
-select SEC + Web
-click the actual Run Assessment button
-wait for the real Runner execution
-verify the selected portfolio row updates
-expand the company row
+# KEY RISK DRIVER
 
-Confirm that the expanded area contains actual:
+Identify the principal company-specific residual credit-risk driver from the assessed factors.
 
-EVENT-DRIVEN FACTORS
+The key risk driver must be traceable to the factor assessment and evidence.
 
-and
+Do not generate a generic market headline.
 
-SECTOR-INHERENT FACTORS
 
-matching the v31 layout and the actual upstream factor values.
+# CREDIT ASSESSMENT COMMENTARY
 
-This must be verified from the rendered browser result, not only by inspecting JavaScript functions.
+Produce the structured Step 3a Credit Assessment Commentary.
 
-7. DO NOT CHANGE v31 DESIGN
+Cover every assessed Event-Driven and Sector-Inherent factor.
 
-The previous report says:
+For each factor include:
 
-V31_DOM_PARITY = PASS
+- key vulnerability finding and evidence;
+- explicit vulnerability signal;
+- key buffer/mitigant finding and evidence;
+- explicit buffer strength;
+- residual-risk score;
+- factor-level credit implication.
 
-V31_TABLE_PARITY = PASS
+Then provide the overall synthesis including:
 
-V31_CSS_PARITY = PASS
+- Event-Driven weighted result;
+- Sector-Inherent weighted result;
+- composite result;
+- residual-risk level;
+- impact assessment;
+- recommended RRR/classification actions where inputs permit;
+- dominant vulnerabilities;
+- effectiveness of buffers;
+- overall credit trajectory under the confirmed scenario.
 
-V31_EXPAND_ROW_PARITY = PASS
 
-Treat that frontend structure as frozen.
+# QUALITY AND SELF-VALIDATION
 
-Only bind the newly working data into it.
+Before returning the result, silently validate:
 
-No CSS redesign.
+1. Every supplied confirmed factor is represented exactly once.
+2. Event-Driven and Sector-Inherent factors have not been mixed.
+3. Every numeric claim is supported by evidence.
+4. Every metric has the appropriate period.
+5. Missing evidence is explicit.
+6. Factor scores are between 1 and 5.
+7. Weighted calculations use supplied weights only.
+8. ED and SI set calculations are internally consistent.
+9. The RPR final composite uses exactly 80% ED and 20% SI.
+10. Step 3a residual-risk thresholds are used, not Step 4 portfolio thresholds.
+11. RRR/classification recommendations follow the authoritative Step 3a tables.
+12. No RRR/classification value was fabricated.
+13. The commentary matches the structured factor scores.
+14. The key risk driver is supported by the factor-level evidence.
 
-No table redesign.
+Correct inconsistencies before final output.
 
-No new widgets.
 
-No alternate Step 2.5 layout.
+# OUTPUT
 
-8. NO SCOPE EXPANSION
+Return JSON only.
 
-Do not work on:
+Do not return Markdown.
 
-F2/F3 citation-quality improvements
-accession-number improvements
-generic web URL improvements
-token refresh
-auth
-MarketDev
-CAM
-Step 3
-scoring redesign
-unrelated refactoring
+Do not return explanatory text before or after the JSON.
 
-unless one is empirically proven to block this exact factor-wiring acceptance test.
-
-FINAL REPORT — STRICT
-
-Report:
-
-COMPANY_CONTEXT_CONTRACT_MATCH = PASS/FAIL
-
-STEP23_INPUT_FOUND = YES/NO
-
-STEP23_INPUT_FACTOR_COUNT =
-
-STEP24_INPUT_FOUND = YES/NO
-
-STEP24_INPUT_FACTOR_COUNT =
-
-STEP23_FACTORS_SENT_TO_PRESET = YES/NO
-
-STEP24_FACTORS_SENT_TO_PRESET = YES/NO
-
-RUNNER_HTTP_STATUS =
-
-SEC_TOOL_EXECUTED = YES/NO
-
-WEB_TOOL_EXECUTED = YES/NO
-
-STEP25_SCHEMA_VALID = YES/NO
-
-FACTOR_ASSESSMENTS_COUNT =
-
-ED_FACTOR_OUTPUT_COUNT =
-
-SI_FACTOR_OUTPUT_COUNT =
-
-UI_RUN_ASSESSMENT_CLICKED = YES/NO
-
-UI_COMPANY_ROW_UPDATED = YES/NO
-
-ED_FACTORS_RENDERED = YES/NO
-
-SI_FACTORS_RENDERED = YES/NO
-
-V31_VISUAL_STRUCTURE_PRESERVED = YES/NO
-
-FILES_CHANGED =
-
-FINAL_STATUS = PASS/BLOCKED
-
-A final PASS is allowed only if:
-
-the real Step 2.3 factors entered Step 2.5
-the real Step 2.4 factors entered Step 2.5
-the resulting Step25Assessment contains factor assessments
-the actual browser Run Assessment workflow succeeds
-the ED/SI panels visibly render the resulting/upstream factors in the v31 structure
-
-Otherwise report FINAL_STATUS = BLOCKED.
-
-Start from the identified factor-wiring blocker and finish it. Do not reopen completed layers.
+The JSON must conform exactly to the attached:
+rpr_step25_secweb_output_schema_v1.json
