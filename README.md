@@ -1,13 +1,1 @@
-Use these exact simple test inputs in the Stylus preset:
-
-CompanyContextJSON
-{"company_name":"Apple Inc.","ticker":"AAPL","cik":"0000320193","cagid":null,"current_rrr":null,"current_class":null}
-ScenarioContextJSON
-{"scenario_name":"US Trade Policy & Tariffs","assessment_horizon":"12+ months","scenario_narrative":"Assess Apple under continuing US trade-policy uncertainty, tariffs, supply-chain pressure and regulatory risk."}
-EventDrivenFactorsJSON
-[{"factor_id":"ED-1","factor_name":"Leadership transition","source_step":"2.3","weight":0.3,"score":-1},{"factor_id":"ED-2","factor_name":"Regulatory scrutiny of Services","source_step":"2.3","weight":0.4,"score":-1}]
-SectorInherentFactorsJSON
-[{"factor_id":"SI-1","factor_name":"Regulatory scrutiny of Services","source_step":"2.4","weight":0.2,"score":-1}]
-AssessmentASOFDATE
-2026-09-02
-UserFeedback (optional)
+Fresh Runner-valid browser bearer token captured from a successful HTTP 200 POST to /runner-service/chat and saved in backend/data/step25_runner_auth/.runner_token. Do not investigate authentication further and do not modify the auth implementation. Immediately execute the real Step 2.5 SEC+Web end-to-end run using the completed six-input contract. If successful, verify the actual assessment output and v31 rendering. Do not produce another architecture report before attempting execution.
