@@ -16,200 +16,114 @@ AssessmentASOFDATE
 
 ## MANDATORY FINAL SCORING CONTRACT
 
-EXECUTION MODE — NO MORE BROAD INVESTIGATION.
+STEP 2.5 — EXECUTE THE SINGLE PROVEN FIX NOW
 
-GOAL:
-Get the smallest REAL Step 2.5 end-to-end result working in the RPR application first.
-Once that works, we will expand it incrementally.
+We have now isolated the first real blocker.
 
-STRICT RULES
+PROVEN STATE FROM THE LAST REAL RUN:
 
-1. DO NOT modify or interact with the Stylus preset.
-   - VS Code/Claude has no ability or authority to modify the preset.
-   - Do not suggest preset changes.
-   - Do not recreate the preset.
-   - Do not troubleshoot the preset configuration.
+CONTEXT_HTTP = 200
+RUNNER_AUTH = PASS
+RUNNER_STREAM = OPEN / HTTP 200
+SEC = PASS
+WEB = PASS
+LAST_SUCCESSFUL_CHECKPOINT = CP-N / Web Search tool event
+MODEL_FINAL_EVENT = NOT RECEIVED
+/run therefore never returns.
 
-2. DO NOT modify:
-   - preset prompt
-   - preset output schema
-   - preset knowledge files
-   - preset integrations
-   - preset input-field definitions
+STOP INVESTIGATING OTHER AREAS.
 
-Only the user manages those manually in Stylus.
+Do not touch:
+- preset configuration
+- six-input contract
+- SEC integration
+- Web integration
+- company identity logic
+- Step 2.1–2.4
+- token/bootstrap code
+- scoring methodology
+- v31 frontend yet
 
-3. Preserve all accepted working building blocks:
-   - current six-input Step 2.5 contract
-   - CompanyContext
-   - ScenarioContext
-   - EventDrivenFactors
-   - SectorInherentFactors
-   - AssessmentAS
-   - UserFeedback
-   - existing company identity resolution
-   - existing Step 2.1–2.4
-   - existing SEC + Web Runner path
-   - existing evidence handling
-   - existing auth/token handling
-   - v31 UI baseline
+Implement ONLY bounded completion handling in the EXISTING Runner SSE path.
 
-4. NO refactor.
-5. NO redesign.
-6. NO architecture work.
-7. NO broad repository investigation.
-8. NO long diagnostic report.
-9. NO repeated test loops.
-10. Do not change working code unless required for this exact execution.
+CRITICAL SAFETY RULE:
+DO NOT synthesize, infer, or manufacture a Step 2.5 assessment from SEC/Web tool events.
 
-==================================================
-TARGET FOR THIS PASS
-==================================================
+Required behaviour:
 
-We do NOT need the complete final Step 2.5 implementation yet.
+1. Continue using the same Runner request and same SSE session.
 
-Get ONE company through Step 2.5 and display the smallest useful REAL result.
+2. Keep accumulating all genuine assistant/model response content already emitted by Runner.
 
-Use Apple / the already-established real Step 2.2 test company.
+3. After SEC/Web tool execution completes, continue waiting for the genuine final model response for a bounded grace period.
 
-Minimum output required for first success:
+4. If a proper final model event arrives:
+   - parse it using the existing Step 2.5 parser
+   - validate against the Step 2.5 schema
+   - persist assessment
+   - return HTTP 200 normally.
 
-- company
-- assessment status
-- ED score if returned
-- SI score if returned
-- composite score if returned
-- residual risk rating if returned
-- credit impact rating if returned
-- one short assessment/headline if returned
+5. IMPORTANT:
+   If Runner fails to emit its formal terminal event BUT the accumulated genuine model-content buffer already contains a complete schema-conformant Step 2.5 JSON object:
+   - extract that actual model-generated JSON
+   - validate it
+   - finalize normally.
+   This is recovery of genuine model output, NOT generation of fallback assessment data.
 
-Do NOT block first success because secondary fields are missing.
+6. If there is still no complete genuine model output after the bounded grace period:
+   terminate cleanly with a controlled error such as:
 
-Do NOT require:
-- every evidence detail
-- every commentary field
-- full expandable panels
-- full final table enrichment
-- complete citation rendering
-- all analyst-question fields
-- perfect final UI
+   STEP25_MODEL_FINAL_TIMEOUT
 
-Those come AFTER the first working result.
+   Include:
+   - run_id
+   - workflow_id
+   - last_runner_event
+   - SEC executed=true
+   - WEB executed=true
 
-==================================================
-EXECUTION
-==================================================
+   Do NOT leave /run hanging indefinitely.
 
-1. Use the CURRENT code and CURRENT preset contract exactly as they exist.
+7. Do not launch another Runner request.
+   Do not retry the whole assessment.
+   Do not create parallel polling loops.
+   One request, one bounded stream lifecycle.
 
-2. Use a fresh valid Runner bearer token through the already-working token-fetch path.
+8. Keep the timeout sufficiently long for this heavy SEC+Web assessment.
+   Reuse the existing Step 2.5 timeout configuration rather than introducing arbitrary short constants.
 
-3. Restart backend only if needed to ensure the fresh token is loaded.
+9. Remove/disable temporary excessive polling/debug instrumentation once this is proven.
 
-4. Submit the existing real Step 2.5 context.
+THEN RUN EXACTLY ONE REAL APPLE ACCEPTANCE TEST.
 
-5. Execute ONE real Step 2.5 run.
+Acceptance sequence:
 
-6. Let the Runner call complete normally.
-   Do not terminate it merely because SEC/Web activity pauses for several minutes.
+CONTEXT_HTTP = 200
+RUNNER_AUTH = PASS
+SEC = PASS
+WEB = PASS
 
-7. When a final model response is received:
-   - parse it
-   - persist it using the existing assessment mechanism
-   - extract whatever valid core Step 2.5 fields are actually present
-   - return HTTP 200
-   - render the minimal result in the existing Step 2.5 UI
+Then one of only two legitimate outcomes is allowed:
 
-==================================================
-IMPORTANT: MINIMAL PARSING
-==================================================
+A)
+MODEL_OUTPUT = PASS
+JSON_PARSED = PASS
+SCHEMA_VALID = PASS
+ED_SCORE = populated
+SI_SCORE = populated
+COMPOSITE_SCORE = populated
+RESIDUAL_RATING = populated
+CREDIT_IMPACT = populated
+RUN_HTTP = 200
 
-Do not make the entire assessment fail because one optional field is absent.
+OR
 
-For this first working increment:
+B)
+STEP25_MODEL_FINAL_TIMEOUT
+with the exact last Runner event reported.
 
-If a valid final assessment contains some but not all of:
+If outcome A occurs, STOP backend investigation immediately.
+Proceed directly to rendering the real output in Step 2.5 using the exact v31 frontend design.
 
-ed_score
-si_score
-composite_score
-residual_rating
-credit_impact_rating
-headline
-
-render the fields that exist.
-
-Missing optional output should display:
-
-Not available
-
-It must NOT prevent the real assessment from appearing.
-
-However:
-- never invent a score
-- never calculate a missing model result with an ad-hoc formula
-- never substitute placeholder data
-- never reuse another company's result
-
-==================================================
-UI
-==================================================
-
-Use the existing v31 Step 2.5 structure.
-
-DO NOT redesign it.
-
-For the first success, populate only the existing appropriate cells/area with the real returned values.
-
-Keep everything else unchanged.
-
-==================================================
-STOP CONDITION
-==================================================
-
-Do ONE real execution.
-
-If successful, STOP and report only:
-
-STEP25_RUN = PASS
-COMPANY =
-RUNNER_AUTH =
-SEC =
-WEB =
-MODEL_OUTPUT =
-JSON_PARSED =
-ED_SCORE =
-SI_SCORE =
-COMPOSITE_SCORE =
-RESIDUAL_RATING =
-CREDIT_IMPACT =
-UI_RENDERED =
-FILES_CHANGED =
-
-Then stop. Do not continue improving anything.
-
-If execution genuinely fails, STOP at the FIRST concrete blocker and report only:
-
-STEP25_RUN = FAIL
-FIRST_BLOCKER =
-EXACT_ERROR =
-LAST_SUCCESSFUL_STAGE =
-MINIMUM_CODE_CHANGE_REQUIRED =
-
-Do not launch another investigation automatically.
-
-==================================================
-PRIORITY
-==================================================
-
-WORKING SMALL RESULT FIRST.
-
-Then we build:
-small working Step 2.5
-→ correct scoring
-→ factor detail
-→ evidence
-→ complete v31 rendering
-→ final acceptance.
-
-Do not try to finish all of Step 2.5 in this pass.
+Do not produce another long diagnostic report.
+Implement → run once → report the actual result.
