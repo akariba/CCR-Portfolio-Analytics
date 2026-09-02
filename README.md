@@ -16,226 +16,200 @@ AssessmentASOFDATE
 
 ## MANDATORY FINAL SCORING CONTRACT
 
-CONTINUE FROM THE CURRENT STATE. DO NOT RESTART THE STEP 2.5 DESIGN WORK.
+EXECUTION MODE — NO MORE BROAD INVESTIGATION.
 
-IMPORTANT:
-The preset is now FINAL for this test.
-DO NOT modify:
-- the Stylus preset prompt
-- the 6-input contract
-- the knowledge files
-- Step 2.1 / 2.2 / 2.3 / 2.4 logic
-- v31 styling/layout
-- company identity resolution
-- SEC/Web integrations
-- existing evidence adapter
-unless you prove a concrete code defect requires a minimal change.
+GOAL:
+Get the smallest REAL Step 2.5 end-to-end result working in the RPR application first.
+Once that works, we will expand it incrementally.
 
-CURRENT PROVEN STATE
+STRICT RULES
 
-RUNNER_TOKEN_FETCH = PASS
-TOKEN_FRESHNESS_CHECK = PASS
-STEP25_CONTEXT_HTTP = 200
+1. DO NOT modify or interact with the Stylus preset.
+   - VS Code/Claude has no ability or authority to modify the preset.
+   - Do not suggest preset changes.
+   - Do not recreate the preset.
+   - Do not troubleshoot the preset configuration.
 
-The backend was restarted after the fresh token was written.
+2. DO NOT modify:
+   - preset prompt
+   - preset output schema
+   - preset knowledge files
+   - preset integrations
+   - preset input-field definitions
 
-The latest problem is NOT initial authentication.
+Only the user manages those manually in Stylus.
 
-The concrete blocker is:
+3. Preserve all accepted working building blocks:
+   - current six-input Step 2.5 contract
+   - CompanyContext
+   - ScenarioContext
+   - EventDrivenFactors
+   - SectorInherentFactors
+   - AssessmentAS
+   - UserFeedback
+   - existing company identity resolution
+   - existing Step 2.1–2.4
+   - existing SEC + Web Runner path
+   - existing evidence handling
+   - existing auth/token handling
+   - v31 UI baseline
 
-POST /api/v1/rpr/step25/run accepts the request but the terminal-driven invocation does not return a completion response / final run artifact.
-
-DO NOT LOOP.
-DO NOT produce another architecture review.
-DO NOT write a long report before execution.
-
-YOUR TASK IS TO TRACE ONE REAL /run EXECUTION AND IDENTIFY THE EXACT WAITING POINT.
-
-==================================================
-1. GET A FRESH TOKEN IMMEDIATELY BEFORE THE TEST
-==================================================
-
-Use the existing working manual token-fetch path:
-
-step25.fetch_runner_token
-
-Do not redesign automatic refresh.
-
-Confirm only:
-
-TOKEN_FETCH = PASS
-TOKEN_EXPIRY = <timestamp>
-
-Then immediately execute the run.
+4. NO refactor.
+5. NO redesign.
+6. NO architecture work.
+7. NO broad repository investigation.
+8. NO long diagnostic report.
+9. NO repeated test loops.
+10. Do not change working code unless required for this exact execution.
 
 ==================================================
-2. TRACE THE EXISTING /run PATH
+TARGET FOR THIS PASS
 ==================================================
 
-Instrument or inspect the CURRENT code path with minimal temporary logging.
+We do NOT need the complete final Step 2.5 implementation yet.
 
-For ONE Apple run, establish these checkpoints in order:
+Get ONE company through Step 2.5 and display the smallest useful REAL result.
 
-A. FastAPI /step25/run entered
-B. company context loaded
-C. ScenarioContext loaded
-D. EventDrivenFactors loaded
-E. SectorInherentFactors loaded
-F. AssessmentASOFDATE loaded
-G. UserFeedback loaded
-H. stylus_engine.run_stylus_poc entered
-I. Runner HTTP request sent
-J. Runner initial HTTP status received
-K. workflow/run identifier received, if applicable
-L. Runner SSE/stream opened, if applicable
-M. SEC Filing tool events observed
-N. Web Search tool events observed
-O. model final-response event observed
-P. stream completion/end event observed
-Q. JSON extracted
-R. Step25Assessment parsed
-S. assessment artifact written
-T. FastAPI /run response returned
+Use Apple / the already-established real Step 2.2 test company.
 
-I need the FIRST checkpoint which does NOT occur.
+Minimum output required for first success:
 
-Do not infer it.
-Prove it from one execution.
+- company
+- assessment status
+- ED score if returned
+- SI score if returned
+- composite score if returned
+- residual risk rating if returned
+- credit impact rating if returned
+- one short assessment/headline if returned
 
-==================================================
-3. IMPORTANT: CHECK THE STREAMING BEHAVIOUR
-==================================================
+Do NOT block first success because secondary fields are missing.
 
-The previous successful Step 2.5 tests took several minutes.
+Do NOT require:
+- every evidence detail
+- every commentary field
+- full expandable panels
+- full final table enrichment
+- complete citation rendering
+- all analyst-question fields
+- perfect final UI
 
-Do NOT terminate the process merely because the CLI appears quiet.
-
-Inspect the actual Runner/SSE activity while the request is running.
-
-Check specifically whether:
-
-- Runner is still emitting SSE events;
-- the model completed but our code failed to recognise the final event;
-- the stream completed but our parser is waiting for another event;
-- the parser completed but FastAPI never returned;
-- the request is blocked waiting on a timeout;
-- the Runner returned an error which is being swallowed.
-
-Do NOT introduce polling frameworks or new architecture.
-
-Use the existing Runner client.
+Those come AFTER the first working result.
 
 ==================================================
-4. IF THE RUNNER IS PRODUCING OUTPUT
+EXECUTION
 ==================================================
 
-If Runner/SSE proves the assessment completed, but our backend remains waiting:
+1. Use the CURRENT code and CURRENT preset contract exactly as they exist.
 
-fix ONLY the concrete completion-detection/parsing issue.
+2. Use a fresh valid Runner bearer token through the already-working token-fetch path.
 
-Examples of acceptable minimal fixes:
+3. Restart backend only if needed to ensure the fresh token is loaded.
 
-- recognise the actual final SSE event emitted by Runner;
-- stop consuming after the valid final model response is obtained;
-- correctly process the stream terminator;
-- correctly propagate the completed assessment back through
-  stylus_engine -> router -> HTTP response.
+4. Submit the existing real Step 2.5 context.
 
-Do NOT shorten the model analysis merely to make the HTTP request return faster.
+5. Execute ONE real Step 2.5 run.
 
-==================================================
-5. IF RUNNER ITSELF IS NOT COMPLETING
-==================================================
+6. Let the Runner call complete normally.
+   Do not terminate it merely because SEC/Web activity pauses for several minutes.
 
-Capture:
-
-HTTP status
-workflow/run id
-last 10 meaningful SSE event TYPES only
-last tool invoked
-last model event
-elapsed seconds
-
-Do not dump thousands of SSE lines.
-
-Then identify the concrete Runner-side stopping point.
+7. When a final model response is received:
+   - parse it
+   - persist it using the existing assessment mechanism
+   - extract whatever valid core Step 2.5 fields are actually present
+   - return HTTP 200
+   - render the minimal result in the existing Step 2.5 UI
 
 ==================================================
-6. AFTER THE MINIMAL FIX, RUN ONE REAL ACCEPTANCE
+IMPORTANT: MINIMAL PARSING
 ==================================================
 
-Company:
-Apple Inc.
-CIK:
-0000320193
+Do not make the entire assessment fail because one optional field is absent.
 
-Use the REAL confirmed context already wired from Steps 2.1–2.4.
+For this first working increment:
 
-Do not replace the inputs with invented test content.
+If a valid final assessment contains some but not all of:
 
-Acceptance criteria:
+ed_score
+si_score
+composite_score
+residual_rating
+credit_impact_rating
+headline
 
-CONTEXT_HTTP = 200
-RUN_HTTP = 200
+render the fields that exist.
 
-RUNNER_AUTH = PASS
-SEC_TOOL_EXECUTED = YES
-WEB_TOOL_EXECUTED = YES
-MODEL_RESPONSE_RECEIVED = YES
-JSON_PARSED = YES
-STEP25_SCHEMA_VALID = YES
+Missing optional output should display:
 
-FACTOR_ASSESSMENTS:
-ED-1 present
-ED-2 present
-SI-1 present
+Not available
 
-MANDATORY SCORING:
-ed_score = NON-NULL
-si_score = NON-NULL
-composite_score = NON-NULL
-residual_rating = NON-NULL
-credit_impact_rating = NON-NULL
+It must NOT prevent the real assessment from appearing.
 
-Then verify the browser Step 2.5 row renders those REAL returned values.
+However:
+- never invent a score
+- never calculate a missing model result with an ad-hoc formula
+- never substitute placeholder data
+- never reuse another company's result
 
 ==================================================
-7. STRICT STOP RULE
+UI
 ==================================================
 
-Do not spend time on:
-- automatic token refresh
-- MLE cleanup
-- MarketDev
-- refactoring
-- new tests/frameworks
-- v31 cosmetic work
-until THIS real /run returns a completed Step 2.5 assessment.
+Use the existing v31 Step 2.5 structure.
 
-If the run still fails, STOP after identifying exactly:
+DO NOT redesign it.
 
-FIRST_FAILED_CHECKPOINT =
-ACTUAL_ERROR =
-LAST_RUNNER_EVENT =
-RUN_ID =
-MINIMAL_REQUIRED_FIX =
+For the first success, populate only the existing appropriate cells/area with the real returned values.
 
-Then implement that minimal fix if it is in our code.
+Keep everything else unchanged.
 
-Do not ask me whether to continue if the fix is local and obvious.
-Execute it.
+==================================================
+STOP CONDITION
+==================================================
 
-FINAL RESPONSE MUST BE SHORT:
+Do ONE real execution.
 
-RUN_HTTP =
+If successful, STOP and report only:
+
+STEP25_RUN = PASS
+COMPANY =
 RUNNER_AUTH =
 SEC =
 WEB =
 MODEL_OUTPUT =
-JSON =
-SCORING =
-UI =
-FIRST_REMAINING_BLOCKER =
+JSON_PARSED =
+ED_SCORE =
+SI_SCORE =
+COMPOSITE_SCORE =
+RESIDUAL_RATING =
+CREDIT_IMPACT =
+UI_RENDERED =
+FILES_CHANGED =
 
-PRIMARY OBJECTIVE:
-GET ONE REAL STEP 2.5 ASSESSMENT COMPLETED AND DISPLAYED IN THE EXISTING v31-BASED UI NOW.
+Then stop. Do not continue improving anything.
+
+If execution genuinely fails, STOP at the FIRST concrete blocker and report only:
+
+STEP25_RUN = FAIL
+FIRST_BLOCKER =
+EXACT_ERROR =
+LAST_SUCCESSFUL_STAGE =
+MINIMUM_CODE_CHANGE_REQUIRED =
+
+Do not launch another investigation automatically.
+
+==================================================
+PRIORITY
+==================================================
+
+WORKING SMALL RESULT FIRST.
+
+Then we build:
+small working Step 2.5
+→ correct scoring
+→ factor detail
+→ evidence
+→ complete v31 rendering
+→ final acceptance.
+
+Do not try to finish all of Step 2.5 in this pass.
