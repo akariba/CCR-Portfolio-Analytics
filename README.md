@@ -58,162 +58,55 @@ SectorInherentFactorsJSON
 
 
 
+STEP 2.5 — EXECUTE NOW WITH THE FRESH RUNNER TOKEN
 
+I have just copied a fresh Runner bearer token from the working Stylus browser
+/runner-service/chat request into my Windows clipboard.
 
-  STEP 2.5 — USE THE NOW-PROVEN STYLUS CONTRACT AND GET THE RPR RUN WORKING
+DO NOT ask me to paste the token into chat.
+DO NOT print, log, echo, expose, or persist the token anywhere unnecessarily.
 
-IMPORTANT: We now have a successful manual Stylus execution.
+CURRENT PROVEN STATE — DO NOT REOPEN:
 
-DO NOT investigate architecture again.
-DO NOT redesign Step 2.5.
-DO NOT touch Runner SSE completion logic again.
-DO NOT touch token/bootstrap logic.
-DO NOT touch SEC integration.
-DO NOT touch Web Search integration.
-DO NOT touch company identity resolution.
-DO NOT touch Steps 2.1–2.4.
-DO NOT touch frontend yet.
-DO NOT refactor working code.
+- Step 2.5 preset configuration is correct.
+- The reduced/current preset and both knowledge files are frozen.
+- Six-input mapping is confirmed correct.
+- CONTEXT_HTTP previously = 200.
+- The genuine runner_client.py _stream_sse tuple-return bug was identified and minimally fixed.
+- The last run failed only because the cached bearer token was expired.
+- Cached refresh-token exchange is currently unreliable/expired and MUST NOT become another investigation.
+- run_step25_with_fresh_token.ps1 is the already-proven fresh-token execution mechanism.
 
-THE MANUAL STYLUS PRESET IS NOW A FROZEN WORKING BASELINE.
+EXECUTE, DO NOT INVESTIGATE.
 
-The successful Stylus execution returned a genuine schema-conformant Step 2.5 JSON with:
+1. Read the fresh bearer token from the Windows clipboard using the EXISTING
+   run_step25_with_fresh_token.ps1 mechanism.
 
-ED-1 score = 2.5
-ED-2 score = 3.5
-SI-1 score = 3.0
+2. Use it only for the current Runner authentication state expected by the existing code.
 
-scoring.ed_score = 3.07
-scoring.si_score = 3.00
-scoring.composite_score = 3.06
+3. Restart the backend if required so the fresh token is loaded into memory.
 
-and populated residual_rating / credit_impact_rating.
+4. Run EXACTLY ONE real Apple Step 2.5 acceptance execution.
 
-Therefore the preset design, SEC/Web retrieval, scoring methodology and output structure are proven.
+5. Do NOT:
+   - change the preset;
+   - change either knowledge file;
+   - change the six-input contract;
+   - change SEC;
+   - change Web Search;
+   - change Step 2.1–2.4;
+   - change company identity;
+   - redesign authentication;
+   - attempt to repair automatic refresh now;
+   - start multiple /run calls;
+   - refactor unrelated code;
+   - inspect architecture;
+   - produce another long diagnostic report.
 
-The previous backend execution had already achieved:
+6. Preserve the minimal runner_client.py tuple-return correction already made.
+   Do not undo it.
 
-RUNNER_AUTH = PASS
-PRESET_TOOL_CALLED = PASS
-PRESET_TOOL_COMPLETED = PASS
-TOOL_RESULT_RETURNED_TO_MODEL = PASS
-SEC = PASS
-WEB = PASS
-MODEL_FINAL_RESPONSE = PASS
-JSON_PARSED = PASS
-SCHEMA_VALID = PASS
-RUN_HTTP = 200
-
-but the five final scoring fields were blank.
-
-That is the ONLY issue to resolve now.
-
-==================================================
-SOURCE OF TRUTH
-==================================================
-
-The latest validated local Step 2.5 knowledge files are:
-
-preset_knowledge/RPR_STEP25_FIELD_DICTIONARY.md
-
-and the latest Step 2.5 output-schema knowledge file
-(the pr_step25_secweb_output_schema_v1 text file that has just been updated).
-
-These files now contain the validated mandatory-scoring contract.
-
-The working Stylus preset still has exactly six inputs:
-
-CompanyContextJSON
-ScenarioContextJSON
-EventDrivenFactorsJSON
-SectorInherentFactorsJSON
-AssessmentASOFDATE
-UserFeedback
-
-The first five are required.
-UserFeedback is optional.
-
-DO NOT rename these fields.
-
-==================================================
-TASK 1 — ALIGN INLINE BACKEND PRESET ONLY
-==================================================
-
-The RPR backend uses the existing INLINE full Stylus preset definition rather than calling the saved preset by UUID.
-
-Inspect the existing inline preset definition, currently under the existing preset_knowledge / STYLUS_SEC_WEB_PRESET_DEFINITION configuration path.
-
-Make ONLY the minimal changes necessary so the backend inline definition implements the same validated contract as the successful manual Stylus preset.
-
-In particular ensure the inline prompt/output instructions require:
-
-scoring.ed_score
-scoring.si_score
-scoring.composite_score
-scoring.residual_rating
-scoring.credit_impact_rating
-
-For a successfully assessed set of Step 2.3 / Step 2.4 factors these five fields MUST be populated.
-
-ED_SCORE:
-normalized weighted result of confirmed Step 2.3 factors.
-
-SI_SCORE:
-normalized weighted result of confirmed Step 2.4 factors.
-
-COMPOSITE_SCORE:
-(ED_SCORE * 0.80) + (SI_SCORE * 0.20)
-
-Preserve supplied factor weights.
-
-Do NOT use upstream placeholder scores as the final Step 2.5 assessment.
-
-Do NOT invent evidence.
-
-Do NOT turn evidence gaps into blank aggregate scores when factor assessments were successfully completed.
-
-Do not make unrelated prompt changes.
-
-==================================================
-TASK 2 — VERIFY SIX INPUT MAPPING
-==================================================
-
-Confirm the existing backend passes EXACTLY:
-
-CompanyContextJSON -> CompanyConte...
-ScenarioContextJSON -> ScenarioCont...
-EventDrivenFactorsJSON -> EventDrivenF...
-SectorInherentFactorsJSON -> SectorInhere...
-AssessmentASOFDATE -> AssessmentAS...
-UserFeedback -> UserFeedback
-
-Use the existing verified implementation.
-
-Do not introduce another adapter or translation framework.
-
-==================================================
-TASK 3 — ONE REAL BACKEND RUN
-==================================================
-
-Fetch/use the working fresh Runner token through the already-proven mechanism.
-
-Restart the backend if required so the fresh token and updated inline preset definition are loaded.
-
-Then run EXACTLY ONE real Apple Step 2.5 execution.
-
-Use the already-working real Step 2.2 Apple record and current confirmed Step 2.1 / 2.3 / 2.4 state.
-
-Do not launch multiple tests.
-
-Do not run parallel diagnostics.
-
-Do not spend time producing architecture reports.
-
-==================================================
-MANDATORY ACCEPTANCE RESULT
-==================================================
-
-Report only:
+7. For this one run report ONLY:
 
 CONTEXT_HTTP =
 RUNNER_AUTH =
@@ -224,39 +117,41 @@ WEB =
 MODEL_FINAL_RESPONSE =
 JSON_PARSED =
 SCHEMA_VALID =
-
 ED_SCORE =
 SI_SCORE =
 COMPOSITE_SCORE =
 RESIDUAL_RATING =
 CREDIT_IMPACT =
-
 RUN_HTTP =
 
-PASS requires all five scoring values to be populated.
-
-If PASS:
-STOP backend investigation immediately.
-
-Do not optimize it.
-Do not refactor it.
-Do not rerun it repeatedly.
-
-The successful implementation becomes part of the frozen RPR backbone.
-
-Then proceed to Step 2.5 frontend rendering using the existing v31 implementation as the STRICT visual reference.
-
-If FAIL:
-report ONLY:
+If there is a failure, report only:
 
 FIRST_FAILED_STAGE =
 EXACT_ERROR =
-ACTUAL_MODEL_SCORING_OBJECT =
+LAST_RUNNER_EVENT =
 
-and STOP.
+Then STOP.
 
-No long diagnostic report.
-No speculative architecture changes.
-No looping.
+SUCCESS CONDITION:
+
+RUNNER_AUTH = PASS
+SEC = PASS
+WEB = PASS
+MODEL_FINAL_RESPONSE = PASS
+JSON_PARSED = PASS
+SCHEMA_VALID = PASS
+ED_SCORE = populated
+SI_SCORE = populated
+COMPOSITE_SCORE = populated
+RESIDUAL_RATING = populated
+CREDIT_IMPACT = populated
+RUN_HTTP = 200
+
+If this succeeds, STOP all Step 2.5 backend investigation immediately.
+Do not make further backend changes.
+
+
+
+
 
 IMPLEMENT -> RUN ONCE -> REPORT RESULT.
